@@ -270,7 +270,6 @@ kernel = {
   sparc64_ieee1275 = kern/sparc64/cache.S;
   sparc64_ieee1275 = kern/sparc64/dl.c;
   sparc64_ieee1275 = kern/sparc64/ieee1275/ieee1275.c;
-  sparc64_ieee1275 = disk/ieee1275/obdisk.c;
 
   arm = kern/arm/dl.c;
   arm = kern/arm/dl_helper.c;
@@ -888,15 +887,6 @@ module = {
   name = hexdump;
   common = commands/hexdump.c;
   common = lib/hexdump.c;
-};
-
-module = {
-  name = hwmatch;
-  i386_pc = commands/i386/pc/hwmatch.c;
-  enable = i386_pc;
-  common = gnulib/regex.c;
-  cflags = '$(CFLAGS_POSIX) $(CFLAGS_GNULIB)';
-  cppflags = '$(CPPFLAGS_POSIX) $(CPPFLAGS_GNULIB)';
 };
 
 module = {
@@ -1739,14 +1729,6 @@ module = {
 module = {
   name = appleldr;
   common = loader/efi/appleloader.c;
-  enable = i386_efi;
-  enable = x86_64_efi;
-};
-
-module = {
-  name = linuxefi;
-  efi = loader/i386/efi/linux.c;
-  efi = lib/cmdline.c;
   enable = i386_efi;
   enable = x86_64_efi;
 };

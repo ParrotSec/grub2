@@ -302,33 +302,16 @@ program = {
   common = grub-core/kern/emu/argp_common.c;
   common = grub-core/osdep/init.c;
 
-  cflags = '$(FREETYPE_CFLAGS)';
+  cflags = '$(freetype_cflags)';
   cppflags = '-DGRUB_MKFONT=1';
 
   ldadd = libgrubmods.a;
   ldadd = libgrubgcry.a;
   ldadd = libgrubkern.a;
   ldadd = grub-core/gnulib/libgnu.a;
-  ldadd = '$(FREETYPE_LIBS)';
+  ldadd = '$(freetype_libs)';
   ldadd = '$(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM)';
   condition = COND_GRUB_MKFONT;
-};
-
-program = {
-  name = grub-mkdevicemap;
-  installdir = sbin;
-  mansection = 8;
-
-  common = util/grub-mkdevicemap.c;
-  common = util/deviceiter.c;
-  common = util/devicemap.c;
-  common = grub-core/osdep/init.c;
-
-  ldadd = libgrubmods.a;
-  ldadd = libgrubgcry.a;
-  ldadd = libgrubkern.a;
-  ldadd = grub-core/gnulib/libgnu.a;
-  ldadd = '$(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM)';
 };
 
 program = {
@@ -506,12 +489,6 @@ script = {
 script = {
   name = '30_os-prober';
   common = util/grub.d/30_os-prober.in;
-  installdir = grubconf;
-};
-
-script = {
-  name = '30_uefi-firmware';
-  common = util/grub.d/30_uefi-firmware.in;
   installdir = grubconf;
 };
 

@@ -46,9 +46,7 @@ int main(int argc, char **argv)
     }
 
   of_path = grub_util_devname_to_ofpath (argv[1]);
-
-  if (of_path)
-    printf ("%s\n", of_path);
+  printf("%s\n", of_path);
 
   free (of_path);
 
