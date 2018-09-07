@@ -78,20 +78,19 @@ get_ofpathname (const char *dev)
 		   dev);
 }
 
-static int
+static void
 grub_install_remove_efi_entries_by_distributor (const char *efi_distributor)
 {
   int fd;
   pid_t pid = grub_util_exec_pipe ((const char * []){ "efibootmgr", NULL }, &fd);
   char *line = NULL;
   size_t len = 0;
-  int error = 0;
 
   if (!pid)
     {
       grub_util_warn (_("Unable to open stream from %s: %s"),
 		      "efibootmgr", strerror (errno));
-      return errno;
+      return;
     }
 
   FILE *fp = fdopen (fd, "r");
@@ -99,7 +98,7 @@ grub_install_remove_efi_entries_by_distributor (const char *efi_distributor)
     {
       grub_util_warn (_("Unable to open stream from %s: %s"),
 		      "efibootmgr", strerror (errno));
-      return errno;
+      return;
     }
 
   line = xmalloc (80);
@@ -120,25 +119,23 @@ grub_install_remove_efi_entries_by_distributor (const char *efi_distributor)
       bootnum = line + sizeof ("Boot") - 1;
       bootnum[4] = '\0';
       if (!verbosity)
-	error = grub_util_exec ((const char * []){ "efibootmgr", "-q",
+	grub_util_exec ((const char * []){ "efibootmgr", "-q",
 	      "-b", bootnum,  "-B", NULL });
       else
-	error = grub_util_exec ((const char * []){ "efibootmgr",
+	grub_util_exec ((const char * []){ "efibootmgr",
 	      "-b", bootnum, "-B", NULL });
     }
 
   free (line);
-  return error;
 }
 
-int
+void
 grub_install_register_efi (grub_device_t efidir_grub_dev,
 			   const char *efifile_path,
 			   const char *efi_distributor)
 {
   const char * efidir_disk;
   int efidir_part;
-  int error = 0;
   efidir_disk = grub_util_biosdisk_get_osdev (efidir_grub_dev->disk);
   efidir_part = efidir_grub_dev->disk->partition ? efidir_grub_dev->disk->partition->number + 1 : 1;
 
@@ -154,26 +151,23 @@ grub_install_register_efi (grub_device_t efidir_grub_dev,
   grub_util_exec ((const char * []){ "modprobe", "-q", "efivars", NULL });
 #endif
   /* Delete old entries from the same distributor.  */
-  error = grub_install_remove_efi_entries_by_distributor (efi_distributor);
-  if (error)
-    return error;
+  grub_install_remove_efi_entries_by_distributor (efi_distributor);
 
   char *efidir_part_str = xasprintf ("%d", efidir_part);
 
   if (!verbosity)
-    error = grub_util_exec ((const char * []){ "efibootmgr", "-q",
+    grub_util_exec ((const char * []){ "efibootmgr", "-q",
 	  "-c", "-d", efidir_disk,
 	  "-p", efidir_part_str, "-w",
 	  "-L", efi_distributor, "-l", 
 	  efifile_path, NULL });
   else
-    error = grub_util_exec ((const char * []){ "efibootmgr",
+    grub_util_exec ((const char * []){ "efibootmgr",
 	  "-c", "-d", efidir_disk,
 	  "-p", efidir_part_str, "-w",
 	  "-L", efi_distributor, "-l", 
 	  efifile_path, NULL });
   free (efidir_part_str);
-  return error;
 }
 
 void
@@ -218,29 +212,13 @@ grub_install_register_ieee1275 (int is_prep, const char *install_device,
   else
     boot_device = get_ofpathname (install_device);
 
-  if (strcmp (grub_install_get_default_powerpc_machtype (), "chrp_ibm") == 0)
+  if (grub_util_exec ((const char * []){ "nvsetenv", "boot-device",
+	  boot_device, NULL }))
     {
-      char *arg = xasprintf ("boot-device=%s", boot_device);
-      if (grub_util_exec ((const char * []){ "nvram",
-	  "--update-config", arg, NULL }))
-	{
-	  char *cmd = xasprintf ("setenv boot-device %s", boot_device);
-	  grub_util_error (_("`nvram' failed. \nYou will have to set `boot-device' variable manually.  At the IEEE1275 prompt, type:\n  %s\n"),
-			   cmd);
-	  free (cmd);
-	}
-      free (arg);
-    }
-  else
-    {
-      if (grub_util_exec ((const char * []){ "nvsetenv", "boot-device",
-	      boot_device, NULL }))
-	{
-	  char *cmd = xasprintf ("setenv boot-device %s", boot_device);
-	  grub_util_error (_("`nvsetenv' failed. \nYou will have to set `boot-device' variable manually.  At the IEEE1275 prompt, type:\n  %s\n"),
-			   cmd);
-	  free (cmd);
-	}
+      char *cmd = xasprintf ("setenv boot-device %s", boot_device);
+      grub_util_error (_("`nvsetenv' failed. \nYou will have to set `boot-device' variable manually.  At the IEEE1275 prompt, type:\n  %s\n"),
+		       cmd);
+      free (cmd);
     }
 
   free (boot_device);

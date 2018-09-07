@@ -23,10 +23,6 @@
 
 #define MSG "printf test failed: %s, %s", real, expected
 
-#if defined(__GNUC__) && __GNUC__ >= 7
-#pragma GCC diagnostic ignored "-Wformat-truncation="
-#endif
-
 static void
 printf_test (void)
 {
