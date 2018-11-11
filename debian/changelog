@@ -1,3 +1,46 @@
+grub2 (2.02+dfsg1-8parrot1) testing; urgency=medium
+
+  * Import new Debian release.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 11 Nov 2018 06:14:08 +0100
+
+grub2 (2.02+dfsg1-8) unstable; urgency=medium
+
+  * Revise grub-<platform>-bin and grub-<platform> package descriptions to
+    try to explain better how they fit together and which one should be used
+    (based loosely on work by Justin B Rye, for which thanks; closes:
+    #630224).
+  * Skip flaky grub_cmd_set_date test (closes: #906470).
+  * Work around bug in obsolete init-select package: add Conflicts/Replaces
+    from grub-common, and take over /etc/default/grub.d/init-select.cfg with
+    a no-op stub (thanks to Guillem Jover for the suggestion; closes:
+    #863801).
+  * Build-depend on dosfstools and mtools on non-Linux variants of
+    i386/amd64/arm64 as well, to match debian/rules.
+  * Cherry-pick from upstream:
+    - i386/linux: Add support for ext_lfb_base (LP: #1785033).
+  * Don't source /etc/default/grub.d/*.cfg in config maintainer scripts,
+    since otherwise we incorrectly merge settings from there into
+    /etc/default/grub (closes: #872637, LP: #1797894).
+  * Add xfs module to signed UEFI images (closes: #911147, LP: #1652822).
+  * Cope with / being on a ZFS root dataset (closes: #886178).
+
+  [ Debconf translations ]
+  * [sv] Swedish (Martin Bagge and Anders Jonsson; closes: #851964).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 29 Oct 2018 13:02:08 +0000
+
+grub2 (2.02+dfsg1-7) unstable; urgency=medium
+
+  * Move kernel maintainer script snippets into grub2-common (thanks,
+    Bastian Blank; closes: #910959).
+  * Add cryptodisk and gcry_* modules to signed UEFI images (closes:
+    #908162, LP: #1565950).
+  * Remove dh_builddeb override to use xz compression; this has been the
+    default since dpkg 1.17.0.
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 27 Oct 2018 13:06:32 +0100
+
 grub2 (2.02+dfsg1-6parrot1) testing; urgency=medium
 
   * Import new Kali release to fix https://bugs.debian.org/908200
@@ -221,7 +264,7 @@ grub2 (2.02~beta3-3) unstable; urgency=medium
   * debian/control: Breaks shim (<< 0.9+1474479173.6c180c6-0ubuntu1~) due to
     the renamed binaries in the new shim.
   * debian/postinst.in: call on to update-secureboot-policy on configure to
-    make sure users can disable shim validation if necessary. 
+    make sure users can disable shim validation if necessary.
   * debian/build-efi-images: add loopback and squash4 modules to the signed
     EFI images.
 
@@ -1441,7 +1484,7 @@ grub2 (1.99-18) unstable; urgency=low
     - Make FAT UUID uppercase to match Linux (LP: #948716).
 
   [ Debconf translations ]
-  * Norwegian Bokmål (Hans Fredrik Nordhaug). 
+  * Norwegian Bokmål (Hans Fredrik Nordhaug).
   * Gujarati (Kartik Mistry).  Closes: #663542
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 19 Mar 2012 18:24:33 +0000
@@ -1483,7 +1526,7 @@ grub2 (1.99-15) unstable; urgency=low
   [ Debconf translations ]
   * Dutch (Jeroen Schot).  Closes: #651275
   * Bulgarian (Damyan Ivanov).  Closes: #653356
-  * Icelandic (Sveinn í Felli). 
+  * Icelandic (Sveinn í Felli).
   * Ukrainian (Yatsenko Alexandr).  Closes: #654294
   * Italian (Luca Monducci).  Closes: #654304
   * Thai (Theppitak Karoonboonyanan).  Closes: #656551
@@ -1494,7 +1537,7 @@ grub2 (1.99-15) unstable; urgency=low
   * Polish (Michał Kułach).  Closes: #657265
   * Asturian (Mikel González).
   * Dzongkha (Dawa Pemo)
-  * Tamil (Dr.T.Vasudevan). 
+  * Tamil (Dr.T.Vasudevan).
   * Belarusian (Viktar Siarhiejczyk).  Closes: #662615
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 05 Mar 2012 16:58:01 +0000
@@ -2894,7 +2937,7 @@ grub2 (1.98~20091229-1) unstable; urgency=high
 grub2 (1.98~20091222-1) unstable; urgency=low
 
   * New Baazar snapshot.
-    - Make 30_os-prober again dash compatible. (Closes: #562034) 
+    - Make 30_os-prober again dash compatible. (Closes: #562034)
 
  -- Felix Zielcke <fzielcke@z-51.de>  Tue, 22 Dec 2009 12:50:57 +0100
 
@@ -2919,7 +2962,7 @@ grub2 (1.98~20091210-1) unstable; urgency=low
 grub2 (1.97+20091210-1) unstable; urgency=low
 
   * New Bazaar snapshot.
-    - patches/02_fix_mountpoints_in_mkrelpath.diff: Remove (merged). 
+    - patches/02_fix_mountpoints_in_mkrelpath.diff: Remove (merged).
     - Fixes FTBFS on powerpc (again) and sparc.
     - patches/903_grub_legacy_0_based_partitions.diff: Resync (merged into
       debian branch).
@@ -3007,7 +3050,7 @@ grub2 (1.97+20091115-1) unstable; urgency=low
   * patches/906_grub_extras.diff: Remove. Superseded by GRUB_CONTRIB variable
     in recent upstream trunk.
   * rules: Export GRUB_CONTRIB to enable grub-extras add-ons.
-  * Pass --force to grub-install in the postinst. (Closes: #553415) 
+  * Pass --force to grub-install in the postinst. (Closes: #553415)
   * Don't strip debug symbols from grub-emu. It's meant for debugging
     and with them it's much more useful.
   * Ship grub-mkfloppy in grub-pc.
@@ -3250,7 +3293,7 @@ grub2 (1.96+20090808-1) unstable; urgency=low
     also disable UUIDs on LVM over RAID.
   * Add a debconf prompt to remove all grub2 files from /boot/grub on
     purge. (Closes: #527068, #470400)
-  * Move the Suggests: os-prober from grub-pc to grub-common. 
+  * Move the Suggests: os-prober from grub-pc to grub-common.
   * patches/901_dpkg_version_comparison.diff: Updated.
   * Update the Replaces on grub-common for the other packages to (<<
     1.96+20080831-1). (Closes: #540492)
@@ -3438,7 +3481,7 @@ grub2 (1.96+20090609-1) experimental; urgency=low
   * Add kopensolaris-i386 to arch list.
 
   [ Felix Zielcke ]
-  * Add a NEWS entry about the grub-efi split. 
+  * Add a NEWS entry about the grub-efi split.
   * Drop the build dependency on gcc-multilib for all *i386.
   * Change upgrade-from-grub-legacy to use `dpkg-reconfigure grub-pc' to
     install grub2 into MBR.
@@ -4592,7 +4635,7 @@ grub2 (1.94-4) unstable; urgency=low
     native building.
   * Remove convert_kernel26 usage since it's not necessary anymore and due
     initramfs-tools changes it's bug too.
-  
+
   [ Robert Millan ]
   * Fork update-grub from grub legacy, and tweak a few commands in output to
     make it work for grub2.
@@ -4626,7 +4669,7 @@ grub2 (1.94-1) unstable; urgency=low
   * New upstream release.
     - Fix powerpc building. Closes: #370259
     - 01_fix_grub-install.patch: merged upstream.
-    - Moved modules to /usr/lib/grub since they are architecture 
+    - Moved modules to /usr/lib/grub since they are architecture
       dependent.
   * Leave CDBS set debhelper compatibility level.
   * Allow amd64 build to happen. Closes: #364956
@@ -4662,8 +4705,8 @@ grub2 (1.92-1) unstable; urgency=low
     - Add support for Apple HFS+ filesystems.
   * 01_fix_grub-install.patch: Added. Fix grub-install to use
     /bin/grub-mkimage instead of /sbin/grub-mkimage. Closes: #338824
-  * Do not use CDBS tarball mode anymore. Closes: #344272  
-  
+  * Do not use CDBS tarball mode anymore. Closes: #344272
+
  -- Otavio Salvador <otavio@debian.org>  Thu,  5 Jan 2006 15:20:40 -0200
 
 grub2 (1.91-0) unstable; urgency=low
