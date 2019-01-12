@@ -1,3 +1,31 @@
+grub2 (2.02+dfsg1-9parrot1) testing; urgency=medium
+
+  * Import new Debian release.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 12 Jan 2019 02:18:20 +0100
+
+grub2 (2.02+dfsg1-9) unstable; urgency=medium
+
+  [ Colin Watson ]
+  * Sync Maintainer/Uploaders in debian/signing-template/control.in with the
+    main packaging.
+  * Tell reportbug to submit bug reports against unsigned packages rather
+    than generated signed packages.
+  * Update Homepage, debian/copyright Source, and debian/watch to use HTTPS.
+  * Move bash completions to /usr/share/bash-completion/completions/grub and
+    add appropriate symlinks (closes: #912852).
+  * Build with GCC 8 (closes: #915735).
+
+  [ Leif Lindholm ]
+  * Apply patch series (mostly) from upstream to switch the arm loader over
+    to use the arm64 loader code and improve arm/arm64 initrd handling
+    (closes: #907596, #909420, #915091).
+
+  [ Matthew Garrett ]
+  * Don't enforce Shim signature validation if Secure Boot is disabled.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 07 Dec 2018 10:38:37 +0000
+
 grub2 (2.02+dfsg1-8parrot1) testing; urgency=medium
 
   * Import new Debian release.

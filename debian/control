@@ -13,8 +13,8 @@ Build-Depends: debhelper (>= 7.4.2~),
  po-debconf,
  help2man,
  texinfo,
- gcc-7,
- gcc-7-multilib [i386 kopensolaris-i386 any-amd64 any-ppc64 any-sparc],
+ gcc-8,
+ gcc-8-multilib [i386 kopensolaris-i386 any-amd64 any-ppc64 any-sparc],
  xfonts-unifont,
  libfreetype6-dev,
  gettext,
@@ -33,9 +33,10 @@ Build-Depends: debhelper (>= 7.4.2~),
  wamerican,
  libparted-dev [any-powerpc any-ppc64 any-ppc64el],
  pkg-config,
+ bash-completion,
 Build-Conflicts: autoconf2.13, libzfs-dev, libnvpair-dev
 Standards-Version: 3.9.6
-Homepage: http://www.gnu.org/software/grub/
+Homepage: https://www.gnu.org/software/grub/
 Vcs-Git: https://salsa.debian.org/grub-team/grub.git
 Vcs-Browser: https://salsa.debian.org/grub-team/grub
 
