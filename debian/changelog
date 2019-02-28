@@ -1,3 +1,41 @@
+grub2 (2.02+dfsg1-11parrot1) testing; urgency=medium
+
+  * Import new Debian release.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 28 Feb 2019 14:40:16 +0100
+
+grub2 (2.02+dfsg1-11) unstable; urgency=medium
+
+  [ Colin Watson ]
+  * Apply patches from Alexander Graf to set arm64-efi code offset to
+    EFI_PAGE_SIZE (closes: #919012, LP: #1812317).
+  * Upgrade to debhelper v10.
+  * Set Rules-Requires-Root: no.
+  * Add help and ls modules to signed UEFI images (closes: #919955).
+  * Fix application of answers from dpkg-reconfigure to /etc/default/grub
+    (based loosely on a patch by Steve Langasek, for which thanks; closes:
+    #921702).
+
+  [ Steve McIntyre ]
+  * Make grub-efi-amd64-signed recommend shim-signed (closes: #919067).
+
+  [ Jeroen Dekkers ]
+  * Initialize keyboard in at_keyboard module init if keyboard is ready
+    (closes: #741464).
+
+  [ John Paul Adrian Glaubitz ]
+  * Include a.out header in assembly of sparc64 boot loader (closes:
+    #921249).
+
+  [ Hervé Werner ]
+  * Fix setup on Secure Boot systems where cryptodisk is in use (closes:
+    #917117).
+
+  [ Debconf translations ]
+  * [de] German (Helge Kreutzmann and Holger Wansing; closes: #921018).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 10 Feb 2019 18:53:41 +0000
+
 grub2 (2.02+dfsg1-10parrot1) parrot; urgency=medium
 
   * Import new Debian and Kali updates.
