@@ -1,3 +1,47 @@
+grub2 (2.02+dfsg1-13parrot1) parrot; urgency=medium
+
+  * Import new Debian release.
+  * Include patch for failover boot options (disable acpi, disable nouveau).
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 20 Mar 2019 13:29:56 +0100
+
+grub2 (2.02+dfsg1-13) unstable; urgency=medium
+
+  * Add regexp module to signed UEFI images.
+  * debian/signing-template.json.in: Use new extendable format.
+
+  [ Debconf translations ]
+  * [nb] Norwegian Bokmål (Petter Reinholdtsen; closes: #924326).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 14 Mar 2019 10:33:24 +0000
+
+grub2 (2.02+dfsg1-12) unstable; urgency=medium
+
+  [ Colin Watson ]
+  * Remove code to migrate grub-pc/install_devices to persistent device
+    names under /dev/disk/by-id/.  This migration happened in
+    1.98+20100702-1, which was in squeeze (four stable releases ago), so we
+    no longer need to carry around this complex code.
+  * Preserve previous answer to grub-pc/install_devices if we have to ask
+    grub-pc/install_devices_disks_changed and the user chooses not to
+    install to any devices, so that we can recover from temporary bugs that
+    cause /dev/disk/by-id/ paths to change (closes: #919029).
+  * debian/signing-template.json.in: Add trusted_certs key (empty, since
+    GRUB has no hardcoded list of trusted certificates).
+  * util: Detect more I/O errors (closes: #922741).
+
+  [ Leif Lindholm ]
+  * arm64/efi: Fix grub_efi_get_ram_base().
+
+  [ Steve McIntyre ]
+  * grub-install: Check for arm-efi as a default target (closes: #922104).
+
+  [ James Clarke ]
+  * osdep/freebsd: Fix partition calculation for EBR entries (closes:
+    #923253).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 01 Mar 2019 12:34:45 +0000
+
 grub2 (2.02+dfsg1-11parrot1) testing; urgency=medium
 
   * Import new Debian release.
