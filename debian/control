@@ -32,6 +32,8 @@ Build-Depends: debhelper (>= 10~),
  libparted-dev [any-powerpc any-ppc64 any-ppc64el],
  pkg-config,
  bash-completion,
+ libefiboot-dev [any-i386 any-amd64 any-ia64 any-arm any-arm64],
+ libefivar-dev [any-i386 any-amd64 any-ia64 any-arm any-arm64],
 Build-Conflicts: autoconf2.13, libzfs-dev, libnvpair-dev
 Standards-Version: 3.9.6
 Homepage: https://www.gnu.org/software/grub/
@@ -244,7 +246,7 @@ Description: GRand Unified Bootloader, version 2 (Coreboot version)
 
 Package: grub-efi-ia32-bin
 Architecture: any-i386 any-amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version}), efibootmgr [linux-any]
+Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version})
 Conflicts: grub-efi-ia32-signed,
 Replaces: grub2 (<< ${source:Version}), grub-common (<= 1.97~beta2-1), grub-efi, grub-efi-ia32 (<< 1.99-1)
 Multi-Arch: foreign
@@ -305,7 +307,7 @@ Description: GRand Unified Bootloader, version 2 (EFI-IA32 signing template)
 
 Package: grub-efi-amd64-bin
 Architecture: i386 kopensolaris-i386 any-amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version}), efibootmgr [linux-any]
+Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version})
 Conflicts: grub-efi-amd64-signed,
 Replaces: grub2 (<< ${source:Version}), grub-common (<= 1.97~beta2-1), grub-efi-amd64 (<< 1.99-1)
 Multi-Arch: foreign
@@ -415,7 +417,7 @@ Description: GRand Unified Bootloader, version 2 (IA64 version)
 
 Package: grub-efi-arm-bin
 Architecture: any-arm
-Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version}), efibootmgr [linux-any]
+Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version})
 Multi-Arch: foreign
 XB-Efi-Vendor: ${efi:Vendor}
 Description: GRand Unified Bootloader, version 2 (ARM UEFI modules)
@@ -465,7 +467,7 @@ Description: GRand Unified Bootloader, version 2 (ARM UEFI version)
 
 Package: grub-efi-arm64-bin
 Architecture: any-arm64
-Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version}), efibootmgr [linux-any]
+Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version})
 Conflicts: grub-efi-arm64-signed,
 Multi-Arch: foreign
 XB-Efi-Vendor: ${efi:Vendor}
