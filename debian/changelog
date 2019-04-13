@@ -1,3 +1,9 @@
+grub2 (2.02+dfsg1-16parrot2) testing; urgency=medium
+
+  * Import failsafe options patch from precedent parrot version.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 13 Apr 2019 19:31:31 +0200
+
 grub2 (2.02+dfsg1-16parrot1) testing; urgency=medium
 
   * Import new Debian release.
