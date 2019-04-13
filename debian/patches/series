@@ -134,3 +134,4 @@ util-check-errors.patch
 xfs-sparse-inodes.patch
 vsnprintf-upper-case-hex.patch
 efi-variable-storage-minimise-writes.patch
+add-failsafe-boot-options.patch
