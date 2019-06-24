@@ -1,3 +1,24 @@
+grub2 (2.02+dfsg1-19parrot1) testing; urgency=medium
+
+  * Import new Debian release.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 24 Jun 2019 22:58:21 +0200
+
+grub2 (2.02+dfsg1-19) unstable; urgency=medium
+
+  [ Colin Watson ]
+  * Fix format of debian/copyright.
+
+  [ Steve McIntyre ]
+  * Add the ntfs module to signed UEFI images. Closes: #923855
+  * Add the cpuid module to signed UEFI images. Closes: #928628
+  * Add the play module to signed UEFI images. Closes: #930290
+  * Add an extra di-specific version of the UEFI netboot image with a
+    different baked-in prefix value. Helps to fix #928750.
+  * Deal with --force-extra-removable with signed shim too. Closes: #930531
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 14 Jun 2019 19:04:01 +0100
+
 grub2 (2.02+dfsg1-18parrot2) testing; urgency=medium
 
   * Re-include Parrot failsafe boot options.
