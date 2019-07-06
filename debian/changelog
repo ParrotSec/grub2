@@ -1,3 +1,20 @@
+grub2 (2.02+dfsg1-20parrot1) parrot; urgency=medium
+
+  * Import new Debian release.
+  * Add Conflicts relation between grub-efi-$arch-bin grub-efi-$arch-signed.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 07 Jul 2019 01:04:08 +0200
+
+grub2 (2.02+dfsg1-20) unstable; urgency=medium
+
+  [ Steve McIntyre ]
+  * Make all the signed EFI arches have a Recommends: from
+    grub-efi-ARCH-signed to shim-signed, not just amd64.
+    Closes: #931038
+  * Add myself to Uploaders
+
+ -- Steve McIntyre <93sam@debian.org>  Tue, 25 Jun 2019 10:11:12 +0100
+
 grub2 (2.02+dfsg1-19parrot1) testing; urgency=medium
 
   * Import new Debian release.

@@ -2,8 +2,7 @@ Source: grub2
 Section: admin
 Priority: optional
 XSBC-Original-Maintainer: GRUB Maintainers <pkg-grub-devel@alioth-lists.debian.net>
-Maintainer: Parrot Dev Team <team@parrotsec.org>
-Uploaders: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
+Maintainer: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
 Build-Depends: debhelper (>= 10~),
  patchutils,
  python,
