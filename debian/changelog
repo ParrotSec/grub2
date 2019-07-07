@@ -1,3 +1,10 @@
+grub2 (2.02+dfsg1-20devuan1) beowulf; urgency=medium
+
+  * Import new Debian release.
+  * Add Conflicts relation between grub-efi-$arch-bin grub-efi-$arch-signed.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 07 Jul 2019 02:03:19 +0200
+
 grub2 (2.02+dfsg1-20parrot1) parrot; urgency=medium
 
   * Import new Debian release.

@@ -3,6 +3,7 @@ Section: admin
 Priority: optional
 XSBC-Original-Maintainer: GRUB Maintainers <pkg-grub-devel@alioth-lists.debian.net>
 Maintainer: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
+Uploaders: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
 Build-Depends: debhelper (>= 10~),
  patchutils,
  python,
@@ -37,8 +38,8 @@ Build-Depends: debhelper (>= 10~),
 Build-Conflicts: autoconf2.13, libzfs-dev, libnvpair-dev
 Standards-Version: 3.9.6
 Homepage: https://www.gnu.org/software/grub/
-Vcs-Git: https://nest.parrotsec.org/debian-packages/grub2
-Vcs-Browser: https://nest.parrotsec.org/debian-packages/grub2
+Vcs-Git: https://git.devuan.org/palinuro/grub2
+Vcs-Browser: https://git.devuan.org/palinuro/grub2
 Rules-Requires-Root: no
 
 Package: grub2
