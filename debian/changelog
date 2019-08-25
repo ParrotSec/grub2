@@ -1,9 +1,24 @@
-grub2 (2.02+dfsg1-20devuan1) beowulf; urgency=medium
+grub2 (2.04-2parrot1) rolling; urgency=medium
 
   * Import new Debian release.
   * Add Conflicts relation between grub-efi-$arch-bin grub-efi-$arch-signed.
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 07 Jul 2019 02:03:19 +0200
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 25 Aug 2019 15:09:39 +0200
+
+grub2 (2.04-2) unstable; urgency=medium
+
+  [ James Clarke ]
+  * Only Build-Depend on libefiboot-dev and libefivar-dev on Linux
+    architectures, since they're Linux-only.
+
+  [ Colin Watson ]
+  * Use debhelper-compat instead of debian/compat.
+  * debian/apport/source_grub2.py:
+    - Avoid star import.
+    - Fix flake8 errors.
+  * Run gentpl.py with python3.
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 03 Aug 2019 13:42:49 +0100
 
 grub2 (2.02+dfsg1-20parrot1) parrot; urgency=medium
 
