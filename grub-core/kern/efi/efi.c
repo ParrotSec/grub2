@@ -155,6 +155,15 @@ grub_efi_get_loaded_image (grub_efi_handle_t image_handle)
 }
 
 void
+grub_reboot (void)
+{
+  grub_machine_fini (GRUB_LOADER_FLAG_NORETURN);
+  efi_call_4 (grub_efi_system_table->runtime_services->reset_system,
+              GRUB_EFI_RESET_COLD, GRUB_EFI_SUCCESS, 0, NULL);
+  for (;;) ;
+}
+
+void
 grub_exit (void)
 {
   grub_machine_fini (GRUB_LOADER_FLAG_NORETURN);
@@ -318,6 +327,9 @@ grub_efi_get_filename (grub_efi_device_path_t *dp0)
   grub_size_t filesize = 0;
   grub_efi_device_path_t *dp;
 
+  if (!dp0)
+    return NULL;
+
   dp = dp0;
 
   while (1)
@@ -360,6 +372,7 @@ grub_efi_get_filename (grub_efi_device_path_t *dp0)
 	{
 	  grub_efi_file_path_device_path_t *fp;
 	  grub_efi_uint16_t len;
+	  grub_efi_char16_t *dup_name;
 
 	  *p++ = '/';
 
@@ -370,7 +383,16 @@ grub_efi_get_filename (grub_efi_device_path_t *dp0)
 	  while (len > 0 && fp->path_name[len - 1] == 0)
 	    len--;
 
-	  p = (char *) grub_utf16_to_utf8 ((unsigned char *) p, fp->path_name, len);
+	  dup_name = grub_malloc (len * sizeof (*dup_name));
+	  if (!dup_name)
+	    {
+	      grub_free (name);
+	      return NULL;
+	    }
+	  p = (char *) grub_utf16_to_utf8 ((unsigned char *) p,
+					    grub_memcpy (dup_name, fp->path_name, len * sizeof (*dup_name)),
+					    len);
+	  grub_free (dup_name);
 	}
 
       dp = GRUB_EFI_NEXT_DEVICE_PATH (dp);
@@ -800,9 +822,20 @@ grub_efi_print_device_path (grub_efi_device_path_t *dp)
 		fp = (grub_efi_file_path_device_path_t *) dp;
 		buf = grub_malloc ((len - 4) * 2 + 1);
 		if (buf)
-		  *grub_utf16_to_utf8 (buf, fp->path_name,
+		  {
+		    grub_efi_char16_t *dup_name = grub_malloc (len - 4);
+		    if (!dup_name)
+		      {
+			grub_errno = GRUB_ERR_NONE;
+			grub_printf ("/File((null))");
+			grub_free (buf);
+			break;
+		      }
+		    *grub_utf16_to_utf8 (buf, grub_memcpy (dup_name, fp->path_name, len - 4),
 				       (len - 4) / sizeof (grub_efi_char16_t))
-		    = '\0';
+		      = '\0';
+		    grub_free (dup_name);
+		  }
 		else
 		  grub_errno = GRUB_ERR_NONE;
 		grub_printf ("/File(%s)", buf);
