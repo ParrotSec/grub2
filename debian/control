@@ -38,8 +38,8 @@ Build-Depends: debhelper-compat (= 10),
 Build-Conflicts: autoconf2.13, libzfs-dev, libnvpair-dev
 Standards-Version: 3.9.6
 Homepage: https://www.gnu.org/software/grub/
-Vcs-Git: https://nest.parrotsec.org/debian-packages/grub2
-Vcs-Browser: https://nest.parrotsec.org/debian-packages/grub2
+Vcs-Git: https://nest.parrotsec.org/debian-packages/grub2.git
+Vcs-Browser: hhttps://nest.parrotsec.org/debian-packages/grub2
 Rules-Requires-Root: no
 
 Package: grub2

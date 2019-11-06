@@ -1,3 +1,19 @@
+grub2 (2.04-3parrot1) rolling-testing; urgency=medium
+
+  * Import new Debian release.
+  * Add Conflicts relation between grub-efi-$arch-bin grub-efi-$arch-signed.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 06 Nov 2019 11:31:22 +0100
+
+grub2 (2.04-3) unstable; urgency=medium
+
+  * Apply patch from James Clarke to fix BIOS Boot Partition support on
+    sparc64 (closes: #931969).
+  * Fix UEFI installation for Devuan (thanks, Ivan J.; closes: #932966).
+  * Add probe module to signed UEFI images (closes: #936082).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 30 Aug 2019 13:50:41 +0100
+
 grub2 (2.04-2parrot1) rolling; urgency=medium
 
   * Import new Debian release.
