@@ -2,7 +2,7 @@ Source: grub2
 Section: admin
 Priority: optional
 XSBC-Original-Maintainer: GRUB Maintainers <pkg-grub-devel@alioth-lists.debian.net>
-Maintainer: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
+Maintainer: Kali Developers <devel@kali.org>
 Build-Depends: debhelper-compat (= 10),
  patchutils,
  python3,
@@ -37,8 +37,8 @@ Build-Depends: debhelper-compat (= 10),
 Build-Conflicts: autoconf2.13, libzfs-dev, libnvpair-dev
 Standards-Version: 3.9.6
 Homepage: https://www.gnu.org/software/grub/
-Vcs-Git: https://nest.parrotsec.org/debian-packages/grub2
-Vcs-Browser: https://nest.parrotsec.org/debian-packages/grub2
+Vcs-Git: https://gitlab.com/kalilinux/packages/grub2.git
+Vcs-Browser: https://gitlab.com/kalilinux/packages/grub2
 Rules-Requires-Root: no
 
 Package: grub2
