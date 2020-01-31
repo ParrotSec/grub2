@@ -1,10 +1,8 @@
-grub2 (2.04-5kali1) kali-dev; urgency=medium
+grub2 (2.04-5parrot1) rolling-testing; urgency=medium
 
-  * Sync with Debian. Remaining changes:
-    - Add Conflicts relation between grub-efi-$arch-bin and
-    grub-efi-$arch-signed
+  * Import new Debian release.
 
- -- Sophie Brun <sophie@offensive-security.com>  Fri, 17 Jan 2020 18:23:25 +0100
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 31 Jan 2020 21:43:16 +0100
 
 grub2 (2.04-5) unstable; urgency=medium
 
@@ -15,13 +13,12 @@ grub2 (2.04-5) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 16 Dec 2019 15:48:45 +0000
 
-grub2 (2.04-4kali1) kali-dev; urgency=medium
+grub2 (2.04-4parrot1) rolling-testing; urgency=medium
 
-  * Sync with Debian. Remaining changes:
-    - Add Conflicts relation between grub-efi-$arch-bin and
-    grub-efi-$arch-signed
+  * Import new Debian release.
 
- -- Sophie Brun <sophie@offensive-security.com>  Tue, 26 Nov 2019 10:15:47 +0100
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 16 Dec 2019 10:15:41 +0100
+
 
 grub2 (2.04-4) unstable; urgency=medium
 
@@ -40,13 +37,12 @@ grub2 (2.04-4) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 08 Nov 2019 10:58:30 +0000
 
-grub2 (2.04-3kali1) kali-dev; urgency=medium
+grub2 (2.04-3parrot1) rolling-testing; urgency=medium
 
-  * Sync with Debian. Remaining changes:
-    - Add Conflicts relation between grub-efi-$arch-bin and
-    grub-efi-$arch-signed
+  * Import new Debian release.
+  * Add Conflicts relation between grub-efi-$arch-bin grub-efi-$arch-signed.
 
- -- Sophie Brun <sophie@offensive-security.com>  Tue, 05 Nov 2019 09:54:22 +0100
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 06 Nov 2019 11:31:22 +0100
 
 grub2 (2.04-3) unstable; urgency=medium
 
@@ -57,13 +53,12 @@ grub2 (2.04-3) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 30 Aug 2019 13:50:41 +0100
 
-grub2 (2.04-2kali1) kali-dev; urgency=medium
+grub2 (2.04-2parrot1) rolling; urgency=medium
 
-  * Sync with Debian. Remaining changes:
-    - Add Conflicts relation between grub-efi-$arch-bin and
-    grub-efi-$arch-signed
+  * Import new Debian release.
+  * Add Conflicts relation between grub-efi-$arch-bin grub-efi-$arch-signed.
 
- -- Sophie Brun <sophie@offensive-security.com>  Fri, 23 Aug 2019 17:01:36 +0200
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 25 Aug 2019 15:09:39 +0200
 
 grub2 (2.04-2) unstable; urgency=medium
 
@@ -80,74 +75,12 @@ grub2 (2.04-2) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Sat, 03 Aug 2019 13:42:49 +0100
 
-grub2 (2.04-1kali1) kali-dev; urgency=medium
+grub2 (2.02+dfsg1-20parrot1) parrot; urgency=medium
 
-  * Sync with Debian. Remaining changes:
-    - Add Conflicts relation between grub-efi-$arch-bin and
-    grub-efi-$arch-signed
+  * Import new Debian release.
+  * Add Conflicts relation between grub-efi-$arch-bin grub-efi-$arch-signed.
 
- -- Sophie Brun <sophie@offensive-security.com>  Tue, 16 Jul 2019 11:24:52 +0200
-
-grub2 (2.04-1) unstable; urgency=medium
-
-  * New upstream release.
-  * debian/upstream/signing-key.asc: Add signing key of new upstream
-    maintainer (Daniel Kiper).
-
- -- Colin Watson <cjwatson@debian.org>  Tue, 09 Jul 2019 11:48:01 +0100
-
-grub2 (2.04~rc1-3) experimental; urgency=medium
-
-  [ Will Thompson ]
-  * Fix --disable-quiet-boot.
-
-  [ Steve Langasek ]
-  * If we don't have writable grubenv and we're on EFI, always show the menu
-    (merged from Ubuntu).
-
-  [ Steve McIntyre ]
-  * Make all the signed EFI arches have a Recommends: from
-    grub-efi-ARCH-signed to shim-signed, not just amd64.
-    Closes: #931038
-  * Add myself to Uploaders
-
-  [ Colin Watson ]
-  * Squash linuxefi* patches into a single patch.
-
- -- Colin Watson <cjwatson@debian.org>  Thu, 27 Jun 2019 08:51:37 +0100
-
-grub2 (2.04~rc1-2) experimental; urgency=medium
-
-  [ Colin Watson ]
-  * debian/build-efi-images: Add tpm on x86_64-efi (thanks, Chris Coulson).
-
-  [ Steve McIntyre ]
-  * Add the ntfs module to signed UEFI images. Closes: #923855
-  * Add the cpuid module to signed UEFI images. Closes: #928628
-  * Add the play module to signed UEFI images. Closes: #930290
-  * Add an extra di-specific version of the UEFI netboot image with a
-    different baked-in prefix value. Helps to fix #928750.
-  * Deal with --force-extra-removable with signed shim too. Closes: #930531
-
- -- Colin Watson <cjwatson@debian.org>  Sat, 15 Jun 2019 09:41:19 +0100
-
-grub2 (2.04~rc1-1) experimental; urgency=medium
-
-  * New upstream release candidate.
-    - getroot: Save/restore CWD more reliably on Unix (closes: #918700).
-  * Rename patches to use "-" as a separator rather than "_" (except when
-    referring to a file, function, or command containing a "_").
-  * Fix format of debian/copyright.
-
- -- Colin Watson <cjwatson@debian.org>  Thu, 30 May 2019 16:56:05 +0100
-
-grub2 (2.02+dfsg1-20kali1) kali-dev; urgency=medium
-
-  * Sync with Debian. Remaining changes:
-    - Add Conflicts relation between grub-efi-$arch-bin and
-    grub-efi-$arch-signed
-
- -- Sophie Brun <sophie@offensive-security.com>  Wed, 03 Jul 2019 11:36:39 +0200
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 07 Jul 2019 01:04:08 +0200
 
 grub2 (2.02+dfsg1-20) unstable; urgency=medium
 
@@ -159,13 +92,11 @@ grub2 (2.02+dfsg1-20) unstable; urgency=medium
 
  -- Steve McIntyre <93sam@debian.org>  Tue, 25 Jun 2019 10:11:12 +0100
 
-grub2 (2.02+dfsg1-19kali1) kali-dev; urgency=medium
+grub2 (2.02+dfsg1-19parrot1) testing; urgency=medium
 
-  * Sync with Debian. Remaining changes:
-    - Add Conflicts relation between grub-efi-$arch-bin and
-    grub-efi-$arch-signed
+  * Import new Debian release.
 
- -- Sophie Brun <sophie@offensive-security.com>  Mon, 24 Jun 2019 14:15:14 +0200
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 24 Jun 2019 22:58:21 +0200
 
 grub2 (2.02+dfsg1-19) unstable; urgency=medium
 
@@ -182,13 +113,17 @@ grub2 (2.02+dfsg1-19) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 14 Jun 2019 19:04:01 +0100
 
-grub2 (2.02+dfsg1-18kali1) kali-dev; urgency=medium
+grub2 (2.02+dfsg1-18parrot2) testing; urgency=medium
 
-  * Sync with Debian. Remaining changes:
-    - Add Conflicts relation between grub-efi-$arch-bin and
-    grub-efi-$arch-signed
+  * Re-include Parrot failsafe boot options.
 
- -- Sophie Brun <sophie@offensive-security.com>  Mon, 13 May 2019 11:35:06 +0200
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 18 May 2019 01:04:46 +0200
+
+grub2 (2.02+dfsg1-18parrot1) testing; urgency=medium
+
+  * Import new Debian release.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 17 May 2019 14:06:24 +0200
 
 grub2 (2.02+dfsg1-18) unstable; urgency=medium
 
@@ -211,13 +146,17 @@ grub2 (2.02+dfsg1-17) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 15 Apr 2019 18:38:30 +0100
 
-grub2 (2.02+dfsg1-16kali1) kali-dev; urgency=medium
+grub2 (2.02+dfsg1-16parrot2) testing; urgency=medium
 
-  * Sync with Debian. Remaining changes:
-    - Add Conflicts relation between grub-efi-$arch-bin and
-    grub-efi-$arch-signed
+  * Import failsafe options patch from precedent parrot version.
 
- -- Sophie Brun <sophie@offensive-security.com>  Tue, 09 Apr 2019 16:16:45 +0200
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 13 Apr 2019 19:31:31 +0200
+
+grub2 (2.02+dfsg1-16parrot1) testing; urgency=medium
+
+  * Import new Debian release.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 13 Apr 2019 14:09:10 +0200
 
 grub2 (2.02+dfsg1-16) unstable; urgency=medium
 
@@ -243,13 +182,12 @@ grub2 (2.02+dfsg1-14) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Sat, 23 Mar 2019 09:47:10 +0000
 
-grub2 (2.02+dfsg1-13kali1) kali-dev; urgency=medium
+grub2 (2.02+dfsg1-13parrot1) parrot; urgency=medium
 
-  * Sync with Debian. Remaining changes:
-    - Add Conflicts relation between grub-efi-$arch-bin and
-    grub-efi-$arch-signed
+  * Import new Debian release.
+  * Include patch for failover boot options (disable acpi, disable nouveau).
 
- -- Sophie Brun <sophie@offensive-security.com>  Tue, 19 Mar 2019 09:53:52 +0100
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 20 Mar 2019 13:29:56 +0100
 
 grub2 (2.02+dfsg1-13) unstable; urgency=medium
 
@@ -288,13 +226,11 @@ grub2 (2.02+dfsg1-12) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 01 Mar 2019 12:34:45 +0000
 
-grub2 (2.02+dfsg1-11kali1) kali-dev; urgency=medium
+grub2 (2.02+dfsg1-11parrot1) testing; urgency=medium
 
-  * Sync with Debian. Remaining changes:
-    - Add Conflicts relation between grub-efi-$arch-bin and
-    grub-efi-$arch-signed
+  * Import new Debian release.
 
- -- Sophie Brun <sophie@offensive-security.com>  Wed, 27 Feb 2019 15:19:16 +0100
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 28 Feb 2019 14:40:16 +0100
 
 grub2 (2.02+dfsg1-11) unstable; urgency=medium
 
@@ -328,6 +264,12 @@ grub2 (2.02+dfsg1-11) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Sun, 10 Feb 2019 18:53:41 +0000
 
+grub2 (2.02+dfsg1-10parrot1) parrot; urgency=medium
+
+  * Import new Debian and Kali updates.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 25 Jan 2019 19:46:36 +0100
+
 grub2 (2.02+dfsg1-10kali1) kali-dev; urgency=medium
 
   * Sync with Debian. Remaining changes:
@@ -353,13 +295,11 @@ grub2 (2.02+dfsg1-10) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 11 Jan 2019 15:24:20 +0000
 
-grub2 (2.02+dfsg1-9kali1) kali-dev; urgency=medium
+grub2 (2.02+dfsg1-9parrot1) testing; urgency=medium
 
-  * Sync with Debian. Remaining changes:
-    - Add Conflicts relation between grub-efi-$arch-bin and
-    grub-efi-$arch-signed
+  * Import new Debian release.
 
- -- Sophie Brun <sophie@offensive-security.com>  Thu, 10 Jan 2019 09:35:23 +0100
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 12 Jan 2019 02:18:20 +0100
 
 grub2 (2.02+dfsg1-9) unstable; urgency=medium
 
@@ -383,13 +323,11 @@ grub2 (2.02+dfsg1-9) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 07 Dec 2018 10:38:37 +0000
 
-grub2 (2.02+dfsg1-8kali1) kali-dev; urgency=medium
+grub2 (2.02+dfsg1-8parrot1) testing; urgency=medium
 
-  * Sync with Debian. Remaining changes:
-    - Add Conflicts relation between grub-efi-$arch-bin and
-    grub-efi-$arch-signed
+  * Import new Debian release.
 
- -- Sophie Brun <sophie@freexian.com>  Tue, 06 Nov 2018 15:03:50 +0100
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 11 Nov 2018 06:14:08 +0100
 
 grub2 (2.02+dfsg1-8) unstable; urgency=medium
 
@@ -427,6 +365,14 @@ grub2 (2.02+dfsg1-7) unstable; urgency=medium
     default since dpkg 1.17.0.
 
  -- Colin Watson <cjwatson@debian.org>  Sat, 27 Oct 2018 13:06:32 +0100
+
+grub2 (2.02+dfsg1-6parrot1) testing; urgency=medium
+
+  * Import new Kali release to fix https://bugs.debian.org/908200
+    and https://bugs.kali.org/view.php?id=4956.
+    (thank you rhertzog for the fix).
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 07 Sep 2018 23:18:16 +0200
 
 grub2 (2.02+dfsg1-6kali1) kali-dev; urgency=medium
 
@@ -643,7 +589,7 @@ grub2 (2.02~beta3-3) unstable; urgency=medium
   * debian/control: Breaks shim (<< 0.9+1474479173.6c180c6-0ubuntu1~) due to
     the renamed binaries in the new shim.
   * debian/postinst.in: call on to update-secureboot-policy on configure to
-    make sure users can disable shim validation if necessary. 
+    make sure users can disable shim validation if necessary.
   * debian/build-efi-images: add loopback and squash4 modules to the signed
     EFI images.
 
@@ -1863,7 +1809,7 @@ grub2 (1.99-18) unstable; urgency=low
     - Make FAT UUID uppercase to match Linux (LP: #948716).
 
   [ Debconf translations ]
-  * Norwegian Bokmål (Hans Fredrik Nordhaug). 
+  * Norwegian Bokmål (Hans Fredrik Nordhaug).
   * Gujarati (Kartik Mistry).  Closes: #663542
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 19 Mar 2012 18:24:33 +0000
@@ -1905,7 +1851,7 @@ grub2 (1.99-15) unstable; urgency=low
   [ Debconf translations ]
   * Dutch (Jeroen Schot).  Closes: #651275
   * Bulgarian (Damyan Ivanov).  Closes: #653356
-  * Icelandic (Sveinn í Felli). 
+  * Icelandic (Sveinn í Felli).
   * Ukrainian (Yatsenko Alexandr).  Closes: #654294
   * Italian (Luca Monducci).  Closes: #654304
   * Thai (Theppitak Karoonboonyanan).  Closes: #656551
@@ -1916,7 +1862,7 @@ grub2 (1.99-15) unstable; urgency=low
   * Polish (Michał Kułach).  Closes: #657265
   * Asturian (Mikel González).
   * Dzongkha (Dawa Pemo)
-  * Tamil (Dr.T.Vasudevan). 
+  * Tamil (Dr.T.Vasudevan).
   * Belarusian (Viktar Siarhiejczyk).  Closes: #662615
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 05 Mar 2012 16:58:01 +0000
@@ -3316,7 +3262,7 @@ grub2 (1.98~20091229-1) unstable; urgency=high
 grub2 (1.98~20091222-1) unstable; urgency=low
 
   * New Baazar snapshot.
-    - Make 30_os-prober again dash compatible. (Closes: #562034) 
+    - Make 30_os-prober again dash compatible. (Closes: #562034)
 
  -- Felix Zielcke <fzielcke@z-51.de>  Tue, 22 Dec 2009 12:50:57 +0100
 
@@ -3341,7 +3287,7 @@ grub2 (1.98~20091210-1) unstable; urgency=low
 grub2 (1.97+20091210-1) unstable; urgency=low
 
   * New Bazaar snapshot.
-    - patches/02_fix_mountpoints_in_mkrelpath.diff: Remove (merged). 
+    - patches/02_fix_mountpoints_in_mkrelpath.diff: Remove (merged).
     - Fixes FTBFS on powerpc (again) and sparc.
     - patches/903_grub_legacy_0_based_partitions.diff: Resync (merged into
       debian branch).
@@ -3429,7 +3375,7 @@ grub2 (1.97+20091115-1) unstable; urgency=low
   * patches/906_grub_extras.diff: Remove. Superseded by GRUB_CONTRIB variable
     in recent upstream trunk.
   * rules: Export GRUB_CONTRIB to enable grub-extras add-ons.
-  * Pass --force to grub-install in the postinst. (Closes: #553415) 
+  * Pass --force to grub-install in the postinst. (Closes: #553415)
   * Don't strip debug symbols from grub-emu. It's meant for debugging
     and with them it's much more useful.
   * Ship grub-mkfloppy in grub-pc.
@@ -3672,7 +3618,7 @@ grub2 (1.96+20090808-1) unstable; urgency=low
     also disable UUIDs on LVM over RAID.
   * Add a debconf prompt to remove all grub2 files from /boot/grub on
     purge. (Closes: #527068, #470400)
-  * Move the Suggests: os-prober from grub-pc to grub-common. 
+  * Move the Suggests: os-prober from grub-pc to grub-common.
   * patches/901_dpkg_version_comparison.diff: Updated.
   * Update the Replaces on grub-common for the other packages to (<<
     1.96+20080831-1). (Closes: #540492)
@@ -3860,7 +3806,7 @@ grub2 (1.96+20090609-1) experimental; urgency=low
   * Add kopensolaris-i386 to arch list.
 
   [ Felix Zielcke ]
-  * Add a NEWS entry about the grub-efi split. 
+  * Add a NEWS entry about the grub-efi split.
   * Drop the build dependency on gcc-multilib for all *i386.
   * Change upgrade-from-grub-legacy to use `dpkg-reconfigure grub-pc' to
     install grub2 into MBR.
@@ -5014,7 +4960,7 @@ grub2 (1.94-4) unstable; urgency=low
     native building.
   * Remove convert_kernel26 usage since it's not necessary anymore and due
     initramfs-tools changes it's bug too.
-  
+
   [ Robert Millan ]
   * Fork update-grub from grub legacy, and tweak a few commands in output to
     make it work for grub2.
@@ -5048,7 +4994,7 @@ grub2 (1.94-1) unstable; urgency=low
   * New upstream release.
     - Fix powerpc building. Closes: #370259
     - 01_fix_grub-install.patch: merged upstream.
-    - Moved modules to /usr/lib/grub since they are architecture 
+    - Moved modules to /usr/lib/grub since they are architecture
       dependent.
   * Leave CDBS set debhelper compatibility level.
   * Allow amd64 build to happen. Closes: #364956
@@ -5084,8 +5030,8 @@ grub2 (1.92-1) unstable; urgency=low
     - Add support for Apple HFS+ filesystems.
   * 01_fix_grub-install.patch: Added. Fix grub-install to use
     /bin/grub-mkimage instead of /sbin/grub-mkimage. Closes: #338824
-  * Do not use CDBS tarball mode anymore. Closes: #344272  
-  
+  * Do not use CDBS tarball mode anymore. Closes: #344272
+
  -- Otavio Salvador <otavio@debian.org>  Thu,  5 Jan 2006 15:20:40 -0200
 
 grub2 (1.91-0) unstable; urgency=low
@@ -5185,3 +5131,4 @@ pupa (0.6+20030915-1) unstable; urgency=low
   * Initial Release. (Closes: #211030)
 
  -- Robert Millan <rmh@debian.org>  Mon, 15 Sep 2003 14:58:42 +0000
+
