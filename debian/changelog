@@ -1,3 +1,45 @@
+grub2 (2.04-7parrot1) rolling; urgency=medium
+
+  * Import new Debian release.
+  * Include Parrot patches.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 31 May 2020 03:48:13 +0200
+
+grub2 (2.04-7) unstable; urgency=medium
+
+  [ Christian Göttsche ]
+  * Create grub default configuration with default SELinux context.
+
+  [ Steve McIntyre ]
+  * In the signed packages, change the version dependency on
+    grub-common to be >= and not =. This will allow for installation
+    in unstable to still work in the window while we wait for the
+    template package to do its second trip through the archive.
+  * Tweak the build-dep architecture listing for libefiboot-dev and
+    libefivar-dev. The linux-* wildcards don't work in the way
+    expected, and were missing out (at least) armhf and armel.
+    Closes: #958461
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 22 Apr 2020 14:52:13 +0100
+
+grub2 (2.04-6) unstable; urgency=medium
+
+  [ Romain Perier ]
+  * Add f2fs module to signed UEFI images
+
+  [ Steve McIntyre ]
+  * Add jfs module to signed UEFI images. Closes: #950959
+
+  [ Colin Watson ]
+  * Drop mkconfig-mid-upgrade.patch; it was only needed for upgrades from
+    GRUB 1.99 (now a long time ago) and can inappropriately hide problems
+    when /etc/grub.d/00_header should have been updated but wasn't (closes:
+    #953201).
+  * Cherry-pick from upstream:
+    - btrfs: Add support for new RAID1C34 profiles (closes: #958236).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 20 Apr 2020 01:03:08 +0100
+
 grub2 (2.04-5parrot1) rolling-testing; urgency=medium
 
   * Import new Debian release.

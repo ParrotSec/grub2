@@ -2,8 +2,7 @@ Source: grub2
 Section: admin
 Priority: optional
 XSBC-Original-Maintainer: GRUB Maintainers <pkg-grub-devel@alioth-lists.debian.net>
-Maintainer: Parrot Dev Team <team@parrotsec.org>
-Uploaders: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
+Maintainer: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
 Build-Depends: debhelper-compat (= 10),
  patchutils,
  python3,
@@ -33,13 +32,13 @@ Build-Depends: debhelper-compat (= 10),
  libparted-dev [any-powerpc any-ppc64 any-ppc64el],
  pkg-config,
  bash-completion,
- libefiboot-dev [linux-i386 linux-amd64 linux-ia64 linux-arm linux-arm64],
- libefivar-dev [linux-i386 linux-amd64 linux-ia64 linux-arm linux-arm64],
+ libefiboot-dev [i386 amd64 ia64 x32 armel armhf arm64],
+ libefivar-dev [i386 amd64 ia64 x32 armel armhf arm64],
 Build-Conflicts: autoconf2.13, libzfs-dev, libnvpair-dev
 Standards-Version: 3.9.6
 Homepage: https://www.gnu.org/software/grub/
-Vcs-Git: https://nest.parrot.sh/packages/debian/grub2.git
-Vcs-Browser: https://nest.parrot.sh/packages/debian/grub2
+Vcs-Git: https://nest.parrotsec.org/packages/debian/grub2
+Vcs-Browser: https://nest.parrotsec.org/packages/debian/grub2
 Rules-Requires-Root: no
 
 Package: grub2
