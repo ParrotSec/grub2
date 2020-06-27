@@ -1,3 +1,29 @@
+grub2 (2.04-8parrot1) rolling; urgency=medium
+
+  * Import new Debian release.
+  * igrate Parrot patches.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 27 Jun 2020 12:19:33 +0200
+
+grub2 (2.04-8) unstable; urgency=medium
+
+  [ Vincent Lefevre ]
+  * Fix typos in /etc/grub.d/05_debian_theme. Closes: #959484
+
+  [ Fabian Greffrath ]
+  * Change font dependency to fonts-dejavu-core. Closes: #912846
+
+  [ Colin Watson ]
+  * Cherry-pick from upstream:
+    - templates/20_linux_xen: Ignore xenpolicy and config files too.
+    - templates/20_linux_xen: Support Xen Security Modules (XSM/FLASK).
+
+  [ Ian Jackson ]
+  * 20_linux_xen: Do not load XSM policy in non-XSM options (closes:
+    #961673).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 07 Jun 2020 10:06:37 +0100
+
 grub2 (2.04-7parrot1) rolling; urgency=medium
 
   * Import new Debian release.
