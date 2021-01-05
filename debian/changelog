@@ -1,3 +1,84 @@
+grub2 (2.04-11parrot1) rolling-testing; urgency=medium
+
+  * Import new Debian release.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Tue, 05 Jan 2021 23:59:57 +0100
+
+grub2 (2.04-11) unstable; urgency=medium
+
+  * grub-install: Fix backup restoration on i386.
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 06 Dec 2020 18:29:51 +0000
+
+grub2 (2.04-10) unstable; urgency=medium
+
+  [ Ian Campbell ]
+  * Remove myself from uploaders.
+
+  [ Colin Watson ]
+  * When upgrading grub-pc noninteractively, bail out if grub-install fails.
+    It's better to fail the upgrade than to produce a possibly-unbootable
+    system.
+  * Explicitly check whether the target device exists before running
+    grub-install, since grub-install copies modules to /boot/grub/ before
+    installing the core image, and the new modules might be incompatible
+    with the old core image (closes: #966575).
+  * Cherry-pick from upstream:
+    - tftp: Roll-over block counter to prevent data packets timeouts
+      (LP: #1892290).
+
+  [ Dimitri John Ledkov ]
+  * grub-install: Add backup and restore.
+  * Don't call grub-install on fresh install of grub-pc.  It's the job of
+    installers to do that after a fresh install.
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 08 Nov 2020 16:26:08 +0000
+
+grub2 (2.04-9) unstable; urgency=high
+
+  * Backport security patch series from upstream:
+    - CVE-2020-10713: yylex: Make lexer fatal errors actually be fatal
+    - safemath: Add some arithmetic primitives that check for overflow
+    - calloc: Make sure we always have an overflow-checking calloc()
+      available
+    - CVE-2020-14308: calloc: Use calloc() at most places
+    - CVE-2020-14309, CVE-2020-14310, CVE-2020-14311: malloc: Use overflow
+      checking primitives where we do complex allocations
+    - iso9660: Don't leak memory on realloc() failures
+    - font: Do not load more than one NAME section
+    - gfxmenu: Fix double free in load_image()
+    - xnu: Fix double free in grub_xnu_devprop_add_property()
+    - lzma: Make sure we don't dereference past array
+    - term: Fix overflow on user inputs
+    - udf: Fix memory leak
+    - multiboot2: Fix memory leak if grub_create_loader_cmdline() fails
+    - tftp: Do not use priority queue
+    - relocator: Protect grub_relocator_alloc_chunk_addr() input args
+      against integer underflow/overflow
+    - relocator: Protect grub_relocator_alloc_chunk_align() max_addr against
+      integer underflow
+    - script: Remove unused fields from grub_script_function struct
+    - CVE-2020-15706: script: Avoid a use-after-free when redefining a
+      function during execution
+    - relocator: Fix grub_relocator_alloc_chunk_align() top memory
+      allocation
+    - hfsplus: fix two more overflows
+    - lvm: fix two more potential data-dependent alloc overflows
+    - emu: make grub_free(NULL) safe
+    - efi: fix some malformed device path arithmetic errors
+    - Fix a regression caused by "efi: fix some malformed device path
+      arithmetic errors"
+    - update safemath with fallback code for gcc older than 5.1
+    - efi: Fix use-after-free in halt/reboot path
+    - linux loader: avoid overflow on initrd size calculation
+  * CVE-2020-15707: linux: Fix integer overflows in initrd size handling
+  * Apply overflow checking to allocations in Debian patches:
+    - bootp: Fix integer overflow in parse_dhcp6_option
+    - unix/config: Fix integer overflow in grub_util_load_config
+    - deviceiter: Fix integer overflow in grub_util_iterate_devices
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 29 Jul 2020 17:58:37 +0100
+
 grub2 (2.04-8parrot1) rolling; urgency=medium
 
   * Import new Debian release.
