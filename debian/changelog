@@ -1,3 +1,18 @@
+grub2 (2.04-12parrot1) rolling-testing; urgency=medium
+
+  * Import new Debian release.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@localhost.localdomain>  Sun, 17 Jan 2021 17:10:33 +0100
+
+grub2 (2.04-12) unstable; urgency=medium
+
+  * Cherry-pick from upstream:
+    - mdraid1x_linux: Fix gcc10 error -Werror=array-bounds
+    - zfs: Fix gcc10 error -Werror=zero-length-bounds
+  * Build with GCC 10 (closes: #978515).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 28 Dec 2020 22:33:23 +0000
+
 grub2 (2.04-11parrot1) rolling-testing; urgency=medium
 
   * Import new Debian release.
