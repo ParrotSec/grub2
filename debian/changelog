@@ -1,3 +1,43 @@
+grub2 (2.04-15parrot1) rolling; urgency=medium
+
+  * Import new Debian release.
+  * Add Parrot patches.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 25 Feb 2021 19:55:00 +0100
+
+grub2 (2.04-15) unstable; urgency=medium
+
+  * Demote grub-common → mtools dependency to Suggests, to go with xorriso;
+    explain the situation in the package description (closes: #982313).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 08 Feb 2021 21:39:24 +0000
+
+grub2 (2.04-14) unstable; urgency=medium
+
+  [ Raphaël Hertzog ]
+  * Extend grub-efi to also cover arm64/ia64/arm (closes: #981819).
+
+  [ Colin Watson ]
+  * Cherry-pick from upstream:
+    - grub-install: Fix inverted test for NLS enabled when copying locales
+      (closes: #979754).
+  * Fix handling of trailing commas in grub-pc/install_devices (closes:
+    #913928).
+  * Make grub-firmware-qemu Recommend/Enhance qemu-system-x86, not qemu
+    (closes: #966243).
+  * Make grub-common depend on mtools on EFI platforms, for grub-mkrescue
+    (closes: #774910).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 07 Feb 2021 15:23:51 +0000
+
+grub2 (2.04-13) unstable; urgency=medium
+
+  [ Steve McIntyre ]
+  * Switch to using the efivarfs interface for detecting "system setup"
+    (Closes: #979299)
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 06 Feb 2021 17:30:38 +0000
+
 grub2 (2.04-12parrot1) rolling-testing; urgency=medium
 
   * Import new Debian release.

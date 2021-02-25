@@ -568,8 +568,8 @@ case "$1" in
             db_go
             db_get "$question"
             failed_devices=
-            for i in `echo $RET | sed -e 's/, / /g'` ; do
-              real_device="$(readlink -f "$i")"
+            for i in $RET; do
+              real_device="$(readlink -f "${i%,}")"
               if [ ! -e "$real_device" ]; then
                 echo "$real_device does not exist, so cannot grub-install to it!" >&2
                 failed_devices="$failed_devices $real_device"

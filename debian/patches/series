@@ -98,4 +98,6 @@ grub-install-backup-and-restore.patch
 tftp-roll-over-block-counter.patch
 mdraid1x-linux-gcc-10.patch
 zfs-gcc-10.patch
+uefi-firmware-efivarfs.patch
+grub-install-inverted-nls-test.patch
 add-failsafe-boot-options.patch
