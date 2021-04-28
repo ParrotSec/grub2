@@ -100,7 +100,6 @@ mdraid1x-linux-gcc-10.patch
 zfs-gcc-10.patch
 uefi-firmware-efivarfs.patch
 grub-install-inverted-nls-test.patch
-add-failsafe-boot-options.patch
 2021-02-security/001-verifiers-Move-verifiers-API-to-kernel-image.patch
 2021-02-security/002-kern-Add-lockdown-support.patch
 2021-02-security/003-kern-lockdown-Set-a-variable-if-the-GRUB-is-locked-down.patch
@@ -214,3 +213,4 @@ add-failsafe-boot-options.patch
 2021-02-security/111-kern-misc-Add-function-to-check-printf-format-against-expected-format.patch
 2021-02-security/112-gfxmenu-gui-Check-printf-format-in-the-gui_progress_bar-and-gui_label.patch
 2021-02-security/113-kern-mm-Fix-grub_debug_calloc-compilation-error.patch
+pc-verifiers-module.patch
