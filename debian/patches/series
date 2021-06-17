@@ -214,3 +214,7 @@ grub-install-inverted-nls-test.patch
 2021-02-security/112-gfxmenu-gui-Check-printf-format-in-the-gui_progress_bar-and-gui_label.patch
 2021-02-security/113-kern-mm-Fix-grub_debug_calloc-compilation-error.patch
 pc-verifiers-module.patch
+enable_shim_lock_i386_efi.patch
+debug_verifiers.patch
+mkimage-fix-section-sizes.patch
+add-failsafe-boot-options.patch

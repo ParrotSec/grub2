@@ -150,12 +150,6 @@ case $platform in
 	cpuid
 	linuxefi
 	play
-	"
-	;;
-esac
-case $platform in
-    x86_64-efi)
-	CD_MODULES="$CD_MODULES
 	tpm
 	"
 	;;
@@ -197,6 +191,7 @@ NET_MODULES="$CD_MODULES
 	"
 
 # CD boot image
+echo "Including modules $CD_MODULES in $outdir/gcd$efi_name.efi"
 "$grub_mkimage" -O "$platform" -o "$outdir/gcd$efi_name.efi" \
 	-d "$grub_core" \
 	-c "$workdir/grub-bootstrap.cfg" -m "$workdir/memdisk.fat" \
@@ -205,12 +200,14 @@ NET_MODULES="$CD_MODULES
 	$CD_MODULES
 
 # Normal disk boot image
+echo "Including modules $GRUB_MODULES in $outdir/grub$efi_name.efi"
 "$grub_mkimage" -O "$platform" -o "$outdir/grub$efi_name.efi" \
 	-d "$grub_core" -p "/EFI/$efi_vendor" \
 	--sbat "$sbat_csv" \
 	$GRUB_MODULES
 
 # Normal network boot image
+echo "Including modules $NET_MODULES in $outdir/grubnet$efi_name.efi"
 "$grub_mkimage" -O "$platform" -o "$outdir/grubnet$efi_name.efi" \
 	-d "$grub_core" -c "$workdir/grub-bootstrap.cfg" \
 	-m "$workdir/memdisk-netboot.fat" \
@@ -221,6 +218,7 @@ NET_MODULES="$CD_MODULES
 # Special network boot image for d-i to use. Just the same as the
 # normal network boot image, but with a different value baked in for
 # the prefix setting
+echo "Including modules $NET_MODULES in $outdir/grubnet$efi_name-installer.efi"
 "$grub_mkimage" -O "$platform" -o "$outdir/grubnet$efi_name-installer.efi" \
 	-d "$grub_core" -c "$workdir/grub-bootstrap.cfg" \
 	-m "$workdir/memdisk-netboot.fat" \

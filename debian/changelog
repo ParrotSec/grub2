@@ -1,3 +1,24 @@
+grub2 (2.04-18parrot1) rolling; urgency=medium
+
+  * Import new Debian release.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 17 Jun 2021 15:51:26 +0200
+
+grub2 (2.04-18) unstable; urgency=medium
+
+  [ Steve McIntyre ]
+  * Enable the shim_lock and tpm modules for i386-efi too. Ensure that
+    tpm is included in our EFI images.
+  * List the modules we include the EFI images - make it easier to
+    debug things.
+  * Add debug to display what's going on with verifiers
+
+  [ Colin Watson ]
+  * util/mkimage: Some fixes to PE binaries section size calculation
+    (closes: #987103).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 25 Apr 2021 16:20:17 +0100
+
 grub2 (2.04-17parrot1) rolling; urgency=medium
 
   * Import new Debian release.
