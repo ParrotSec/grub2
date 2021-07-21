@@ -1,4 +1,4 @@
-From bf3df4eebccce0a9badd28a12e2f5e6b63db7471 Mon Sep 17 00:00:00 2001
+From 15f025d8d46514aa275f4d8f856ae27ec92983be Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Fri, 4 Dec 2020 15:39:00 +0000
 Subject: video/readers/jpeg: Test for an invalid next marker reference from a

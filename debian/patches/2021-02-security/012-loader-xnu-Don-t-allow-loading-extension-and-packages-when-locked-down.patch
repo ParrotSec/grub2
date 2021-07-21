@@ -1,4 +1,4 @@
-From b1e1dd4711addc53b3e6415d656c0051563c4c18 Mon Sep 17 00:00:00 2001
+From 579fdfb08b5beb582f5af909a810b893c2756aa7 Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javierm@redhat.com>
 Date: Wed, 24 Feb 2021 14:44:38 +0100
 Subject: loader/xnu: Don't allow loading extension and packages when locked

@@ -1,4 +1,4 @@
-From 20ddfae56048f98d279265a8fcd2120a9fac17fa Mon Sep 17 00:00:00 2001
+From a5390832628362676cba28ac5effd916425deb21 Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Fri, 23 Oct 2020 17:09:31 +0000
 Subject: hfsplus: Check that the volume name length is valid

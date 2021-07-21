@@ -1,4 +1,4 @@
-From f851813cda2ee0b27412a2004cbd9edbb95c94ef Mon Sep 17 00:00:00 2001
+From 8464530517649b31c3de4e6013d065617c369fc2 Mon Sep 17 00:00:00 2001
 From: Paulo Flabiano Smorigo <pfsmorigo@canonical.com>
 Date: Mon, 30 Nov 2020 10:36:00 -0300
 Subject: loader/xnu: Check if pointer is NULL before using it

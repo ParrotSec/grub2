@@ -1,4 +1,4 @@
-From fd737860d40423a412a685da0703ffcef19cee75 Mon Sep 17 00:00:00 2001
+From 4bea24b4a009bf0198c3d06cb2d8289e5fab89a1 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Thu, 21 Jan 2021 12:20:49 +1100
 Subject: io/gzio: Catch missing values in huft_build() and bail

@@ -1,4 +1,4 @@
-From ad3b3b12527a00a57102ab09f12685223fcb5d95 Mon Sep 17 00:00:00 2001
+From 37e2ad8a6bd20e1ca68e0f0e5f71d9d8247d43fc Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Wed, 21 Oct 2020 14:41:27 +0000
 Subject: gnulib/regexec: Resolve unused variable

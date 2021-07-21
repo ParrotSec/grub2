@@ -1,4 +1,4 @@
-From 60709e32e841efe3b4dabd772a4958eebf14ed85 Mon Sep 17 00:00:00 2001
+From 66a8242be0bcf211b46b5a1b9b430026b14c0463 Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Fri, 27 Nov 2020 15:10:26 +0000
 Subject: net/net: Fix possible dereference to of a NULL pointer

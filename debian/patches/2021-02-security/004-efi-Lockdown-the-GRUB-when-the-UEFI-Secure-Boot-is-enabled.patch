@@ -1,4 +1,4 @@
-From 71b48a193417240c699aec61a49c63e175bc234f Mon Sep 17 00:00:00 2001
+From 0260afe3d0b3fe07a2c55eaf3582a21a35bfd4f5 Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javierm@redhat.com>
 Date: Mon, 28 Sep 2020 20:08:29 +0200
 Subject: efi: Lockdown the GRUB when the UEFI Secure Boot is enabled

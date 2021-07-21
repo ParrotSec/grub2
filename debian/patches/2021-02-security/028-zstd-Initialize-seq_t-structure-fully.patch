@@ -1,4 +1,4 @@
-From f4eb2c3dd5d420677e731b5fb743c9fa30c8b6ad Mon Sep 17 00:00:00 2001
+From 490546975c8c2b4af277392fa5fb368fae1537d1 Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Thu, 5 Nov 2020 10:29:59 +0000
 Subject: zstd: Initialize seq_t structure fully

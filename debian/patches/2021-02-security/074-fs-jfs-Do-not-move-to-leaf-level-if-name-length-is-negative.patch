@@ -1,4 +1,4 @@
-From 4089be10fb32a07479771c3f1b2542753db51365 Mon Sep 17 00:00:00 2001
+From f89b184a61fe7710b0c4527329b12ffbc506cbd5 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Mon, 18 Jan 2021 14:51:11 +1100
 Subject: fs/jfs: Do not move to leaf level if name length is negative

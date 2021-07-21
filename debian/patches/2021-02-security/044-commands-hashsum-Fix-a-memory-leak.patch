@@ -1,4 +1,4 @@
-From e31e8ecbca790e20869cb0513d4d43f6613086f3 Mon Sep 17 00:00:00 2001
+From 073433438f69d397594d124a9ae9d7eb66c83afe Mon Sep 17 00:00:00 2001
 From: Chris Coulson <chris.coulson@canonical.com>
 Date: Tue, 1 Dec 2020 23:41:24 +0000
 Subject: commands/hashsum: Fix a memory leak

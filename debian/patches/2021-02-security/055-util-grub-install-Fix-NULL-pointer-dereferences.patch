@@ -1,4 +1,4 @@
-From 4f7bde3abeb277797b48b90b78667e4a64ce6070 Mon Sep 17 00:00:00 2001
+From a120befd1c62b560bd82380bf458048857a91638 Mon Sep 17 00:00:00 2001
 From: Daniel Kiper <daniel.kiper@oracle.com>
 Date: Thu, 25 Feb 2021 18:35:01 +0100
 Subject: util/grub-install: Fix NULL pointer dereferences
@@ -17,10 +17,10 @@ Patch-Name: 2021-02-security/055-util-grub-install-Fix-NULL-pointer-dereferences
  1 file changed, 4 insertions(+)
 
 diff --git a/util/grub-install.c b/util/grub-install.c
-index bd6d8dbb3..553e76a13 100644
+index bf34ff554..fc3389916 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
-@@ -1946,6 +1946,8 @@ main (int argc, char *argv[])
+@@ -1956,6 +1956,8 @@ main (int argc, char *argv[])
  	  fill_core_services (core_services);
  
  	  ins_dev = grub_device_open (install_drive);
@@ -29,7 +29,7 @@ index bd6d8dbb3..553e76a13 100644
  
  	  bless (ins_dev, core_services, 0);
  
-@@ -2046,6 +2048,8 @@ main (int argc, char *argv[])
+@@ -2058,6 +2060,8 @@ main (int argc, char *argv[])
  	  fill_core_services(core_services);
  
  	  ins_dev = grub_device_open (install_drive);

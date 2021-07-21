@@ -1,4 +1,4 @@
-From 149524eaa81a23611795dc1656bbeac176c16cfb Mon Sep 17 00:00:00 2001
+From 3a2c3a451bc74805c4a3b3638582388c741828f4 Mon Sep 17 00:00:00 2001
 From: Chris Coulson <chris.coulson@canonical.com>
 Date: Tue, 1 Dec 2020 23:03:39 +0000
 Subject: kern/efi: Add initial stack protector implementation
@@ -80,7 +80,7 @@ index 78cdf6e1d..6e14bb553 100644
  
  dnl Check if the C compiler supports `-mstack-arg-probe' (Cygwin).
 diff --git a/configure.ac b/configure.ac
-index fcebe364f..dc4d5f1ca 100644
+index a2d4a5d6b..887575e50 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -1297,12 +1297,41 @@ fi]

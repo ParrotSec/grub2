@@ -1,4 +1,4 @@
-From 0e5a7bb86c558a674c03e5136f3ee2b5b16d89ab Mon Sep 17 00:00:00 2001
+From 45a1b74ac317e2a8f01fad570609f3e153401662 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Mon, 18 Jan 2021 14:34:58 +1100
 Subject: fs/sfs: Fix over-read of root object name

@@ -1,4 +1,4 @@
-From 3dbfcb5631892318b9a3b470972b4b40736d46b6 Mon Sep 17 00:00:00 2001
+From c80196584b5b7256ef104ecac36c2a3f52c96fd9 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Mon, 18 Jan 2021 12:19:07 +1100
 Subject: fs/hfs: Disable under lockdown

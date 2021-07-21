@@ -1,4 +1,4 @@
-From f1d70c97b27b688b3e2b681665023e0621f330c5 Mon Sep 17 00:00:00 2001
+From fbcb8c44aa9136f9421f60d4d0bb9d055dc8c2eb Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javierm@redhat.com>
 Date: Tue, 2 Feb 2021 19:59:48 +0100
 Subject: kern/lockdown: Set a variable if the GRUB is locked down

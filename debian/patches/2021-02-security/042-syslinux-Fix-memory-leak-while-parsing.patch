@@ -1,4 +1,4 @@
-From 6d38008dd8ede3088b4db3f8786e60fa937b1685 Mon Sep 17 00:00:00 2001
+From 4b5e02f783b9108757a10bfcba3c3ace77fc85e9 Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Thu, 26 Nov 2020 15:31:53 +0000
 Subject: syslinux: Fix memory leak while parsing

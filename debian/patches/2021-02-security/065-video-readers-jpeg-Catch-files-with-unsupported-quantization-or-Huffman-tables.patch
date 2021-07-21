@@ -1,4 +1,4 @@
-From b189d92cb1a31ab16ba74ef948c93b32dcd9ea0a Mon Sep 17 00:00:00 2001
+From cb3bdacfa62e8aa5f63b2e584224ee9d7c89bb23 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Fri, 15 Jan 2021 12:57:04 +1100
 Subject: video/readers/jpeg: Catch files with unsupported quantization or

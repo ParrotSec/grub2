@@ -1,4 +1,4 @@
-From ab6d7615dceab3d75b6d7fb7510264e1e31ea393 Mon Sep 17 00:00:00 2001
+From 7ad63f14e62e04675ae6fc4ee8eac39cb49f08e2 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Wed, 13 Jan 2021 20:59:09 +1100
 Subject: io/gzio: Bail if gzio->tl/td is NULL

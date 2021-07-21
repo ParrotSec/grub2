@@ -1,4 +1,4 @@
-From b3c86349826f7d9b37a0f1204f7488118900a09c Mon Sep 17 00:00:00 2001
+From 5d3a0f0c42ef45717526a4a6ac31c220b0b77d58 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Thu, 21 Jan 2021 00:05:58 +1100
 Subject: io/gzio: Add init_dynamic_block() clean up if unpacking codes fails

@@ -1,4 +1,4 @@
-From 6a84527d486e9bb1df7b4d097b47f14f8c751ec2 Mon Sep 17 00:00:00 2001
+From 99cbe583b1dd8e98bc6e95818926fa10cef57cf5 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Fri, 3 Apr 2020 23:05:13 +1100
 Subject: script/execute: Fix NULL dereference in grub_script_execute_cmdline()

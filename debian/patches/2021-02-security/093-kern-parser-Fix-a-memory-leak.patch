@@ -1,4 +1,4 @@
-From 3f1acab9cc077d1dc79691a2b1661f18e8417f4b Mon Sep 17 00:00:00 2001
+From 8d06222bb8fb5d610dcdadb221d1846e7de88980 Mon Sep 17 00:00:00 2001
 From: Chris Coulson <chris.coulson@canonical.com>
 Date: Wed, 18 Nov 2020 00:59:24 +0000
 Subject: kern/parser: Fix a memory leak

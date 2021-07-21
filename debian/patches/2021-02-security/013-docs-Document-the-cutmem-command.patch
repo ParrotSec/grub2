@@ -1,4 +1,4 @@
-From 9042c1bc8de6271c02484f4685891045a1ed245b Mon Sep 17 00:00:00 2001
+From eded019cf803b1d52746adeefb8ccc2ad6824bbc Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javierm@redhat.com>
 Date: Sat, 7 Nov 2020 01:03:18 +0100
 Subject: docs: Document the cutmem command

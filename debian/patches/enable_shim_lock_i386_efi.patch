@@ -1,4 +1,4 @@
-From 3d04d38e67bb78127a6ec4329634441c4bf4194c Mon Sep 17 00:00:00 2001
+From dd50925e508fb1a974cfcfdcb91b4144cbda407a Mon Sep 17 00:00:00 2001
 From: Steve McIntyre <93sam@debian.org>
 Date: Sat, 17 Apr 2021 22:04:38 +0100
 Subject: Enable shim_lock and tpm modules for all efi platforms, not just

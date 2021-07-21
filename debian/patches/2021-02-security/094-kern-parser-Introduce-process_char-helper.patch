@@ -1,4 +1,4 @@
-From 7feb878e82a6ff51c3ba0bbc5a7c15c983c44d8e Mon Sep 17 00:00:00 2001
+From 45812770ce81194ede99bba4c868b3a244fc37ee Mon Sep 17 00:00:00 2001
 From: Chris Coulson <chris.coulson@canonical.com>
 Date: Tue, 5 Jan 2021 22:17:28 +0000
 Subject: kern/parser: Introduce process_char() helper

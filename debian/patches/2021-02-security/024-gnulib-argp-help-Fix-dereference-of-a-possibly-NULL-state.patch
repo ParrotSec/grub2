@@ -1,4 +1,4 @@
-From 3131d3ff8ed1584fd14b4872ca229993d1b70d52 Mon Sep 17 00:00:00 2001
+From 70c54cd454c73a4d1b0bb602fbffd5cf62d174b9 Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Wed, 28 Oct 2020 14:43:01 +0000
 Subject: gnulib/argp-help: Fix dereference of a possibly NULL state

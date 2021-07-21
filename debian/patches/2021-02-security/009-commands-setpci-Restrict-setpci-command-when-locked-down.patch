@@ -1,4 +1,4 @@
-From bf939ef4e9dc0b0fd98a6b377927baf7e149fa38 Mon Sep 17 00:00:00 2001
+From edc3a08bd5384cc7fa4e931a8c18a8ab0249af65 Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javierm@redhat.com>
 Date: Wed, 24 Feb 2021 22:59:59 +0100
 Subject: commands/setpci: Restrict setpci command when locked down

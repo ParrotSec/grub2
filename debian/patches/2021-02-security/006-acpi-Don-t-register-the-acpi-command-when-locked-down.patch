@@ -1,4 +1,4 @@
-From c3037730d4596af0f60c6c2f7bafe3b79d485167 Mon Sep 17 00:00:00 2001
+From b62501e6d869aa0968a17c8cb2379bde475dab20 Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javierm@redhat.com>
 Date: Mon, 28 Sep 2020 20:08:41 +0200
 Subject: acpi: Don't register the acpi command when locked down

@@ -1,3 +1,17 @@
+grub2 (2.04-19parrot1) rolling; urgency=medium
+
+  * Import new Debian release.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 21 Jul 2021 15:27:48 +0200
+
+grub2 (2.04-19) unstable; urgency=medium
+
+  * Resync grub-install backup and restore patches from upstream, fixing
+    problems that left the system unbootable after certain kinds of failure
+    (closes: #983435).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 19 Jun 2021 13:04:38 +0100
+
 grub2 (2.04-18parrot1) rolling; urgency=medium
 
   * Import new Debian release.

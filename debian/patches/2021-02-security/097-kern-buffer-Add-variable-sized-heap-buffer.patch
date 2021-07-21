@@ -1,4 +1,4 @@
-From fc938b31c9a262bacc5966362372e50a08004c41 Mon Sep 17 00:00:00 2001
+From 4f38583d8066b81dcc04eadd2d29700f58991547 Mon Sep 17 00:00:00 2001
 From: Chris Coulson <chris.coulson@canonical.com>
 Date: Thu, 7 Jan 2021 15:15:43 +0000
 Subject: kern/buffer: Add variable sized heap buffer

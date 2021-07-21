@@ -1,4 +1,4 @@
-From 6e14c57c653a969d962dac1c5c4451b9d3197493 Mon Sep 17 00:00:00 2001
+From 4484c5c41f65b0975c0b300015764c0980765f0b Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javierm@redhat.com>
 Date: Mon, 28 Sep 2020 20:08:02 +0200
 Subject: kern: Add lockdown support

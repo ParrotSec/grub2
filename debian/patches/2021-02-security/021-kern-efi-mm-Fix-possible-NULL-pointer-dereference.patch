@@ -1,4 +1,4 @@
-From 10f42aeff511ef21ab12b0a1acb8aeb8155527be Mon Sep 17 00:00:00 2001
+From ab68fb4b10ceed503826fc3c3a07e579871d0fe0 Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Fri, 11 Dec 2020 15:03:13 +0000
 Subject: kern/efi/mm: Fix possible NULL pointer dereference

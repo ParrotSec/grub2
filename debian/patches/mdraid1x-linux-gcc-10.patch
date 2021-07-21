@@ -1,4 +1,4 @@
-From 1f3a28894d09af418669940dedb217e97e1f9c83 Mon Sep 17 00:00:00 2001
+From c54b0d1ed58cf7abe95af0b79008324d442e64dc Mon Sep 17 00:00:00 2001
 From: Michael Chang <mchang@suse.com>
 Date: Thu, 26 Mar 2020 14:35:34 +0800
 Subject: mdraid1x_linux: Fix gcc10 error -Werror=array-bounds

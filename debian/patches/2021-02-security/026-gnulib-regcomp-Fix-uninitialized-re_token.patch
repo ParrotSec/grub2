@@ -1,4 +1,4 @@
-From 711dd9d978c504ff4547dca4858afc5319bba4cc Mon Sep 17 00:00:00 2001
+From 791cd9cf58d74489b628a2272976b5b2290ef05e Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Tue, 24 Nov 2020 18:04:22 +0000
 Subject: gnulib/regcomp: Fix uninitialized re_token

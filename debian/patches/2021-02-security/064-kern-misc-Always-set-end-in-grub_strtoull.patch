@@ -1,4 +1,4 @@
-From abdc1e40ae2ad36785e0569a2945faed446ad6f1 Mon Sep 17 00:00:00 2001
+From aca14b9bfcd7b6de0c6eed0aba0b8d5c15f5041e Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Wed, 13 Jan 2021 22:19:01 +1100
 Subject: kern/misc: Always set *end in grub_strtoull()

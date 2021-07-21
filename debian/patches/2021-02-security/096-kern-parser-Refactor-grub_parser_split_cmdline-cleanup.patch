@@ -1,4 +1,4 @@
-From 782fb19712aff29bb9e2c68a92e80f11e14b2c4f Mon Sep 17 00:00:00 2001
+From d5d6b0d72ef3ae571720c443210b4222122cf9eb Mon Sep 17 00:00:00 2001
 From: Chris Coulson <chris.coulson@canonical.com>
 Date: Wed, 6 Jan 2021 13:54:26 +0000
 Subject: kern/parser: Refactor grub_parser_split_cmdline() cleanup

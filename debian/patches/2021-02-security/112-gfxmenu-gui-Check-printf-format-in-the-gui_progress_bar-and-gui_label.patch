@@ -1,4 +1,4 @@
-From c652b0e86d178898649245d96a07db50eef40d2b Mon Sep 17 00:00:00 2001
+From 057832d3703a957b76e8e6fc82cce0b74131ffa2 Mon Sep 17 00:00:00 2001
 From: Thomas Frauendorfer | Miray Software <tf@miray.de>
 Date: Tue, 4 Aug 2020 13:49:51 +0200
 Subject: gfxmenu/gui: Check printf() format in the gui_progress_bar and

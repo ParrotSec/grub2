@@ -1,4 +1,4 @@
-From 1c810627ecaff8ace2cba2abb87ed26f64f8528c Mon Sep 17 00:00:00 2001
+From ba21811ddd8e4c8f21eaa88738d55314ba2fe962 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 15 Feb 2021 14:58:06 +0100
 Subject: util/mkimage: Refactor section setup to use a helper

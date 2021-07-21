@@ -1,4 +1,4 @@
-From ad9d55e5076ec338631471fa499fbb08612bc494 Mon Sep 17 00:00:00 2001
+From 3a46a6bf6ae402e0c00f18e99896a25e04017991 Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javierm@redhat.com>
 Date: Wed, 24 Feb 2021 12:59:29 +0100
 Subject: commands/hdparm: Restrict hdparm command when locked down

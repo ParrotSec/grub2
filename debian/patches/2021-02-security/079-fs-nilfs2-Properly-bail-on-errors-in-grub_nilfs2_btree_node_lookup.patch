@@ -1,4 +1,4 @@
-From 6187f84c0fb18dc0a2336fd717df3f1d6f5744d6 Mon Sep 17 00:00:00 2001
+From 6bd6187cd082eae001988368c0a04fdf74f81630 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Mon, 18 Jan 2021 17:06:19 +1100
 Subject: fs/nilfs2: Properly bail on errors in grub_nilfs2_btree_node_lookup()

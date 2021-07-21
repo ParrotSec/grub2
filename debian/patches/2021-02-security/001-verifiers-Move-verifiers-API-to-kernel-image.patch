@@ -1,4 +1,4 @@
-From 0d324ad1bf87f0c8b1595b3901017e508cbf3a86 Mon Sep 17 00:00:00 2001
+From bb51c947d6a039f9f2580a15a88c94ff957a5ca7 Mon Sep 17 00:00:00 2001
 From: Marco A Benatto <mbenatto@redhat.com>
 Date: Wed, 23 Sep 2020 11:33:33 -0400
 Subject: verifiers: Move verifiers API to kernel image

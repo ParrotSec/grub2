@@ -1,4 +1,4 @@
-From 13a1fa9c16192cdcbd4d63902c2b14570f133099 Mon Sep 17 00:00:00 2001
+From 23bcd337af43f303bf2f16057d68dcc8cd79d3a0 Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javierm@redhat.com>
 Date: Wed, 24 Feb 2021 15:03:26 +0100
 Subject: gdb: Restrict GDB access when locked down

@@ -1,4 +1,4 @@
-From 3120a6835a2b691587301f5b43d2607ddd6a420d Mon Sep 17 00:00:00 2001
+From b93ffd99beea7725c3a1663f46b123a1fb65dfbf Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Thu, 26 Nov 2020 10:41:54 +0000
 Subject: libgcrypt/mpi: Fix possible NULL dereference

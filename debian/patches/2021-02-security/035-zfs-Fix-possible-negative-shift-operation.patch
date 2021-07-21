@@ -1,4 +1,4 @@
-From d8fa680fec0b55df4cb28cb148e6d6b6e97794ea Mon Sep 17 00:00:00 2001
+From 2abae9194d9fb5d5d618c2cf9b93bdc8ad611e0c Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Tue, 24 Nov 2020 16:41:49 +0000
 Subject: zfs: Fix possible negative shift operation

@@ -1,4 +1,4 @@
-From a0b08bad3d4ee65e4093f292fe50f62198766aaa Mon Sep 17 00:00:00 2001
+From 967fce959a37e72c3e58a0cb09a03bc3dc101ee7 Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Thu, 22 Oct 2020 13:54:06 +0000
 Subject: gnulib/regcomp: Fix uninitialized token structure

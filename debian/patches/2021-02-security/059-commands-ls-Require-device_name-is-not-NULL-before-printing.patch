@@ -1,4 +1,4 @@
-From f785f176a1905405fb2d3cb1a22a16af9cd1266a Mon Sep 17 00:00:00 2001
+From e56148e08fb645da3fa8ef5dc36670f986904047 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Mon, 11 Jan 2021 16:57:37 +1100
 Subject: commands/ls: Require device_name is not NULL before printing

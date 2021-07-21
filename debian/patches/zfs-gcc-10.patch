@@ -1,4 +1,4 @@
-From ecb767ebd71a5544ba82b2c4cc86855bab5655eb Mon Sep 17 00:00:00 2001
+From c65818fd6db0d95a2e80fb9b7d80fdca1d330d08 Mon Sep 17 00:00:00 2001
 From: Michael Chang <mchang@suse.com>
 Date: Thu, 26 Mar 2020 14:35:35 +0800
 Subject: zfs: Fix gcc10 error -Werror=zero-length-bounds

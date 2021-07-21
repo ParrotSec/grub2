@@ -1,4 +1,4 @@
-From 1aa2537809b176274f3c9fccce689e75129f54ca Mon Sep 17 00:00:00 2001
+From aa9b25913cd0ce82f29ae7ce6267a645568b6510 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 15 Feb 2021 14:21:48 +0100
 Subject: util/mkimage: Reorder PE optional header fields set-up

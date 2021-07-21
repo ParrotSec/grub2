@@ -1,4 +1,4 @@
-From cf179bd80ddcd68780faa8a42ec2d0c1df0edf65 Mon Sep 17 00:00:00 2001
+From 8b7ccebbf33f514b46ea1b4f152f23fb8b44a37b Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 15 Feb 2021 14:14:24 +0100
 Subject: util/mkimage: Always use grub_host_to_target32() to initialize PE

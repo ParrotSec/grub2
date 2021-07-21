@@ -1,4 +1,4 @@
-From af94bf626973ad3fdcc3582e494e0c7ff0130d80 Mon Sep 17 00:00:00 2001
+From 0529cd73c15f59ff688e712e063d40f5ebe16e4b Mon Sep 17 00:00:00 2001
 From: Paulo Flabiano Smorigo <pfsmorigo@canonical.com>
 Date: Mon, 7 Dec 2020 10:07:47 -0300
 Subject: disk/ldm: If failed then free vg variable too

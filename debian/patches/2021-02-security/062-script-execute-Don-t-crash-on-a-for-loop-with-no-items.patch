@@ -1,4 +1,4 @@
-From 121811a98b14217b065ed9dc88c871076e51ce3d Mon Sep 17 00:00:00 2001
+From c0f1821cd712097c83b0fef8264159d9e1e9c3f4 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Fri, 22 Jan 2021 16:18:26 +1100
 Subject: script/execute: Don't crash on a "for" loop with no items

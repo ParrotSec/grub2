@@ -1,4 +1,4 @@
-From dc28cd75dc9a580a6f6a2a8a146c4688122be099 Mon Sep 17 00:00:00 2001
+From 12e47270186c0c9d25bca7efa7b4f8b798252265 Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Thu, 5 Nov 2020 10:57:14 +0000
 Subject: gnulib/regexec: Fix possible null-dereference

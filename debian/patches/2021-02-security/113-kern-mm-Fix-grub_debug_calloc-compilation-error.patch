@@ -1,4 +1,4 @@
-From 9cd32c57605b7ad713e108e0b98ebd504caa532e Mon Sep 17 00:00:00 2001
+From 33e1379aee6a63f1d5f7cd7e6e259a208c0e2e96 Mon Sep 17 00:00:00 2001
 From: Marco A Benatto <mbenatto@redhat.com>
 Date: Tue, 9 Feb 2021 12:33:06 -0300
 Subject: kern/mm: Fix grub_debug_calloc() compilation error

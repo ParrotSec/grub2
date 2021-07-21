@@ -1,4 +1,4 @@
-From 06f86bc0d68bb857807d492582153ebbf1a81858 Mon Sep 17 00:00:00 2001
+From 7717f67b2e92612b0b621fbe941aa4c700f49dfa Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Fri, 4 Dec 2020 18:56:48 +0000
 Subject: normal/completion: Fix leaking of memory when processing a completion

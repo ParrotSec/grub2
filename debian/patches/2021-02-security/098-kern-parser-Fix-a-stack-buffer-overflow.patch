@@ -1,4 +1,4 @@
-From 596d3621901de9a404c606dd9bc8ff5032a69e99 Mon Sep 17 00:00:00 2001
+From e44c6dbbb5c344aaca6bf20967f3b2a2f9a25eba Mon Sep 17 00:00:00 2001
 From: Chris Coulson <chris.coulson@canonical.com>
 Date: Thu, 7 Jan 2021 19:21:03 +0000
 Subject: kern/parser: Fix a stack buffer overflow

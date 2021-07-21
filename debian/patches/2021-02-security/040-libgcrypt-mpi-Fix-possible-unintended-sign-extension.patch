@@ -1,4 +1,4 @@
-From 8d9e05f244b91613246b061312368750ef9d3eaf Mon Sep 17 00:00:00 2001
+From 123b9ca6027b313f07e5c23642934359b0f42d74 Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Tue, 3 Nov 2020 16:43:37 +0000
 Subject: libgcrypt/mpi: Fix possible unintended sign extension

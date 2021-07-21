@@ -1,4 +1,4 @@
-From 0eae44daa60c3f0ce8fdb349ba71b869a6738efd Mon Sep 17 00:00:00 2001
+From 639560699ce7cc2cd77b872dea9ac091cb9cc3d2 Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javierm@redhat.com>
 Date: Fri, 16 Apr 2021 21:37:23 +0200
 Subject: util/mkimage: Some fixes to PE binaries section size calculation

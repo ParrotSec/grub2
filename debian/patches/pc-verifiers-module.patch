@@ -1,4 +1,4 @@
-From 3d246c561a2c6aa18b78eae69e5100a2347dc7aa Mon Sep 17 00:00:00 2001
+From 9ab1fc38fb058d8addbbc461f6767a608cd29b8a Mon Sep 17 00:00:00 2001
 From: Michael Chang <mchang@suse.com>
 Date: Thu, 18 Mar 2021 19:30:26 +0800
 Subject: i386-pc: build verifiers API as module

@@ -1,4 +1,4 @@
-From c8bc04397b65406743158e7417bb2f51fc456418 Mon Sep 17 00:00:00 2001
+From 9b8d2f2fe30718a7a8713f80b8d3e44ff89f8c85 Mon Sep 17 00:00:00 2001
 From: Thomas Frauendorfer | Miray Software <tf@miray.de>
 Date: Mon, 15 Feb 2021 14:04:26 +0100
 Subject: kern/misc: Add STRING type for internal printf() format handling

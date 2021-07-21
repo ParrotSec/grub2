@@ -1,4 +1,4 @@
-From 6d368ec03f3a272f2dd855cf0600ee96284b5a45 Mon Sep 17 00:00:00 2001
+From bdf76b3b743fa75cdb4e00bb576088e364e62b32 Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Fri, 23 Oct 2020 09:49:59 +0000
 Subject: kern/partition: Check for NULL before dereferencing input string

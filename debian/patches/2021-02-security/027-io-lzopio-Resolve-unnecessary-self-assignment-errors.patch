@@ -1,4 +1,4 @@
-From 28314f6c1e4bc11da7b201f90f0eb58f3adac487 Mon Sep 17 00:00:00 2001
+From f37be09a9f807f2ac2fb3f87e13e296b5c6e152f Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Wed, 21 Oct 2020 14:44:10 +0000
 Subject: io/lzopio: Resolve unnecessary self-assignment errors

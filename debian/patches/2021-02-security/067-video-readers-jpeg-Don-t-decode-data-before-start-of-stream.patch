@@ -1,4 +1,4 @@
-From 14cc3bde41052bb0465f9ce1e223cdf80c92236d Mon Sep 17 00:00:00 2001
+From d8f05de85941b015563670a5de1dbd3d6a85ab85 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Fri, 15 Jan 2021 14:06:46 +1100
 Subject: video/readers/jpeg: Don't decode data before start of stream

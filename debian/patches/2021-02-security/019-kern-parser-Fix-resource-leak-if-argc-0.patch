@@ -1,4 +1,4 @@
-From 967b95c4e3514087c5f0fd4b7fd101208afbf8c7 Mon Sep 17 00:00:00 2001
+From 9f8bb5d92706c179483bb77ce7845923da8a75ba Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Fri, 22 Jan 2021 12:32:41 +0000
 Subject: kern/parser: Fix resource leak if argc == 0

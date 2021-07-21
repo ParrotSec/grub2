@@ -1,4 +1,4 @@
-From c65654e97ea4037c257267f3470d8ad296edd69b Mon Sep 17 00:00:00 2001
+From ff680f80db13e2790b1082aec242274ba0e1bc2d Mon Sep 17 00:00:00 2001
 From: Steve McIntyre <93sam@debian.org>
 Date: Tue, 5 Jan 2021 00:00:02 +0000
 Subject: Switch to using the efivarfs interface for detecting "system setup"

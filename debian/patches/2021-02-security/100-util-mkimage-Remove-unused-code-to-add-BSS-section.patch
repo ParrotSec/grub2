@@ -1,4 +1,4 @@
-From 039725fe7a076b17b8d50fb1e48c5d2108738c3c Mon Sep 17 00:00:00 2001
+From d0d8d98f7728c5525c2133b3da85439de45dbfd3 Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javierm@redhat.com>
 Date: Thu, 11 Feb 2021 17:06:49 +0100
 Subject: util/mkimage: Remove unused code to add BSS section

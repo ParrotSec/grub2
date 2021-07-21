@@ -1,4 +1,4 @@
-From d86e80fe08503611a89ccaa4b0c5aeaa398bcdbc Mon Sep 17 00:00:00 2001
+From aadee4f1eaeb1d927bb701eb8c434f5a766fa47c Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Fri, 4 Dec 2020 15:04:28 +0000
 Subject: util/glue-efi: Fix incorrect use of a possibly negative value

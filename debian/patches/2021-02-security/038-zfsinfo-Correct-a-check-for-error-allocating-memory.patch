@@ -1,4 +1,4 @@
-From 0283863c7d4919661f4b553adeeca9fa338ec9dd Mon Sep 17 00:00:00 2001
+From 642f1522a929e7049a227c0b30adde92263a7f4d Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Thu, 26 Nov 2020 10:56:45 +0000
 Subject: zfsinfo: Correct a check for error allocating memory

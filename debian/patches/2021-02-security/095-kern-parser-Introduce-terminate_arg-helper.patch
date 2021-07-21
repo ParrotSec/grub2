@@ -1,4 +1,4 @@
-From 3ab27438bca07e9d76833b20d01359d3e93cd6da Mon Sep 17 00:00:00 2001
+From a93ec88ea67b578c495113663a7312777de22df3 Mon Sep 17 00:00:00 2001
 From: Chris Coulson <chris.coulson@canonical.com>
 Date: Thu, 7 Jan 2021 19:53:55 +0000
 Subject: kern/parser: Introduce terminate_arg() helper

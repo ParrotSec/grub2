@@ -1,4 +1,4 @@
-From 3c5bfae9eb603c24cf9c07f6d59dcd029d70a941 Mon Sep 17 00:00:00 2001
+From e8813743f74b8ac23bf40ed9ee86b759d0475666 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Fri, 22 Jan 2021 17:10:48 +1100
 Subject: commands/menuentry: Fix quoting in setparams_prefix()

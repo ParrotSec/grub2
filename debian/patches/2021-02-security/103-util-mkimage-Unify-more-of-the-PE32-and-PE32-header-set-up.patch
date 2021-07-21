@@ -1,4 +1,4 @@
-From 2aa0ef41cc411b86b45d9069dbaeb11e9641c7f2 Mon Sep 17 00:00:00 2001
+From ae1f7bfbae037cab47d8afbf6d624b18208a52d6 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 15 Feb 2021 14:19:31 +0100
 Subject: util/mkimage: Unify more of the PE32 and PE32+ header set-up

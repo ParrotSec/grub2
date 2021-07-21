@@ -1,4 +1,4 @@
-From 11cf998c20dbef41fc9899a777633f8c87a5b89f Mon Sep 17 00:00:00 2001
+From 12f4ac31c710b8b435bf7b986698a5e6569d05b0 Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Tue, 8 Dec 2020 21:47:13 +0000
 Subject: loader/bsd: Check for NULL arg up-front

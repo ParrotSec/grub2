@@ -1,4 +1,4 @@
-From 0013a6fa95affdaf0f37dd9cfb6767a06793e5ae Mon Sep 17 00:00:00 2001
+From 5b84fb20591c0b5fad8e319da2792290c7216793 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Fri, 15 Jan 2021 20:03:20 +1100
 Subject: term/gfxterm: Don't set up a font with glyphs that are too big

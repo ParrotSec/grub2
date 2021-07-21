@@ -1,4 +1,4 @@
-From 55c7de52916a5c1daa97f3bb112d101bc4a488e1 Mon Sep 17 00:00:00 2001
+From 563dd41fc319bbcad9da0a6ae74e94d061f34837 Mon Sep 17 00:00:00 2001
 From: Thomas Frauendorfer | Miray Software <tf@miray.de>
 Date: Mon, 15 Feb 2021 13:40:16 +0100
 Subject: kern/misc: Split parse_printf_args() into format parsing and va_list

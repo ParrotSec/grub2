@@ -1,4 +1,4 @@
-From e743b06fcb96c3571cffc1162c7ecfbb95309a12 Mon Sep 17 00:00:00 2001
+From 2b9d3825c41a0ff3c149c7d409a315ec95b99054 Mon Sep 17 00:00:00 2001
 From: Marco A Benatto <mbenatto@redhat.com>
 Date: Mon, 7 Dec 2020 11:53:03 -0300
 Subject: disk/ldm: Make sure comp data is freed before exiting from make_vg()

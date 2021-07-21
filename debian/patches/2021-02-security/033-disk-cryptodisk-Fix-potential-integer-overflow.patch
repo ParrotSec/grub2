@@ -1,4 +1,4 @@
-From 0beb60002c4efaa7ce1aaec36bf5af4f12e612fd Mon Sep 17 00:00:00 2001
+From 862dea00cfd5679a1cb78210bd982615bb41fa5d Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Thu, 21 Jan 2021 11:38:31 +0000
 Subject: disk/cryptodisk: Fix potential integer overflow

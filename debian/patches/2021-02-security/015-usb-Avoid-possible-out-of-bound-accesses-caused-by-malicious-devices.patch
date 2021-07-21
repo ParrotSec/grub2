@@ -1,4 +1,4 @@
-From d26f10df9cf93cd2f8af214530e33dd11ab524c9 Mon Sep 17 00:00:00 2001
+From 98a777237f96dcf82a01d42c887015f6bc45174f Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javierm@redhat.com>
 Date: Fri, 11 Dec 2020 19:19:21 +0100
 Subject: usb: Avoid possible out-of-bound accesses caused by malicious devices

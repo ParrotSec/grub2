@@ -1,4 +1,4 @@
-From 0a8501280a9c6d54eaa1c9790c8895dde289363a Mon Sep 17 00:00:00 2001
+From 152be03bef032d7a567e5a2af173de3fe3187772 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Fri, 22 Jan 2021 18:13:56 +1100
 Subject: fs/hfsplus: Don't fetch a key beyond the end of the node

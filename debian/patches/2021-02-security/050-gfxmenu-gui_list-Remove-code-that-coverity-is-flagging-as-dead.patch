@@ -1,4 +1,4 @@
-From f9b9c56e21e62ece99ae1fc88618b05a72f9fc3c Mon Sep 17 00:00:00 2001
+From 7c814de16dc62239199c13b49f1a0214b2264edf Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Mon, 7 Dec 2020 14:44:47 +0000
 Subject: gfxmenu/gui_list: Remove code that coverity is flagging as dead

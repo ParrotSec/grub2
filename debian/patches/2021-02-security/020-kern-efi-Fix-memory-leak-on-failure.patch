@@ -1,4 +1,4 @@
-From 42b46cb07fa6d7c20d293f7856d77c9337883f23 Mon Sep 17 00:00:00 2001
+From f7320cc2203f4f91d482cde9651994f5cd783f35 Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Thu, 5 Nov 2020 10:15:25 +0000
 Subject: kern/efi: Fix memory leak on failure

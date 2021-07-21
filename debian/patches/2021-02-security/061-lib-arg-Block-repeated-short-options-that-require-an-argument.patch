@@ -1,4 +1,4 @@
-From 82446d2303475205ed8910782717a3ca03e84f8d Mon Sep 17 00:00:00 2001
+From e46927de3e5bac21bc91986099c6b7ae014a4016 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Fri, 22 Jan 2021 16:07:29 +1100
 Subject: lib/arg: Block repeated short options that require an argument

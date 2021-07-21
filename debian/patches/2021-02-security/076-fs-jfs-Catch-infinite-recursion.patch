@@ -1,4 +1,4 @@
-From 751f1ad0bae2973cd5303fee5a3b2f69bc75c213 Mon Sep 17 00:00:00 2001
+From a7d4ea3e53f607c6844f9ae711e1c24418c2811c Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Mon, 18 Jan 2021 15:47:24 +1100
 Subject: fs/jfs: Catch infinite recursion

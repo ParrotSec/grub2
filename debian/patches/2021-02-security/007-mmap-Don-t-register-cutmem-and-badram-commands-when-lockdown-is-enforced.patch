@@ -1,4 +1,4 @@
-From 5d58cce5c0b507a6ac4a37be70ac8354bea926cb Mon Sep 17 00:00:00 2001
+From 4ad34d7d0aff5467cc2a2b3e0c55750856c19545 Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javierm@redhat.com>
 Date: Wed, 14 Oct 2020 16:33:42 +0200
 Subject: mmap: Don't register cutmem and badram commands when lockdown is

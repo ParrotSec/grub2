@@ -1,4 +1,4 @@
-From 2df30bf33e05f7d09eb01546dd5ea5c60f033f79 Mon Sep 17 00:00:00 2001
+From 949888bfa417b10142963401d1ec40f32a8eaee8 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Thu, 21 Jan 2021 12:22:28 +1100
 Subject: io/gzio: Zero gzio->tl/td in init_dynamic_block() if huft_build()

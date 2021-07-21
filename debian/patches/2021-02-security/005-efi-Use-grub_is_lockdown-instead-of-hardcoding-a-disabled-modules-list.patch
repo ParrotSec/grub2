@@ -1,4 +1,4 @@
-From 3d8afd5799542c535a6304c7e57aeb2aecc1104f Mon Sep 17 00:00:00 2001
+From bcffa66a873f72f337eb79d4ce673b2db8b3e7b0 Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javierm@redhat.com>
 Date: Mon, 28 Sep 2020 20:08:33 +0200
 Subject: efi: Use grub_is_lockdown() instead of hardcoding a disabled modules

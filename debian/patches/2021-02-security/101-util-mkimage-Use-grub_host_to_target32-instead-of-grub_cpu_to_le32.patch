@@ -1,4 +1,4 @@
-From 0a6005c742acace2c04716c83d7b3af5c41accfb Mon Sep 17 00:00:00 2001
+From e6f6175cdb609e9a685c709998921da263e55096 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 15 Feb 2021 13:59:21 +0100
 Subject: util/mkimage: Use grub_host_to_target32() instead of

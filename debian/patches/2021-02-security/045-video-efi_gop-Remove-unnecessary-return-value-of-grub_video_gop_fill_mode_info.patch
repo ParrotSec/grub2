@@ -1,4 +1,4 @@
-From 74d54418283d79caf3706d61d505788ca23419cf Mon Sep 17 00:00:00 2001
+From 3bf7d3491b1df0c4209740684e0c1f5ec7af8dfd Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Tue, 8 Dec 2020 21:14:31 +0000
 Subject: video/efi_gop: Remove unnecessary return value of

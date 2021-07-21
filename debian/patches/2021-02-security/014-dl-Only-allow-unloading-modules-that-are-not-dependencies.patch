@@ -1,4 +1,4 @@
-From 9e6b789fa3b843fb58dbd2dd96fdf297d26c9954 Mon Sep 17 00:00:00 2001
+From 1e3203e7ec93ba725eb27bd28210a42430bf6539 Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javierm@redhat.com>
 Date: Tue, 29 Sep 2020 14:08:55 +0200
 Subject: dl: Only allow unloading modules that are not dependencies

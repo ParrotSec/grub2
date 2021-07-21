@@ -1,4 +1,4 @@
-From 986de67356c9d1e61a1c5b05bac13f49336a2a2b Mon Sep 17 00:00:00 2001
+From 0377c204853eee3966fa5ee2308c746436b7d4fa Mon Sep 17 00:00:00 2001
 From: Marco A Benatto <mbenatto@redhat.com>
 Date: Mon, 30 Nov 2020 12:18:24 -0300
 Subject: loader/xnu: Free driverkey data when an error is detected in

@@ -1,4 +1,4 @@
-From fffc476dfe7ca984bd52442b35a6f4c0d87f1bf2 Mon Sep 17 00:00:00 2001
+From 61250981875f621cbbbd0f16364dbe905923aee3 Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Wed, 4 Nov 2020 14:43:44 +0000
 Subject: video/fb/video_fb: Fix multiple integer overflows

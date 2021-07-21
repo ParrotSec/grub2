@@ -1,4 +1,4 @@
-From fd0e3f96406ad54e21b1ad26c7915c89dbe4057a Mon Sep 17 00:00:00 2001
+From b45089749ee7d8b2ded9b115df1b6d616b99dce0 Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Thu, 5 Nov 2020 14:33:50 +0000
 Subject: util/grub-editenv: Fix incorrect casting of a signed value

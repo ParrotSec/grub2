@@ -94,6 +94,7 @@ linux-initrd-overflow.patch
 bootp-alloc.patch
 unix-config-overflow.patch
 deviceiter-overflow.patch
+osdep-exec-avoid-atexit-when-child-exits.patch
 grub-install-backup-and-restore.patch
 tftp-roll-over-block-counter.patch
 mdraid1x-linux-gcc-10.patch
@@ -217,4 +218,3 @@ pc-verifiers-module.patch
 enable_shim_lock_i386_efi.patch
 debug_verifiers.patch
 mkimage-fix-section-sizes.patch
-add-failsafe-boot-options.patch

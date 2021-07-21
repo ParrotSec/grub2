@@ -1,4 +1,4 @@
-From 12f5e77dc77a78c1c036c0016d9567cb3f500984 Mon Sep 17 00:00:00 2001
+From d584df6f32a3d9ef98d5008a43197de574f45a30 Mon Sep 17 00:00:00 2001
 From: Daniel Axtens <dja@axtens.net>
 Date: Mon, 11 Jan 2021 17:30:42 +1100
 Subject: script/execute: Avoid crash when using "$#" outside a function scope

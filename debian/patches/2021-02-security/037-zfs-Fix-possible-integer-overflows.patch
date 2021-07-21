@@ -1,4 +1,4 @@
-From 2b07acad0f111b3d5570f70840e4fa015e78c78c Mon Sep 17 00:00:00 2001
+From 2c058f5e55bf7389145f277eb4b8c78e6759919e Mon Sep 17 00:00:00 2001
 From: Darren Kenny <darren.kenny@oracle.com>
 Date: Tue, 8 Dec 2020 22:17:04 +0000
 Subject: zfs: Fix possible integer overflows

@@ -1,4 +1,4 @@
-From 99f02aab1aca39ec80a1bfb6951629f3192294ff Mon Sep 17 00:00:00 2001
+From 73a3a2df1a975439c9e9c72071dc246bd3012ead Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 11 Feb 2021 17:07:33 +0100
 Subject: util/mkimage: Improve data_size value calculation
