@@ -218,3 +218,5 @@ pc-verifiers-module.patch
 enable_shim_lock_i386_efi.patch
 debug_verifiers.patch
 mkimage-fix-section-sizes.patch
+tpm-unknown-error-non-fatal.patch
+add-failsafe-boot-options.patch

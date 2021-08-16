@@ -1,3 +1,17 @@
+grub2 (2.04-20parrot1) lts-updates; urgency=medium
+
+  * Import new Debian release.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 16 Aug 2021 04:28:53 +0200
+
+grub2 (2.04-20) unstable; urgency=medium
+
+  [ Mathieu Trudel-Lapierre ]
+  * tpm: Pass unknown error as non-fatal, but debug print the error we got
+    (closes: #940911, LP: #1848892).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 11 Jul 2021 00:37:36 +0100
+
 grub2 (2.04-19parrot1) rolling; urgency=medium
 
   * Import new Debian release.

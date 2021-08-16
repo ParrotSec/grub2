@@ -1,0 +1,8 @@
+include:
+  - https://gitlab.com/kalilinux/tools/kali-ci-pipeline/raw/master/recipes/kali.yml
+
+# disable lintian: we fork the package from Debian, the errors come from
+# the Debian packaging. We don't want to differ too much from the Debian
+# package.
+variables:
+  SALSA_CI_DISABLE_LINTIAN: 1
