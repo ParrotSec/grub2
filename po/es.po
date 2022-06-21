@@ -67,15 +67,15 @@ msgstr "Exporta las versiones 2 y 3 de las tablas al SO."
 
 #: grub-core/commands/acpi.c:48
 msgid "Set OEMID of RSDP, XSDT and RSDT."
-msgstr "Establece OEMID en RSDP, XSDT y RSDT."
+msgstr "Establece OEMID de RSDP, XSDT y RSDT."
 
 #: grub-core/commands/acpi.c:50
 msgid "Set OEMTABLE ID of RSDP, XSDT and RSDT."
-msgstr "Establece OEMTABLE ID en RDSP, XSDT y RSDT."
+msgstr "Establece OEMTABLE ID de RDSP, XSDT y RSDT."
 
 #: grub-core/commands/acpi.c:52
 msgid "Set OEMTABLE revision of RSDP, XSDT and RSDT."
-msgstr "Establece la revisión de OEMTABLE en RDSP, XSDT y RSDT."
+msgstr "Establece la revisión de OEMTABLE de RDSP, XSDT y RSDT."
 
 #: grub-core/commands/acpi.c:54
 msgid "Set creator field of RSDP, XSDT and RSDT."
@@ -83,7 +83,7 @@ msgstr "Establece el campo 'creador' en RDSP, XSDT y RSDT."
 
 #: grub-core/commands/acpi.c:56
 msgid "Set creator revision of RSDP, XSDT and RSDT."
-msgstr "Establece la revisión del campo 'creador' en RDSP, XSDT y RSDT."
+msgstr "Establece la revisión del campo 'creador' de RDSP, XSDT y RSDT."
 
 # Miguel: Cuelgue es un poco barriobajero, ¿algún término más correcto?
 #. TRANSLATORS: "hangs" here is a noun, not a verb.
