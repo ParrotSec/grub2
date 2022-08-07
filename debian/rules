@@ -10,6 +10,8 @@ DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
 DEB_HOST_ARCH_OS ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS 2>/dev/null)
 DEB_HOST_ARCH_CPU ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_CPU 2>/dev/null)
 
+export DEB_BUILD_MAINT_OPTIONS = optimize=-lto
+
 HOST_CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
 # -O3 (default on Ubuntu ppc64el) introduces various -Werror failures, and
 # isn't worth it here.
@@ -23,17 +25,13 @@ export HOST_LDFLAGS
 export TARGET_CPPFLAGS := -Wno-unused-but-set-variable
 export TARGET_LDFLAGS := -no-pie
 
-ifneq (,$(filter sparc sparc64,$(DEB_HOST_ARCH_CPU)))
-export TARGET_CCASFLAGS := -fno-PIE
-endif
-
 # Ensure that debhelper doesn't try to set these; we need to be careful
 # about HOST_* vs. TARGET_*.
 export CPPFLAGS :=
 export CFLAGS :=
 export LDFLAGS :=
 
-ifeq (,$(shell which qemu-system-i386 2>/dev/null))
+ifeq (,$(shell command -v qemu-system-i386))
 with_check := no
 else
 with_check := yes
@@ -409,9 +407,6 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-efi-ia
 	echo "$(package_bin): unstripped-binary-or-object *.mod" \
 		>> debian/$(package_bin)/usr/share/lintian/overrides/$(package_bin)
 	cd debian/tmp-$(package) && find usr/lib/grub -name kernel.img \
-		| sed -e "s%.*%$(package_bin): statically-linked-binary &%g" \
-	>> $(CURDIR)/debian/$(package_bin)/usr/share/lintian/overrides/$(package_bin)
-	cd debian/tmp-$(package) && find ./usr/lib/grub -name kernel.img \
 		| sed -e "s%.*%$(package_bin): statically-linked-binary &%g" \
 	>> $(CURDIR)/debian/$(package_bin)/usr/share/lintian/overrides/$(package_bin)
 	cd debian/tmp-$(package) && find usr/lib/grub -name kernel.img \

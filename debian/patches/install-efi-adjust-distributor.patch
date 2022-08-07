@@ -1,4 +1,4 @@
-From 80341ef386df5bfe94a1e242700be34caa155809 Mon Sep 17 00:00:00 2001
+From 11ea79546da850296fabeb94bfc8c110a98fe7f6 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Mon, 13 Jan 2014 12:13:27 +0000
 Subject: Adjust efi_distributor for some distributions
@@ -18,10 +18,10 @@ Patch-Name: install-efi-adjust-distributor.patch
  1 file changed, 4 insertions(+)
 
 diff --git a/util/grub-install.c b/util/grub-install.c
-index b0c7c7c37..e89667ff2 100644
+index f49c78d0b..48c8c0364 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
-@@ -1115,6 +1115,10 @@ main (int argc, char *argv[])
+@@ -1123,6 +1123,10 @@ main (int argc, char *argv[])
        */
        char *t;
        efi_distributor = bootloader_id;

@@ -1,4 +1,4 @@
-From d768f3c486db716fe662b32afc1327f27fad012b Mon Sep 17 00:00:00 2001
+From 70a2b23aadd93955a3869aa1c29a7f09c0696b95 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@debian.org>
 Date: Mon, 13 Jan 2014 12:12:57 +0000
 Subject: Disable gfxpayload=keep by default
@@ -23,7 +23,7 @@ Patch-Name: gfxpayload-keep-default.patch
  1 file changed, 4 deletions(-)
 
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 4532266be..dd5a60c71 100644
+index e8b01c0d0..9446d6833 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -114,10 +114,6 @@ linux_entry ()

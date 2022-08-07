@@ -1,4 +1,4 @@
-From 4493c7ab311c8f0b898a17b407939d042edf66cd Mon Sep 17 00:00:00 2001
+From 13c9a7101d2611bbc02b464ef4e32b02cfc7860b Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Mon, 13 Jan 2014 12:13:06 +0000
 Subject: "single" -> "recovery" when friendly-recovery is installed
@@ -23,10 +23,10 @@ Patch-Name: mkconfig-ubuntu-recovery.patch
  3 files changed, 26 insertions(+), 3 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 7656f2434..1e5abc67d 100644
+index 7517fc49d..74778a6f8 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -1846,6 +1846,17 @@ fi
+@@ -1904,6 +1904,17 @@ fi
  AC_SUBST([LIBZFS])
  AC_SUBST([LIBNVPAIR])
  
@@ -45,7 +45,7 @@ index 7656f2434..1e5abc67d 100644
  
  AC_SUBST([FONT_SOURCE])
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 8c22c79f6..0509ac680 100644
+index 46696dd66..f215e3213 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -20,6 +20,7 @@ set -e
@@ -83,7 +83,7 @@ index 8c22c79f6..0509ac680 100644
    fi
  
    echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
-@@ -280,7 +292,7 @@ while [ "x$list" != "x" ] ; do
+@@ -288,7 +300,7 @@ while [ "x$list" != "x" ] ; do
                "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
    if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
      linux_entry "${OS}" "${version}" recovery \
@@ -93,10 +93,10 @@ index 8c22c79f6..0509ac680 100644
  
    list=`echo $list | tr ' ' '\n' | fgrep -vx "$linux" | tr '\n' ' '`
 diff --git a/util/grub.d/30_os-prober.in b/util/grub.d/30_os-prober.in
-index 515a68c7a..775ceb2e0 100644
+index 5984e92d2..37d5f05b5 100644
 --- a/util/grub.d/30_os-prober.in
 +++ b/util/grub.d/30_os-prober.in
-@@ -220,7 +220,7 @@ EOF
+@@ -223,7 +223,7 @@ EOF
  	fi
  
  	onstr="$(gettext_printf "(on %s)" "${DEVICE}")"

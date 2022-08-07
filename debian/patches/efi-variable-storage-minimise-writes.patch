@@ -1,4 +1,4 @@
-From fc333cf241ea774b0610c8ba57c833d6937dd0f5 Mon Sep 17 00:00:00 2001
+From 6e3841fc4abf50d16d819c39ac5de74ccc4de225 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Mon, 11 Mar 2019 11:17:43 +0000
 Subject: Minimise writes to EFI variable storage
@@ -60,10 +60,10 @@ Patch-Name: efi-variable-storage-minimise-writes.patch
  create mode 100644 grub-core/osdep/unix/efivar.c
 
 diff --git a/INSTALL b/INSTALL
-index 8acb40902..342c158e9 100644
+index 79a0af7d9..590b52482 100644
 --- a/INSTALL
 +++ b/INSTALL
-@@ -41,6 +41,11 @@ configuring the GRUB.
+@@ -23,6 +23,11 @@ configuring the GRUB.
  * Other standard GNU/Unix tools
  * a libc with large file support (e.g. glibc 2.1 or later)
  
@@ -76,10 +76,10 @@ index 8acb40902..342c158e9 100644
  
  * libdevmapper 1.02.34 or later (recommended)
 diff --git a/Makefile.util.def b/Makefile.util.def
-index 8a24b23f0..59e41423b 100644
+index 27f948291..a3d134b03 100644
 --- a/Makefile.util.def
 +++ b/Makefile.util.def
-@@ -558,6 +558,8 @@ program = {
+@@ -570,6 +570,8 @@ program = {
    common = grub-core/osdep/compress.c;
    extra_dist = grub-core/osdep/unix/compress.c;
    extra_dist = grub-core/osdep/basic/compress.c;
@@ -88,7 +88,7 @@ index 8a24b23f0..59e41423b 100644
    common = util/editenv.c;
    common = grub-core/osdep/blocklist.c;
    common = grub-core/osdep/config.c;
-@@ -571,12 +573,15 @@ program = {
+@@ -583,12 +585,15 @@ program = {
    common = grub-core/kern/emu/argp_common.c;
    common = grub-core/osdep/init.c;
  
@@ -104,7 +104,7 @@ index 8a24b23f0..59e41423b 100644
  
    condition = COND_HAVE_EXEC;
  };
-@@ -605,6 +610,8 @@ program = {
+@@ -617,6 +622,8 @@ program = {
    extra_dist = grub-core/osdep/basic/no_platform.c;
    extra_dist = grub-core/osdep/unix/platform.c;
    common = grub-core/osdep/compress.c;
@@ -113,7 +113,7 @@ index 8a24b23f0..59e41423b 100644
    common = util/editenv.c;
    common = grub-core/osdep/blocklist.c;
    common = grub-core/osdep/config.c;
-@@ -618,12 +625,15 @@ program = {
+@@ -630,12 +637,15 @@ program = {
    common = grub-core/kern/emu/argp_common.c;
    common = grub-core/osdep/init.c;
  
@@ -129,7 +129,7 @@ index 8a24b23f0..59e41423b 100644
  };
  
  program = {
-@@ -645,6 +655,8 @@ program = {
+@@ -657,6 +667,8 @@ program = {
    common = grub-core/osdep/platform.c;
    common = grub-core/osdep/platform_unix.c;
    common = grub-core/osdep/compress.c;
@@ -138,7 +138,7 @@ index 8a24b23f0..59e41423b 100644
    common = util/editenv.c;
    common = grub-core/osdep/blocklist.c;
    common = grub-core/osdep/config.c;
-@@ -657,12 +669,15 @@ program = {
+@@ -669,12 +681,15 @@ program = {
    common = grub-core/kern/emu/argp_common.c;
    common = grub-core/osdep/init.c;
  
@@ -154,7 +154,7 @@ index 8a24b23f0..59e41423b 100644
  };
  
  program = {
-@@ -684,6 +699,8 @@ program = {
+@@ -696,6 +711,8 @@ program = {
    common = grub-core/osdep/platform.c;
    common = grub-core/osdep/platform_unix.c;
    common = grub-core/osdep/compress.c;
@@ -163,7 +163,7 @@ index 8a24b23f0..59e41423b 100644
    common = util/editenv.c;
    common = grub-core/osdep/blocklist.c;
    common = grub-core/osdep/config.c;
-@@ -693,12 +710,15 @@ program = {
+@@ -705,12 +722,15 @@ program = {
    common = grub-core/kern/emu/argp_common.c;
    common = grub-core/osdep/init.c;
  
@@ -180,10 +180,10 @@ index 8a24b23f0..59e41423b 100644
  
  script = {
 diff --git a/configure.ac b/configure.ac
-index e382c7480..883245553 100644
+index e11df6bc5..b3fb7437e 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -443,6 +443,18 @@ AC_CHECK_HEADER([util.h], [
+@@ -452,6 +452,18 @@ AC_CHECK_HEADER([util.h], [
  ])
  AC_SUBST([LIBUTIL])
  
@@ -856,10 +856,10 @@ index 9c439326a..b561174ea 100644
  
  void
 diff --git a/include/grub/util/install.h b/include/grub/util/install.h
-index 8aeb5c4f2..a521f1663 100644
+index 135ba48d2..134b862ec 100644
 --- a/include/grub/util/install.h
 +++ b/include/grub/util/install.h
-@@ -219,6 +219,11 @@ grub_install_get_default_x86_platform (void);
+@@ -226,6 +226,11 @@ grub_install_get_default_x86_platform (void);
  const char *
  grub_install_get_default_powerpc_machtype (void);
  
@@ -872,10 +872,10 @@ index 8aeb5c4f2..a521f1663 100644
  grub_install_register_efi (grub_device_t efidir_grub_dev,
  			   const char *efifile_path,
 diff --git a/util/grub-install.c b/util/grub-install.c
-index ba06e1350..fdec5dd83 100644
+index 58f1453ba..05b695226 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
-@@ -2061,7 +2061,7 @@ main (int argc, char *argv[])
+@@ -2086,7 +2086,7 @@ main (int argc, char *argv[])
  					       "\\System\\Library\\CoreServices",
  					       efi_distributor);
  	      if (ret)
@@ -884,7 +884,7 @@ index ba06e1350..fdec5dd83 100644
  				 strerror (ret));
  	    }
  
-@@ -2175,7 +2175,7 @@ main (int argc, char *argv[])
+@@ -2203,7 +2203,7 @@ main (int argc, char *argv[])
  	  ret = grub_install_register_efi (efidir_grub_dev,
  					   efifile_path, efi_distributor);
  	  if (ret)

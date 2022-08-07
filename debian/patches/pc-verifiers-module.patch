@@ -1,4 +1,4 @@
-From 9ab1fc38fb058d8addbbc461f6767a608cd29b8a Mon Sep 17 00:00:00 2001
+From 4a6abe501f39c4c8afe4ed7405ff99aff8559a13 Mon Sep 17 00:00:00 2001
 From: Michael Chang <mchang@suse.com>
 Date: Thu, 18 Mar 2021 19:30:26 +0800
 Subject: i386-pc: build verifiers API as module
@@ -27,7 +27,7 @@ Signed-off-by: Michael Chang <mchang@suse.com>
 Origin: other, https://lists.gnu.org/archive/html/grub-devel/2021-03/msg00251.html
 Bug-Debian: https://bugs.debian.org/984488
 Bug-Debian: https://bugs.debian.org/985374
-Last-Update: 2021-03-18
+Last-Update: 2021-09-24
 
 Patch-Name: pc-verifiers-module.patch
 ---
@@ -39,10 +39,10 @@ Patch-Name: pc-verifiers-module.patch
  5 files changed, 39 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/Makefile.am b/grub-core/Makefile.am
-index 5308caa7b..4900265a4 100644
+index ee88e44e9..b6872d20f 100644
 --- a/grub-core/Makefile.am
 +++ b/grub-core/Makefile.am
-@@ -92,7 +92,9 @@ KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/partition.h
+@@ -93,7 +93,9 @@ KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/partition.h
  KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/stack_protector.h
  KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/term.h
  KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/time.h
@@ -53,7 +53,7 @@ index 5308caa7b..4900265a4 100644
  KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/net.h
  KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/memory.h
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 248835aca..43b3da725 100644
+index 2ff266806..da3269899 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -141,7 +141,7 @@ kernel = {
@@ -65,8 +65,8 @@ index 248835aca..43b3da725 100644
  
    noemu = kern/compiler-rt.c;
    noemu = kern/mm.c;
-@@ -951,6 +951,12 @@ module = {
-   enable = x86_64_efi;
+@@ -946,6 +946,12 @@ module = {
+   cppflags = '-I$(srcdir)/lib/posix_wrap';
  };
  
 +module = {
@@ -104,10 +104,10 @@ index 2879d644a..c6fb66853 100644
    grub_load_config ();
  
 diff --git a/grub-core/kern/verifiers.c b/grub-core/kern/verifiers.c
-index aa3dc7c64..58dbe152a 100644
+index 75d7994cf..1245d0d9e 100644
 --- a/grub-core/kern/verifiers.c
 +++ b/grub-core/kern/verifiers.c
-@@ -217,8 +217,25 @@ grub_verify_string (char *str, enum grub_verify_string_type type)
+@@ -221,8 +221,25 @@ grub_verify_string (char *str, enum grub_verify_string_type type)
    return GRUB_ERR_NONE;
  }
  

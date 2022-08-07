@@ -1,4 +1,4 @@
-From 37fdf067b8bf60e999da5e34f9394ea93904fe0c Mon Sep 17 00:00:00 2001
+From 4b6f846398109576c218394c3d10bcb075c065a7 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@debian.org>
 Date: Tue, 28 Jan 2014 14:40:02 +0000
 Subject: Port yaboot logic for various powerpc machine types
@@ -165,7 +165,7 @@ index 55b8f4016..9c439326a 100644
  
    free (boot_device);
 diff --git a/grub-core/osdep/windows/platform.c b/grub-core/osdep/windows/platform.c
-index 7eb53fe01..e19a3d9a8 100644
+index 253f8d101..d18488f20 100644
 --- a/grub-core/osdep/windows/platform.c
 +++ b/grub-core/osdep/windows/platform.c
 @@ -128,6 +128,12 @@ grub_install_get_default_x86_platform (void)
@@ -182,10 +182,10 @@ index 7eb53fe01..e19a3d9a8 100644
  get_efi_variable (const wchar_t *varname, ssize_t *len)
  {
 diff --git a/include/grub/util/install.h b/include/grub/util/install.h
-index 2631b1074..8aeb5c4f2 100644
+index 7df3191f4..135ba48d2 100644
 --- a/include/grub/util/install.h
 +++ b/include/grub/util/install.h
-@@ -216,6 +216,9 @@ grub_install_get_default_arm_platform (void);
+@@ -223,6 +223,9 @@ grub_install_get_default_arm_platform (void);
  const char *
  grub_install_get_default_x86_platform (void);
  
@@ -196,10 +196,10 @@ index 2631b1074..8aeb5c4f2 100644
  grub_install_register_efi (grub_device_t efidir_grub_dev,
  			   const char *efifile_path,
 diff --git a/util/grub-install.c b/util/grub-install.c
-index e89667ff2..b82c14d41 100644
+index 48c8c0364..d02bd488a 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
-@@ -1179,7 +1179,18 @@ main (int argc, char *argv[])
+@@ -1187,7 +1187,18 @@ main (int argc, char *argv[])
  
    if (platform == GRUB_INSTALL_PLATFORM_POWERPC_IEEE1275)
      {

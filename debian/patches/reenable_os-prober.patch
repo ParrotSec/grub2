@@ -1,0 +1,15 @@
+diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
+index f8cbb8d7a..a6d1e2d22 100644
+--- a/util/grub-mkconfig.in
++++ b/util/grub-mkconfig.in
+@@ -140,8 +140,8 @@ GRUB_DEVICE_PARTUUID="`${grub_probe} --device ${GRUB_DEVICE} --target=partuuid 2
+ GRUB_DEVICE_BOOT="`${grub_probe} --target=device /boot`"
+ GRUB_DEVICE_BOOT_UUID="`${grub_probe} --device ${GRUB_DEVICE_BOOT} --target=fs_uuid 2> /dev/null`" || true
+ 
+-# Disable os-prober by default due to security reasons.
+-GRUB_DISABLE_OS_PROBER="true"
++# Enable os-prober by default for stable updates, let's not break expectations
++GRUB_DISABLE_OS_PROBER="false"
+ 
+ # Filesystem for the device containing our userland.  Used for stuff like
+ # choosing Hurd filesystem module.

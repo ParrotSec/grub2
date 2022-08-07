@@ -1,4 +1,4 @@
-From 6394c8c2ce2bdec46c94942fae6546e125047165 Mon Sep 17 00:00:00 2001
+From a0bfbdf9139bc127d28c4102b941ee504f7f0041 Mon Sep 17 00:00:00 2001
 From: Steve McIntyre <93sam@debian.org>
 Date: Wed, 3 Dec 2014 01:25:12 +0000
 Subject: Add support for forcing EFI installation to the removable media path
@@ -14,7 +14,7 @@ Signed-off-by: Steve McIntyre <93sam@debian.org>
 
 Bug-Debian: https://bugs.debian.org/767037 https://bugs.debian.org/773092
 Forwarded: Not yet
-Last-Update: 2014-12-20
+Last-Update: 2021-09-24
 
 Patch-Name: grub-install-extra-removable.patch
 ---
@@ -22,7 +22,7 @@ Patch-Name: grub-install-extra-removable.patch
  1 file changed, 108 insertions(+), 2 deletions(-)
 
 diff --git a/util/grub-install.c b/util/grub-install.c
-index caadada98..ab79828a5 100644
+index 2304cc5c4..b51fe4710 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
 @@ -56,6 +56,7 @@
@@ -64,7 +64,7 @@ index caadada98..ab79828a5 100644
    {0, 0, 0, 0, 0, 0}
  };
  
-@@ -839,6 +848,91 @@ fill_core_services (const char *core_services)
+@@ -847,6 +856,91 @@ fill_core_services (const char *core_services)
    free (sysv_plist);
  }
  
@@ -156,7 +156,7 @@ index caadada98..ab79828a5 100644
  int
  main (int argc, char *argv[])
  {
-@@ -856,6 +950,7 @@ main (int argc, char *argv[])
+@@ -864,6 +958,7 @@ main (int argc, char *argv[])
    char *relative_grubdir;
    char **efidir_device_names = NULL;
    grub_device_t efidir_grub_dev = NULL;
@@ -164,7 +164,7 @@ index caadada98..ab79828a5 100644
    char *efidir_grub_devname;
    int efidir_is_mac = 0;
    int is_prep = 0;
-@@ -888,6 +983,9 @@ main (int argc, char *argv[])
+@@ -896,6 +991,9 @@ main (int argc, char *argv[])
        bootloader_id = xstrdup ("grub");
      }
  
@@ -174,7 +174,7 @@ index caadada98..ab79828a5 100644
    if (!grub_install_source_directory)
      {
        if (!target)
-@@ -1107,6 +1205,8 @@ main (int argc, char *argv[])
+@@ -1115,6 +1213,8 @@ main (int argc, char *argv[])
        if (!efidir_is_mac && grub_strcmp (fs->name, "fat") != 0)
  	grub_util_error (_("%s doesn't look like an EFI partition"), efidir);
  
@@ -183,7 +183,7 @@ index caadada98..ab79828a5 100644
        /* The EFI specification requires that an EFI System Partition must
  	 contain an "EFI" subdirectory, and that OS loaders are stored in
  	 subdirectories below EFI.  Vendors are expected to pick names that do
-@@ -2023,9 +2123,15 @@ main (int argc, char *argv[])
+@@ -2048,9 +2148,15 @@ main (int argc, char *argv[])
  	    fprintf (config_dst_f, "configfile $prefix/grub.cfg\n");
  	    fclose (config_dst_f);
  	    free (config_dst);
@@ -197,6 +197,6 @@ index caadada98..ab79828a5 100644
 +	    if (force_extra_removable)
 +	      also_install_removable(imgfile, base_efidir, efi_suffix_upper);
 +	  }
- 	free (dst);
-       }
-       if (!removable && update_nvram)
+ 
+ 	grub_set_install_backup_ponr ();
+ 

@@ -1,4 +1,4 @@
-From 89a5bb08600e06c33e44a14b1997af3efc98782b Mon Sep 17 00:00:00 2001
+From 562d50025e18052cabc40c8eb63ed4d0bb5de236 Mon Sep 17 00:00:00 2001
 From: Robert Millan <rmh@aybabtu.com>
 Date: Mon, 13 Jan 2014 12:12:52 +0000
 Subject: Improve handling of Debian kernel version numbers
@@ -12,10 +12,10 @@ Patch-Name: dpkg-version-comparison.patch
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/util/grub-mkconfig_lib.in b/util/grub-mkconfig_lib.in
-index 0f801cab3..b6606c16e 100644
+index 301d1ac22..17f9b3e58 100644
 --- a/util/grub-mkconfig_lib.in
 +++ b/util/grub-mkconfig_lib.in
-@@ -239,8 +239,9 @@ version_test_numeric ()
+@@ -243,8 +243,9 @@ version_test_numeric ()
  
  version_test_gt ()
  {
@@ -27,7 +27,7 @@ index 0f801cab3..b6606c16e 100644
    version_test_gt_cmp=gt
    if [ "x$version_test_gt_b" = "x" ] ; then
      return 0
-@@ -250,7 +251,7 @@ version_test_gt ()
+@@ -254,7 +255,7 @@ version_test_gt ()
      *.old:*) version_test_gt_a="`echo "$version_test_gt_a" | sed -e 's/\.old$//'`" ; version_test_gt_cmp=gt ;;
      *:*.old) version_test_gt_b="`echo "$version_test_gt_b" | sed -e 's/\.old$//'`" ; version_test_gt_cmp=ge ;;
    esac

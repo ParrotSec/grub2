@@ -1,4 +1,4 @@
-From 4cf3b1871d621c8dfe5ad54ae206530bb0de1606 Mon Sep 17 00:00:00 2001
+From fc550c31c25dcf9eb58ca1e987f3ce2be8ebac28 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Mon, 13 Jan 2014 12:13:15 +0000
 Subject: Add "linuxefi" loader which avoids ExitBootServices
@@ -8,23 +8,23 @@ Author: Colin Watson <cjwatson@ubuntu.com>
 Author: Steve Langasek <steve.langasek@canonical.com>
 Author: Linn Crosetto <linn@hpe.com>
 Forwarded: no
-Last-Update: 2019-06-26
+Last-Update: 2021-09-24
 
 Patch-Name: linuxefi.patch
 ---
  grub-core/Makefile.core.def       |   7 +
  grub-core/kern/efi/mm.c           |  32 +++
- grub-core/loader/i386/efi/linux.c | 381 ++++++++++++++++++++++++++++++
+ grub-core/loader/i386/efi/linux.c | 383 ++++++++++++++++++++++++++++++
  grub-core/loader/i386/linux.c     |  41 ++++
  include/grub/efi/efi.h            |   3 +
- 5 files changed, 464 insertions(+)
+ 5 files changed, 466 insertions(+)
  create mode 100644 grub-core/loader/i386/efi/linux.c
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 474a63e68..67a98abbb 100644
+index 8022e1c0a..e5b3d27f5 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
-@@ -1849,6 +1849,13 @@ module = {
+@@ -1874,6 +1874,13 @@ module = {
    enable = x86_64_efi;
  };
  
@@ -39,7 +39,7 @@ index 474a63e68..67a98abbb 100644
    name = chain;
    efi = loader/efi/chainloader.c;
 diff --git a/grub-core/kern/efi/mm.c b/grub-core/kern/efi/mm.c
-index b02fab1b1..a9e37108c 100644
+index 9838fb2f5..f6aef0ef6 100644
 --- a/grub-core/kern/efi/mm.c
 +++ b/grub-core/kern/efi/mm.c
 @@ -113,6 +113,38 @@ grub_efi_drop_alloc (grub_efi_physical_address_t address,
@@ -83,10 +83,10 @@ index b02fab1b1..a9e37108c 100644
  grub_efi_allocate_pages_real (grub_efi_physical_address_t address,
 diff --git a/grub-core/loader/i386/efi/linux.c b/grub-core/loader/i386/efi/linux.c
 new file mode 100644
-index 000000000..16372a0c8
+index 000000000..45b68c05a
 --- /dev/null
 +++ b/grub-core/loader/i386/efi/linux.c
-@@ -0,0 +1,381 @@
+@@ -0,0 +1,383 @@
 +/*
 + *  GRUB  --  GRand Unified Bootloader
 + *  Copyright (C) 2012  Free Software Foundation, Inc.
@@ -117,6 +117,7 @@ index 000000000..16372a0c8
 +#include <grub/lib/cmdline.h>
 +#include <grub/linux.h>
 +#include <grub/efi/efi.h>
++#include <grub/efi/sb.h>
 +
 +GRUB_MOD_LICENSE ("GPLv3+");
 +
@@ -147,7 +148,7 @@ index 000000000..16372a0c8
 +  grub_efi_shim_lock_t *shim_lock;
 +  grub_efi_status_t status;
 +
-+  if (! grub_efi_secure_boot())
++  if (grub_efi_get_secureboot () != GRUB_EFI_SECUREBOOT_MODE_ENABLED)
 +    {
 +      grub_dprintf ("linuxefi", "secure boot not enabled, not validating");
 +      return 1;
@@ -400,6 +401,7 @@ index 000000000..16372a0c8
 +      grub_error (GRUB_ERR_OUT_OF_MEMORY, N_("can't allocate kernel"));
 +      goto fail;
 +    }
++  grub_errno = GRUB_ERR_NONE;
 +
 +  grub_dprintf ("linuxefi", "kernel_mem = %lx\n", (unsigned long) kernel_mem);
 +
@@ -469,10 +471,10 @@ index 000000000..16372a0c8
 +  grub_unregister_command (cmd_initrd);
 +}
 diff --git a/grub-core/loader/i386/linux.c b/grub-core/loader/i386/linux.c
-index d0501e229..2eab9bb10 100644
+index 9f74a96b1..be37a1640 100644
 --- a/grub-core/loader/i386/linux.c
 +++ b/grub-core/loader/i386/linux.c
-@@ -76,6 +76,8 @@ static grub_size_t maximal_cmdline_size;
+@@ -78,6 +78,8 @@ static grub_size_t maximal_cmdline_size;
  static struct linux_kernel_params linux_params;
  static char *linux_cmdline;
  #ifdef GRUB_MACHINE_EFI
@@ -481,13 +483,13 @@ index d0501e229..2eab9bb10 100644
  static grub_efi_uintn_t efi_mmap_size;
  #else
  static const grub_size_t efi_mmap_size = 0;
-@@ -651,6 +653,39 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
+@@ -659,6 +661,39 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
  
    grub_dl_ref (my_mod);
  
 +#ifdef GRUB_MACHINE_EFI
 +  using_linuxefi = 0;
-+  if (grub_efi_secure_boot ())
++  if (grub_efi_get_secureboot () == GRUB_EFI_SECUREBOOT_MODE_ENABLED)
 +    {
 +      /* linuxefi requires a successful signature check and then hand over
 +	 to the kernel without calling ExitBootServices. */
@@ -521,7 +523,7 @@ index d0501e229..2eab9bb10 100644
    if (argc == 0)
      {
        grub_error (GRUB_ERR_BAD_ARGUMENT, N_("filename expected"));
-@@ -1036,6 +1071,12 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
+@@ -1042,6 +1077,12 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
    grub_err_t err;
    struct grub_linux_initrd_context initrd_ctx = { 0, 0, 0 };
  
@@ -535,7 +537,7 @@ index d0501e229..2eab9bb10 100644
      {
        grub_error (GRUB_ERR_BAD_ARGUMENT, N_("filename expected"));
 diff --git a/include/grub/efi/efi.h b/include/grub/efi/efi.h
-index a237952b3..085ee0524 100644
+index 83d958f99..08f6ee00a 100644
 --- a/include/grub/efi/efi.h
 +++ b/include/grub/efi/efi.h
 @@ -47,6 +47,9 @@ EXPORT_FUNC(grub_efi_allocate_fixed) (grub_efi_physical_address_t address,

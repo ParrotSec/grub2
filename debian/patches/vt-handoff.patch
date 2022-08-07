@@ -1,4 +1,4 @@
-From 3b90c3e720f1663906e2e8af3c21123d66e14b88 Mon Sep 17 00:00:00 2001
+From 4336395ce7d82827b466a0088e1b08d42ef24ae8 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Mon, 13 Jan 2014 12:13:30 +0000
 Subject: Add configure option to use vt.handoff=7
@@ -18,10 +18,10 @@ Patch-Name: vt-handoff.patch
  2 files changed, 38 insertions(+), 1 deletion(-)
 
 diff --git a/configure.ac b/configure.ac
-index dbc429ce0..e382c7480 100644
+index 947fd529f..e11df6bc5 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -1890,6 +1890,17 @@ else
+@@ -1948,6 +1948,17 @@ else
  fi
  AC_SUBST([GFXPAYLOAD_DYNAMIC])
  
@@ -40,7 +40,7 @@ index dbc429ce0..e382c7480 100644
  
  AC_SUBST([FONT_SOURCE])
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 2f5217358..174d547bb 100644
+index d46d7852b..64204c216 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -24,6 +24,7 @@ ubuntu_recovery="@UBUNTU_RECOVERY@"

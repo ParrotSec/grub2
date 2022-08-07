@@ -1,3 +1,149 @@
+grub2 (2.06-3parrot1) lts-updates; urgency=medium
+
+  * Import new Debian version.
+  * Re-apply Parrot patch for failsafe options.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 08 Aug 2022 00:12:55 +0200
+
+grub2 (2.06-3~deb11u1) bullseye; urgency=medium
+
+  [ Steve McIntyre ]
+  * Rebuild for bullseye.
+  * Updated the 2.06-3 changelog to mention closure of CVE-2022-28736
+  * Re-enable os-prober by default, don't make that change in a stable
+    update.
+
+ -- Steve McIntyre <93sam@debian.org>  Mon, 01 Aug 2022 20:26:34 +0100
+
+grub2 (2.06-3) unstable; urgency=medium
+
+  [ Colin Watson ]
+  * Update a few leftover uses of "which" to use "command -v" instead.
+  * Remove some old Lintian overrides.
+  * Trim trailing whitespace.
+  * debian/copyright: use spaces rather than tabs to start continuation lines.
+  * Add missing ${misc:Depends} to Depends for grub-efi-ia32-signed-template,
+    grub-efi-amd64-signed-template, grub-efi-arm64-signed-template.
+  * Bump debhelper from old 10 to 13.
+  * Set upstream metadata fields: Bug-Submit (from ./configure), Repository,
+    Repository-Browse.
+  * Drop now-unnecessary sparc PIE workaround from debian/rules (thanks,
+    John Paul Adrian Glaubitz; closes: #952815).
+
+  [ Debconf translations ]
+  * [id] Indonesian (Andika Triwidada; closes: #1007706).
+
+  [ Julian Andres Klode ]
+  * Add Julian Andres Klode to uploaders
+  * Disable building with LTO, as used in Ubuntu and possibly other
+    downstreams (maybe Debian one day), as that breaks the build.
+  * SECURITY UPDATE: Crafted PNG grayscale images may lead to out-of-bounds
+    write in heap.
+    - 0070-video-readers-png-Drop-greyscale-support-to-fix-heap.patch:
+      video/readers/png: Drop greyscale support to fix heap out-of-bounds write
+    - CVE-2021-3695
+  * SECURITY UPDATE: Crafted PNG image may lead to out-of-bound write during
+    huffman table handling.
+    - 0071-video-readers-png-Avoid-heap-OOB-R-W-inserting-huff-.patch:
+      video/readers/png: Avoid heap OOB R/W inserting huff table items
+    - CVE-2021-3696
+  * SECURITY UPDATE: Crafted JPEG image can lead to buffer underflow write in
+    the heap.
+    - 0076-video-readers-jpeg-Block-int-underflow-wild-pointer-.patch:
+      video/readers/jpeg: Block int underflow -> wild pointer write
+    - CVE-2021-3697
+  * SECURITY UPDATE: Integer underflow in grub_net_recv_ip4_packets
+    - 0079-net-ip-Do-IP-fragment-maths-safely.patch: net/ip: Do IP fragment
+      maths safely
+    - CVE-2022-28733
+  * SECURITY UPDATE: Out-of-bounds write when handling split HTTP headers
+    - 0085-net-http-Fix-OOB-write-for-split-http-headers.patch: net/http: Fix
+      OOB write for split http headers
+    - CVE-2022-28734
+  * SECURITY UPDATE: shim_lock verifier allows non-kernel files to be loaded
+    - 0066-kern-efi-sb-Reject-non-kernel-files-in-the-shim_lock.patch:
+      kern/efi/sb: Reject non-kernel files in the shim_lock verifier
+    - CVE-2022-28735
+    - Closes: #1001057
+  * SECURITY UPDATE: use-after-free in grub_cmd_chainloader()
+    - 0063-loader-efi-chainloader-Simplify-the-loader-state.patch:
+      loader/efi/chainloader: simplify the loader state
+    - 0064-commands-boot-Add-API-to-pass-context-to-loader.patch: commands/boot:
+      Add API to pass context to loader
+    - 0065-loader-efi-chainloader-Use-grub_loader_set_ex.patch:
+      loader/efi/chainloader: Use grub_loader_set_ex
+    - 0066-loader-i386-efi-linux-Use-grub_loader_set_ex.patch:
+      loader/i386/efi/linux: Use grub_loader_set_ex
+    - CVE-2022-28736
+  * Various fixes as a result of fuzzing and static analysis:
+    - 0067-kern-file-Do-not-leak-device_name-on-error-in-grub_f.patch:
+      kern/file: Do not leak device_name on error in grub_file_open()
+    - 0068-video-readers-png-Abort-sooner-if-a-read-operation-f.patch:
+      video/readers/png: Abort sooner if a read operation fails
+    - 0069-video-readers-png-Refuse-to-handle-multiple-image-he.patch:
+      video/readers/png: Refuse to handle multiple image headers
+    - 0072-video-readers-png-Sanity-check-some-huffman-codes.patch:
+      video/readers/png: Sanity check some huffman codes
+    - 0073-video-readers-jpeg-Abort-sooner-if-a-read-operation-.patch:
+      video/readers/jpeg: Abort sooner if a read operation fails
+    - 0074-video-readers-jpeg-Do-not-reallocate-a-given-huff-ta.patch:
+      video/readers/jpeg: Do not reallocate a given huff table
+    - 0075-video-readers-jpeg-Refuse-to-handle-multiple-start-o.patch:
+      video/readers/jpeg: Refuse to handle multiple start of streams
+    - 0077-normal-charset-Fix-array-out-of-bounds-formatting-un.patch:
+      normal/charset: Fix array out-of-bounds formatting unicode for display
+    - 0078-net-netbuff-Block-overly-large-netbuff-allocs.patch:
+      net/netbuff: Block overly large netbuff allocs
+    - 0080-net-dns-Fix-double-free-addresses-on-corrupt-DNS-res.patch:
+      net/dns: Fix double-free addresses on corrupt DNS response
+    - 0081-net-dns-Don-t-read-past-the-end-of-the-string-we-re-.patch:
+      net/dns: Don't read past the end of the string we're checking against
+    - 0082-net-tftp-Prevent-a-UAF-and-double-free-from-a-failed.patch:
+      net/tftp: Prevent a UAF and double-free from a failed seek
+    - 0083-net-tftp-Avoid-a-trivial-UAF.patch: net/tftp: Avoid a trivial UAF
+    - 0084-net-http-Do-not-tear-down-socket-if-it-s-already-bee.patch:
+      net/http: Do not tear down socket if it's already been torn down
+    - 0086-net-http-Error-out-on-headers-with-LF-without-CR.patch:
+      net/http: Error out on headers with LF without CR
+    - 0087-fs-f2fs-Do-not-read-past-the-end-of-nat-journal-entr.patch:
+      fs/f2fs: Do not read past the end of nat journal entries
+    - 0088-fs-f2fs-Do-not-read-past-the-end-of-nat-bitmap.patch:
+      fs/f2fs: Do not read past the end of nat bitmap
+    - 0089-fs-f2fs-Do-not-copy-file-names-that-are-too-long.patch:
+      fs/f2fs: Do not copy file names that are too long
+    - 0090-fs-btrfs-Fix-several-fuzz-issues-with-invalid-dir-it.patch:
+      fs/btrfs: Fix several fuzz issues with invalid dir item sizing
+    - 0091-fs-btrfs-Fix-more-ASAN-and-SEGV-issues-found-with-fu.patch:
+      fs/btrfs: Fix more ASAN and SEGV issues found with fuzzing
+    - 0092-fs-btrfs-Fix-more-fuzz-issues-related-to-chunks.patch:
+      fs/btrfs: Fix more fuzz issues related to chunks
+  * Bump SBAT generation:
+    - update debian/sbat.debian.csv.in
+
+ -- Julian Andres Klode <jak@debian.org>  Fri, 10 Jun 2022 11:15:11 +0200
+
+grub2 (2.06-2) unstable; urgency=medium
+
+  * Update to minilzo-2.10, fixing build failures on armel, mips64el,
+    mipsel, and ppc64el.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 29 Nov 2021 00:10:09 +0000
+
+grub2 (2.06-1) unstable; urgency=medium
+
+  * Use "command -v" in maintainer scripts rather than "which".
+  * New upstream release.
+    - Switch to the upstream shim_lock verifier, dropping several more
+      manual checks for UEFI Secure Boot.
+  * Cherry-pick from upstream:
+    - fs/xfs: Fix unreadable filesystem with v4 superblock
+    - tests/ahci: Change "ide-drive" deprecated QEMU device name to "ide-hd"
+      (closes: #997100)
+  * Remove dir_to_symlink maintainer script code, which was only needed for
+    upgrades from before jessie.
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 28 Nov 2021 13:30:32 +0000
+
 grub2 (2.04-20parrot1) lts-updates; urgency=medium
 
   * Import new Debian release.

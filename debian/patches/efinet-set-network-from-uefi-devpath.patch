@@ -1,4 +1,4 @@
-From 9d4c6679960366658950f8727497a85cf3d26fc8 Mon Sep 17 00:00:00 2001
+From 3f85b646c8f6188f6e2122fc90351fb900e1b337 Mon Sep 17 00:00:00 2001
 From: Michael Chang <mchang@suse.com>
 Date: Thu, 27 Oct 2016 17:43:05 -0400
 Subject: efinet: Setting network from UEFI device path
@@ -358,10 +358,10 @@ index fc90415f2..2d3b00f0e 100644
    }
  }
 diff --git a/include/grub/efi/api.h b/include/grub/efi/api.h
-index ca6cdc159..664cea37b 100644
+index 50ab8e844..4b4652ca5 100644
 --- a/include/grub/efi/api.h
 +++ b/include/grub/efi/api.h
-@@ -825,6 +825,8 @@ struct grub_efi_ipv4_device_path
+@@ -849,6 +849,8 @@ struct grub_efi_ipv4_device_path
    grub_efi_uint16_t remote_port;
    grub_efi_uint16_t protocol;
    grub_efi_uint8_t static_ip_address;
@@ -370,7 +370,7 @@ index ca6cdc159..664cea37b 100644
  } GRUB_PACKED;
  typedef struct grub_efi_ipv4_device_path grub_efi_ipv4_device_path_t;
  
-@@ -879,6 +881,15 @@ struct grub_efi_sata_device_path
+@@ -903,6 +905,15 @@ struct grub_efi_sata_device_path
  } GRUB_PACKED;
  typedef struct grub_efi_sata_device_path grub_efi_sata_device_path_t;
  

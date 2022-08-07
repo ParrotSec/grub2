@@ -1,4 +1,4 @@
-From 4225ea9ee7c546c4340e658b0bd6983c436a5f51 Mon Sep 17 00:00:00 2001
+From 0b33def5d9ace3488fa612e09a5bb813c5e3cd90 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Mon, 13 Jan 2014 12:13:26 +0000
 Subject: Add configure option to reduce visual clutter at boot time
@@ -30,7 +30,7 @@ Author: Will Thompson <will@willthompson.co.uk>
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/386922
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/861048
 Forwarded: (partial) http://lists.gnu.org/archive/html/grub-devel/2009-09/msg00056.html
-Last-Update: 2019-06-24
+Last-Update: 2021-09-24
 
 Patch-Name: maybe-quiet.patch
 ---
@@ -59,10 +59,10 @@ index 9e8f9911b..d2c4ce8e5 100644
  /* We don't need those.  */
  #define MINILZO_CFG_SKIP_LZO_PTR 1
 diff --git a/configure.ac b/configure.ac
-index 1e5abc67d..ea00ccd69 100644
+index 74778a6f8..256fc44ef 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -1857,6 +1857,17 @@ else
+@@ -1915,6 +1915,17 @@ else
  fi
  AC_SUBST([UBUNTU_RECOVERY])
  
@@ -80,9 +80,9 @@ index 1e5abc67d..ea00ccd69 100644
  LIBS=""
  
  AC_SUBST([FONT_SOURCE])
-@@ -2114,5 +2125,10 @@ echo "Without liblzma (no support for XZ-compressed mips images) ($liblzma_excus
+@@ -2177,5 +2188,10 @@ echo "With stack smashing protector: Yes"
  else
- echo "With liblzma from $LIBLZMA (support for XZ-compressed mips images)"
+ echo "With stack smashing protector: No"
  fi
 +if [ x"$enable_quiet_boot" = xyes ]; then
 +echo With quiet boot: Yes
@@ -204,10 +204,10 @@ index c1addc0df..9b6d7a7ed 100644
  
  notification_step:	.asciz "."
 diff --git a/grub-core/kern/main.c b/grub-core/kern/main.c
-index 9cad0c448..714b63d67 100644
+index 73967e2f5..2879d644a 100644
 --- a/grub-core/kern/main.c
 +++ b/grub-core/kern/main.c
-@@ -264,15 +264,25 @@ reclaim_module_space (void)
+@@ -265,15 +265,25 @@ reclaim_module_space (void)
  void __attribute__ ((noreturn))
  grub_main (void)
  {
@@ -231,9 +231,9 @@ index 9cad0c448..714b63d67 100644
    grub_setcolorstate (GRUB_TERM_COLOR_STANDARD);
 +#endif
  
-   grub_load_config ();
- 
-@@ -308,5 +318,12 @@ grub_main (void)
+   /* Init verifiers API. */
+   grub_verifiers_init ();
+@@ -312,5 +322,12 @@ grub_main (void)
    grub_boot_time ("After execution of embedded config. Attempt to go to normal mode");
  
    grub_load_normal_mode ();
@@ -261,10 +261,10 @@ index dcd7d4439..a93524eab 100644
    while (1)
      {
 diff --git a/grub-core/normal/main.c b/grub-core/normal/main.c
-index 1b03dfd57..0aa389fa1 100644
+index c4ebe9e22..a1750e09c 100644
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
-@@ -389,6 +389,15 @@ static grub_err_t
+@@ -407,6 +407,15 @@ static grub_err_t
  grub_normal_read_line_real (char **line, int cont, int nested)
  {
    const char *prompt;
@@ -280,7 +280,7 @@ index 1b03dfd57..0aa389fa1 100644
  
    if (cont)
      /* TRANSLATORS: it's command line prompt.  */
-@@ -441,7 +450,9 @@ grub_cmdline_run (int nested, int force_auth)
+@@ -459,7 +468,9 @@ grub_cmdline_run (int nested, int force_auth)
        return;
      }
  
@@ -291,10 +291,10 @@ index 1b03dfd57..0aa389fa1 100644
    while (1)
      {
 diff --git a/grub-core/normal/menu.c b/grub-core/normal/menu.c
-index 3611ee9ea..ebf5a0f10 100644
+index 8397886fa..e9d8444b5 100644
 --- a/grub-core/normal/menu.c
 +++ b/grub-core/normal/menu.c
-@@ -827,12 +827,18 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot)
+@@ -807,12 +807,18 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot)
  
  /* Callback invoked immediately before a menu entry is executed.  */
  static void
@@ -314,7 +314,7 @@ index 3611ee9ea..ebf5a0f10 100644
  }
  
  /* Callback invoked when a default menu entry executed because of a timeout
-@@ -880,6 +886,9 @@ show_menu (grub_menu_t menu, int nested, int autobooted)
+@@ -860,6 +866,9 @@ show_menu (grub_menu_t menu, int nested, int autobooted)
        int boot_entry;
        grub_menu_entry_t e;
        int auto_boot;
@@ -324,7 +324,7 @@ index 3611ee9ea..ebf5a0f10 100644
  
        boot_entry = run_menu (menu, nested, &auto_boot);
        if (boot_entry < 0)
-@@ -889,7 +898,11 @@ show_menu (grub_menu_t menu, int nested, int autobooted)
+@@ -869,7 +878,11 @@ show_menu (grub_menu_t menu, int nested, int autobooted)
        if (! e)
  	continue; /* Menu is empty.  */
  
@@ -338,7 +338,7 @@ index 3611ee9ea..ebf5a0f10 100644
        if (auto_boot)
  	grub_menu_execute_with_fallback (menu, e, autobooted,
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 61335e908..2e4dff9fb 100644
+index 1b8c6e146..869a7eec5 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -21,6 +21,7 @@ prefix="@prefix@"

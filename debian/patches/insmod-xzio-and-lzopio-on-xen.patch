@@ -1,4 +1,4 @@
-From d9b8da8f0d48df481fec93750e91468b1f51479d Mon Sep 17 00:00:00 2001
+From bc8ec86089a4f6eb2ea19499a2b335dccdebd577 Mon Sep 17 00:00:00 2001
 From: Ian Campbell <ijc@debian.org>
 Date: Sun, 30 Nov 2014 12:12:52 +0000
 Subject: Arrange to insmod xzio and lzopio when booting a kernel as a Xen
@@ -20,7 +20,7 @@ Patch-Name: insmod-xzio-and-lzopio-on-xen.patch
  1 file changed, 1 insertion(+)
 
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index ba945582e..8a74c677b 100644
+index f88a2de10..635c609d6 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -162,6 +162,7 @@ linux_entry ()

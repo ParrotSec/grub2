@@ -1,4 +1,4 @@
-From cb2746b915b7d8b5a3c78fae3d40fc0ccc41b650 Mon Sep 17 00:00:00 2001
+From c8351a8a7a7664dfac4de63fb6df185b2a52a346 Mon Sep 17 00:00:00 2001
 From: Steve McIntyre <93sam@debian.org>
 Date: Fri, 14 Jun 2019 16:37:11 +0100
 Subject: Deal with --force-extra-removable with signed shim too
@@ -14,18 +14,18 @@ NVRAM).
 that we're using consistent case-insensitive logic.]
 
 Bug-Debian: https://bugs.debian.org/930531
-Last-Update: 2019-06-14
+Last-Update: 2021-09-24
 
 Patch-Name: grub-install-removable-shim.patch
 ---
- util/grub-install.c | 84 ++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 67 insertions(+), 17 deletions(-)
+ util/grub-install.c | 83 +++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 66 insertions(+), 17 deletions(-)
 
 diff --git a/util/grub-install.c b/util/grub-install.c
-index fdec5dd83..666cef3d2 100644
+index 05b695226..43fc27c55 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
-@@ -883,17 +883,13 @@ check_component_exists(const char *dir,
+@@ -891,17 +891,13 @@ check_component_exists(const char *dir,
  static void
  also_install_removable(const char *src,
  		       const char *base_efidir,
@@ -45,7 +45,7 @@ index fdec5dd83..666cef3d2 100644
    /* We need to install in $base_efidir/EFI/BOOT/$efi_file, but we
     * need to cope with case-insensitive stuff here. Build the path one
     * component at a time, checking for existing matches each time. */
-@@ -927,10 +923,9 @@ also_install_removable(const char *src,
+@@ -935,10 +931,9 @@ also_install_removable(const char *src,
    cur = xstrdup (dst);
    free (dst);
    free (found);
@@ -57,7 +57,7 @@ index fdec5dd83..666cef3d2 100644
  }
  
  int
-@@ -2078,11 +2073,14 @@ main (int argc, char *argv[])
+@@ -2103,11 +2098,14 @@ main (int argc, char *argv[])
      case GRUB_INSTALL_PLATFORM_IA64_EFI:
        {
  	char *dst = grub_util_path_concat (2, efidir, efi_file);
@@ -72,7 +72,7 @@ index fdec5dd83..666cef3d2 100644
  	    char *config_dst;
  	    FILE *config_dst_f;
  
-@@ -2091,11 +2089,15 @@ main (int argc, char *argv[])
+@@ -2116,11 +2114,15 @@ main (int argc, char *argv[])
  	    mok_file = xasprintf ("mm%s.efi", efi_suffix);
  	    fb_signed = xasprintf ("fb%s.efi.signed", efi_suffix);
  	    fb_file = xasprintf ("fb%s.efi", efi_suffix);
@@ -89,7 +89,7 @@ index fdec5dd83..666cef3d2 100644
  		if (!removable)
  		  {
  		    free (efi_file);
-@@ -2107,8 +2109,6 @@ main (int argc, char *argv[])
+@@ -2132,8 +2134,6 @@ main (int argc, char *argv[])
  		chained_base = xasprintf ("grub%s.efi", efi_suffix);
  		chained_dst = grub_util_path_concat (2, efidir, chained_base);
  		grub_install_copy_file (efi_signed, chained_dst, 1);
@@ -98,7 +98,7 @@ index fdec5dd83..666cef3d2 100644
  
  		/* Not critical, so not an error if they are not present (as it
  		   won't be for older releases); but if we have them, make
-@@ -2119,8 +2119,6 @@ main (int argc, char *argv[])
+@@ -2144,8 +2144,6 @@ main (int argc, char *argv[])
  						    mok_file);
  		grub_install_copy_file (mok_src,
  					mok_dst, 0);
@@ -107,7 +107,7 @@ index fdec5dd83..666cef3d2 100644
  
  		fb_src = grub_util_path_concat (2, "/usr/lib/shim/",
  						    fb_signed);
-@@ -2128,27 +2126,79 @@ main (int argc, char *argv[])
+@@ -2153,30 +2151,81 @@ main (int argc, char *argv[])
  						    fb_file);
  		grub_install_copy_file (fb_src,
  					fb_dst, 0);
@@ -186,7 +186,9 @@ index fdec5dd83..666cef3d2 100644
 -	      also_install_removable(imgfile, base_efidir, efi_suffix_upper);
 +	      also_install_removable (imgfile, base_efidir, removable_file, 1);
  	  }
-+
+ 
+ 	grub_set_install_backup_ponr ();
+ 
 +	free (removable_file);
  	free (dst);
        }

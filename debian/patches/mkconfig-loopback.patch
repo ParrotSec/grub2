@@ -1,4 +1,4 @@
-From eac8d3f2f35c3478673698c800b21d425faf6326 Mon Sep 17 00:00:00 2001
+From 3f0c88e2ffa15cfb34641397cc9bdbe39085f1ba Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@debian.org>
 Date: Mon, 13 Jan 2014 12:13:00 +0000
 Subject: Handle filesystems loop-mounted on file images
@@ -21,7 +21,7 @@ Patch-Name: mkconfig-loopback.patch
  3 files changed, 34 insertions(+)
 
 diff --git a/util/grub-mkconfig_lib.in b/util/grub-mkconfig_lib.in
-index b6606c16e..b05df554d 100644
+index 17f9b3e58..e62cfc22b 100644
 --- a/util/grub-mkconfig_lib.in
 +++ b/util/grub-mkconfig_lib.in
 @@ -133,6 +133,22 @@ prepare_grub_to_access_device ()
@@ -47,8 +47,8 @@ index b6606c16e..b05df554d 100644
    # Abstraction modules aren't auto-loaded.
    abstraction="`"${grub_probe}" --device $@ --target=abstraction`"
    for module in ${abstraction} ; do
-@@ -165,6 +181,14 @@ prepare_grub_to_access_device ()
-     echo "fi"
+@@ -169,6 +185,14 @@ prepare_grub_to_access_device ()
+     fi
    fi
    IFS="$old_ifs"
 +
@@ -63,7 +63,7 @@ index b6606c16e..b05df554d 100644
  
  grub_get_device_id ()
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index dd5a60c71..8c22c79f6 100644
+index 9446d6833..46696dd66 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -40,6 +40,11 @@ fi
@@ -79,7 +79,7 @@ index dd5a60c71..8c22c79f6 100644
  esac
  
 diff --git a/util/grub.d/20_linux_xen.in b/util/grub.d/20_linux_xen.in
-index 96179ea61..9a8d42fb5 100644
+index 3b1f47049..7620a14fa 100644
 --- a/util/grub.d/20_linux_xen.in
 +++ b/util/grub.d/20_linux_xen.in
 @@ -40,6 +40,11 @@ fi

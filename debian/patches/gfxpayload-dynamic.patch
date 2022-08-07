@@ -1,4 +1,4 @@
-From f892ba14f3ec78b03cd3feb2f5845a223786823f Mon Sep 17 00:00:00 2001
+From bc7f762a1d253537eb524946884b0f3e50a419f0 Mon Sep 17 00:00:00 2001
 From: Evan Broder <evan@ebroder.net>
 Date: Mon, 13 Jan 2014 12:13:29 +0000
 Subject: Add configure option to enable gfxpayload=keep dynamically
@@ -22,10 +22,10 @@ Patch-Name: gfxpayload-dynamic.patch
  create mode 100644 grub-core/commands/i386/pc/hwmatch.c
 
 diff --git a/configure.ac b/configure.ac
-index 7dda5bb32..dbc429ce0 100644
+index c42e4c784..947fd529f 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -1879,6 +1879,17 @@ else
+@@ -1937,6 +1937,17 @@ else
  fi
  AC_SUBST([QUICK_BOOT])
  
@@ -44,10 +44,10 @@ index 7dda5bb32..dbc429ce0 100644
  
  AC_SUBST([FONT_SOURCE])
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 67a98abbb..836bf0a59 100644
+index e5b3d27f5..2ff266806 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
-@@ -971,6 +971,14 @@ module = {
+@@ -964,6 +964,14 @@ module = {
    common = lib/hexdump.c;
  };
  
@@ -227,7 +227,7 @@ index 31567483c..e3c4cae2b 100644
      GRUB_FILE_TYPE_LOADENV,
      GRUB_FILE_TYPE_SAVEENV,
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 51cdb5e1d..2f5217358 100644
+index 80315a31b..d46d7852b 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -23,6 +23,7 @@ datarootdir="@datarootdir@"

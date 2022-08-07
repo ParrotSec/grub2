@@ -200,7 +200,7 @@ camcontrol_size()
 
 maybe_udevadm()
 {
-  if which udevadm >/dev/null 2>&1; then
+  if command -v udevadm >/dev/null 2>&1; then
     udevadm "$@" || true
   fi
 }
@@ -226,7 +226,7 @@ describe_disk()
         model="$(maybe_udevadm info -n "$disk" -q property | sed -n 's/^DM_NAME=//p')"
         if [ -z "$model" ]; then
           model="$(maybe_udevadm info -n "$disk" -q property | sed -n 's/^MD_NAME=//p')"
-          if [ -z "$model" ] && which dmsetup >/dev/null 2>&1; then
+          if [ -z "$model" ] && command -v dmsetup >/dev/null 2>&1; then
             model="$(dmsetup info -c --noheadings -o name "$disk" 2>/dev/null || true)"
           fi
         fi
