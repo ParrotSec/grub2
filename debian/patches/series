@@ -92,3 +92,4 @@ minilzo-2.10.patch
 0092-fs-btrfs-Fix-more-fuzz-issues-related-to-chunks.patch
 reenable_os-prober.patch
 add-failsafe-boot-options.patch
+parrot-fix-unit-tests.patch
