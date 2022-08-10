@@ -14,7 +14,7 @@ _Description: Linux default command line:
 
 Template: grub2/force_efi_extra_removable
 Type: boolean
-Default: false
+Default: true
 _Description: Force extra installation to the EFI removable media path?
  Some EFI-based systems are buggy and do not handle new bootloaders correctly.
  If you force an extra installation of GRUB to the EFI removable media path,
