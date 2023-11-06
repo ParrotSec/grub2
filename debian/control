@@ -2,8 +2,9 @@ Source: grub2
 Section: admin
 Priority: optional
 XSBC-Original-Maintainer: GRUB Maintainers <pkg-grub-devel@alioth-lists.debian.net>
-Maintainer: Parrot Dev Team <team@parrotsec.org>
+Maintainer: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
 Uploaders: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
+Build-Depends: debhelper-compat (= 13),
  patchutils,
  python3,
  flex,
@@ -11,8 +12,8 @@ Uploaders: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
  po-debconf,
  help2man,
  texinfo,
- gcc-10,
- gcc-10-multilib [i386 kopensolaris-i386 any-amd64 any-ppc64 any-sparc],
+ gcc-12,
+ gcc-12-multilib [i386 kopensolaris-i386 any-amd64 any-ppc64 any-sparc],
  xfonts-unifont,
  libfreetype6-dev,
  gettext,
@@ -37,8 +38,8 @@ Uploaders: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
 Build-Conflicts: autoconf2.13, libzfs-dev, libnvpair-dev
 Standards-Version: 3.9.6
 Homepage: https://www.gnu.org/software/grub/
-Vcs-Git: https://salsa.debian.org/grub-team/grub.git
-Vcs-Browser: https://salsa.debian.org/grub-team/grub
+XS-Debian-Vcs-Git: https://salsa.debian.org/grub-team/grub.git
+XS-Debian-Vcs-Browser: https://salsa.debian.org/grub-team/grub
 Rules-Requires-Root: no
 
 Package: grub2
@@ -92,7 +93,7 @@ Package: grub2-common
 # only built when there is a real platform (e.g. grub-install), and the rest
 # of the package is not very useful in a utilities-only build.
 Architecture: any-i386 any-amd64 any-powerpc any-ppc64 any-ppc64el any-sparc any-sparc64 any-mipsel any-ia64 any-arm any-arm64
-Depends: grub-common (= ${binary:Version}), dpkg (>= 1.15.4) | install-info, ${shlibs:Depends}, ${misc:Depends}
+Depends: grub-common (= ${binary:Version}), dpkg (>= 1.15.4), ${shlibs:Depends}, ${misc:Depends}
 Replaces: grub, grub-legacy, ${legacy-doc-br}, grub-common (<< 1.99-1), grub-pc (<< 2.02+dfsg1-7), grub-coreboot (<< 2.02+dfsg1-7), grub-efi-ia32 (<< 2.02+dfsg1-7), grub-efi-amd64 (<< 2.02+dfsg1-7), grub-efi-ia64 (<< 2.02+dfsg1-7), grub-efi-arm (<< 2.02+dfsg1-7), grub-efi-arm64 (<< 2.02+dfsg1-7), grub-ieee1275 (<< 2.02+dfsg1-7), grub-uboot (<< 2.02+dfsg1-7), grub-xen (<< 2.02+dfsg1-7), grub-yeeloong (<< 2.02+dfsg1-7), grub-cloud-amd64 (<< 0.0.4)
 Conflicts: grub-legacy
 Breaks: grub (<< 0.97-54), ${legacy-doc-br}, shim (<< 0.9+1474479173.6c180c6-0ubuntu1~), grub-pc (<< 2.02+dfsg1-7), grub-coreboot (<< 2.02+dfsg1-7), grub-efi-ia32 (<< 2.02+dfsg1-7), grub-efi-amd64 (<< 2.02+dfsg1-7), grub-efi-ia64 (<< 2.02+dfsg1-7), grub-efi-arm (<< 2.02+dfsg1-7), grub-efi-arm64 (<< 2.02+dfsg1-7), grub-ieee1275 (<< 2.02+dfsg1-7), grub-uboot (<< 2.02+dfsg1-7), grub-xen (<< 2.02+dfsg1-7), grub-yeeloong (<< 2.02+dfsg1-7), grub-cloud-amd64 (<< 0.0.4)

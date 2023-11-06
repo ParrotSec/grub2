@@ -28,3 +28,4 @@ Last-Update: 2022-08-07
      submenu_indentation="$grub_tab"
      
      if [ -z "$boot_device_id" ]; then
+

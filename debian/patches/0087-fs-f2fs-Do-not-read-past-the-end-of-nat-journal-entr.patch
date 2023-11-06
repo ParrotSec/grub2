@@ -34,7 +34,7 @@ index 8a9992ca9..63702214b 100644
 -  grub_uint32_t blkaddr = 0;
    grub_uint16_t i;
  
-+  if (n >= NAT_JOURNAL_ENTRIES)
++  if (n > NAT_JOURNAL_ENTRIES)
 +    return grub_error (GRUB_ERR_BAD_FS,
 +                       "invalid number of nat journal entries");
 +

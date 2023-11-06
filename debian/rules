@@ -37,7 +37,7 @@ else
 with_check := yes
 endif
 
-CC := gcc-10
+CC := gcc-12
 
 confflags = \
 	PACKAGE_VERSION="$(deb_version)" PACKAGE_STRING="GRUB $(deb_version)" \
@@ -544,7 +544,7 @@ override_dh_bugfiles:
 	dh_bugfiles $(patsubst %,-N%,$(filter grub-efi-%-signed-template,$(BUILD_PACKAGES))) -A
 
 override_dh_strip:
-	dh_strip -X/usr/bin/grub-emu
+	dh_strip -X/usr/bin/grub-emu -X/usr/lib/grub-xen/grub-x86_64-xen.bin -X/usr/lib/grub-xen/grub-i386-xen_pvh.bin -X/usr/lib/grub-xen/grub-i386-xen.bin
 
 override_dh_shlibdeps:
 	dh_shlibdeps -X.module

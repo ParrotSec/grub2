@@ -1,37 +1,247 @@
-grub2 (2.06-3parrot4) parrot-updates; urgency=medium
+grub2 (2.06-13+parrot2) lory-updates; urgency=medium
 
-  * Add conflicting relation between grub-efi-$arch-bin and grub-efi-$arch-signed.
+  * Re-introduce failsafe boot options.
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 11 Aug 2022 00:11:29 +0200
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 06 Nov 2023 07:24:58 +0100
 
-grub2 (2.06-3parrot3) parrot; urgency=medium
+grub2 (2.06-13+parrot1) lory; urgency=medium
 
-  * Rebuild package.
+  * Rebuild for Parrot 6.0.
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 10 Aug 2022 23:16:10 +0200
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 07 Sep 2023 01:24:59 +0200
 
-grub2 (2.06-3parrot2) lts-updates; urgency=medium
+grub2 (2.06-13+kali1) kali-dev; urgency=medium
 
-  * Skip tests that rely on losetup.
+  * Sync with Debian. Remaining changes:
+      - Add conflicts relation between grub-efi-$arch-bin and
+        grub-efi-$arch-signed
+       - os-prober patch from Ubuntu (cf. Kali bug #7865)
+       - Misc changes from the Kali Janitor
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 08 Aug 2022 01:19:28 +0200
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 13 Jun 2023 15:25:11 +0200
 
-grub2 (2.06-3parrot1) lts-updates; urgency=medium
-
-  * Import new Debian version.
-  * Re-apply Parrot patch for failsafe options.
-
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 08 Aug 2022 00:12:55 +0200
-
-grub2 (2.06-3~deb11u1) bullseye; urgency=medium
+grub2 (2.06-13) unstable; urgency=medium
 
   [ Steve McIntyre ]
-  * Rebuild for bullseye.
-  * Updated the 2.06-3 changelog to mention closure of CVE-2022-28736
-  * Re-enable os-prober by default, don't make that change in a stable
-    update.
+  * When *also* installing to the removable media path, include the
+    relevant mokmanager binary. Closes: #1034409
 
- -- Steve McIntyre <93sam@debian.org>  Mon, 01 Aug 2022 20:26:34 +0100
+  [ General Chaos ]
+  * Allow initrd to contain spaces. Closes: #838177, #820838.
+
+  [ Translators ]
+  * Update lots of translations of debconf templates, thanks to the
+    following:
+    + Welsh (Dafydd Tomos)
+    + German (Helge Kreutzmann). Closes: #1034850
+    + Croatian (Tomislav Krznar)
+    + Greek (Emmanuel Galatoulas)
+    + Esperanto (Felipe Castro)
+    + French (Baptiste Jammet). Closes: #1035761
+    + Italian (Luca Monducci). Closes: #1034825
+    + Kazakh (Baurzhan Muftakhidinov)
+    + Korean (Changwoo Ryu). Closes: #1034868
+    + Latvian (Rudolfs Mazurs)
+    + Dutch (Frans Spiesschaert). Closes: #1035399
+    + Norwegian Bokmål (Petter Reinholdtsen, Sverre Vaabenoe)
+    + Brazilian Portuguese (Adriano Rafael Gomes). Closes: #1035905
+    + Romanian (Remus-Gabriel Chelu)
+    + Russian (Yuri Kozlov). Closes: #1035294
+    + Turkish (Atila KOÇ). Closes: #1035846
+    + Swedish (Luna Jernberg)
+
+ -- Steve McIntyre <93sam@debian.org>  Sun, 23 Apr 2023 20:55:54 +0100
+
+grub2 (2.06-12+kali1) kali-dev; urgency=medium
+
+  * Sync with Debian. Remaining changes:
+    - Add conflicts relation between grub-efi-$arch-bin and
+      grub-efi-$arch-signed
+    - os-prober patch from Ubuntu (cf. Kali bug #7865)
+    - Misc changes from the Kali Janitor
+  * Refresh patches
+
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 05 May 2023 11:15:06 +0200
+
+grub2 (2.06-12) unstable; urgency=medium
+
+  * Fix up arm64 SB patch to fix build failure on 32-bit arm systems
+
+ -- Steve McIntyre <93sam@debian.org>  Fri, 21 Apr 2023 13:30:26 +0100
+
+grub2 (2.06-11) unstable; urgency=medium
+
+  * And try again... :-/
+
+ -- Steve McIntyre <93sam@debian.org>  Fri, 21 Apr 2023 01:50:26 +0100
+
+grub2 (2.06-10) unstable; urgency=medium
+
+  * Fix 32-bit build with the osdep/devmapper/getroot patches.
+
+ -- Steve McIntyre <93sam@debian.org>  Fri, 21 Apr 2023 01:14:13 +0100
+
+grub2 (2.06-9) unstable; urgency=medium
+
+  [ Steve McIntyre ]
+  * postinst: make config_item() more robust
+  * Add debconf logic for GRUB_DISABLE_OS_PROBER to make it easier to
+    control things here. Particularly useful for the installer.
+    Closes: #1031594, #1012865, #1025698.
+  * Add luks2 to the signed grub efi images. Closes: #1001248
+
+  [ Ben Hutchings ]
+  * Fix probing of LUKS2 devices (Closes: #1028301):
+    - disk/cryptodisk: When cheatmounting, use the sector info of the cheat
+      device
+    - osdep/devmapper/getroot: Have devmapper recognize LUKS2
+    - osdep/devmapper/getroot: Set up cheated LUKS2 cryptodisk mount from DM
+      parameters
+
+  [ Emanuele Rocca ]
+  * Add arm64-handover-to-kernel-if-sb-enabled.patch to fix Secure Boot on
+    arm64 (Closes: #1033657)
+
+  [ Mattia Rizzolo ]
+  * Don't warn about os-prober if it's not installed. Closes: #1020769
+
+ -- Steve McIntyre <93sam@debian.org>  Thu, 20 Apr 2023 20:35:11 +0100
+
+grub2 (2.06-8.1) experimental; urgency=medium
+
+  * Non-maintainer upload.
+  * Fix an issue where a logical volume rename would lead grub to fail to
+    boot (Closes: #987008)
+
+ -- Antoine Beaupré <anarcat@debian.org>  Sat, 25 Feb 2023 15:16:55 -0500
+
+grub2 (2.06-8+kali1) kali-dev; urgency=medium
+
+  * Sync with Debian. Remaining changes:
+    - Add conflicts relation between grub-efi-$arch-bin and
+      grub-efi-$arch-signed
+    - os-prober patch from Ubuntu (cf. Kali bug #7865)
+    - Misc changes from the Kali Janitor
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 16 Feb 2023 10:22:47 +0100
+
+grub2 (2.06-8) unstable; urgency=medium
+
+  [ Steve McIntyre ]
+  * Fix an issue in an f2fs security fix which caused mount
+    failures. Closes: #1021846. Thanks to программист некто for helping
+    to debug the problem!
+  * Switch build-deps from gcc-10 to gcc-12. Closes: #1022184
+  * Include upstream patch to enable EFI zboot support on arm64.
+    Closes: #1026092
+  * grub-mkconfig: Restore umask for the grub.cfg. CVE-2021-3981
+    Closes: #1001414
+  * postinst: be more verbose when using grub-install to install onto
+    devices.
+  * /etc/default/grub: Fix comment about text-mode console.
+    Fixes #845683
+  * grub-install: Don't install the shim fallback program when called
+    with --removable. Closes: #1016737
+  * grub-install: Don't use our grub CD EFI image for --removable.
+    Closes: #1026915. Thanks to Pascal Hambourg for the patch.
+  * Ignore some new ext2 flags to stay compatible with latest mke2fs
+    defaults. Closes: #1030846
+
+  [ Colin Watson ]
+  * Remove myself from Uploaders.
+
+ -- Steve McIntyre <93sam@debian.org>  Thu, 09 Feb 2023 01:09:00 +0000
+
+grub2 (2.06-7+kali1) kali-dev; urgency=medium
+
+  * Sync with Debian. Remaining changes:
+    - Add conflicts relation between grub-efi-$arch-bin and
+      grub-efi-$arch-signed
+    - os-prober patch from Ubuntu (cf. Kali bug #7865)
+    - Misc changes from the Kali Janitor
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 19 Dec 2022 14:25:06 +0100
+
+grub2 (2.06-7) unstable; urgency=medium
+
+  [ Steve McIntyre ]
+  * Fix bug in core file code so errors are handled better. This makes
+    the fallback font-handling patch work properly.
+    Closes: #1025469, #1025477.
+
+ -- Steve McIntyre <93sam@debian.org>  Tue, 06 Dec 2022 03:14:53 +0000
+
+grub2 (2.06-6) unstable; urgency=medium
+
+  [ Steve McIntyre ]
+  * Include fonts in the memdisk build for EFI images.
+    Closes: #1024395, #1025352, #1024447
+  * Bump Debian SBAT level to 4
+    - Due to a mistake in the buster upload (2.06-3~deb10u2) that left
+      the CVE-2022-2601 bugs in place, we need to bump SBAT for all of
+      the Debian GRUB binaries. :-(
+  * Switch away from git-dpm
+
+ -- Steve McIntyre <93sam@debian.org>  Sun, 04 Dec 2022 20:42:23 +0000
+
+grub2 (2.06-5+kali1) kali-dev; urgency=medium
+
+  * Sync with Debian. Remaining changes:
+    - Add conflicts relation between grub-efi-$arch-bin and
+      grub-efi-$arch-signed
+    - os-prober patch from Ubuntu (cf. Kali bug #7865)
+    - Misc changes from the Kali Janitor
+
+ -- Arnaud Rebillout <arnaudr@kali.org>  Tue, 29 Nov 2022 10:32:36 +0700
+
+grub2 (2.06-5) unstable; urgency=high
+
+  [ Steve McIntyre ]
+  * Explicitly unset SOURCE_DATE_EPOCH before running fs tests
+  * Pull in upstream patches to harden font and image handling -
+    CVE-2022-2601, CVE-2022-3775.
+  * Bump SBAT level to 3 for grub-efi packages
+
+ -- Steve McIntyre <93sam@debian.org>  Sun, 13 Nov 2022 00:33:35 +0000
+
+grub2 (2.06-4+kali1) kali-dev; urgency=medium
+
+  * Sync with Debian. Remaining changes:
+    - Add conflicts relation between grub-efi-$arch-bin and
+      grub-efi-$arch-signed
+    - Import os-prober patch from Ubuntu (cf. Kali bug #7865)
+
+ -- Arnaud Rebillout <arnaudr@kali.org>  Thu, 03 Nov 2022 14:00:41 +0700
+
+grub2 (2.06-4) unstable; urgency=high
+
+  [ Steve McIntyre ]
+  * Updated the 2.06-3 changelog to mention closure of CVE-2022-28736
+  * Add a commented-out GRUB_DISABLE_OS_PROBER section to
+    /etc/default/grub to make it easier for users to turn os-prober
+    back on if they want it. Closes: #1013797, #1009336
+  * Add smbios to the signed grub efi images. Closes: #1008106
+  * Add serial to the signed grub efi images. Closes: #1013962
+  * grub2-common: Remove dependency on install-info, it's apparently
+    not needed. Closes: #1013698
+  * Don't strip Xen binaries so they work again. Closes: #1017944.
+    Thanks to Valentin Kleibel for the patch.
+
+ -- Steve McIntyre <93sam@debian.org>  Wed, 14 Sep 2022 22:35:49 +0100
+
+grub2 (2.06-3kali2) kali-dev; urgency=medium
+
+  * Import os-prober patch from Ubuntu (cf. Kali bug #7865)
+
+ -- Arnaud Rebillout <arnaudr@kali.org>  Fri, 19 Aug 2022 15:00:53 +0700
+
+grub2 (2.06-3kali1) kali-dev; urgency=medium
+
+  * Sync with debian. Remaining changes:
+    - add conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 15 Jun 2022 16:29:28 +0200
 
 grub2 (2.06-3) unstable; urgency=medium
 
@@ -162,11 +372,13 @@ grub2 (2.06-1) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Sun, 28 Nov 2021 13:30:32 +0000
 
-grub2 (2.04-20parrot1) lts-updates; urgency=medium
+grub2 (2.04-20kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
+  * Sync with debian. Remaining changes:
+    - add conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 16 Aug 2021 04:28:53 +0200
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 10 Aug 2021 10:59:54 +0200
 
 grub2 (2.04-20) unstable; urgency=medium
 
@@ -176,11 +388,13 @@ grub2 (2.04-20) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Sun, 11 Jul 2021 00:37:36 +0100
 
-grub2 (2.04-19parrot1) rolling; urgency=medium
+grub2 (2.04-19kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
+  * Sync with debian. Remaining changes:
+    - add conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 21 Jul 2021 15:27:48 +0200
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 07 Jul 2021 11:46:05 +0200
 
 grub2 (2.04-19) unstable; urgency=medium
 
@@ -190,11 +404,13 @@ grub2 (2.04-19) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Sat, 19 Jun 2021 13:04:38 +0100
 
-grub2 (2.04-18parrot1) rolling; urgency=medium
+grub2 (2.04-18kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
+  * sync with debian. remaining changes:
+    - add conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 17 Jun 2021 15:51:26 +0200
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 07 Jun 2021 10:52:21 +0200
 
 grub2 (2.04-18) unstable; urgency=medium
 
@@ -211,11 +427,13 @@ grub2 (2.04-18) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Sun, 25 Apr 2021 16:20:17 +0100
 
-grub2 (2.04-17parrot1) rolling; urgency=medium
+grub2 (2.04-17kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
+  * sync with debian. remaining changes:
+    - add conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 28 Apr 2021 22:13:38 +0200
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 15 Apr 2021 11:22:39 +0200
 
 grub2 (2.04-17) unstable; urgency=medium
 
@@ -225,12 +443,17 @@ grub2 (2.04-17) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 19 Mar 2021 10:41:41 +0000
 
-grub2 (2.04-16parrot1) rolling; urgency=medium
+grub2 (2.04-16kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
-  * Add the proper SBAT metadata.
+  * Configure 'gbp import-dsc' to use the debian/ namespace
+  * Revert "debian/copyright: use spaces rather than tabs to start
+    continuation lines."
+  * sync with debian. remaining changes:
+    - add conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
+  * add a sbat metadata file for kali, remove debian's sbat
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 12 Mar 2021 19:11:39 +0100
+ -- Arnaud Rebillout <arnaudr@kali.org>  Tue, 09 Mar 2021 22:07:57 +0700
 
 grub2 (2.04-16) unstable; urgency=medium
 
@@ -372,12 +595,13 @@ grub2 (2.04-16) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 02 Mar 2021 18:00:00 +0000
 
-grub2 (2.04-15parrot1) rolling; urgency=medium
+grub2 (2.04-15kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
-  * Add Parrot patches.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 25 Feb 2021 19:55:00 +0100
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 22 Feb 2021 14:05:43 +0100
 
 grub2 (2.04-15) unstable; urgency=medium
 
@@ -412,11 +636,13 @@ grub2 (2.04-13) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Sat, 06 Feb 2021 17:30:38 +0000
 
-grub2 (2.04-12parrot1) rolling-testing; urgency=medium
+grub2 (2.04-12kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@localhost.localdomain>  Sun, 17 Jan 2021 17:10:33 +0100
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 08 Jan 2021 09:23:39 +0100
 
 grub2 (2.04-12) unstable; urgency=medium
 
@@ -427,17 +653,27 @@ grub2 (2.04-12) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 28 Dec 2020 22:33:23 +0000
 
-grub2 (2.04-11parrot1) rolling-testing; urgency=medium
+grub2 (2.04-11kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Tue, 05 Jan 2021 23:59:57 +0100
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 17 Dec 2020 16:43:32 +0100
 
 grub2 (2.04-11) unstable; urgency=medium
 
-  * grub-install: Fix backup restoration on i386.
+  * grub-install: Fix backup restoration on i386 (closes: #976671).
 
  -- Colin Watson <cjwatson@debian.org>  Sun, 06 Dec 2020 18:29:51 +0000
+
+grub2 (2.04-10kali1) kali-dev; urgency=medium
+
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 23 Nov 2020 17:28:27 +0100
 
 grub2 (2.04-10) unstable; urgency=medium
 
@@ -508,12 +744,13 @@ grub2 (2.04-9) unstable; urgency=high
 
  -- Colin Watson <cjwatson@debian.org>  Wed, 29 Jul 2020 17:58:37 +0100
 
-grub2 (2.04-8parrot1) rolling; urgency=medium
+grub2 (2.04-8kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
-  * igrate Parrot patches.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 27 Jun 2020 12:19:33 +0200
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 15 Jun 2020 15:05:19 +0200
 
 grub2 (2.04-8) unstable; urgency=medium
 
@@ -534,12 +771,13 @@ grub2 (2.04-8) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Sun, 07 Jun 2020 10:06:37 +0100
 
-grub2 (2.04-7parrot1) rolling; urgency=medium
+grub2 (2.04-7kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
-  * Include Parrot patches.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 31 May 2020 03:48:13 +0200
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 15 May 2020 15:36:13 +0200
 
 grub2 (2.04-7) unstable; urgency=medium
 
@@ -576,11 +814,13 @@ grub2 (2.04-6) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 20 Apr 2020 01:03:08 +0100
 
-grub2 (2.04-5parrot1) rolling-testing; urgency=medium
+grub2 (2.04-5kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 31 Jan 2020 21:43:16 +0100
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 17 Jan 2020 18:23:25 +0100
 
 grub2 (2.04-5) unstable; urgency=medium
 
@@ -591,12 +831,13 @@ grub2 (2.04-5) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 16 Dec 2019 15:48:45 +0000
 
-grub2 (2.04-4parrot1) rolling-testing; urgency=medium
+grub2 (2.04-4kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 16 Dec 2019 10:15:41 +0100
-
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 26 Nov 2019 10:15:47 +0100
 
 grub2 (2.04-4) unstable; urgency=medium
 
@@ -615,12 +856,13 @@ grub2 (2.04-4) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 08 Nov 2019 10:58:30 +0000
 
-grub2 (2.04-3parrot1) rolling-testing; urgency=medium
+grub2 (2.04-3kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
-  * Add Conflicts relation between grub-efi-$arch-bin grub-efi-$arch-signed.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 06 Nov 2019 11:31:22 +0100
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 05 Nov 2019 09:54:22 +0100
 
 grub2 (2.04-3) unstable; urgency=medium
 
@@ -631,12 +873,13 @@ grub2 (2.04-3) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 30 Aug 2019 13:50:41 +0100
 
-grub2 (2.04-2parrot1) rolling; urgency=medium
+grub2 (2.04-2kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
-  * Add Conflicts relation between grub-efi-$arch-bin grub-efi-$arch-signed.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 25 Aug 2019 15:09:39 +0200
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 23 Aug 2019 17:01:36 +0200
 
 grub2 (2.04-2) unstable; urgency=medium
 
@@ -653,12 +896,74 @@ grub2 (2.04-2) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Sat, 03 Aug 2019 13:42:49 +0100
 
-grub2 (2.02+dfsg1-20parrot1) parrot; urgency=medium
+grub2 (2.04-1kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
-  * Add Conflicts relation between grub-efi-$arch-bin grub-efi-$arch-signed.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 07 Jul 2019 01:04:08 +0200
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 16 Jul 2019 11:24:52 +0200
+
+grub2 (2.04-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/upstream/signing-key.asc: Add signing key of new upstream
+    maintainer (Daniel Kiper).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 09 Jul 2019 11:48:01 +0100
+
+grub2 (2.04~rc1-3) experimental; urgency=medium
+
+  [ Will Thompson ]
+  * Fix --disable-quiet-boot.
+
+  [ Steve Langasek ]
+  * If we don't have writable grubenv and we're on EFI, always show the menu
+    (merged from Ubuntu).
+
+  [ Steve McIntyre ]
+  * Make all the signed EFI arches have a Recommends: from
+    grub-efi-ARCH-signed to shim-signed, not just amd64.
+    Closes: #931038
+  * Add myself to Uploaders
+
+  [ Colin Watson ]
+  * Squash linuxefi* patches into a single patch.
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 27 Jun 2019 08:51:37 +0100
+
+grub2 (2.04~rc1-2) experimental; urgency=medium
+
+  [ Colin Watson ]
+  * debian/build-efi-images: Add tpm on x86_64-efi (thanks, Chris Coulson).
+
+  [ Steve McIntyre ]
+  * Add the ntfs module to signed UEFI images. Closes: #923855
+  * Add the cpuid module to signed UEFI images. Closes: #928628
+  * Add the play module to signed UEFI images. Closes: #930290
+  * Add an extra di-specific version of the UEFI netboot image with a
+    different baked-in prefix value. Helps to fix #928750.
+  * Deal with --force-extra-removable with signed shim too. Closes: #930531
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 15 Jun 2019 09:41:19 +0100
+
+grub2 (2.04~rc1-1) experimental; urgency=medium
+
+  * New upstream release candidate.
+    - getroot: Save/restore CWD more reliably on Unix (closes: #918700).
+  * Rename patches to use "-" as a separator rather than "_" (except when
+    referring to a file, function, or command containing a "_").
+  * Fix format of debian/copyright.
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 30 May 2019 16:56:05 +0100
+
+grub2 (2.02+dfsg1-20kali1) kali-dev; urgency=medium
+
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 03 Jul 2019 11:36:39 +0200
 
 grub2 (2.02+dfsg1-20) unstable; urgency=medium
 
@@ -670,11 +975,13 @@ grub2 (2.02+dfsg1-20) unstable; urgency=medium
 
  -- Steve McIntyre <93sam@debian.org>  Tue, 25 Jun 2019 10:11:12 +0100
 
-grub2 (2.02+dfsg1-19parrot1) testing; urgency=medium
+grub2 (2.02+dfsg1-19kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Mon, 24 Jun 2019 22:58:21 +0200
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 24 Jun 2019 14:15:14 +0200
 
 grub2 (2.02+dfsg1-19) unstable; urgency=medium
 
@@ -691,17 +998,13 @@ grub2 (2.02+dfsg1-19) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 14 Jun 2019 19:04:01 +0100
 
-grub2 (2.02+dfsg1-18parrot2) testing; urgency=medium
+grub2 (2.02+dfsg1-18kali1) kali-dev; urgency=medium
 
-  * Re-include Parrot failsafe boot options.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 18 May 2019 01:04:46 +0200
-
-grub2 (2.02+dfsg1-18parrot1) testing; urgency=medium
-
-  * Import new Debian release.
-
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 17 May 2019 14:06:24 +0200
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 13 May 2019 11:35:06 +0200
 
 grub2 (2.02+dfsg1-18) unstable; urgency=medium
 
@@ -724,17 +1027,13 @@ grub2 (2.02+dfsg1-17) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 15 Apr 2019 18:38:30 +0100
 
-grub2 (2.02+dfsg1-16parrot2) testing; urgency=medium
+grub2 (2.02+dfsg1-16kali1) kali-dev; urgency=medium
 
-  * Import failsafe options patch from precedent parrot version.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 13 Apr 2019 19:31:31 +0200
-
-grub2 (2.02+dfsg1-16parrot1) testing; urgency=medium
-
-  * Import new Debian release.
-
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 13 Apr 2019 14:09:10 +0200
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 09 Apr 2019 16:16:45 +0200
 
 grub2 (2.02+dfsg1-16) unstable; urgency=medium
 
@@ -760,12 +1059,13 @@ grub2 (2.02+dfsg1-14) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Sat, 23 Mar 2019 09:47:10 +0000
 
-grub2 (2.02+dfsg1-13parrot1) parrot; urgency=medium
+grub2 (2.02+dfsg1-13kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
-  * Include patch for failover boot options (disable acpi, disable nouveau).
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Wed, 20 Mar 2019 13:29:56 +0100
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 19 Mar 2019 09:53:52 +0100
 
 grub2 (2.02+dfsg1-13) unstable; urgency=medium
 
@@ -804,11 +1104,13 @@ grub2 (2.02+dfsg1-12) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 01 Mar 2019 12:34:45 +0000
 
-grub2 (2.02+dfsg1-11parrot1) testing; urgency=medium
+grub2 (2.02+dfsg1-11kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 28 Feb 2019 14:40:16 +0100
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 27 Feb 2019 15:19:16 +0100
 
 grub2 (2.02+dfsg1-11) unstable; urgency=medium
 
@@ -842,12 +1144,6 @@ grub2 (2.02+dfsg1-11) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Sun, 10 Feb 2019 18:53:41 +0000
 
-grub2 (2.02+dfsg1-10parrot1) parrot; urgency=medium
-
-  * Import new Debian and Kali updates.
-
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 25 Jan 2019 19:46:36 +0100
-
 grub2 (2.02+dfsg1-10kali1) kali-dev; urgency=medium
 
   * Sync with Debian. Remaining changes:
@@ -873,11 +1169,13 @@ grub2 (2.02+dfsg1-10) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 11 Jan 2019 15:24:20 +0000
 
-grub2 (2.02+dfsg1-9parrot1) testing; urgency=medium
+grub2 (2.02+dfsg1-9kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 12 Jan 2019 02:18:20 +0100
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 10 Jan 2019 09:35:23 +0100
 
 grub2 (2.02+dfsg1-9) unstable; urgency=medium
 
@@ -901,11 +1199,13 @@ grub2 (2.02+dfsg1-9) unstable; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 07 Dec 2018 10:38:37 +0000
 
-grub2 (2.02+dfsg1-8parrot1) testing; urgency=medium
+grub2 (2.02+dfsg1-8kali1) kali-dev; urgency=medium
 
-  * Import new Debian release.
+  * Sync with Debian. Remaining changes:
+    - Add Conflicts relation between grub-efi-$arch-bin and
+    grub-efi-$arch-signed
 
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 11 Nov 2018 06:14:08 +0100
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 06 Nov 2018 15:03:50 +0100
 
 grub2 (2.02+dfsg1-8) unstable; urgency=medium
 
@@ -943,14 +1243,6 @@ grub2 (2.02+dfsg1-7) unstable; urgency=medium
     default since dpkg 1.17.0.
 
  -- Colin Watson <cjwatson@debian.org>  Sat, 27 Oct 2018 13:06:32 +0100
-
-grub2 (2.02+dfsg1-6parrot1) testing; urgency=medium
-
-  * Import new Kali release to fix https://bugs.debian.org/908200
-    and https://bugs.kali.org/view.php?id=4956.
-    (thank you rhertzog for the fix).
-
- -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 07 Sep 2018 23:18:16 +0200
 
 grub2 (2.02+dfsg1-6kali1) kali-dev; urgency=medium
 
@@ -5709,4 +6001,3 @@ pupa (0.6+20030915-1) unstable; urgency=low
   * Initial Release. (Closes: #211030)
 
  -- Robert Millan <rmh@debian.org>  Mon, 15 Sep 2003 14:58:42 +0000
-

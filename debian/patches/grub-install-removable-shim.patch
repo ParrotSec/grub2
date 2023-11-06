@@ -21,10 +21,10 @@ Patch-Name: grub-install-removable-shim.patch
  util/grub-install.c | 83 +++++++++++++++++++++++++++++++++++----------
  1 file changed, 66 insertions(+), 17 deletions(-)
 
-diff --git a/util/grub-install.c b/util/grub-install.c
-index 05b695226..43fc27c55 100644
---- a/util/grub-install.c
-+++ b/util/grub-install.c
+Index: grub.git/util/grub-install.c
+===================================================================
+--- grub.git.orig/util/grub-install.c
++++ grub.git/util/grub-install.c
 @@ -891,17 +891,13 @@ check_component_exists(const char *dir,
  static void
  also_install_removable(const char *src,
@@ -107,10 +107,10 @@ index 05b695226..43fc27c55 100644
  
  		fb_src = grub_util_path_concat (2, "/usr/lib/shim/",
  						    fb_signed);
-@@ -2153,30 +2151,81 @@ main (int argc, char *argv[])
- 						    fb_file);
- 		grub_install_copy_file (fb_src,
- 					fb_dst, 0);
+@@ -2154,30 +2152,82 @@ main (int argc, char *argv[])
+ 		if (!removable)
+ 		  grub_install_copy_file (fb_src,
+ 					  fb_dst, 0);
 +
 +		csv_src = grub_util_path_concat (2, "/usr/lib/shim/",
 +						    csv_file);
@@ -129,6 +129,7 @@ index 05b695226..43fc27c55 100644
 +		    also_install_removable (shim_signed, base_efidir, removable_file, 1);
 +
 +		    also_install_removable (efi_signed, base_efidir, chained_base, 1);
++		    also_install_removable (mok_src, base_efidir, mok_file, 0);
 +
 +		    /* If we're updating the NVRAM, add fallback too - it
 +			will re-update the NVRAM later if things break */

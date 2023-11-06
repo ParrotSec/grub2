@@ -1,4 +1,0 @@
-sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
-grub,1,Free Software Foundation,grub,@UPSTREAM_VERSION@,https://www.gnu.org/software/grub/
-grub.debian,1,Debian,grub2,@DEB_VERSION@,https://tracker.debian.org/pkg/grub2
-grub.parrot,1,Parrot OS,grub2,@DEB_VERSION@,https://nest.parrotsec.org/packages/debian/grub2

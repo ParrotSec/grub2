@@ -1,0 +1,27 @@
+Explicitly unset SOURCE_DATE_EPOCH before running fs tests. In some
+filesystem utils like mksquashfs, it will silently change behaviour
+and cause timestamps to unexpectedly change. Reproducible builds are
+good and useful for shipped artifacts, but this causes build-time
+tests to fail.
+
+Author: Steve McIntyre
+
+Patch-Name: fs-tester-time-fail.patch
+---
+ tests/util/grub-fs-tester.in | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/tests/util/grub-fs-tester.in b/tests/util/grub-fs-tester.in
+index bfc425e1f..660691302 100644
+--- a/tests/util/grub-fs-tester.in
++++ b/tests/util/grub-fs-tester.in
+@@ -4,6 +4,9 @@ set -e
+ 
+ fs="$1"
+ 
++# We can't have this set, or filesystem tests will fail
++unset SOURCE_DATE_EPOCH
++
+ GRUBFSTEST="@builddir@/grub-fstest"
+ 
+ tempdir=`mktemp -d "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"` || exit 1
