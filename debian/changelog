@@ -1,3 +1,11 @@
+grub2 (2.06-13+parrot3) lory-updates; urgency=medium
+
+  * Update sbat file.
+  * Add nomodeset to failsafe options.
+  * Update grub config.
+ 
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Fri, 05 Jan 2024 18:37:15 +0100
+
 grub2 (2.06-13+parrot2) lory-updates; urgency=medium
 
   * Re-introduce failsafe boot options.

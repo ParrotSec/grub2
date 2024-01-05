@@ -12,7 +12,7 @@ Last-Update: 2022-08-07
 +	  nouveau-off)
 +	      title="$(gettext_printf "%s, with Linux %s (%s)" "${os}" "${version}" "$(gettext "Nouveau/Nvidia Off")")" ;;
 +      acpi-off)
-+          title="$(gettext_printf "%s, with Linux %s (%s)" "${os}" "${version}" "$(gettext "ACPI Off")")" ;;
++          title="$(gettext_printf "%s, with Linux %s (%s)" "${os}" "${version}" "$(gettext "Nomodeset / ACPI Off")")" ;;
  	  *)
  	      title="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")" ;;
        esac
@@ -23,7 +23,7 @@ Last-Update: 2022-08-07
 +    linux_entry "${OS}" "${version}" nouveau-off \
 +              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} nouveau.modeset=0"
 +    linux_entry "${OS}" "${version}" acpi-off \
-+              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} acpi=off"
++              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} acpi=off nomodeset"
 +
      submenu_indentation="$grub_tab"
      
