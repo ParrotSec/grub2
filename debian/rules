@@ -129,7 +129,8 @@ endif
 # rebuild grub, need a programmatic way to get the vendor, as it's used by build-efi-images
 # to create the monolithic Grub image and thus is needed to create the partitions on the EFI
 # media. Add it to the control file user metadata: XB-Efi-Vendor: $vendor
-SB_EFI_VENDOR ?= $(shell dpkg-vendor --query vendor | tr '[:upper:]' '[:lower:]')
+#SB_EFI_VENDOR ?= $(shell dpkg-vendor --query vendor | tr '[:upper:]' '[:lower:]')
+SB_EFI_VENDOR ?= 'parrot'
 
 %:
 	dh $@ --with=bash_completion
