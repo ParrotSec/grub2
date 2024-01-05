@@ -123,3 +123,4 @@ grub_os-prober.patch
 ubuntu-os-prober-auto.patch
 os-prober-Allow-initrd-to-contain-spaces.patch
 add-failsafe-boot-options.patch
+parrot-skip-failing-tests.patch
