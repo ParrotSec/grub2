@@ -912,6 +912,23 @@ grub_btrfs_read_logical (struct grub_btrfs_data *data, grub_disk_addr_t addr,
 	return grub_error (GRUB_ERR_BAD_FS,
 			   "couldn't find the chunk descriptor");
 
+      if (!chsize)
+	{
+	  grub_dprintf ("btrfs", "zero-size chunk\n");
+	  return grub_error (GRUB_ERR_BAD_FS,
+			     "got an invalid zero-size chunk");
+	}
+
+      /*
+       * The space being allocated for a chunk should at least be able to
+       * contain one chunk item.
+       */
+      if (chsize < sizeof (struct grub_btrfs_chunk_item))
+       {
+         grub_dprintf ("btrfs", "chunk-size too small\n");
+         return grub_error (GRUB_ERR_BAD_FS,
+                            "got an invalid chunk size");
+       }
       chunk = grub_malloc (chsize);
       if (!chunk)
 	return grub_errno;
@@ -970,6 +987,16 @@ grub_btrfs_read_logical (struct grub_btrfs_data *data, grub_disk_addr_t addr,
 	      stripe_length = grub_divmod64 (grub_le_to_cpu64 (chunk->size),
 					     nstripes,
 					     NULL);
+
+	      /* For single, there should be exactly 1 stripe. */
+	      if (grub_le_to_cpu16 (chunk->nstripes) != 1)
+		{
+		  grub_dprintf ("btrfs", "invalid RAID_SINGLE: nstripes != 1 (%u)\n",
+				grub_le_to_cpu16 (chunk->nstripes));
+		  return grub_error (GRUB_ERR_BAD_FS,
+				     "invalid RAID_SINGLE: nstripes != 1 (%u)",
+				      grub_le_to_cpu16 (chunk->nstripes));
+		}
 	      if (stripe_length == 0)
 		stripe_length = 512;
 	      stripen = grub_divmod64 (off, stripe_length, &stripe_offset);
@@ -989,6 +1016,19 @@ grub_btrfs_read_logical (struct grub_btrfs_data *data, grub_disk_addr_t addr,
 	      stripen = 0;
 	      stripe_offset = off;
 	      csize = grub_le_to_cpu64 (chunk->size) - off;
+
+             /*
+	      * Redundancy, and substripes only apply to RAID10, and there
+	      * should be exactly 2 sub-stripes.
+	      */
+	     if (grub_le_to_cpu16 (chunk->nstripes) != redundancy)
+               {
+                 grub_dprintf ("btrfs", "invalid RAID1: nstripes != %u (%u)\n",
+                               redundancy, grub_le_to_cpu16 (chunk->nstripes));
+                 return grub_error (GRUB_ERR_BAD_FS,
+                                    "invalid RAID1: nstripes != %u (%u)",
+                                    redundancy, grub_le_to_cpu16 (chunk->nstripes));
+               }
 	      break;
 	    }
 	  case GRUB_BTRFS_CHUNK_TYPE_RAID0:
@@ -1025,6 +1065,20 @@ grub_btrfs_read_logical (struct grub_btrfs_data *data, grub_disk_addr_t addr,
 	      stripe_offset = low + chunk_stripe_length
 		* high;
 	      csize = chunk_stripe_length - low;
+
+	      /*
+	       * Substripes only apply to RAID10, and there
+	       * should be exactly 2 sub-stripes.
+	       */
+	      if (grub_le_to_cpu16 (chunk->nsubstripes) != 2)
+		{
+		  grub_dprintf ("btrfs", "invalid RAID10: nsubstripes != 2 (%u)",
+				grub_le_to_cpu16 (chunk->nsubstripes));
+		  return grub_error (GRUB_ERR_BAD_FS,
+				     "invalid RAID10: nsubstripes != 2 (%u)",
+				     grub_le_to_cpu16 (chunk->nsubstripes));
+		}
+
 	      break;
 	    }
 	  case GRUB_BTRFS_CHUNK_TYPE_RAID5:
@@ -1122,8 +1176,17 @@ grub_btrfs_read_logical (struct grub_btrfs_data *data, grub_disk_addr_t addr,
 	if (csize > (grub_uint64_t) size)
 	  csize = size;
 
+	/*
+	 * The space for a chunk stripe is limited to the space provide in the super-block's
+	 * bootstrap mapping with an initial btrfs key at the start of each chunk.
+	 */
+	grub_size_t avail_stripes = sizeof (data->sblock.bootstrap_mapping) /
+	  (sizeof (struct grub_btrfs_key) + sizeof (struct grub_btrfs_chunk_stripe));
+
 	for (j = 0; j < 2; j++)
 	  {
+	    grub_size_t est_chunk_alloc = 0;
+
 	    grub_dprintf ("btrfs", "chunk 0x%" PRIxGRUB_UINT64_T
 			  "+0x%" PRIxGRUB_UINT64_T
 			  " (%d stripes (%d substripes) of %"
@@ -1135,6 +1198,22 @@ grub_btrfs_read_logical (struct grub_btrfs_data *data, grub_disk_addr_t addr,
 			  grub_le_to_cpu64 (chunk->stripe_length));
 	    grub_dprintf ("btrfs", "reading laddr 0x%" PRIxGRUB_UINT64_T "\n",
 			  addr);
+
+	    if (grub_mul (sizeof (struct grub_btrfs_chunk_stripe),
+			  grub_le_to_cpu16 (chunk->nstripes), &est_chunk_alloc) ||
+		grub_add (est_chunk_alloc,
+			  sizeof (struct grub_btrfs_chunk_item), &est_chunk_alloc) ||
+		est_chunk_alloc > chunk->size)
+	      {
+		err = GRUB_ERR_BAD_FS;
+		break;
+	      }
+
+	   if (grub_le_to_cpu16 (chunk->nstripes) > avail_stripes)
+             {
+               err = GRUB_ERR_BAD_FS;
+               break;
+             }
 
 	    if (is_raid56)
 	      {
@@ -1443,6 +1522,8 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
       grub_size_t csize;
       grub_err_t err;
       grub_off_t extoff;
+      struct grub_btrfs_leaf_descriptor desc;
+
       if (!data->extent || data->extstart > pos || data->extino != ino
 	  || data->exttree != tree || data->extend <= pos)
 	{
@@ -1455,7 +1536,7 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
 	  key_in.type = GRUB_BTRFS_ITEM_TYPE_EXTENT_ITEM;
 	  key_in.offset = grub_cpu_to_le64 (pos);
 	  err = lower_bound (data, &key_in, &key_out, tree,
-			     &elemaddr, &elemsize, NULL, 0);
+			     &elemaddr, &elemsize, &desc, 0);
 	  if (err)
 	    return -1;
 	  if (key_out.object_id != ino
@@ -1494,10 +1575,40 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
 			PRIxGRUB_UINT64_T "\n",
 			grub_le_to_cpu64 (key_out.offset),
 			grub_le_to_cpu64 (data->extent->size));
+	  /*
+	   * The way of extent item iteration is pretty bad, it completely
+	   * requires all extents are contiguous, which is not ensured.
+	   *
+	   * Features like NO_HOLE and mixed inline/regular extents can cause
+	   * gaps between file extent items.
+	   *
+	   * The correct way is to follow Linux kernel/U-boot to iterate item
+	   * by item, without any assumption on the file offset continuity.
+	   *
+	   * Here we just manually skip to next item and re-do the verification.
+	   *
+	   * TODO: Rework the whole extent item iteration code, if not the
+	   * whole btrfs implementation.
+	   */
 	  if (data->extend <= pos)
 	    {
-	      grub_error (GRUB_ERR_BAD_FS, "extent not found");
-	      return -1;
+	      err = next (data, &desc, &elemaddr, &elemsize, &key_out);
+	      if (err < 0)
+		return -1;
+	      /* No next item for the inode, we hit the end. */
+	      if (err == 0 || key_out.object_id != ino ||
+		  key_out.type != GRUB_BTRFS_ITEM_TYPE_EXTENT_ITEM)
+		      return pos - pos0;
+
+	      csize = grub_le_to_cpu64 (key_out.offset) - pos;
+	      if (csize > len)
+		      csize = len;
+
+	      grub_memset (buf, 0, csize);
+	      buf += csize;
+	      pos += csize;
+	      len -= csize;
+	      continue;
 	    }
 	}
       csize = data->extend - pos;
@@ -1873,7 +1984,12 @@ find_path (struct grub_btrfs_data *data,
 	    {
 	      err = get_root (data, key, tree, type);
 	      if (err)
-		return err;
+		{
+		  grub_free (direl);
+		  grub_free (path_alloc);
+		  grub_free (origpath);
+		  return err;
+		}
 	    }
 	  continue;
 	}
@@ -1961,6 +2077,7 @@ grub_btrfs_dir (grub_device_t device, const char *path,
   int r = 0;
   grub_uint64_t tree;
   grub_uint8_t type;
+  grub_size_t est_size = 0;
 
   if (!data)
     return grub_errno;
@@ -2019,6 +2136,18 @@ grub_btrfs_dir (grub_device_t device, const char *path,
 	  break;
 	}
 
+      if (direl == NULL ||
+	  grub_add (grub_le_to_cpu16 (direl->n),
+		    grub_le_to_cpu16 (direl->m), &est_size) ||
+	  grub_add (est_size, sizeof (*direl), &est_size) ||
+	  grub_sub (est_size, sizeof (direl->name), &est_size) ||
+	  est_size > allocated)
+       {
+         grub_errno = GRUB_ERR_OUT_OF_RANGE;
+         r = -grub_errno;
+         goto out;
+       }
+
       for (cdirel = direl;
 	   (grub_uint8_t *) cdirel - (grub_uint8_t *) direl
 	   < (grub_ssize_t) elemsize;
@@ -2029,6 +2158,19 @@ grub_btrfs_dir (grub_device_t device, const char *path,
 	  char c;
 	  struct grub_btrfs_inode inode;
 	  struct grub_dirhook_info info;
+
+	  if (cdirel == NULL ||
+	      grub_add (grub_le_to_cpu16 (cdirel->n),
+			grub_le_to_cpu16 (cdirel->m), &est_size) ||
+	      grub_add (est_size, sizeof (*cdirel), &est_size) ||
+	      grub_sub (est_size, sizeof (cdirel->name), &est_size) ||
+	      est_size > allocated)
+	   {
+	     grub_errno = GRUB_ERR_OUT_OF_RANGE;
+	     r = -grub_errno;
+	     goto out;
+	   }
+
 	  err = grub_btrfs_read_inode (data, &inode, cdirel->key.object_id,
 				       tree);
 	  grub_memset (&info, 0, sizeof (info));
@@ -2159,6 +2301,33 @@ grub_btrfs_label (grub_device_t device, char **label)
 }
 
 #ifdef GRUB_UTIL
+
+struct embed_region {
+  unsigned int start;
+  unsigned int secs;
+};
+
+/*
+ * https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs(5)#BOOTLOADER_SUPPORT
+ * The first 1 MiB on each device is unused with the exception of primary
+ * superblock that is on the offset 64 KiB and spans 4 KiB.
+ */
+
+static const struct {
+  struct embed_region available;
+  struct embed_region used[6];
+} btrfs_head = {
+  .available = {0, GRUB_DISK_KiB_TO_SECTORS (1024)}, /* The first 1 MiB. */
+  .used = {
+    {0, 1},                                                        /* boot.S. */
+    {GRUB_DISK_KiB_TO_SECTORS (64) - 1, 1},                        /* Overflow guard. */
+    {GRUB_DISK_KiB_TO_SECTORS (64), GRUB_DISK_KiB_TO_SECTORS (4)}, /* 4 KiB superblock. */
+    {GRUB_DISK_KiB_TO_SECTORS (68), 1},                            /* Overflow guard. */
+    {GRUB_DISK_KiB_TO_SECTORS (1024) - 1, 1},                      /* Overflow guard. */
+    {0, 0}                                                         /* Array terminator. */
+  }
+};
+
 static grub_err_t
 grub_btrfs_embed (grub_device_t device __attribute__ ((unused)),
 		  unsigned int *nsectors,
@@ -2166,25 +2335,62 @@ grub_btrfs_embed (grub_device_t device __attribute__ ((unused)),
 		  grub_embed_type_t embed_type,
 		  grub_disk_addr_t **sectors)
 {
-  unsigned i;
+  unsigned int i, j, n = 0;
+  const struct embed_region *u;
+  grub_disk_addr_t *map;
 
   if (embed_type != GRUB_EMBED_PCBIOS)
     return grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET,
 		       "BtrFS currently supports only PC-BIOS embedding");
 
-  if (64 * 2 - 1 < *nsectors)
-    return grub_error (GRUB_ERR_OUT_OF_RANGE,
-		       N_("your core.img is unusually large.  "
-			  "It won't fit in the embedding area"));
-
-  *nsectors = 64 * 2 - 1;
-  if (*nsectors > max_nsectors)
-    *nsectors = max_nsectors;
-  *sectors = grub_calloc (*nsectors, sizeof (**sectors));
-  if (!*sectors)
+  map = grub_calloc (btrfs_head.available.secs, sizeof (*map));
+  if (map == NULL)
     return grub_errno;
-  for (i = 0; i < *nsectors; i++)
-    (*sectors)[i] = i + 1;
+
+  /*
+   * Populating the map array so that it can be used to index if a disk
+   * address is available to embed:
+   *   - 0: available,
+   *   - 1: unavailable.
+   */
+  for (u = btrfs_head.used; u->secs; ++u)
+    {
+      unsigned int end = u->start + u->secs;
+
+      if (end > btrfs_head.available.secs)
+        end = btrfs_head.available.secs;
+      for (i = u->start; i < end; ++i)
+        map[i] = 1;
+    }
+
+  /* Adding up n until it matches total size of available embedding area. */
+  for (i = 0; i < btrfs_head.available.secs; ++i)
+    if (map[i] == 0)
+      n++;
+
+  if (n < *nsectors)
+    {
+      grub_free (map);
+      return grub_error (GRUB_ERR_OUT_OF_RANGE,
+		         N_("your core.img is unusually large.  "
+			    "It won't fit in the embedding area"));
+    }
+
+  if (n > max_nsectors)
+    n = max_nsectors;
+
+  /*
+   * Populating the array so that it can used to index disk block address for
+   * an image file's offset to be embedded on disk (the unit is in sectors):
+   *   - i: The disk block address relative to btrfs_head.available.start,
+   *   - j: The offset in image file.
+   */
+  for (i = 0, j = 0; i < btrfs_head.available.secs && j < n; ++i)
+    if (map[i] == 0)
+      map[j++] = btrfs_head.available.start + i;
+
+  *nsectors = n;
+  *sectors = map;
 
   return GRUB_ERR_NONE;
 }

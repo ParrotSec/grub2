@@ -27,9 +27,9 @@
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
-static grub_efi_guid_t acpi_guid = GRUB_EFI_ACPI_TABLE_GUID;
-static grub_efi_guid_t acpi2_guid = GRUB_EFI_ACPI_20_TABLE_GUID;
-static grub_efi_guid_t smbios_guid = GRUB_EFI_SMBIOS_TABLE_GUID;
+static grub_guid_t acpi_guid = GRUB_EFI_ACPI_TABLE_GUID;
+static grub_guid_t acpi2_guid = GRUB_EFI_ACPI_20_TABLE_GUID;
+static grub_guid_t smbios_guid = GRUB_EFI_SMBIOS_TABLE_GUID;
 
 #define EBDA_SEG_ADDR	0x40e
 #define LOW_MEM_ADDR	0x413
@@ -46,7 +46,7 @@ enable_rom_area (void)
   grub_uint32_t *rom_ptr;
   grub_pci_device_t dev = { .bus = 0, .device = 0, .function = 0};
 
-  rom_ptr = (grub_uint32_t *) VBIOS_ADDR;
+  rom_ptr = grub_absolute_pointer (VBIOS_ADDR);
   if (*rom_ptr != BLANK_MEM)
     {
       grub_puts_ (N_("ROM image is present."));
@@ -92,47 +92,29 @@ lock_rom_area (void)
 static void
 fake_bios_data (int use_rom)
 {
-  unsigned i;
   void *acpi, *smbios;
   grub_uint16_t *ebda_seg_ptr, *low_mem_ptr;
 
-  ebda_seg_ptr = (grub_uint16_t *) EBDA_SEG_ADDR;
-  low_mem_ptr = (grub_uint16_t *) LOW_MEM_ADDR;
+  ebda_seg_ptr = grub_absolute_pointer (EBDA_SEG_ADDR);
+  low_mem_ptr = grub_absolute_pointer (LOW_MEM_ADDR);
   if ((*ebda_seg_ptr) || (*low_mem_ptr))
     return;
 
-  acpi = 0;
-  smbios = 0;
-  for (i = 0; i < grub_efi_system_table->num_table_entries; i++)
-    {
-      grub_efi_packed_guid_t *guid =
-	&grub_efi_system_table->configuration_table[i].vendor_guid;
+  acpi = grub_efi_find_configuration_table (&acpi2_guid);
+  grub_dprintf ("efi", "ACPI2: %p\n", acpi);
+  if (!acpi) {
+    acpi = grub_efi_find_configuration_table (&acpi_guid);
+    grub_dprintf ("efi", "ACPI: %p\n", acpi);
+  }
 
-      if (! grub_memcmp (guid, &acpi2_guid, sizeof (grub_efi_guid_t)))
-	{
-	  acpi = grub_efi_system_table->configuration_table[i].vendor_table;
-	  grub_dprintf ("efi", "ACPI2: %p\n", acpi);
-	}
-      else if (! grub_memcmp (guid, &acpi_guid, sizeof (grub_efi_guid_t)))
-	{
-	  void *t;
-
-	  t = grub_efi_system_table->configuration_table[i].vendor_table;
-	  if (! acpi)
-	    acpi = t;
-	  grub_dprintf ("efi", "ACPI: %p\n", t);
-	}
-      else if (! grub_memcmp (guid, &smbios_guid, sizeof (grub_efi_guid_t)))
-	{
-	  smbios = grub_efi_system_table->configuration_table[i].vendor_table;
-	  grub_dprintf ("efi", "SMBIOS: %p\n", smbios);
-	}
-    }
+  smbios = grub_efi_find_configuration_table (&smbios_guid);
+  grub_dprintf ("efi", "SMBIOS: %p\n", smbios);
 
   *ebda_seg_ptr = FAKE_EBDA_SEG;
   *low_mem_ptr = (FAKE_EBDA_SEG >> 6);
 
-  *((grub_uint16_t *) (FAKE_EBDA_SEG << 4)) = 640 - *low_mem_ptr;
+  /* *((grub_uint16_t *) (FAKE_EBDA_SEG << 4)) = 640 - *low_mem_ptr; */
+  *((grub_uint16_t *) (grub_absolute_pointer (FAKE_EBDA_SEG << 4))) = 640 - *low_mem_ptr;
 
   if (acpi)
     grub_memcpy ((char *) ((FAKE_EBDA_SEG << 4) + 16), acpi, 1024 - 16);

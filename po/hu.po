@@ -1,15 +1,15 @@
 # Hungarian translation for grub.
-# Copyright (C) 2010, 2011, 2014, 2017, 2019 Free Software Foundation, Inc.
+# Copyright (C) 2010, 2011, 2014, 2017, 2019, 2022 Free Software Foundation, Inc.
 # This file is distributed under the same license as the grub package.
 #
 # Gabor Kelemen <kelemeng@gnome.hu>, 2010, 2011, 2017.
-# Balázs Úr <ur.balazs@fsf.hu>, 2014, 2019.
+# Balázs Úr <ur.balazs@fsf.hu>, 2014, 2019, 2022.
 msgid ""
 msgstr ""
-"Project-Id-Version: grub 2.04-pre1\n"
+"Project-Id-Version: grub 2.06-pre2\n"
 "Report-Msgid-Bugs-To: bug-grub@gnu.org\n"
-"POT-Creation-Date: 2021-06-08 16:49+0200\n"
-"PO-Revision-Date: 2019-11-23 22:56+0100\n"
+"POT-Creation-Date: 2023-12-20 17:09+0100\n"
+"PO-Revision-Date: 2022-10-21 21:35+0200\n"
 "Last-Translator: Balázs Úr <ur.balazs@fsf.hu>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
 "Language: hu\n"
@@ -17,30 +17,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
-"X-Generator: Lokalize 19.04.3\n"
+"X-Generator: Lokalize 19.12.3\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: grub-core/bus/usb/serial/ftdi.c:145 grub-core/bus/usb/serial/pl2303.c:158
-#: grub-core/term/ieee1275/escc.c:169 grub-core/term/ns8250.c:202
+#: grub-core/term/ieee1275/escc.c:169 grub-core/term/ns8250.c:262
 msgid "unsupported serial port speed"
 msgstr "nem támogatott soros port sebesség"
 
 #: grub-core/bus/usb/serial/ftdi.c:151 grub-core/bus/usb/serial/pl2303.c:164
 #: grub-core/term/efi/serial.c:116 grub-core/term/ieee1275/escc.c:175
-#: grub-core/term/ns8250.c:208 grub-core/term/serial.c:227
-#: grub-core/term/serial.c:243
+#: grub-core/term/ns8250.c:268 grub-core/term/serial.c:288
+#: grub-core/term/serial.c:304
 msgid "unsupported serial port parity"
 msgstr "nem támogatott soros port paritás"
 
 #: grub-core/bus/usb/serial/ftdi.c:157 grub-core/bus/usb/serial/pl2303.c:170
 #: grub-core/term/efi/serial.c:122 grub-core/term/ieee1275/escc.c:181
-#: grub-core/term/ns8250.c:213 grub-core/term/serial.c:267
+#: grub-core/term/ns8250.c:273 grub-core/term/serial.c:328
 msgid "unsupported serial port stop bits number"
 msgstr "nem támogatott soros port stop bitszám"
 
 #: grub-core/bus/usb/serial/ftdi.c:161 grub-core/bus/usb/serial/pl2303.c:174
 #: grub-core/term/efi/serial.c:126 grub-core/term/ieee1275/escc.c:185
-#: grub-core/term/ns8250.c:217
+#: grub-core/term/ns8250.c:277
 msgid "unsupported serial port word length"
 msgstr "nem támogatott soros port szóhossz"
 
@@ -91,53 +91,52 @@ msgstr ""
 "Ne frissítse az EBDA-t. Egyes BIOS-ok esetén hibákat vagy fagyásokat "
 "javíthat, de hatástalan, ha az OS nem fogadja az RSDP-t a GRUB-ból."
 
-#: grub-core/commands/acpi.c:651 grub-core/commands/acpi.c:668
+#: grub-core/commands/acpi.c:666 grub-core/commands/acpi.c:683
 #: grub-core/commands/i386/pc/play.c:105 grub-core/commands/keylayouts.c:230
 #: grub-core/commands/keylayouts.c:245 grub-core/commands/keylayouts.c:263
 #: grub-core/efiemu/loadcore.c:350 grub-core/kern/elf.c:117
 #: grub-core/kern/elfXX.c:29 grub-core/kern/elfXX.c:156
-#: grub-core/kern/verifiers.c:156 grub-core/loader/arm/linux.c:319
-#: grub-core/loader/arm64/linux.c:330 grub-core/loader/arm64/xen_boot.c:356
-#: grub-core/loader/efi/chainloader.c:292
-#: grub-core/loader/efi/chainloader.c:313
-#: grub-core/loader/efi/chainloader.c:345 grub-core/loader/efi/fdt.c:142
-#: grub-core/loader/i386/bsd.c:1282 grub-core/loader/i386/bsd.c:2123
-#: grub-core/loader/i386/bsdXX.c:20 grub-core/loader/i386/bsdXX.c:36
-#: grub-core/loader/i386/bsdXX.c:63 grub-core/loader/i386/bsdXX.c:357
-#: grub-core/loader/i386/bsdXX.c:376 grub-core/loader/i386/bsdXX.c:519
-#: grub-core/loader/i386/bsdXX.c:535 grub-core/loader/i386/bsdXX.c:615
-#: grub-core/loader/i386/bsdXX.c:638
+#: grub-core/kern/verifiers.c:156 grub-core/loader/arm/linux.c:320
+#: grub-core/loader/arm64/xen_boot.c:342 grub-core/loader/efi/chainloader.c:283
+#: grub-core/loader/efi/chainloader.c:304
+#: grub-core/loader/efi/chainloader.c:336 grub-core/loader/efi/fdt.c:145
+#: grub-core/loader/efi/linux.c:530 grub-core/loader/i386/bsd.c:1282
+#: grub-core/loader/i386/bsd.c:2123 grub-core/loader/i386/bsdXX.c:20
+#: grub-core/loader/i386/bsdXX.c:39 grub-core/loader/i386/bsdXX.c:70
+#: grub-core/loader/i386/bsdXX.c:379 grub-core/loader/i386/bsdXX.c:398
+#: grub-core/loader/i386/bsdXX.c:545 grub-core/loader/i386/bsdXX.c:561
+#: grub-core/loader/i386/bsdXX.c:647 grub-core/loader/i386/bsdXX.c:670
 #: grub-core/loader/i386/coreboot/chainloader.c:112
 #: grub-core/loader/i386/coreboot/chainloader.c:148
 #: grub-core/loader/i386/coreboot/chainloader.c:170
-#: grub-core/loader/i386/linux.c:675 grub-core/loader/i386/linux.c:791
-#: grub-core/loader/i386/linux.c:1011 grub-core/loader/i386/multiboot_mbi.c:171
+#: grub-core/loader/i386/linux.c:687 grub-core/loader/i386/linux.c:803
+#: grub-core/loader/i386/linux.c:1023 grub-core/loader/i386/multiboot_mbi.c:171
 #: grub-core/loader/i386/pc/chainloader.c:202
 #: grub-core/loader/i386/pc/linux.c:150 grub-core/loader/i386/pc/linux.c:326
 #: grub-core/loader/i386/pc/linux.c:368 grub-core/loader/i386/pc/plan9.c:457
 #: grub-core/loader/i386/pc/plan9.c:550 grub-core/loader/i386/pc/plan9.c:566
-#: grub-core/loader/i386/xen.c:942 grub-core/loader/i386/xen_file.c:72
+#: grub-core/loader/i386/xen.c:941 grub-core/loader/i386/xen_file.c:72
 #: grub-core/loader/i386/xen_fileXX.c:43 grub-core/loader/i386/xen_fileXX.c:186
 #: grub-core/loader/i386/xen_fileXX.c:339 grub-core/loader/ia64/efi/linux.c:423
-#: grub-core/loader/ia64/efi/linux.c:471 grub-core/loader/linux.c:319
+#: grub-core/loader/ia64/efi/linux.c:471 grub-core/loader/linux.c:332
 #: grub-core/loader/macho.c:84 grub-core/loader/macho.c:109
 #: grub-core/loader/machoXX.c:33 grub-core/loader/machoXX.c:46
 #: grub-core/loader/machoXX.c:76 grub-core/loader/machoXX.c:116
 #: grub-core/loader/machoXX.c:131 grub-core/loader/machoXX.c:147
 #: grub-core/loader/machoXX.c:196 grub-core/loader/machoXX.c:317
-#: grub-core/loader/multiboot.c:434 grub-core/loader/multiboot_elfxx.c:171
-#: grub-core/loader/multiboot_elfxx.c:234
-#: grub-core/loader/multiboot_elfxx.c:278 grub-core/loader/multiboot_mbi2.c:135
+#: grub-core/loader/multiboot.c:434 grub-core/loader/multiboot_elfxx.c:198
+#: grub-core/loader/multiboot_elfxx.c:267
+#: grub-core/loader/multiboot_elfxx.c:315 grub-core/loader/multiboot_mbi2.c:135
 #: grub-core/loader/xnu.c:756 grub-core/loader/xnu.c:814
 #: grub-core/loader/xnu.c:835 grub-core/loader/xnu.c:890
 #: grub-core/loader/xnu.c:933 grub-core/loader/xnu.c:971
 #: grub-core/loader/xnu_resume.c:68 grub-core/loader/xnu_resume.c:153
-#: grub-core/loader/xnu_resume.c:165 util/grub-mkimagexx.c:2288
+#: grub-core/loader/xnu_resume.c:165 util/grub-mkimagexx.c:2417
 #, c-format
 msgid "premature end of file %s"
 msgstr "túl korai fájlvége: %s"
 
-#: grub-core/commands/acpi.c:780
+#: grub-core/commands/acpi.c:795
 msgid ""
 "[-1|-2] [--exclude=TABLE1,TABLE2|--load-only=TABLE1,TABLE2] FILE1 [FILE2] "
 "[...]"
@@ -145,39 +144,41 @@ msgstr ""
 "[-1|-2] [--exclude=TÁBLÁZAT1,TÁBLÁZAT2|--load-only=TÁBLÁZAT1,TÁBLÁZAT2] "
 "FÁJL1 [FÁJL2] […]"
 
-#: grub-core/commands/acpi.c:783
+#: grub-core/commands/acpi.c:798
 msgid "Load host ACPI tables and tables specified by arguments."
 msgstr "Gazda ACPI-táblázatok és a paraméterben megadott táblázatok betöltése."
 
 #: grub-core/commands/acpihalt.c:368 grub-core/kern/err.c:110
+#: grub-core/kern/fs.c:79
 #, c-format
 msgid "error: %s.\n"
 msgstr "hiba: %s.\n"
 
-#: grub-core/commands/acpihalt.c:368 grub-core/kern/efi/mm.c:144
-#: grub-core/kern/efi/mm.c:157 grub-core/kern/emu/misc.c:95
-#: grub-core/kern/emu/misc.c:107 grub-core/kern/emu/misc.c:117
-#: grub-core/kern/emu/misc.c:146 grub-core/kern/emu/mm.c:34
+#: grub-core/commands/acpihalt.c:368 grub-core/kern/efi/mm.c:143
+#: grub-core/kern/efi/mm.c:156 grub-core/kern/emu/misc.c:96
+#: grub-core/kern/emu/misc.c:108 grub-core/kern/emu/misc.c:118
+#: grub-core/kern/emu/misc.c:147 grub-core/kern/emu/mm.c:34
 #: grub-core/kern/emu/mm.c:44 grub-core/kern/emu/mm.c:73
-#: grub-core/kern/mm.c:376 grub-core/lib/relocator.c:1282
-#: grub-core/lib/relocator.c:1439 grub-core/lib/relocator.c:1538
-#: grub-core/loader/arm/linux.c:259 grub-core/loader/arm64/linux.c:265
-#: grub-core/loader/arm64/linux.c:321 grub-core/loader/arm64/linux.c:340
-#: grub-core/loader/arm64/xen_boot.c:344 grub-core/loader/arm64/xen_boot.c:367
-#: grub-core/loader/efi/chainloader.c:305 grub-core/osdep/unix/dl.c:48
-#: grub-core/osdep/windows/dl.c:46 grub-core/script/lexer.c:161
-#: grub-core/script/lexer.c:197
+#: grub-core/kern/mm.c:552 grub-core/lib/relocator.c:1286
+#: grub-core/lib/relocator.c:1443 grub-core/lib/relocator.c:1542
+#: grub-core/loader/arm/linux.c:260 grub-core/loader/arm64/xen_boot.c:330
+#: grub-core/loader/arm64/xen_boot.c:353 grub-core/loader/efi/chainloader.c:296
+#: grub-core/loader/efi/linux.c:411 grub-core/loader/efi/linux.c:433
+#: grub-core/loader/efi/linux.c:521 grub-core/loader/efi/linux.c:540
+#: grub-core/osdep/unix/dl.c:48 grub-core/osdep/windows/dl.c:46
+#: grub-core/script/lexer.c:161 grub-core/script/lexer.c:197
+#: grub-core/video/efi_gop.c:485
 msgid "out of memory"
 msgstr "nincs elég memória"
 
-#: grub-core/commands/acpihalt.c:374 grub-core/disk/cryptodisk.c:766
-#: grub-core/disk/cryptodisk.c:810 grub-core/kern/emu/hostdisk.c:307
-#: grub-core/kern/emu/hostfs.c:149 grub-core/kern/emu/misc.c:212
+#: grub-core/commands/acpihalt.c:374 grub-core/disk/cryptodisk.c:806
+#: grub-core/disk/cryptodisk.c:850 grub-core/kern/emu/hostdisk.c:307
+#: grub-core/kern/emu/hostfs.c:149 grub-core/kern/emu/misc.c:216
 #: grub-core/osdep/linux/ofpath.c:195 grub-core/osdep/linux/ofpath.c:521
 #: grub-core/osdep/linux/ofpath.c:534 util/glue-efi.c:90 util/glue-efi.c:104
-#: util/grub-editenv.c:161 util/grub-fstest.c:577
-#: util/grub-install-common.c:1108 util/grub-mkrescue.c:637
-#: util/grub-mkrescue.c:891 util/grub-mount.c:506 util/grub-render-label.c:176
+#: util/grub-editenv.c:161 util/grub-fstest.c:583
+#: util/grub-install-common.c:1130 util/grub-mkrescue.c:658
+#: util/grub-mkrescue.c:931 util/grub-mount.c:526 util/grub-render-label.c:176
 #: util/misc.c:95 util/setup.c:817 util/setup.c:836
 #, c-format
 msgid "cannot read `%s': %s"
@@ -192,47 +193,78 @@ msgstr "ACPI leállítás nem sikerült"
 msgid "List devices."
 msgstr "Eszközök felsorolása."
 
-#: grub-core/commands/blocklist.c:122 grub-core/commands/cat.c:57
-#: grub-core/commands/configfile.c:35 grub-core/commands/efi/loadbios.c:168
+#: grub-core/commands/bli.c:49
+#, fuzzy, c-format
+msgid "cannot open device: %s"
+msgstr "„%s” nem nyitható meg: %s"
+
+#: grub-core/commands/bli.c:54
+#, fuzzy, c-format
+msgid "cannot open disk: %s"
+msgstr "„%s” nem nyitható meg: %s"
+
+#: grub-core/commands/bli.c:62
+#, c-format
+msgid "this is not a GPT partition table: %s"
+msgstr ""
+
+#: grub-core/commands/bli.c:69
+#, fuzzy, c-format
+msgid "read error: %s"
+msgstr "hiba: %s.\n"
+
+#: grub-core/commands/bli.c:94 grub-core/commands/bli.c:98
+#, fuzzy
+msgid "unable to find boot device"
+msgstr "Gyökéreszköz beállítása."
+
+#: grub-core/commands/bli.c:107
+#, fuzzy
+msgid "unable to determine partition UUID of boot device"
+msgstr "Partíció UUID-jának meghatározása."
+
+#: grub-core/commands/blocklist.c:124 grub-core/commands/cat.c:57
+#: grub-core/commands/configfile.c:35 grub-core/commands/efi/loadbios.c:150
 #: grub-core/commands/file.c:160 grub-core/commands/hexdump.c:47
 #: grub-core/commands/legacycfg.c:228 grub-core/commands/legacycfg.c:334
 #: grub-core/commands/minicmd.c:44 grub-core/commands/syslinuxcfg.c:146
-#: grub-core/commands/testload.c:58 grub-core/commands/testspeed.c:52
-#: grub-core/disk/loopback.c:93 grub-core/efiemu/main.c:293
+#: grub-core/commands/testload.c:60 grub-core/commands/testspeed.c:52
+#: grub-core/disk/loopback.c:98 grub-core/efiemu/main.c:293
 #: grub-core/font/font_cmd.c:32 grub-core/kern/emu/hostdisk.c:519
-#: grub-core/loader/arm/linux.c:364 grub-core/loader/arm/linux.c:409
-#: grub-core/loader/arm/linux.c:472 grub-core/loader/arm64/linux.c:243
-#: grub-core/loader/arm64/linux.c:297 grub-core/loader/arm64/xen_boot.c:398
-#: grub-core/loader/arm64/xen_boot.c:411 grub-core/loader/arm64/xen_boot.c:462
-#: grub-core/loader/efi/chainloader.c:232 grub-core/loader/i386/bsd.c:1468
+#: grub-core/loader/arm/linux.c:365 grub-core/loader/arm/linux.c:410
+#: grub-core/loader/arm/linux.c:473 grub-core/loader/arm64/xen_boot.c:384
+#: grub-core/loader/arm64/xen_boot.c:397 grub-core/loader/arm64/xen_boot.c:448
+#: grub-core/loader/efi/chainloader.c:232 grub-core/loader/efi/linux.c:380
+#: grub-core/loader/efi/linux.c:483 grub-core/loader/emu/linux.c:119
+#: grub-core/loader/emu/linux.c:152 grub-core/loader/i386/bsd.c:1468
 #: grub-core/loader/i386/bsd.c:1813 grub-core/loader/i386/bsd.c:2091
 #: grub-core/loader/i386/coreboot/chainloader.c:438
-#: grub-core/loader/i386/linux.c:664 grub-core/loader/i386/linux.c:1047
+#: grub-core/loader/i386/linux.c:676 grub-core/loader/i386/linux.c:1059
 #: grub-core/loader/i386/pc/chainloader.c:290
 #: grub-core/loader/i386/pc/freedos.c:105 grub-core/loader/i386/pc/linux.c:139
 #: grub-core/loader/i386/pc/linux.c:406 grub-core/loader/i386/pc/ntldr.c:85
 #: grub-core/loader/i386/pc/plan9.c:409
 #: grub-core/loader/i386/pc/pxechainloader.c:94
 #: grub-core/loader/i386/pc/truecrypt.c:96 grub-core/loader/i386/xen.c:643
-#: grub-core/loader/i386/xen.c:776 grub-core/loader/i386/xen.c:852
-#: grub-core/loader/i386/xen.c:862 grub-core/loader/i386/xnu.c:487
+#: grub-core/loader/i386/xen.c:776 grub-core/loader/i386/xen.c:851
+#: grub-core/loader/i386/xen.c:861 grub-core/loader/i386/xnu.c:487
 #: grub-core/loader/ia64/efi/linux.c:459 grub-core/loader/ia64/efi/linux.c:539
 #: grub-core/loader/mips/linux.c:238 grub-core/loader/mips/linux.c:429
 #: grub-core/loader/multiboot.c:322 grub-core/loader/multiboot.c:374
 #: grub-core/loader/multiboot.c:384
-#: grub-core/loader/powerpc/ieee1275/linux.c:269
-#: grub-core/loader/powerpc/ieee1275/linux.c:341
+#: grub-core/loader/powerpc/ieee1275/linux.c:280
+#: grub-core/loader/powerpc/ieee1275/linux.c:352
 #: grub-core/loader/sparc64/ieee1275/linux.c:305
 #: grub-core/loader/sparc64/ieee1275/linux.c:381 grub-core/loader/xnu.c:370
 #: grub-core/loader/xnu.c:479 grub-core/loader/xnu.c:797
 #: grub-core/loader/xnu.c:911 grub-core/loader/xnu.c:1296
 #: grub-core/loader/xnu.c:1446 grub-core/loader/xnu.c:1472
-#: grub-core/video/readers/jpeg.c:838 grub-core/video/readers/png.c:1132
+#: grub-core/video/readers/jpeg.c:916 grub-core/video/readers/png.c:1118
 msgid "filename expected"
 msgstr "fájlnévnek kellett volna következnie"
 
 #. TRANSLATORS: "embed" is a verb (command description).  "
-#: grub-core/commands/blocklist.c:154 grub-core/commands/cat.c:163
+#: grub-core/commands/blocklist.c:156 grub-core/commands/cat.c:163
 #: grub-core/commands/configfile.c:65 grub-core/commands/configfile.c:68
 #: grub-core/commands/configfile.c:74 grub-core/commands/configfile.c:80
 #: grub-core/commands/configfile.c:86 grub-core/commands/hashsum.c:34
@@ -241,7 +273,7 @@ msgstr "fájlnévnek kellett volna következnie"
 #: grub-core/commands/macbless.c:222 grub-core/commands/minicmd.c:201
 #: grub-core/commands/syslinuxcfg.c:186 grub-core/commands/syslinuxcfg.c:194
 #: grub-core/commands/syslinuxcfg.c:200 grub-core/commands/syslinuxcfg.c:206
-#: grub-core/commands/testload.c:163 grub-core/efiemu/main.c:312
+#: grub-core/commands/testload.c:165 grub-core/efiemu/main.c:312
 #: grub-core/kern/emu/main.c:100 grub-core/kern/emu/main.c:103
 #: grub-core/loader/i386/bsd.c:2144 grub-core/loader/i386/bsd.c:2147
 #: grub-core/loader/i386/bsd.c:2150
@@ -249,13 +281,13 @@ msgstr "fájlnévnek kellett volna következnie"
 #: grub-core/loader/ia64/efi/linux.c:594 include/grub/util/install.h:32
 #: include/grub/util/install.h:64 include/grub/util/install.h:66
 #: util/grub-glue-efi.c:52 util/grub-glue-efi.c:54 util/grub-glue-efi.c:56
-#: util/grub-install.c:254 util/grub-install.c:301 util/grub-mkfont.c:936
+#: util/grub-install.c:254 util/grub-install.c:301 util/grub-mkfont.c:982
 #: util/grub-mkimage.c:68 util/grub-mkimage.c:74 util/grub-mkimage.c:76
 #: util/grub-mkimage.c:78 util/grub-mkimage.c:81 util/grub-mkimage.c:84
 #: util/grub-mklayout.c:52 util/grub-mklayout.c:54 util/grub-mkrescue.c:97
 #: util/grub-mkrescue.c:101 util/grub-mkrescue.c:104 util/grub-mkrescue.c:105
-#: util/grub-mkrescue.c:106 util/grub-mkstandalone.c:47
-#: util/grub-mkstandalone.c:49 util/grub-probe.c:732
+#: util/grub-mkrescue.c:106 util/grub-mkstandalone.c:50
+#: util/grub-mkstandalone.c:52 util/grub-probe.c:732
 #: util/grub-render-label.c:59 util/grub-render-label.c:70
 #: util/grub-render-label.c:72 util/grub-setup.c:78 util/grub-setup.c:80
 #: util/grub-setup.c:84 util/grub-syslinux2cfg.c:74
@@ -264,19 +296,19 @@ msgstr "fájlnévnek kellett volna következnie"
 msgid "FILE"
 msgstr "FÁJL"
 
-#: grub-core/commands/blocklist.c:154
+#: grub-core/commands/blocklist.c:156
 msgid "Print a block list."
 msgstr "Blokklista kiírása."
 
-#: grub-core/commands/boot.c:147 grub-core/commands/legacycfg.c:552
-#: grub-core/commands/legacycfg.c:593 grub-core/loader/arm64/linux.c:250
+#: grub-core/commands/boot.c:197 grub-core/commands/legacycfg.c:552
+#: grub-core/commands/legacycfg.c:593 grub-core/loader/efi/linux.c:392
 #: grub-core/loader/i386/bsd.c:1805 grub-core/loader/i386/bsd.c:1906
 #: grub-core/loader/i386/bsd.c:2013 grub-core/loader/i386/bsd.c:2046
-#: grub-core/loader/i386/bsd.c:2095 grub-core/loader/i386/linux.c:1053
+#: grub-core/loader/i386/bsd.c:2095 grub-core/loader/i386/linux.c:1065
 #: grub-core/loader/i386/pc/linux.c:412 grub-core/loader/i386/xen.c:783
-#: grub-core/loader/i386/xen.c:867 grub-core/loader/ia64/efi/linux.c:545
+#: grub-core/loader/i386/xen.c:866 grub-core/loader/ia64/efi/linux.c:545
 #: grub-core/loader/mips/linux.c:432 grub-core/loader/multiboot.c:388
-#: grub-core/loader/powerpc/ieee1275/linux.c:347
+#: grub-core/loader/powerpc/ieee1275/linux.c:358
 #: grub-core/loader/sparc64/ieee1275/linux.c:387 grub-core/loader/xnu.c:591
 #: grub-core/loader/xnu.c:687 grub-core/loader/xnu.c:800
 #: grub-core/loader/xnu.c:914 grub-core/loader/xnu.c:1110
@@ -285,7 +317,7 @@ msgstr "Blokklista kiírása."
 msgid "you need to load the kernel first"
 msgstr "először a kernelt kell betöltenie"
 
-#: grub-core/commands/boot.c:189
+#: grub-core/commands/boot.c:239
 msgid "Boot an operating system."
 msgstr "Operációs rendszer elindítása."
 
@@ -320,40 +352,44 @@ msgstr "DOS-stílusú CR/NL sorvégek elfogadása."
 msgid "Show the contents of a file."
 msgstr "Fájl tartalmának megjelenítése."
 
-#: grub-core/commands/cmp.c:43 grub-core/commands/i386/pc/drivemap.c:239
+#: grub-core/commands/cmp.c:34
+#, fuzzy
+msgid "Enable verbose output"
+msgstr "Minden indítási kimenet letiltása."
+
+#: grub-core/commands/cmp.c:51 grub-core/commands/i386/pc/drivemap.c:236
 #: grub-core/commands/i386/wrmsr.c:61 grub-core/commands/iorw.c:86
 #: grub-core/commands/memrw.c:85 grub-core/commands/password.c:75
 #: grub-core/commands/password_pbkdf2.c:94 grub-core/commands/pgp.c:826
 #: grub-core/commands/regexp.c:113 grub-core/mmap/mmap.c:520
-#: grub-core/net/dns.c:646
+#: grub-core/net/dns.c:635 grub-core/net/net.c:1198
 msgid "two arguments expected"
 msgstr "két argumentumot kell megadni"
 
-#: grub-core/commands/cmp.c:45
+#: grub-core/commands/cmp.c:54
 #, c-format
 msgid "Compare file `%s' with `%s':\n"
 msgstr "A(z) „%s” fájl összehasonlítása ezzel: „%s”:\n"
 
-#: grub-core/commands/cmp.c:54
+#: grub-core/commands/cmp.c:62
 #, c-format
 msgid "Files differ in size: %llu [%s], %llu [%s]\n"
 msgstr "A fájlok mérete eltér: %llu [%s], %llu [%s]\n"
 
-#: grub-core/commands/cmp.c:81
+#: grub-core/commands/cmp.c:90
 #, c-format
 msgid "Files differ at the offset %llu: 0x%x [%s], 0x%x [%s]\n"
 msgstr "A fájlok eltérők a(z) %llu eltolásnál: 0x%x [%s], 0x%x [%s]\n"
 
-#. TRANSLATORS: it's always exactly 2 files.
-#: grub-core/commands/cmp.c:93
+#: grub-core/commands/cmp.c:103
 msgid "The files are identical.\n"
 msgstr "A fájlok teljesen egyformák.\n"
 
-#: grub-core/commands/cmp.c:113
+#: grub-core/commands/cmp.c:124
 msgid "FILE1 FILE2"
 msgstr "FÁJL1 FÁJL2"
 
-#: grub-core/commands/cmp.c:113
+#: grub-core/commands/cmp.c:124
 msgid "Compare two files."
 msgstr "Két fájl összehasonlítása."
 
@@ -400,9 +436,79 @@ msgstr "[-e|-n] SZÖVEG"
 msgid "Display a line of text."
 msgstr "Egy sornyi szöveg megjelenítése."
 
-#: grub-core/commands/efi/efifwsetup.c:82
+#: grub-core/commands/efi/efifwsetup.c:48
+msgid "reboot to firmware setup is not supported by the current firmware"
+msgstr ""
+
+#: grub-core/commands/efi/efifwsetup.c:95
 msgid "Reboot into firmware setup menu."
-msgstr "Újraindítás a firmware beállító menübe."
+msgstr "Újraindítás a belső vezérlőprogram beállítási menübe."
+
+#: grub-core/commands/efi/efitextmode.c:44
+msgid "device error: could not set requested mode"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:47
+msgid "invalid mode: number not valid"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:50
+#, fuzzy, c-format
+msgid "unexpected EFI error number: `%u'"
+msgstr "váratlan EFI hiba"
+
+#: grub-core/commands/efi/efitextmode.c:69
+msgid "no UEFI output console interface"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:72
+msgid "no mode struct for UEFI output console"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:75
+#, fuzzy
+msgid "at most two arguments expected"
+msgstr "két argumentumot kell megadni"
+
+#: grub-core/commands/efi/efitextmode.c:79
+msgid "Available modes for console output device.\n"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:83
+msgid " [%"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:100
+#, c-format
+msgid "non-numeric or invalid mode `%s'"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:111
+#, c-format
+msgid "invalid mode: `%lu' is greater than maximum mode `%lu'"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:122
+#, c-format
+msgid "non-numeric or invalid columns number `%s'"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:128
+#, c-format
+msgid "non-numeric or invalid rows number `%s'"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:136
+msgid "no mode found with requested columns and rows"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:146
+msgid "[min | max | <mode_num> | <cols> <rows>]"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:147
+msgid "Get or set EFI text mode."
+msgstr ""
 
 #: grub-core/commands/efi/fixvideo.c:107
 msgid "Fix video problem."
@@ -416,43 +522,52 @@ msgstr "ROM kép meg van adva."
 msgid "Can't enable ROM area."
 msgstr "Nem sikerült engedélyezni a ROM területet."
 
-#: grub-core/commands/efi/loadbios.c:209
+#: grub-core/commands/efi/loadbios.c:191
 msgid ""
 "Create BIOS-like structures for backward compatibility with existing OS."
 msgstr ""
 "BIOS-szerű szerkezetek létrehozása a meglévő operációs rendszerekkel való "
 "visszafelé kompatibilitáshoz."
 
-#: grub-core/commands/efi/loadbios.c:214
+#: grub-core/commands/efi/loadbios.c:196
 msgid "BIOS_DUMP [INT10_DUMP]"
 msgstr "BIOS_DUMP [INT10_DUMP]"
 
-#: grub-core/commands/efi/loadbios.c:215
+#: grub-core/commands/efi/loadbios.c:197
 msgid "Load BIOS dump."
 msgstr "BIOS-kiíratás betöltése."
 
-#: grub-core/commands/efi/tpm.c:140
-msgid "Command failed"
+#: grub-core/commands/efi/tpm.c:141
+#, fuzzy
+msgid "command failed"
 msgstr "A parancs sikertelen"
 
-#: grub-core/commands/efi/tpm.c:142
-msgid "Invalid parameter"
+#: grub-core/commands/efi/tpm.c:143
+#, fuzzy
+msgid "invalid parameter"
 msgstr "Érvénytelen paraméter"
 
-#: grub-core/commands/efi/tpm.c:144
-msgid "Output buffer too small"
+#: grub-core/commands/efi/tpm.c:145
+#, fuzzy
+msgid "output buffer too small"
 msgstr "A kimeneti puffer túl kicsi"
 
-#: grub-core/commands/efi/tpm.c:146
+#: grub-core/commands/efi/tpm.c:147
 msgid "TPM unavailable"
 msgstr "A TPM nem érhető el"
 
-#: grub-core/commands/efi/tpm.c:148
-msgid "Unknown TPM error"
+#: grub-core/commands/efi/tpm.c:149
+#, fuzzy
+msgid "unknown TPM error"
 msgstr "Ismeretlen TPM hiba"
 
-#: grub-core/commands/efi/tpm.c:173 grub-core/commands/efi/tpm.c:207
+#: grub-core/commands/efi/tpm.c:174 grub-core/commands/efi/tpm.c:208
 msgid "cannot allocate TPM event buffer"
+msgstr "nem lehet lefoglalni TPM eseménypuffert"
+
+#: grub-core/commands/efi/tpm.c:249
+#, fuzzy
+msgid "cannot allocate CC event buffer"
 msgstr "nem lehet lefoglalni TPM eseménypuffert"
 
 #: grub-core/commands/eval.c:63
@@ -466,7 +581,7 @@ msgstr "Argumentumok kiértékelése GRUB parancsokként"
 #: grub-core/commands/extcmd.c:120 grub-core/kern/command.c:88
 #, c-format
 msgid "%s: the command is not allowed when lockdown is enforced"
-msgstr ""
+msgstr "%s: a parancs nem engedélyezett, ha a lezárás kényszerítve van"
 
 #: grub-core/commands/file.c:41
 msgid "Check if FILE can be booted as i386 PAE Xen unprivileged guest kernel"
@@ -603,7 +718,7 @@ msgstr "Ellenőrzés, hogy a FÁJL BIOS bootsector"
 
 #. TRANSLATORS: it's a standalone boolean value,
 #. opposite of "true".
-#: grub-core/commands/file.c:677 grub-core/commands/i386/cmostest.c:63
+#: grub-core/commands/file.c:688 grub-core/commands/i386/cmostest.c:63
 #: grub-core/commands/i386/cpuid.c:71 grub-core/commands/keystatus.c:65
 #: grub-core/commands/keystatus.c:69 grub-core/commands/keystatus.c:78
 #: grub-core/commands/test.c:436 grub-core/commands/true.c:39
@@ -611,11 +726,11 @@ msgstr "Ellenőrzés, hogy a FÁJL BIOS bootsector"
 msgid "false"
 msgstr "hamis"
 
-#: grub-core/commands/file.c:686
+#: grub-core/commands/file.c:697
 msgid "OPTIONS FILE"
 msgstr "KAPCSOLÓK FÁJL"
 
-#: grub-core/commands/file.c:687
+#: grub-core/commands/file.c:698
 msgid "Check if FILE is of specified type."
 msgstr "Ellenőrzés, hogy a FÁJL egy megadott típusú."
 
@@ -652,8 +767,8 @@ msgid ""
 "Halts the computer.  This command does not work on all firmware "
 "implementations."
 msgstr ""
-"Leállítja a számítógépet. Ez a parancs nem működik minden firmware-"
-"megvalósításon."
+"Leállítja a számítógépet. Ez a parancs nem működik minden belső "
+"vezérlőprogram megvalósításon."
 
 #: grub-core/commands/hashsum.c:32
 msgid "Specify hash to use."
@@ -673,7 +788,7 @@ msgstr "A hash-lista alapkönyvtára."
 
 #. TRANSLATORS: platform here isn't identifier. It can be translated.
 #: grub-core/commands/hashsum.c:35 grub-core/commands/ls.c:150
-#: grub-core/commands/macbless.c:226 grub-core/commands/syslinuxcfg.c:51
+#: grub-core/commands/macbless.c:225 grub-core/commands/syslinuxcfg.c:51
 #: grub-core/commands/syslinuxcfg.c:54 grub-core/kern/emu/main.c:106
 #: include/grub/util/install.h:50 include/grub/util/install.h:53
 #: include/grub/util/install.h:56 include/grub/util/install.h:59
@@ -792,13 +907,13 @@ msgstr "Ne írjon ki üzeneteket."
 #: grub-core/commands/iorw.c:48 grub-core/commands/legacycfg.c:779
 #: grub-core/commands/legacycfg.c:831 grub-core/commands/macbless.c:190
 #: grub-core/commands/memrw.c:48 grub-core/commands/pgp.c:738
-#: grub-core/commands/pgp.c:792 grub-core/commands/search.c:304
-#: grub-core/commands/search_wrap.c:179 grub-core/commands/setpci.c:242
+#: grub-core/commands/pgp.c:792 grub-core/commands/search.c:324
+#: grub-core/commands/search_wrap.c:182 grub-core/commands/setpci.c:242
 #: grub-core/commands/sleep.c:71 grub-core/fs/zfs/zfsinfo.c:279
 #: grub-core/fs/zfs/zfsinfo.c:358 grub-core/gettext/gettext.c:492
-#: grub-core/kern/corecmd.c:65 grub-core/kern/corecmd.c:79
-#: grub-core/mmap/mmap.c:433 grub-core/net/dns.c:720 grub-core/net/dns.c:752
-#: grub-core/net/net.c:699 grub-core/net/net.c:1057
+#: grub-core/kern/corecmd.c:68 grub-core/kern/corecmd.c:82
+#: grub-core/mmap/mmap.c:433 grub-core/net/dns.c:711 grub-core/net/dns.c:743
+#: grub-core/net/net.c:709 grub-core/net/net.c:1081
 #: grub-core/normal/context.c:194 grub-core/script/execute.c:131
 #: grub-core/term/gfxterm_background.c:136
 msgid "one argument expected"
@@ -816,11 +931,11 @@ msgstr "ATA lemezparaméterek lekérése/beállítása."
 msgid "Usage:"
 msgstr "Használat:"
 
-#: grub-core/commands/help.c:146
+#: grub-core/commands/help.c:148
 msgid "[PATTERN ...]"
 msgstr "[MINTA …]"
 
-#: grub-core/commands/help.c:147
+#: grub-core/commands/help.c:149
 msgid "Show a help message."
 msgstr "Súgóüzenet megjelenítése."
 
@@ -891,34 +1006,34 @@ msgstr "CPU szolgáltatásainak ellenőrzése."
 #. your language doesn't have an equivalent of "mapping" you can
 #. use the word like "rerouting".
 #.
-#: grub-core/commands/i386/pc/drivemap.c:43
+#: grub-core/commands/i386/pc/drivemap.c:40
 msgid "Show the current mappings."
 msgstr "Az aktuális társítások megjelenítése."
 
-#: grub-core/commands/i386/pc/drivemap.c:44
+#: grub-core/commands/i386/pc/drivemap.c:41
 msgid "Reset all mappings to the default values."
 msgstr "Minden társítás visszaállítása az alapértelmezett értékekre."
 
-#: grub-core/commands/i386/pc/drivemap.c:45
+#: grub-core/commands/i386/pc/drivemap.c:42
 msgid "Perform both direct and reverse mappings."
 msgstr "Közvetlen és fordított társítások végrehajtása egyaránt."
 
-#: grub-core/commands/i386/pc/drivemap.c:184
+#: grub-core/commands/i386/pc/drivemap.c:181
 msgid "No drives have been remapped"
 msgstr "Nem lettek meghajtók újratársítva"
 
 #. TRANSLATORS:  This is the header of mapping list.
 #. On the left is how OS will see the disks and
 #. on the right current GRUB vision.
-#: grub-core/commands/i386/pc/drivemap.c:191
+#: grub-core/commands/i386/pc/drivemap.c:188
 msgid "OS disk #num ------> GRUB/BIOS device"
 msgstr "OS lemez #szám ------> GRUB/BIOS eszköz"
 
-#: grub-core/commands/i386/pc/drivemap.c:413
+#: grub-core/commands/i386/pc/drivemap.c:415
 msgid "-l | -r | [-s] grubdev osdisk."
 msgstr "-l | -r | [-s] grubeszköz oslemez."
 
-#: grub-core/commands/i386/pc/drivemap.c:414
+#: grub-core/commands/i386/pc/drivemap.c:416
 msgid "Manage the BIOS drive mappings."
 msgstr "A BIOS meghajtótársítások kezelése."
 
@@ -1005,19 +1120,19 @@ msgid "Invalid tempo in %s"
 msgstr "Érvénytelen ütem itt: %s"
 
 #: grub-core/commands/i386/pc/play.c:151 grub-core/commands/macbless.c:172
-#: grub-core/fs/archelp.c:260 grub-core/fs/bfs.c:621 grub-core/fs/bfs.c:704
-#: grub-core/fs/btrfs.c:1746 grub-core/fs/btrfs.c:1775
-#: grub-core/fs/btrfs.c:1819 grub-core/fs/btrfs.c:1902
-#: grub-core/fs/btrfs.c:1926 grub-core/fs/fshelp.c:257 grub-core/fs/jfs.c:707
-#: grub-core/fs/minix.c:428 grub-core/fs/ufs.c:544 grub-core/fs/zfs/zfs.c:2090
-#: grub-core/fs/zfs/zfs.c:2102 grub-core/fs/zfs/zfs.c:2308
-#: grub-core/net/http.c:120
+#: grub-core/fs/archelp.c:268 grub-core/fs/bfs.c:623 grub-core/fs/bfs.c:706
+#: grub-core/fs/btrfs.c:1857 grub-core/fs/btrfs.c:1886
+#: grub-core/fs/btrfs.c:1930 grub-core/fs/btrfs.c:2018
+#: grub-core/fs/btrfs.c:2042 grub-core/fs/fshelp.c:257 grub-core/fs/jfs.c:707
+#: grub-core/fs/minix.c:430 grub-core/fs/ufs.c:544 grub-core/fs/zfs/zfs.c:2093
+#: grub-core/fs/zfs/zfs.c:2105 grub-core/fs/zfs/zfs.c:2312
+#: grub-core/net/http.c:124
 #, c-format
 msgid "file `%s' not found"
 msgstr "a(z) „%s” fájl nem található"
 
 #: grub-core/commands/i386/pc/play.c:162 grub-core/commands/i386/pc/play.c:171
-#: grub-core/kern/misc.c:437 grub-core/script/execute.c:138
+#: grub-core/kern/misc.c:493 grub-core/script/execute.c:138
 #: grub-core/script/execute.c:244
 msgid "unrecognized number"
 msgstr "azonosítatlan szám"
@@ -1127,7 +1242,7 @@ msgid "unsupported instruction"
 msgstr "nem támogatott utasítás"
 
 #: grub-core/commands/i386/rdmsr.c:77 grub-core/commands/i386/wrmsr.c:70
-#: grub-core/commands/i386/wrmsr.c:78 grub-core/net/dns.c:734
+#: grub-core/commands/i386/wrmsr.c:78 grub-core/net/dns.c:725
 msgid "invalid argument"
 msgstr "érvénytelen argumentum"
 
@@ -1196,8 +1311,8 @@ msgstr "32-bites ÉRTÉK írása a PORTRA."
 
 #: grub-core/commands/keylayouts.c:215 grub-core/commands/loadenv.c:61
 #: grub-core/commands/nativedisk.c:189 grub-core/efiemu/main.c:235
-#: grub-core/font/font.c:432 grub-core/gfxmenu/gfxmenu.c:63
-#: grub-core/kern/device.c:42 grub-core/kern/dl.c:749
+#: grub-core/font/font.c:464 grub-core/gfxmenu/gfxmenu.c:63
+#: grub-core/kern/device.c:42 grub-core/kern/dl.c:760
 #, c-format
 msgid "variable `%s' isn't set"
 msgstr "a(z) „%s” változó nincs beállítva"
@@ -1228,7 +1343,7 @@ msgstr "Billentyűmódosító állapotának ellenőrzése."
 #: grub-core/commands/legacycfg.c:531 grub-core/commands/legacycfg.c:545
 #: grub-core/commands/legacycfg.c:565 grub-core/commands/legacycfg.c:578
 #: grub-core/commands/time.c:43 grub-core/script/function.c:119
-#: util/grub-file.c:100 util/grub-fstest.c:57 util/grub-mount.c:69
+#: util/grub-file.c:100 util/grub-fstest.c:57 util/grub-mount.c:68
 #, c-format
 msgid "can't find command `%s'"
 msgstr "nem található a parancs: „%s”"
@@ -1302,27 +1417,27 @@ msgstr "Fájlnév megadása."
 msgid "Skip signature-checking of the environment file."
 msgstr "A környezetfájl aláírás-ellenőrzésének kihagyása."
 
-#: grub-core/commands/loadenv.c:451
+#: grub-core/commands/loadenv.c:453
 msgid "[-f FILE] [-s|--skip-sig] [variable_name_to_whitelist] [...]"
 msgstr "[-f FÁJL] [-s|--skip-sig] [változónév_a_fehérlistához] […]"
 
-#: grub-core/commands/loadenv.c:452
+#: grub-core/commands/loadenv.c:454
 msgid "Load variables from environment block file."
 msgstr "Változók betöltése a környezeti blokkfájlból."
 
-#: grub-core/commands/loadenv.c:455
+#: grub-core/commands/loadenv.c:457
 msgid "[-f FILE]"
 msgstr "[-f FÁJL]"
 
-#: grub-core/commands/loadenv.c:456
+#: grub-core/commands/loadenv.c:458
 msgid "List variables from environment block file."
 msgstr "Változók felsorolása a környezeti blokkfájlból."
 
-#: grub-core/commands/loadenv.c:460
+#: grub-core/commands/loadenv.c:462
 msgid "[-f FILE] variable_name [...]"
 msgstr "[-f FÁJL] változónév […]"
 
-#: grub-core/commands/loadenv.c:461
+#: grub-core/commands/loadenv.c:463
 msgid "Save variables to environment block file."
 msgstr "Változók mentése a környezeti blokkfájlba."
 
@@ -1400,7 +1515,7 @@ msgstr "magindítási táblázatokat tartó RAM"
 
 #: grub-core/commands/lsmmap.c:43
 msgid "RAM holding firmware code"
-msgstr "firmware kódot tartó RAM"
+msgstr "belsővezérlőprogram-kódot tartó RAM"
 
 #: grub-core/commands/lsmmap.c:52
 #, c-format
@@ -1414,17 +1529,17 @@ msgstr "alap_cím = 0x%llx, hossz = 0x%llx, típus = 0x%x\n"
 
 #: grub-core/commands/lsmmap.c:79
 msgid "List memory map provided by firmware."
-msgstr "A firmware által biztosított memóriatérkép kiírása."
+msgstr "A belső vezérlőprogram által biztosított memóriatérkép kiírása."
 
 #: grub-core/commands/lspci.c:232
 msgid "List PCI devices."
 msgstr "PCI eszközök felsorolása."
 
-#: grub-core/commands/macbless.c:224
+#: grub-core/commands/macbless.c:223
 msgid "Bless FILE of HFS or HFS+ partition for intel macs."
 msgstr "Intel mac-ek HFS vagy HFS+ partíciójának bless FÁJLJA."
 
-#: grub-core/commands/macbless.c:228
+#: grub-core/commands/macbless.c:226
 msgid "Bless DIR of HFS or HFS+ partition for PPC macs."
 msgstr "PPC mac-ek HFS vagy HFS+ partíciójának bless KÖNYVTÁRA."
 
@@ -1452,15 +1567,28 @@ msgstr "16-bites ÉRTÉK írása a CÍMRE."
 msgid "Write 32-bit VALUE to ADDR."
 msgstr "32-bites ÉRTÉK írása a CÍMRE."
 
+#: grub-core/commands/memtools.c:140
+msgid "List free and allocated memory blocks."
+msgstr ""
+
+#: grub-core/commands/memtools.c:142
+#, fuzzy
+msgid "List free memory blocks."
+msgstr "Eszközök vagy fájlok felsorolása."
+
+#: grub-core/commands/memtools.c:144
+msgid "Stress test large allocations."
+msgstr ""
+
 #: grub-core/commands/menuentry.c:31
 msgid "Menu entry type."
 msgstr "Menübejegyzés típusa."
 
 #: grub-core/commands/menuentry.c:31 grub-core/commands/menuentry.c:38
 #: grub-core/commands/menuentry.c:39 grub-core/gettext/gettext.c:520
-#: util/grub-fstest.c:520 util/grub-install.c:291 util/grub-install.c:304
+#: util/grub-fstest.c:526 util/grub-install.c:291 util/grub-install.c:304
 #: util/grub-mknetdir.c:51 util/grub-mkrescue.c:109 util/grub-mkrescue.c:110
-#: util/grub-mount.c:453 util/grub-render-label.c:65
+#: util/grub-mount.c:473 util/grub-render-label.c:65
 msgid "STRING"
 msgstr "SZÖVEG"
 
@@ -1530,7 +1658,7 @@ msgstr "CÍM [MÉRET]"
 msgid "Show memory contents."
 msgstr "Memóriatartalmak megjelenítése."
 
-#: grub-core/commands/minicmd.c:210 grub-core/kern/corecmd.c:188
+#: grub-core/commands/minicmd.c:210 grub-core/kern/corecmd.c:191
 #: util/grub-install.c:275
 msgid "MODULE"
 msgstr "MODUL"
@@ -1570,7 +1698,7 @@ msgstr "Rendszerkezelő buszvezérlő I/O tér van itt: 0x%x\n"
 #: grub-core/commands/mips/loongson/lsspd.c:66
 #, c-format
 msgid "RAM slot number %d\n"
-msgstr "RAM foglalat szám: %d\n"
+msgstr "%d. RAM-foglalatszám\n"
 
 #: grub-core/commands/mips/loongson/lsspd.c:73
 #, c-format
@@ -1599,11 +1727,11 @@ msgstr "Memóriatípus: Ismeretlen."
 msgid "Print Memory information."
 msgstr "Memória-információk kiírása."
 
-#: grub-core/commands/nativedisk.c:118 grub-core/commands/probe.c:171
-#: grub-core/commands/probe.c:177 util/grub-probe.c:450
+#: grub-core/commands/nativedisk.c:118 grub-core/commands/probe.c:180
+#: grub-core/commands/probe.c:192 util/grub-probe.c:450
 #, c-format
 msgid "%s does not support UUIDs"
-msgstr "%s nem támogatja az UUID-kat"
+msgstr "a(z) %s nem támogatja az UUID-kat"
 
 #: grub-core/commands/nativedisk.c:325
 msgid "[MODULE1 MODULE2 ...]"
@@ -1693,7 +1821,7 @@ msgstr "[busz]:[tárolóhely][.func]"
 
 #: grub-core/commands/pcidump.c:109 grub-core/commands/pcidump.c:137
 #: grub-core/commands/setpci.c:183 grub-core/commands/setpci.c:213
-#: grub-core/fs/zfs/zfs.c:3822 grub-core/kern/emu/hostdisk.c:458
+#: grub-core/fs/zfs/zfs.c:3835 grub-core/kern/emu/hostdisk.c:458
 #: grub-core/kern/emu/hostdisk.c:473 grub-core/kern/file.c:44
 #, c-format
 msgid "missing `%c' symbol"
@@ -1729,13 +1857,12 @@ msgid "bad signature"
 msgstr "hibás aláírás"
 
 #: grub-core/commands/pgp.c:637
-#, fuzzy
 msgid "public key %08"
-msgstr "a(z) %08x nyilvános kulcs nem található"
+msgstr "%08x nyilvános kulcs"
 
-#: grub-core/commands/pgp.c:651 grub-core/disk/diskfilter.c:772
-#: grub-core/disk/diskfilter.c:782 grub-core/fs/ntfs.c:404
-#: grub-core/fs/zfs/zfs.c:1940 grub-core/normal/menu.c:427
+#: grub-core/commands/pgp.c:651 grub-core/disk/diskfilter.c:797
+#: grub-core/disk/diskfilter.c:807 grub-core/fs/ntfs.c:449
+#: grub-core/fs/zfs/zfs.c:1943 grub-core/normal/menu.c:427
 #, c-format
 msgid "module `%s' isn't loaded"
 msgstr "a(z) „%s” modul nincs betöltve"
@@ -1801,30 +1928,34 @@ msgid "Determine filesystem label."
 msgstr "Fájlrendszer címkéjének meghatározása."
 
 #: grub-core/commands/probe.c:50
-#, fuzzy
 msgid "Determine partition UUID."
-msgstr "Partíciótérkép típusának meghatározása."
+msgstr "Partíció UUID-jának meghatározása."
 
-#: grub-core/commands/probe.c:192 grub-core/commands/probe.c:199
+#: grub-core/commands/probe.c:210 grub-core/commands/probe.c:223
 #: util/grub-probe.c:462
 #, c-format
 msgid "filesystem `%s' does not support labels"
 msgstr "a(z) „%s” fájlrendszer nem támogatja a címkéket"
 
-#: grub-core/commands/probe.c:218 grub-core/fs/zfs/zfsinfo.c:430
+#: grub-core/commands/probe.c:243 grub-core/fs/zfs/zfsinfo.c:430
 #: grub-core/loader/i386/bsd.c:170 util/grub-setup.c:223
 msgid "DEVICE"
 msgstr "ESZKÖZ"
 
-#: grub-core/commands/probe.c:219
+#: grub-core/commands/probe.c:244
 msgid "Retrieve device info."
 msgstr "Eszközinformációk lekérése."
 
-#: grub-core/commands/read.c:85
-msgid "[ENVVAR]"
+#: grub-core/commands/read.c:33
+msgid "Do not echo input"
+msgstr ""
+
+#: grub-core/commands/read.c:96
+#, fuzzy
+msgid "[-s] [ENVVAR]"
 msgstr "[KÖRNYVÁLT]"
 
-#: grub-core/commands/read.c:86
+#: grub-core/commands/read.c:97
 msgid "Set variable with user input."
 msgstr "Változó beállítása felhasználói bemenettel."
 
@@ -1836,7 +1967,7 @@ msgstr "A számítógép újraindítása."
 #. groups with parentheses. These groups are
 #. then numbered and you can save some of
 #. them in variables. In other programs
-#. those components aree often referenced with
+#. those components are often referenced with
 #. back slash, e.g. \1. Compare
 #. sed -e 's,\([a-z][a-z]*\),lowercase=\1,g'
 #. The whole matching component is saved in VARNAME, not its number.
@@ -1860,7 +1991,7 @@ msgstr "REGKIF SZÖVEG"
 msgid "Test if REGEXP matches STRING."
 msgstr "Annak tesztelése, hogy a REGKIF illeszkedik-e a SZÖVEGRE."
 
-#: grub-core/commands/search.c:324
+#: grub-core/commands/search.c:344
 msgid "NAME [VARIABLE] [HINTS]"
 msgstr "NÉV [VÁLTOZÓ] [TIPPEK]"
 
@@ -1908,20 +2039,24 @@ msgstr "Változó beállítása az első megtalált eszközhöz."
 msgid "Do not probe any floppy drive."
 msgstr "Ne vizsgálja meg a hajlékonylemez-meghajtókat."
 
-#: grub-core/commands/search_wrap.c:44
+#: grub-core/commands/search_wrap.c:43
+msgid "Only probe EFI disks."
+msgstr ""
+
+#: grub-core/commands/search_wrap.c:45
 msgid ""
 "First try the device HINT. If HINT ends in comma, also try subpartitions"
 msgstr ""
 "Elsőnek próbálja a TIPP eszközt. Ha a TIPP vesszőre végződik, próbálja az "
 "alpartíciókat is."
 
-#: grub-core/commands/search_wrap.c:45 grub-core/commands/search_wrap.c:49
-#: grub-core/commands/search_wrap.c:53 grub-core/commands/search_wrap.c:57
-#: grub-core/commands/search_wrap.c:61 grub-core/commands/search_wrap.c:65
+#: grub-core/commands/search_wrap.c:46 grub-core/commands/search_wrap.c:50
+#: grub-core/commands/search_wrap.c:54 grub-core/commands/search_wrap.c:58
+#: grub-core/commands/search_wrap.c:62 grub-core/commands/search_wrap.c:66
 msgid "HINT"
 msgstr "TIPP"
 
-#: grub-core/commands/search_wrap.c:47
+#: grub-core/commands/search_wrap.c:48
 msgid ""
 "First try the device HINT if currently running on IEEE1275. If HINT ends in "
 "comma, also try subpartitions"
@@ -1929,7 +2064,7 @@ msgstr ""
 "Elsőnek próbálja a TIPP eszközt, ha jelenleg IEEE1275-ön fut. Ha a TIPP "
 "vesszőre végződik, próbálja az alpartíciókat is."
 
-#: grub-core/commands/search_wrap.c:51
+#: grub-core/commands/search_wrap.c:52
 msgid ""
 "First try the device HINT if currently running on BIOS. If HINT ends in "
 "comma, also try subpartitions"
@@ -1937,7 +2072,7 @@ msgstr ""
 "Elsőnek próbálja a TIPP eszközt, ha jelenleg BIOS-on fut. Ha a TIPP vesszőre "
 "végződik, próbálja az alpartíciókat is."
 
-#: grub-core/commands/search_wrap.c:55
+#: grub-core/commands/search_wrap.c:56
 msgid ""
 "First try the device HINT if direct hardware access is supported. If HINT "
 "ends in comma, also try subpartitions"
@@ -1945,7 +2080,7 @@ msgstr ""
 "Elsőnek próbálja a TIPP eszközt, ha a közvetlen hardverhozzáférés támogatva "
 "van. Ha a TIPP vesszőre végződik, próbálja az alpartíciókat is."
 
-#: grub-core/commands/search_wrap.c:59
+#: grub-core/commands/search_wrap.c:60
 msgid ""
 "First try the device HINT if currently running on EFI. If HINT ends in "
 "comma, also try subpartitions"
@@ -1953,7 +2088,7 @@ msgstr ""
 "Elsőnek próbálja a TIPP eszközt, ha jelenleg EFI-n fut. Ha a TIPP vesszőre "
 "végződik, próbálja az alpartíciókat is."
 
-#: grub-core/commands/search_wrap.c:63
+#: grub-core/commands/search_wrap.c:64
 msgid ""
 "First try the device HINT if currently running on ARC. If HINT ends in "
 "comma, also try subpartitions"
@@ -1961,11 +2096,11 @@ msgstr ""
 "Elsőnek próbálja a TIPP eszközt, ha jelenleg ARC-n fut. Ha a TIPP vesszőre "
 "végződik, próbálja az alpartíciókat is."
 
-#: grub-core/commands/search_wrap.c:207
+#: grub-core/commands/search_wrap.c:213
 msgid "[-f|-l|-u|-s|-n] [--hint HINT [--hint HINT] ...] NAME"
 msgstr "[-f|-l|-u|-s|-n] [--hint TIPP [--hint TIPP] …] NÉV"
 
-#: grub-core/commands/search_wrap.c:209
+#: grub-core/commands/search_wrap.c:215
 msgid ""
 "Search devices by file, filesystem label or filesystem UUID. If --set is "
 "specified, the first device found is set to a variable. If no variable name "
@@ -1980,11 +2115,11 @@ msgstr ""
 msgid "Register %x of %x:%02x.%x is %x\n"
 msgstr "%x regisztere ennek: %x:%02x.%x = %x\n"
 
-#: grub-core/commands/setpci.c:332
+#: grub-core/commands/setpci.c:331
 msgid "[-s POSITION] [-d DEVICE] [-v VAR] REGISTER[=VALUE[:MASK]]"
 msgstr "[-s POZÍCIÓ] [-d ESZKÖZ] [-v VÁLTOZÓ] REGISZTER[=ÉRTÉK[:MASZK]]"
 
-#: grub-core/commands/setpci.c:334
+#: grub-core/commands/setpci.c:333
 msgid "Manipulate PCI devices."
 msgstr "PCI-eszközök kezelése."
 
@@ -2006,7 +2141,7 @@ msgstr "Várakozás a megadott másodpercig."
 
 #: grub-core/commands/smbios.c:197
 msgid "Match structures with the given type."
-msgstr ""
+msgstr "Szerkezetek illesztése a megadott típusra."
 
 #: grub-core/commands/smbios.c:198 grub-core/loader/i386/bsd.c:490
 #: grub-core/loader/i386/bsd.c:556
@@ -2015,115 +2150,112 @@ msgstr "típus"
 
 #: grub-core/commands/smbios.c:199
 msgid "Match structures with the given handle."
-msgstr ""
+msgstr "Szerkezetek illesztése a megadott kezelőre."
 
 #: grub-core/commands/smbios.c:200
 msgid "handle"
-msgstr ""
+msgstr "kezelő"
 
 #: grub-core/commands/smbios.c:201
 msgid "Select a structure when several match."
-msgstr ""
+msgstr "Egy szerkezet kiválasztása, ha több egyezik."
 
 #: grub-core/commands/smbios.c:202
-#, fuzzy
 msgid "match"
-msgstr "Nincs találat"
+msgstr "egyezés"
 
 #: grub-core/commands/smbios.c:203
 msgid "Get the byte's value at the given offset."
-msgstr ""
+msgstr "A bájt értékének lekérése a megadott eltolásnál."
 
 #: grub-core/commands/smbios.c:204 grub-core/commands/smbios.c:206
 #: grub-core/commands/smbios.c:208 grub-core/commands/smbios.c:210
 #: grub-core/commands/smbios.c:212 grub-core/commands/smbios.c:214
 msgid "offset"
-msgstr ""
+msgstr "eltolás"
 
 #: grub-core/commands/smbios.c:205
 msgid "Get two bytes' value at the given offset."
-msgstr ""
+msgstr "Két bájt értékének lekérése a megadott eltolásnál."
 
 #: grub-core/commands/smbios.c:207
 msgid "Get four bytes' value at the given offset."
-msgstr ""
+msgstr "Négy bájt értékének lekérése a megadott eltolásnál."
 
 #: grub-core/commands/smbios.c:209
 msgid "Get eight bytes' value at the given offset."
-msgstr ""
+msgstr "Nyolc bájt értékének lekérése a megadott eltolásnál."
 
 #: grub-core/commands/smbios.c:211
 msgid "Get the string specified at the given offset."
-msgstr ""
+msgstr "A megadott eltolásnál meghatározott karakterlánc lekérése."
 
 #: grub-core/commands/smbios.c:213
 msgid "Get the UUID's value at the given offset."
-msgstr ""
+msgstr "Az UUID értékének lekérése a megadott eltolásnál."
 
 #: grub-core/commands/smbios.c:215
-#, fuzzy
 msgid "Store the value in the given variable name."
-msgstr "Beolvasott érték mentése a VÁLTOZÓNÉV változóba."
+msgstr "Az érték tárolása a megadott változó nevében."
 
 #: grub-core/commands/smbios.c:216 grub-core/commands/smbios.c:218
-#, fuzzy
 msgid "variable"
-msgstr "Változók beállítása."
+msgstr "változó"
 
 #: grub-core/commands/smbios.c:217
 msgid "Filter the result like linux does."
-msgstr ""
+msgstr "Az eredmény szűrése, ahogy a Linux teszi."
 
 #: grub-core/commands/smbios.c:289
 msgid "the SMBIOS entry point structure was not found"
-msgstr ""
+msgstr "az SMBIOS belépési pont szerkezete nem található"
 
 #: grub-core/commands/smbios.c:297
 msgid "the type must be between 0 and 255"
-msgstr ""
+msgstr "a típusnak 0 és 255 között kell lennie"
 
 #: grub-core/commands/smbios.c:305
 msgid "the handle must be between 0 and 65535"
-msgstr ""
+msgstr "a kezelőnek 0 és 65535 között kell lennie"
 
 #: grub-core/commands/smbios.c:313
 msgid "the match must be a positive integer"
-msgstr ""
+msgstr "az illesztésnek pozitív egész számnak kell lennie"
 
 #: grub-core/commands/smbios.c:323
 msgid "only one --get option is usable at a time"
-msgstr ""
+msgstr "egyszerre csak egy --get kapcsoló használható"
 
 #: grub-core/commands/smbios.c:330
 msgid "one of the --get options is required"
-msgstr ""
+msgstr "a --get kapcsolók egyike kötelező"
 
 #: grub-core/commands/smbios.c:336
 msgid "no structure matched the given options"
-msgstr ""
+msgstr "nem illeszkedik szerkezet a megadott beállításokra"
 
 #: grub-core/commands/smbios.c:342
 msgid "the given offset is outside the structure"
-msgstr ""
+msgstr "a megadott eltolás a szerkezeten kívül van"
 
 #: grub-core/commands/smbios.c:348
 msgid "the field ends outside the structure"
-msgstr ""
+msgstr "a mező a szerkezeten kívül végződik"
 
 #: grub-core/commands/smbios.c:354
-#, fuzzy
 msgid "failed to retrieve the structure field"
-msgstr "a magkép szektorainak beolvasása meghiúsult"
+msgstr "nem sikerült lekérni a szerkezet mezőjét"
 
 #: grub-core/commands/smbios.c:389
 msgid ""
 "[-t type] [-h handle] [-m match] (-b|-w|-d|-q|-s|-u) offset [--set variable]"
 msgstr ""
+"[-t típus] [-h kezelő] [-m illesztés] (-b|-w|-d|-q|-s|-u) eltolás [--set "
+"változó]"
 
 #: grub-core/commands/smbios.c:392
-#, fuzzy
 msgid "Retrieve SMBIOS information."
-msgstr "Memória-információk kiírása."
+msgstr "SMBIOS információk lekérése."
 
 #: grub-core/commands/syslinuxcfg.c:50 util/grub-syslinux2cfg.c:66
 msgid "root directory of the syslinux disk [default=/]."
@@ -2219,7 +2351,7 @@ msgstr "Egy kifejezés kiértékelése."
 msgid "EXPRESSION"
 msgstr "KIFEJEZÉS"
 
-#: grub-core/commands/testload.c:164
+#: grub-core/commands/testload.c:166
 msgid "Load the same file in multiple ways."
 msgstr "Ugyanazon fájl betöltése több módon."
 
@@ -2393,18 +2525,24 @@ msgstr "Adapter „%s”:\n"
 msgid "  No info available"
 msgstr "  Nincs elérhető információ"
 
-#: grub-core/commands/videoinfo.c:198
+#: grub-core/commands/videoinfo.c:196
+msgid ""
+"  A video driver is active, cannot initialize this driver until it is "
+"deactivated\n"
+msgstr ""
+
+#: grub-core/commands/videoinfo.c:203
 msgid "  Failed to initialize video adapter"
 msgstr "  A videoadapter előkészítése meghiúsult"
 
 #. TRANSLATORS: "x" has to be entered in,
 #. like an identifier, so please don't
 #. use better Unicode codepoints.
-#: grub-core/commands/videoinfo.c:239 grub-core/commands/videoinfo.c:248
+#: grub-core/commands/videoinfo.c:244 grub-core/commands/videoinfo.c:253
 msgid "[WxH[xD]]"
 msgstr "[SzxM[xD]]"
 
-#: grub-core/commands/videoinfo.c:240 grub-core/commands/videoinfo.c:249
+#: grub-core/commands/videoinfo.c:245 grub-core/commands/videoinfo.c:254
 msgid ""
 "List available video modes. If resolution is given show only modes matching "
 "it."
@@ -2451,77 +2589,160 @@ msgstr ""
 "64 bites UUID átalakítása XNU-hoz megfelelő formátumba. Ha a -l meg van "
 "adva, tartsa kisbetűsen, ahogy a blkid elkészítette."
 
-#: grub-core/disk/arc/arcdisk.c:248 grub-core/disk/efi/efidisk.c:603
-#: grub-core/disk/i386/pc/biosdisk.c:498 grub-core/disk/i386/pc/biosdisk.c:543
+#: grub-core/disk/arc/arcdisk.c:248 grub-core/disk/efi/efidisk.c:613
+#: grub-core/disk/i386/pc/biosdisk.c:494 grub-core/disk/i386/pc/biosdisk.c:539
 #: grub-core/disk/ieee1275/nand.c:198 grub-core/disk/ieee1275/obdisk.c:527
-#: grub-core/disk/ieee1275/ofdisk.c:586
+#: grub-core/disk/ieee1275/ofdisk.c:582
 #, c-format
 msgid "failure reading sector 0x%llx from `%s'"
 msgstr "a 0x%llx szektor olvasási hiba innen: „%s”"
 
-#: grub-core/disk/arc/arcdisk.c:284 grub-core/disk/efi/efidisk.c:626
-#: grub-core/disk/i386/pc/biosdisk.c:548 grub-core/disk/ieee1275/ofdisk.c:606
+#: grub-core/disk/arc/arcdisk.c:284 grub-core/disk/efi/efidisk.c:636
+#: grub-core/disk/i386/pc/biosdisk.c:544 grub-core/disk/ieee1275/ofdisk.c:602
 #, c-format
 msgid "failure writing sector 0x%llx to `%s'"
 msgstr "a 0x%llx szektor írási hiba ide: „%s”"
 
-#: grub-core/disk/cryptodisk.c:40
+#: grub-core/disk/cryptodisk.c:52
 msgid "Mount by UUID."
 msgstr "Csatolás UUID alapján."
 
 #. TRANSLATORS: It's still restricted to cryptodisks only.
-#: grub-core/disk/cryptodisk.c:42
+#: grub-core/disk/cryptodisk.c:54
 msgid "Mount all."
 msgstr "Összes csatolása."
 
-#: grub-core/disk/cryptodisk.c:43
+#: grub-core/disk/cryptodisk.c:55
 msgid "Mount all volumes with `boot' flag set."
 msgstr "Az összes kötet csatolása beállított „boot” jelzővel."
 
+#: grub-core/disk/cryptodisk.c:56
+msgid "Password to open volumes."
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:57
+msgid "Key file"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:58
+msgid "Key file offset (bytes)"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:59
+msgid "Key file data size (bytes)"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:60
+msgid "Read header from file"
+msgstr ""
+
 #. TRANSLATORS: The first %s is the file being looked at, the second %s is
 #. the error message.
-#: grub-core/disk/cryptodisk.c:705 grub-core/kern/emu/hostdisk.c:152
+#: grub-core/disk/cryptodisk.c:730 grub-core/kern/emu/hostdisk.c:152
 #: grub-core/kern/emu/hostdisk.c:262 grub-core/kern/emu/hostdisk.c:434
-#: grub-core/kern/emu/misc.c:180 grub-core/kern/emu/misc.c:186
-#: grub-core/kern/emu/misc.c:208 grub-core/osdep/bsd/getroot.c:92
+#: grub-core/kern/emu/misc.c:184 grub-core/kern/emu/misc.c:190
+#: grub-core/kern/emu/misc.c:212 grub-core/osdep/bsd/getroot.c:92
 #: grub-core/osdep/bsd/getroot.c:168 grub-core/osdep/hurd/getroot.c:68
-#: grub-core/osdep/linux/blocklist.c:65 grub-core/osdep/linux/getroot.c:150
-#: grub-core/osdep/linux/hostdisk.c:194 grub-core/osdep/linux/hostdisk.c:424
+#: grub-core/osdep/linux/blocklist.c:65 grub-core/osdep/linux/getroot.c:147
+#: grub-core/osdep/linux/hostdisk.c:152 grub-core/osdep/linux/hostdisk.c:383
 #: grub-core/osdep/linux/ofpath.c:417 grub-core/osdep/linux/ofpath.c:422
 #: grub-core/osdep/linux/ofpath.c:517 grub-core/osdep/linux/ofpath.c:530
 #: grub-core/osdep/sun/getroot.c:110 grub-core/osdep/windows/blocklist.c:98
 #: grub-core/tests/video_checksum.c:279 util/editenv.c:54 util/glue-efi.c:125
 #: util/glue-efi.c:130 util/glue-efi.c:140 util/grub-editenv.c:139
 #: util/grub-editenv.c:198 util/grub-file.c:83 util/grub-fstest.c:128
-#: util/grub-fstest.c:568 util/grub-install-common.c:92
+#: util/grub-fstest.c:574 util/grub-install-common.c:92
 #: util/grub-install-common.c:94 util/grub-install-common.c:101
-#: util/grub-install-common.c:694 util/grub-menulst2cfg.c:53
+#: util/grub-install-common.c:712 util/grub-menulst2cfg.c:53
 #: util/grub-menulst2cfg.c:68 util/grub-mkimage.c:307 util/grub-mklayout.c:504
-#: util/grub-mklayout.c:516 util/grub-mknetdir.c:133 util/grub-mknetdir.c:151
-#: util/grub-mkrescue.c:630 util/grub-mkrescue.c:634 util/grub-mkrescue.c:882
-#: util/grub-mkrescue.c:886 util/grub-mkstandalone.c:253 util/grub-mount.c:498
+#: util/grub-mklayout.c:516 util/grub-mknetdir.c:134 util/grub-mknetdir.c:152
+#: util/grub-mkrescue.c:651 util/grub-mkrescue.c:655 util/grub-mkrescue.c:922
+#: util/grub-mkrescue.c:926 util/grub-mkstandalone.c:274 util/grub-mount.c:518
 #: util/grub-render-label.c:169 util/grub-script-check.c:175
 #: util/grub-syslinux2cfg.c:181 util/grub-syslinux2cfg.c:191
 #: util/grub-syslinux2cfg.c:212 util/grub-syslinux2cfg.c:228 util/misc.c:91
 #: util/render-label.c:76 util/render-label.c:163 util/render-label.c:174
-#: util/resolve.c:246 util/setup.c:786
+#: util/resolve.c:249 util/setup.c:786
 #, c-format
 msgid "cannot open `%s': %s"
 msgstr "„%s” nem nyitható meg: %s"
 
-#: grub-core/disk/cryptodisk.c:762 grub-core/disk/cryptodisk.c:806
+#: grub-core/disk/cryptodisk.c:740
+#, c-format
+msgid "failed to query size of device `%s': %s"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:802 grub-core/disk/cryptodisk.c:846
 #: grub-core/kern/emu/hostdisk.c:270 grub-core/kern/emu/hostfs.c:142
-#: grub-core/osdep/linux/hostdisk.c:459 util/grub-editenv.c:144
-#: util/grub-editenv.c:155 util/grub-fstest.c:320 util/misc.c:111
+#: grub-core/osdep/linux/hostdisk.c:418 util/grub-editenv.c:144
+#: util/grub-editenv.c:155 util/grub-fstest.c:326 util/misc.c:111
 #, c-format
 msgid "cannot seek `%s': %s"
 msgstr "„%s” nem pozicionálható: %s"
 
-#: grub-core/disk/cryptodisk.c:1320
-msgid "SOURCE|-u UUID|-a|-b"
-msgstr "FORRÁS|-u UUID|-a|-b"
+#: grub-core/disk/cryptodisk.c:1039
+#, fuzzy
+msgid "header file not found"
+msgstr "a cím nem található"
 
-#: grub-core/disk/cryptodisk.c:1321
+#: grub-core/disk/cryptodisk.c:1049
+#, fuzzy
+msgid "header file too small"
+msgstr "a(z) „%s” mérete túl kicsi"
+
+#: grub-core/disk/cryptodisk.c:1122
+#, c-format
+msgid "Enter passphrase for %s%s%s (%s): "
+msgstr "Adja meg a jelszót ehhez: %s%s%s (%s): "
+
+#: grub-core/disk/cryptodisk.c:1124 grub-core/disk/plainmount.c:374
+msgid "UNKNOWN"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:1293
+#, c-format
+msgid "non-numeric or invalid keyfile offset `%s'"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:1304
+#, fuzzy, c-format
+msgid "non-numeric or invalid keyfile size `%s'"
+msgstr "érvénytelen fájlnév: „%s”"
+
+#: grub-core/disk/cryptodisk.c:1308
+#, fuzzy
+msgid "key file size is 0"
+msgstr "Fájlméret: %s\n"
+
+#: grub-core/disk/cryptodisk.c:1312
+#, c-format
+msgid "key file size exceeds maximum (%d)"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:1323
+msgid "Keyfile offset, %llu, is greater thankeyfile size, %"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:1334
+msgid "keyfile is too small: requested %llu bytes, but the file only has %"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:1351
+#, fuzzy
+msgid "failed to read key file"
+msgstr "az FDT elérése sikertelen"
+
+#: grub-core/disk/cryptodisk.c:1358
+msgid "cannot use UUID lookup with detached header"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:1591
+msgid ""
+"[ [-p password] | [-k keyfile [-O keyoffset] [-S keysize] ] ] [-H file] "
+"<SOURCE|-u UUID|-a|-b>"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:1594
 msgid "Mount a crypto device."
 msgstr "Egy titkosított eszköz csatolása."
 
@@ -2530,7 +2751,13 @@ msgstr "Egy titkosított eszköz csatolása."
 #. in the case of degraded RAID and means that autodetection may
 #. fail to include some of modules. It's an installation time
 #. message, not runtime message.
-#: grub-core/disk/diskfilter.c:343 grub-core/disk/diskfilter.c:376
+#.
+#. TRANSLATORS: This message kicks in during the detection of
+#. which modules needs to be included in core image. This happens
+#. in the case of degraded RAID and means that autodetection may
+#. fail to include some of modules. It's an installation time
+#. message, not runtime message.
+#: grub-core/disk/diskfilter.c:351 grub-core/disk/diskfilter.c:403
 #, c-format
 msgid ""
 "Couldn't find physical volume `%s'. Some modules may be missing from core "
@@ -2539,12 +2766,12 @@ msgstr ""
 "Nem található a(z) „%s” fizikai kötet. Néhány modul hiányozhat a mag "
 "lemezképből."
 
-#: grub-core/disk/diskfilter.c:480
+#: grub-core/disk/diskfilter.c:507
 #, c-format
 msgid "physical volume %s not found"
 msgstr "a(z) %s fizikai kötet nem található"
 
-#: grub-core/disk/efi/efidisk.c:600 grub-core/disk/efi/efidisk.c:623
+#: grub-core/disk/efi/efidisk.c:610 grub-core/disk/efi/efidisk.c:633
 #, c-format
 msgid "no media in `%s'"
 msgstr "nincs adathordozó itt: „%s”"
@@ -2557,48 +2784,42 @@ msgstr "Az sha256 betöltése nem sikerült"
 msgid "Couldn't load sha512"
 msgstr "Az sha512 betöltése nem sikerült"
 
-#: grub-core/disk/geli.c:216 grub-core/disk/geli.c:220
+#: grub-core/disk/geli.c:214 grub-core/disk/geli.c:218
 msgid "couldn't read ELI metadata"
 msgstr "az ELI metaadatok olvasása nem sikerült"
 
-#: grub-core/disk/geli.c:231
+#: grub-core/disk/geli.c:229
 msgid "wrong ELI magic or version"
 msgstr "hibás ELI varázslat vagy verzió"
 
-#: grub-core/disk/geli.c:435 grub-core/disk/luks.c:172
+#: grub-core/disk/geli.c:435 grub-core/disk/luks.c:158
 msgid "Attempting to decrypt master key..."
 msgstr "Kísérlet a mesterkulcs visszafejtésére…"
 
-#: grub-core/disk/geli.c:441 grub-core/disk/luks.c:190
-#: grub-core/disk/luks2.c:587
-#, c-format
-msgid "Enter passphrase for %s%s%s (%s): "
-msgstr "Adja meg a jelszót ehhez: %s%s%s (%s): "
-
 #. TRANSLATORS: It's a cryptographic key slot: one element of an array
 #. where each element is either empty or holds a key.
-#: grub-core/disk/geli.c:530 grub-core/disk/luks.c:295
+#: grub-core/disk/geli.c:519 grub-core/disk/luks.c:267
 #, c-format
 msgid "Slot %d opened\n"
 msgstr "A(z) %d. tárolóhely nyitva\n"
 
-#: grub-core/disk/i386/pc/biosdisk.c:470 grub-core/disk/i386/pc/biosdisk.c:524
-#: grub-core/disk/i386/pc/biosdisk.c:534 grub-core/kern/disk_common.c:48
+#: grub-core/disk/i386/pc/biosdisk.c:466 grub-core/disk/i386/pc/biosdisk.c:520
+#: grub-core/disk/i386/pc/biosdisk.c:530 grub-core/kern/disk_common.c:48
 #, c-format
 msgid "attempt to read or write outside of disk `%s'"
 msgstr "kísérlet a(z) „%s” lemezen kívüli olvasására vagy írásra"
 
-#: grub-core/disk/i386/pc/biosdisk.c:491 grub-core/disk/i386/pc/biosdisk.c:611
-#: grub-core/disk/scsi.c:726
+#: grub-core/disk/i386/pc/biosdisk.c:487 grub-core/disk/i386/pc/biosdisk.c:610
+#: grub-core/disk/scsi.c:724
 msgid "cannot write to CD-ROM"
 msgstr "nem lehet írni a CD-ROM-ra"
 
-#: grub-core/disk/i386/pc/biosdisk.c:662
+#: grub-core/disk/i386/pc/biosdisk.c:661
 msgid ""
 "Native disk drivers are in use. Refusing to use firmware disk interface."
 msgstr ""
-"Natív lemezmeghajtók vannak használatban. A firmware lemezcsatoló "
-"használatának visszautasítása."
+"Natív lemezmeghajtók vannak használatban. A belső vezérlőprogram "
+"lemezcsatoló használatának visszautasítása."
 
 #. TRANSLATORS: it's a partition for embedding,
 #. not a partition embed into something. GRUB
@@ -2606,14 +2827,14 @@ msgstr ""
 #. usable for bootloaders (called generically
 #. "embedding zone") and this operation is
 #. called "embedding".
-#: grub-core/disk/ldm.c:1073
+#: grub-core/disk/ldm.c:1074
 msgid "your LDM Embedding Partition is too small; embedding won't be possible"
 msgstr ""
 "az LDM beágyazott partíciója túl kicsi, a beágyazás nem lesz lehetséges"
 
 #. TRANSLATORS: it's a partition for embedding,
 #. not a partition embed into something.
-#: grub-core/disk/ldm.c:1091
+#: grub-core/disk/ldm.c:1092
 msgid "this LDM has no Embedding Partition; embedding won't be possible"
 msgstr ""
 "ez az LDM nem rendelkezik beágyazott partícióval, a beágyazás nem lesz "
@@ -2625,53 +2846,256 @@ msgstr ""
 msgid "Delete the specified loopback drive."
 msgstr "A megadott visszacsatolási meghajtó törlése."
 
-#: grub-core/disk/loopback.c:229
-msgid "[-d] DEVICENAME FILE."
+#: grub-core/disk/loopback.c:46
+msgid "Transparently decompress backing file."
+msgstr ""
+
+#: grub-core/disk/loopback.c:233
+#, fuzzy
+msgid "[-d] [-D] DEVICENAME FILE."
 msgstr "[-d] ESZKÖZNÉV FÁJL."
 
 #. TRANSLATORS: The file itself is not destroyed
 #. or transformed into drive.
-#: grub-core/disk/loopback.c:232
+#: grub-core/disk/loopback.c:236
 msgid "Make a virtual drive from a file."
 msgstr "Virtuális meghajtó készítése egy fájlból."
+
+#: grub-core/disk/luks2.c:388
+msgid "could not unescape Base64 string"
+msgstr ""
+
+#: grub-core/disk/luks2.c:393
+msgid "could not decode Base64 string"
+msgstr ""
 
 #. TRANSLATORS: It's a cryptographic key slot: one element of an array
 #. where each element is either empty or holds a key.
 #.
-#: grub-core/disk/luks2.c:741
-#, fuzzy, c-format
+#: grub-core/disk/luks2.c:754
+#, c-format
 msgid "Slot \"%s\" opened\n"
-msgstr "A(z) %d. tárolóhely nyitva\n"
+msgstr "A(z) „%s” tárolóhely nyitva\n"
+
+#. TRANSLATORS: It's still restricted to this module only.
+#: grub-core/disk/plainmount.c:49
+#, fuzzy
+msgid "Password hash"
+msgstr "PBKDF2 jelszó hash előállítása."
+
+#: grub-core/disk/plainmount.c:50
+msgid "Password cipher"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:51
+msgid "Key size (in bits)"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:52
+#, fuzzy
+msgid "Device sector size"
+msgstr " - Szektorméret: %uB"
+
+#: grub-core/disk/plainmount.c:53
+msgid "Password (key)"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:54
+msgid "Keyfile path"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:55
+#, fuzzy
+msgid "Keyfile offset"
+msgstr "eltolás"
+
+#: grub-core/disk/plainmount.c:56
+#, fuzzy
+msgid "Set device UUID"
+msgstr "Gyökéreszköz beállítása."
+
+#: grub-core/disk/plainmount.c:69
+#, fuzzy
+msgid "cannot set specified key"
+msgstr "nincs kiszolgáló megadva"
+
+#: grub-core/disk/plainmount.c:102
+#, fuzzy, c-format
+msgid "cannot determine disk %s size"
+msgstr "nem lehet meghatározni a fájlrendszert ezen: %s"
+
+#: grub-core/disk/plainmount.c:112
+#, fuzzy, c-format
+msgid "cannot set specified sector size on disk %s"
+msgstr "nem lehet lekérni a(z) „%s” fájlhelyet: %s"
+
+#: grub-core/disk/plainmount.c:188
+#, fuzzy, c-format
+msgid "cannot open keyfile %s"
+msgstr "a(z) „%s” OS fájl nem nyitható meg: %s"
+
+#: grub-core/disk/plainmount.c:193
+#, fuzzy
+msgid "cannot seek keyfile at offset %"
+msgstr "összehasonlítási hiba a(z) %llu eltolásnál"
+
+#: grub-core/disk/plainmount.c:197
+msgid "Specified key size (%"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:203
+msgid "error reading key file"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:222
+msgid "device name required"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:235
+#, fuzzy, c-format
+msgid "couldn't load hash %s"
+msgstr "Az sha256 betöltése nem sikerült"
+
+#: grub-core/disk/plainmount.c:240
+msgid "hash length %"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:248
+msgid "invalid cipher mode, must be of format cipher-mode"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:254
+msgid "password exceeds maximium size"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:260
+msgid "specified UUID exceeds maximum size"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:262
+msgid "specified UUID too short"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:271
+#, fuzzy
+msgid "unrecognized keyfile offset"
+msgstr "Azonosítatlan tárolóállapot"
+
+#: grub-core/disk/plainmount.c:278
+#, fuzzy
+msgid "unrecognized sector size"
+msgstr "azonosítatlan szám"
+
+#: grub-core/disk/plainmount.c:284
+#, fuzzy
+msgid "unrecognized key size"
+msgstr "azonosítatlan szám"
+
+#: grub-core/disk/plainmount.c:287
+#, c-format
+msgid "key size is not multiple of %d bits"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:291
+#, fuzzy
+msgid "key size %"
+msgstr "Fájlméret: %s\n"
+
+#: grub-core/disk/plainmount.c:298
+#, c-format
+msgid "sector size -S must be at least %d"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:302
+#, fuzzy
+msgid "sector size -S %"
+msgstr " - Szektorméret: %uB"
+
+#: grub-core/disk/plainmount.c:341
+#, fuzzy, c-format
+msgid "invalid cipher %s"
+msgstr "érvénytelen %s paraméter"
+
+#: grub-core/disk/plainmount.c:343
+#, fuzzy, c-format
+msgid "invalid mode %s"
+msgstr "érvénytelen modinfo fájl: „%s”"
+
+#: grub-core/disk/plainmount.c:345
+#, fuzzy, c-format
+msgid "invalid cipher %s or mode %s"
+msgstr "érvénytelen sorformátum: %s"
+
+#: grub-core/disk/plainmount.c:364
+#, fuzzy, c-format
+msgid "cannot open disk %s"
+msgstr "„%s” nem nyitható meg: %s"
+
+#: grub-core/disk/plainmount.c:372
+#, fuzzy, c-format
+msgid "Enter passphrase for %s%s%s: "
+msgstr "Adja meg a jelszót ehhez: %s%s%s (%s): "
+
+#: grub-core/disk/plainmount.c:379
+#, fuzzy
+msgid "error reading password"
+msgstr "nem sikerült a jelszó olvasása"
+
+#: grub-core/disk/plainmount.c:391
+msgid "warning: hash is ignored if keyfile is specified\n"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:395
+msgid ""
+"warning: password specified with -p option is ignored if keyfile is "
+"provided\n"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:400
+msgid "warning: keyfile offset option -O specified without keyfile option -d\n"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:448
+msgid ""
+"-c cipher -s key-size [-h hash] [-S sector-size] [-o offset] [-p password] [-"
+"u uuid]  [[-d keyfile] [-O keyfile offset]] <SOURCE>"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:451
+msgid "Open partition encrypted in plain mode."
+msgstr ""
 
 #: grub-core/efiemu/i386/loadcore32.c:111 grub-core/kern/arm/dl.c:256
 #: grub-core/kern/i386/dl.c:75 grub-core/kern/mips/dl.c:258
-#: grub-core/kern/powerpc/dl.c:163 util/grub-mkimagexx.c:756
-#: util/grub-mkimagexx.c:881 util/grub-mkimagexx.c:945
-#: util/grub-mkimagexx.c:1026 util/grub-mkimagexx.c:1120
-#: util/grub-mkimagexx.c:1222 util/grub-mkimagexx.c:1413
-#: util/grub-mkimagexx.c:1628 util/grub-mkimagexx.c:1665
-#: util/grub-mkimagexx.c:1697 util/grub-mkimagexx.c:1767
-#: util/grub-mkimagexx.c:1797
+#: grub-core/kern/powerpc/dl.c:163 util/grub-mkimagexx.c:757
+#: util/grub-mkimagexx.c:884 util/grub-mkimagexx.c:948
+#: util/grub-mkimagexx.c:1029 util/grub-mkimagexx.c:1123
+#: util/grub-mkimagexx.c:1188 util/grub-mkimagexx.c:1290
+#: util/grub-mkimagexx.c:1482 util/grub-mkimagexx.c:1697
+#: util/grub-mkimagexx.c:1735 util/grub-mkimagexx.c:1793
+#: util/grub-mkimagexx.c:1825 util/grub-mkimagexx.c:1896
+#: util/grub-mkimagexx.c:1926
 #, c-format
 msgid "relocation 0x%x is not implemented yet"
 msgstr "0x%x áthelyezése még nincs megvalósítva"
 
 #: grub-core/efiemu/i386/loadcore64.c:130 grub-core/kern/arm64/dl.c:192
-#: grub-core/kern/ia64/dl.c:145 grub-core/kern/riscv/dl.c:339
-#: grub-core/kern/sparc64/dl.c:185 grub-core/kern/x86_64/dl.c:115
-#, fuzzy, c-format
+#: grub-core/kern/ia64/dl.c:145 grub-core/kern/loongarch64/dl.c:144
+#: grub-core/kern/riscv/dl.c:340 grub-core/kern/sparc64/dl.c:185
+#: grub-core/kern/x86_64/dl.c:115
+#, c-format
 msgid "relocation 0x%s is not implemented yet"
-msgstr "0x%x áthelyezése még nincs megvalósítva"
+msgstr "0x%s áthelyezése még nincs megvalósítva"
 
 #: grub-core/efiemu/loadcore.c:200 grub-core/efiemu/loadcore.c:237
-#: grub-core/loader/i386/bsdXX.c:317 util/grub-mkimagexx.c:2358
+#: grub-core/loader/i386/bsdXX.c:339 util/grub-mkimagexx.c:2487
 msgid "no symbol table"
 msgstr "nincs szimbólumtáblázat"
 
-#: grub-core/efiemu/loadcore.c:346 grub-core/kern/dl.c:618
+#: grub-core/efiemu/loadcore.c:346 grub-core/kern/dl.c:629
 #: grub-core/loader/ia64/efi/linux.c:345 grub-core/loader/mips/linux.c:248
-#: grub-core/loader/multiboot_elfxx.c:76
-#: grub-core/loader/powerpc/ieee1275/linux.c:280
+#: grub-core/loader/multiboot_elfxx.c:89
+#: grub-core/loader/powerpc/ieee1275/linux.c:291
 #: grub-core/loader/sparc64/ieee1275/linux.c:320
 msgid "this ELF file is not of the right type"
 msgstr "ez az ELF fájl nem a megfelelő típusú"
@@ -2688,7 +3112,7 @@ msgstr "EFI-emulátor betöltésének befejezése."
 msgid "Unload EFI emulator."
 msgstr "EFI-emulátor eltávolítása a memóriából."
 
-#: grub-core/efiemu/symbols.c:92 grub-core/kern/dl.c:376
+#: grub-core/efiemu/symbols.c:92 grub-core/kern/dl.c:379
 #, c-format
 msgid "symbol `%s' not found"
 msgstr "a(z) „%s” szimbólum nem található"
@@ -2709,62 +3133,63 @@ msgstr "Adjon meg legalább egy betöltendő betűkészletfájlt."
 msgid "List the loaded fonts."
 msgstr "Betöltött betűkészletek felsorolása."
 
-#: grub-core/fs/archelp.c:216 grub-core/fs/archelp.c:278
-#: grub-core/fs/btrfs.c:1835 grub-core/fs/fshelp.c:227 grub-core/fs/jfs.c:747
+#: grub-core/fs/archelp.c:186 grub-core/fs/btrfs.c:1829
+#: grub-core/fs/btrfs.c:2094 grub-core/fs/fshelp.c:189
+#: grub-core/fs/fshelp.c:309 grub-core/fs/jfs.c:442 grub-core/fs/minix.c:418
+#: grub-core/fs/minix.c:580 grub-core/fs/reiserfs.c:732 grub-core/fs/ufs.c:531
+#: grub-core/fs/ufs.c:671 grub-core/fs/zfs/zfs.c:2848
+#: grub-core/fs/zfs/zfs.c:4305
+msgid "not a directory"
+msgstr "nem könyvtár"
+
+#: grub-core/fs/archelp.c:224 grub-core/fs/archelp.c:286
+#: grub-core/fs/btrfs.c:1946 grub-core/fs/fshelp.c:227 grub-core/fs/jfs.c:747
 #: grub-core/fs/minix.c:371 grub-core/fs/ufs.c:454
 msgid "too deep nesting of symlinks"
 msgstr "a szimbolikus linkek egymásba ágyazása túl mély"
 
 #: grub-core/fs/bfs.c:228 grub-core/fs/fshelp.c:380 grub-core/fs/minix.c:272
-#: grub-core/kern/file.c:156
+#: grub-core/kern/file.c:161
 msgid "attempt to read past the end of file"
 msgstr "kísérlet a fájl végének olvasására"
 
-#: grub-core/fs/btrfs.c:1718 grub-core/fs/btrfs.c:1977
-#: grub-core/fs/fshelp.c:189 grub-core/fs/fshelp.c:309 grub-core/fs/jfs.c:442
-#: grub-core/fs/minix.c:416 grub-core/fs/minix.c:578
-#: grub-core/fs/reiserfs.c:732 grub-core/fs/ufs.c:531 grub-core/fs/ufs.c:671
-#: grub-core/fs/zfs/zfs.c:2842 grub-core/fs/zfs/zfs.c:4275
-msgid "not a directory"
-msgstr "nem könyvtár"
-
-#: grub-core/fs/btrfs.c:2083 grub-core/fs/fshelp.c:307 grub-core/fs/jfs.c:846
-#: grub-core/fs/zfs/zfs.c:3829
+#: grub-core/fs/btrfs.c:2225 grub-core/fs/fshelp.c:307 grub-core/fs/jfs.c:846
+#: grub-core/fs/zfs/zfs.c:3842
 msgid "not a regular file"
 msgstr "nem szabályos fájl"
 
-#: grub-core/fs/btrfs.c:2177 grub-core/fs/zfs/zfs.c:4361
+#: grub-core/fs/btrfs.c:2375 grub-core/fs/zfs/zfs.c:4391
 #: grub-core/partmap/msdos.c:404
 msgid "your core.img is unusually large.  It won't fit in the embedding area"
 msgstr "a core.img szokatlanul nagy. Nem fog beférni a beágyazási területere"
 
-#: grub-core/fs/ext2.c:724 grub-core/fs/squash4.c:467
-#: grub-core/kern/buffer.c:108 grub-core/kern/misc.c:364
-#: grub-core/kern/misc.c:422 grub-core/kern/mm.c:392 grub-core/lib/arg.c:224
+#: grub-core/fs/ext2.c:750 grub-core/fs/squash4.c:467
+#: grub-core/kern/buffer.c:111 grub-core/kern/misc.c:420
+#: grub-core/kern/misc.c:478 grub-core/kern/mm.c:568 grub-core/lib/arg.c:224
 #: grub-core/lib/arg.c:471 grub-core/loader/i386/pc/linux.c:225
-#: grub-core/loader/linux.c:139 grub-core/loader/linux.c:248
+#: grub-core/loader/linux.c:152 grub-core/loader/linux.c:261
 #: grub-core/script/lexer.c:179 grub-core/video/bitmap.c:145
-#: grub-core/video/readers/png.c:307 grub-core/video/readers/png.c:312
-#: include/grub/buffer.h:79 include/grub/buffer.h:117 include/grub/misc.h:287
-#: include/grub/misc.h:296
+#: grub-core/video/readers/png.c:327 grub-core/video/readers/png.c:332
+#: include/grub/buffer.h:79 include/grub/buffer.h:117 include/grub/misc.h:318
+#: include/grub/misc.h:327
 msgid "overflow is detected"
 msgstr "túlcsordulás észlelhető"
 
-#: grub-core/fs/fshelp.c:281 grub-core/fs/minix.c:646 grub-core/fs/ufs.c:661
-#: grub-core/fs/ufs.c:757 grub-core/kern/fs.c:170 grub-core/kern/fs.c:182
+#: grub-core/fs/fshelp.c:281 grub-core/fs/minix.c:648 grub-core/fs/ufs.c:661
+#: grub-core/fs/ufs.c:757 grub-core/kern/fs.c:172 grub-core/kern/fs.c:188
 #, c-format
 msgid "invalid file name `%s'"
 msgstr "érvénytelen fájlnév: „%s”"
 
 #: grub-core/fs/fshelp.c:373
 msgid "blocksize too large"
-msgstr ""
+msgstr "a blokkméret túl nagy"
 
-#: grub-core/fs/zfs/zfs.c:457
+#: grub-core/fs/zfs/zfs.c:459
 msgid "checksum verification failed"
 msgstr "az ellenőrzőösszeg ellenőrzés meghiúsult"
 
-#: grub-core/fs/zfs/zfs.c:1472
+#: grub-core/fs/zfs/zfs.c:1474
 msgid "couldn't find a necessary member device of multi-device filesystem"
 msgstr "nem található a többeszközös fájlrendszer egy szükséges tageszköze"
 
@@ -2788,7 +3213,7 @@ msgstr "A feltételezett bemenet hex."
 msgid "Assume input is passphrase."
 msgstr "A feltételezett bemenet jelszó."
 
-#: grub-core/fs/zfs/zfscrypt.c:442 util/grub-fstest.c:553 util/grub-mount.c:483
+#: grub-core/fs/zfs/zfscrypt.c:442 util/grub-fstest.c:559 util/grub-mount.c:503
 msgid "Enter ZFS password: "
 msgstr "Adja meg a ZFS jelszót: "
 
@@ -3054,7 +3479,7 @@ msgstr "A kijelölt bejegyzés automatikusan elindul %d másodperc múlva."
 #: grub-core/gfxmenu/gui_progress_bar.c:344
 #, c-format
 msgid "%ds remaining."
-msgstr "%dmp van hátra."
+msgstr "%d mp van hátra."
 
 #. TRANSLATORS:  's' stands for seconds.
 #. It's a standalone timeout notification.
@@ -3063,7 +3488,7 @@ msgstr "%dmp van hátra."
 #: grub-core/normal/menu_text.c:462
 #, c-format
 msgid "%ds"
-msgstr "%dmp"
+msgstr "%d mp"
 
 #: grub-core/gfxmenu/view.c:103
 msgid "GRUB Boot Menu"
@@ -3077,13 +3502,13 @@ msgstr "Helló, világ"
 msgid "Say `Hello World'."
 msgstr "A világ üdvözlése."
 
-#: grub-core/io/gzio.c:409 grub-core/kern/file.c:210
+#: grub-core/io/gzio.c:409 grub-core/kern/file.c:215
 msgid "attempt to seek outside of the file"
 msgstr "kísérlet a fájlon kívüli pozicionálásra"
 
 #. TRANSLATORS: It's about given file having some strange format, not
 #. complete lack of gzip support.
-#: grub-core/io/gzio.c:1264 grub-core/io/gzio.c:1273 grub-core/io/gzio.c:1280
+#: grub-core/io/gzio.c:1265 grub-core/io/gzio.c:1274 grub-core/io/gzio.c:1281
 msgid "unsupported gzip format"
 msgstr "nem támogatott gzip formátum"
 
@@ -3097,55 +3522,54 @@ msgstr "az xz fájl sérült vagy nem támogatott blokk kapcsolók"
 
 #: grub-core/kern/arm/dl.c:277 grub-core/kern/arm64/dl.c:44
 #: grub-core/kern/i386/dl.c:36 grub-core/kern/ia64/dl.c:41
-#: grub-core/kern/mips/dl.c:48 grub-core/kern/powerpc/dl.c:36
-#: grub-core/kern/riscv/dl.c:47 grub-core/kern/sparc64/dl.c:36
-#: grub-core/kern/x86_64/dl.c:36 grub-core/loader/i386/bsd.c:1451
-#: grub-core/loader/i386/bsdXX.c:49 grub-core/loader/ia64/efi/linux.c:341
-#: grub-core/loader/mips/linux.c:298 grub-core/loader/multiboot.c:232
-#: grub-core/loader/multiboot_elfxx.c:73
-#: grub-core/loader/powerpc/ieee1275/linux.c:294
+#: grub-core/kern/loongarch64/dl.c:37 grub-core/kern/mips/dl.c:48
+#: grub-core/kern/powerpc/dl.c:36 grub-core/kern/riscv/dl.c:47
+#: grub-core/kern/sparc64/dl.c:36 grub-core/kern/x86_64/dl.c:36
+#: grub-core/loader/i386/bsd.c:1451 grub-core/loader/i386/bsdXX.c:52
+#: grub-core/loader/ia64/efi/linux.c:341 grub-core/loader/mips/linux.c:298
+#: grub-core/loader/multiboot.c:232 grub-core/loader/multiboot_elfxx.c:86
+#: grub-core/loader/powerpc/ieee1275/linux.c:305
 #: grub-core/loader/sparc64/ieee1275/linux.c:331
 msgid "invalid arch-dependent ELF magic"
 msgstr "érvénytelen architektúra-függő ELF varázslat"
 
-#: grub-core/kern/buffer.c:71
-#, fuzzy
+#: grub-core/kern/buffer.c:74
 msgid "requested buffer size is too large"
-msgstr "„%s” mérete túl nagy"
+msgstr "a kért puffer mérete túl nagy"
 
-#: grub-core/kern/buffer.c:112
+#: grub-core/kern/buffer.c:115
 msgid "new read is position beyond the end of the written data"
-msgstr ""
+msgstr "az új olvasás a kiírt adatok végén túli pozíció"
 
-#: grub-core/kern/corecmd.c:178
+#: grub-core/kern/corecmd.c:181
 msgid "[ENVVAR=VALUE]"
 msgstr "[KÖRNYVÁLT=ÉRTÉK]"
 
-#: grub-core/kern/corecmd.c:179
+#: grub-core/kern/corecmd.c:182
 msgid "Set an environment variable."
 msgstr "Egy környezeti változó beállítása."
 
-#: grub-core/kern/corecmd.c:183
+#: grub-core/kern/corecmd.c:186
 msgid "ENVVAR"
 msgstr "KÖRNYVÁLT"
 
-#: grub-core/kern/corecmd.c:184
+#: grub-core/kern/corecmd.c:187
 msgid "Remove an environment variable."
 msgstr "Egy környezeti változó eltávolítása."
 
-#: grub-core/kern/corecmd.c:186
+#: grub-core/kern/corecmd.c:189
 msgid "[ARG]"
 msgstr "[ARG]"
 
-#: grub-core/kern/corecmd.c:186
+#: grub-core/kern/corecmd.c:189
 msgid "List devices or files."
 msgstr "Eszközök vagy fájlok felsorolása."
 
-#: grub-core/kern/corecmd.c:188
+#: grub-core/kern/corecmd.c:191
 msgid "Insert a module."
 msgstr "Modul behelyezése."
 
-#: grub-core/kern/disk.c:236 grub-core/net/net.c:1395
+#: grub-core/kern/disk.c:236 grub-core/net/net.c:1522
 #, c-format
 msgid "disk `%s' not found"
 msgstr "a(z) „%s” lemez nem található"
@@ -3155,23 +3579,81 @@ msgid "attempt to read or write outside of partition"
 msgstr "kísérlet a partíción kívüli olvasására vagy írásra"
 
 #: grub-core/kern/dl.c:212 grub-core/kern/elf.c:61 grub-core/kern/elf.c:79
-#: grub-core/loader/i386/bsdXX.c:46 grub-core/loader/ia64/efi/linux.c:335
-#: grub-core/loader/multiboot_elfxx.c:69
+#: grub-core/loader/i386/bsdXX.c:49 grub-core/loader/ia64/efi/linux.c:335
+#: grub-core/loader/multiboot_elfxx.c:82
 msgid "invalid arch-independent ELF magic"
 msgstr "érvénytelen architektúra-független ELF varázslat"
 
-#: grub-core/kern/efi/mm.c:136
+#: grub-core/kern/efi/debug.c:37
+msgid "Print infomation useful for GDB debugging"
+msgstr ""
+
+#: grub-core/kern/efi/mm.c:135
 #, c-format
 msgid "invalid memory address (0x%s > 0x%s)"
+msgstr "érvénytelen memóriacím (0x%s > 0x%s)"
+
+#: grub-core/kern/efi/sb.c:179
+msgid "prohibited by secure boot policy"
 msgstr ""
 
-#: grub-core/kern/efi/sb.c:147
+#: grub-core/kern/efi/sb.c:189
 msgid "shim_lock protocol not found"
-msgstr ""
+msgstr "a shim_lock protokoll nem található"
 
-#: grub-core/kern/efi/sb.c:150
+#: grub-core/kern/efi/sb.c:192
 msgid "bad shim signature"
 msgstr "hibás betétaláírás"
+
+#: grub-core/kern/elfXX.c:215
+msgid "NULL pointer passed for shnum"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:221 grub-core/kern/elfXX.c:255
+#: grub-core/kern/elfXX.c:288
+msgid "NULL pointer passed for elf header"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:227 grub-core/kern/elfXX.c:261
+#: grub-core/kern/elfXX.c:294
+msgid "invalid section header table offset in e_shoff"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:232
+msgid "invalid number of section header table entries in sh_size: %"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:237
+msgid "invalid number of section header table entries in e_shnum: %"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:249
+msgid "NULL pointer passed for shstrndx"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:266
+#, c-format
+msgid "invalid section header table index in sh_link: %d"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:271
+#, c-format
+msgid "invalid section header table index in e_shstrndx: %d"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:282
+msgid "NULL pointer passed for phnum"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:299
+#, c-format
+msgid "invalid number of program header table entries in sh_info: %d"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:304
+#, c-format
+msgid "invalid number of program header table entries in e_phnum: %d"
+msgstr ""
 
 #. TRANSLATORS: it refers to the lack of free slots.
 #: grub-core/kern/emu/hostdisk.c:208 grub-core/kern/emu/hostdisk.c:466
@@ -3179,7 +3661,7 @@ msgid "device count exceeds limit"
 msgstr "az eszközszám túllépi a korlátot"
 
 #: grub-core/kern/emu/hostdisk.c:342 util/editenv.c:66 util/grub-editenv.c:203
-#: util/grub-fstest.c:191 util/grub-mkfont.c:796 util/misc.c:114
+#: util/grub-fstest.c:191 util/grub-mkfont.c:841 util/misc.c:114
 #: util/misc.c:129 util/setup.c:791
 #, c-format
 msgid "cannot write to `%s': %s"
@@ -3223,12 +3705,12 @@ msgstr ""
 msgid "can't open `%s': %s"
 msgstr "„%s” nem nyitható meg: %s"
 
-#: grub-core/kern/emu/main.c:99 util/grub-fstest.c:516 util/grub-mount.c:452
+#: grub-core/kern/emu/main.c:99 util/grub-fstest.c:522 util/grub-mount.c:472
 msgid "DEVICE_NAME"
 msgstr "ESZKÖZNÉV"
 
 #: grub-core/kern/emu/main.c:99 grub-core/loader/i386/bsd.c:137
-#: grub-core/loader/i386/bsd.c:170 util/grub-fstest.c:516 util/grub-mount.c:452
+#: grub-core/loader/i386/bsd.c:170 util/grub-fstest.c:522 util/grub-mount.c:472
 msgid "Set root device."
 msgstr "Gyökéreszköz beállítása."
 
@@ -3249,11 +3731,10 @@ msgid "use GRUB files in the directory DIR [default=%s]"
 msgstr "a KVT könyvtárban lévő GRUB fájlok használata [alapértelmezés=%s]"
 
 #: grub-core/kern/emu/main.c:108 include/grub/util/install.h:71
-#: util/grub-editenv.c:58 util/grub-fstest.c:525 util/grub-glue-efi.c:58
-#: util/grub-macbless.c:104 util/grub-mkfont.c:962 util/grub-mkimage.c:86
-#: util/grub-mklayout.c:56 util/grub-mount.c:458 util/grub-probe.c:735
-#: util/grub-render-label.c:74 util/grub-script-check.c:52 util/grub-setup.c:90
-#: util/grub-syslinux2cfg.c:78
+#: util/grub-editenv.c:58 util/grub-fstest.c:531 util/grub-glue-efi.c:58
+#: util/grub-macbless.c:104 util/grub-mkfont.c:1008 util/grub-mkimage.c:86
+#: util/grub-mklayout.c:56 util/grub-mount.c:478 util/grub-render-label.c:74
+#: util/grub-script-check.c:52 util/grub-setup.c:90 util/grub-syslinux2cfg.c:78
 msgid "print verbose messages."
 msgstr "részletes üzenetek kiírása."
 
@@ -3265,57 +3746,77 @@ msgstr "MP"
 msgid "wait until a debugger will attach"
 msgstr "várakozás, amíg a hibakereső csatolni fog"
 
-#: grub-core/kern/emu/main.c:171 util/grub-macbless.c:143
-#: util/grub-mkrelpath.c:61 util/grub-probe.c:874 util/grub-script-check.c:75
+#: grub-core/kern/emu/main.c:110
+msgid ""
+"use kexec to boot Linux kernels via systemctl (pass twice to enable "
+"dangerous fallback to non-systemctl)."
+msgstr ""
+
+#: grub-core/kern/emu/main.c:175 util/grub-macbless.c:143
+#: util/grub-mkrelpath.c:61 util/grub-probe.c:875 util/grub-script-check.c:75
 #: util/grub-setup.c:203
 #, c-format
 msgid "Unknown extra argument `%s'."
 msgstr "Ismeretlen extra argumentum: „%s”."
 
-#: grub-core/kern/emu/main.c:185
+#: grub-core/kern/emu/main.c:189
 msgid "GRUB emulator."
 msgstr "GRUB emulátor."
 
-#: grub-core/kern/emu/main.c:213 util/grub-editenv.c:268
-#: util/grub-glue-efi.c:110 util/grub-macbless.c:173 util/grub-mkfont.c:1177
+#: grub-core/kern/emu/main.c:217 util/grub-editenv.c:268
+#: util/grub-glue-efi.c:110 util/grub-macbless.c:173 util/grub-mkfont.c:1223
 #: util/grub-mkimage.c:281 util/grub-mklayout.c:494
 #: util/grub-mkpasswd-pbkdf2.c:132 util/grub-mkrelpath.c:96
-#: util/grub-probe.c:863 util/grub-render-label.c:152
+#: util/grub-probe.c:864 util/grub-render-label.c:152
 #: util/grub-script-check.c:160 util/grub-setup.c:262
 #: util/grub-syslinux2cfg.c:163
 msgid "Error in parsing command line arguments\n"
 msgstr "Hiba a parancssori argumentumok feldolgozásakor\n"
 
 #. TRANSLATORS: In this case GRUB tells user what he has to do.
-#: grub-core/kern/emu/main.c:248
+#: grub-core/kern/emu/main.c:252
 #, c-format
 msgid "Run `gdb %s %d', and set ARGS.HOLD to zero.\n"
 msgstr "A „gdb %s %d” futtatása, és az ARGS.HOLD beállítása nullára.\n"
 
-#: grub-core/kern/emu/misc.c:48
+#: grub-core/kern/emu/misc.c:49
 #, c-format
 msgid "%s: warning:"
 msgstr "%s: figyelmeztetés:"
 
-#: grub-core/kern/emu/misc.c:64
+#: grub-core/kern/emu/misc.c:65
 #, c-format
 msgid "%s: info:"
 msgstr "%s: info:"
 
-#: grub-core/kern/emu/misc.c:79 util/grub-fstest.c:567 util/grub-fstest.c:576
-#: util/grub-mount.c:497 util/grub-mount.c:505
+#: grub-core/kern/emu/misc.c:80 util/grub-fstest.c:573 util/grub-fstest.c:582
+#: util/grub-mount.c:517 util/grub-mount.c:525
 #, c-format
 msgid "%s: error:"
 msgstr "%s: hiba:"
 
-#: grub-core/kern/emu/misc.c:188
+#: grub-core/kern/emu/misc.c:192
 #, c-format
 msgid "file `%s' is too big"
 msgstr "a(z) „%s” fájl túl nagy"
 
-#: grub-core/kern/fs.c:120
+#: grub-core/kern/fs.c:122
 msgid "unknown filesystem"
 msgstr "ismeretlen fájlrendszer"
+
+#: grub-core/kern/ieee1275/init.c:259
+#, c-format
+msgid "Error: ibm,kernel-dump has an unexpected format version '%u'\n"
+msgstr ""
+
+#: grub-core/kern/ieee1275/init.c:266
+#, c-format
+msgid "Error: Too many kernel dump sections: %d\n"
+msgstr ""
+
+#: grub-core/kern/ieee1275/init.c:279
+msgid "Error: 'kds' address beyond last available section\n"
+msgstr ""
 
 #: grub-core/kern/mips/arc/init.c:273 grub-core/kern/mips/loongson/init.c:301
 msgid "Shutdown failed"
@@ -3325,12 +3826,16 @@ msgstr "Leállítás meghiúsult"
 msgid "Exit failed"
 msgstr "Kilépés meghiúsult"
 
+#: grub-core/kern/misc.c:1342
+msgid "string too long"
+msgstr ""
+
 #: grub-core/kern/partition.c:51 grub-core/partmap/bsdlabel.c:108
 #, c-format
 msgid "Discarding improperly nested partition (%s,%s,%s%d)"
 msgstr "A helytelenül egymásba ágyazott partíciók eldobása (%s,%s,%s%d)"
 
-#: grub-core/kern/rescue_parser.c:73 util/grub-editenv.c:298
+#: grub-core/kern/rescue_parser.c:79 util/grub-editenv.c:298
 #, c-format
 msgid "Unknown command `%s'.\n"
 msgstr "Ismeretlen parancs: „%s”.\n"
@@ -3407,6 +3912,28 @@ msgstr "Szombat"
 msgid "GRUB doesn't know how to halt this machine yet!"
 msgstr "A GRUB még nem tudja, hogy hogyan kell ezt a gépet leállítani!"
 
+#: grub-core/lib/json/json.c:274
+msgid "output parameters are not set"
+msgstr ""
+
+#: grub-core/lib/json/json.c:287
+msgid "expected escaped character"
+msgstr ""
+
+#: grub-core/lib/json/json.c:333
+msgid "unicode sequence too short"
+msgstr ""
+
+#: grub-core/lib/json/json.c:350
+#, c-format
+msgid "unicode sequence with invalid character '%c'"
+msgstr ""
+
+#: grub-core/lib/json/json.c:366
+#, fuzzy, c-format
+msgid "unrecognized escaped character '%c'"
+msgstr "azonosítatlan hálózati csatoló: „%s”"
+
 #: grub-core/lib/legacy_parse.c:75
 msgid "Default server is ${net_default_server}"
 msgstr "Az alapértelmezett kiszolgáló: ${net_default_server}"
@@ -3430,63 +3957,55 @@ msgstr "[HOSSZ]"
 msgid "Hexdump random data."
 msgstr "Véletlenszerű adatok hexdumpja."
 
-#: grub-core/loader/arm/linux.c:242
+#: grub-core/loader/arm/linux.c:243
 msgid "device tree must be supplied (see `devicetree' command)"
 msgstr "az eszközfát meg kell adni (lásd „devicetree” parancs)"
 
-#: grub-core/loader/arm/linux.c:334
+#: grub-core/loader/arm/linux.c:335
 msgid "invalid zImage"
 msgstr "érvénytelen zImage"
 
-#: grub-core/loader/arm/linux.c:450 grub-core/loader/efi/fdt.c:148
+#: grub-core/loader/arm/linux.c:451 grub-core/loader/efi/fdt.c:151
 msgid "invalid device tree"
 msgstr "érvénytelen eszközfa"
 
-#: grub-core/loader/arm/linux.c:493 grub-core/loader/arm64/linux.c:383
-#: grub-core/loader/i386/linux.c:1131 grub-core/loader/i386/pc/linux.c:483
-#: grub-core/loader/i386/xen.c:970 grub-core/loader/i386/xen.c:972
-#: grub-core/loader/ia64/efi/linux.c:591 grub-core/loader/mips/linux.c:498
-#: grub-core/loader/powerpc/ieee1275/linux.c:383
-#: grub-core/loader/riscv/linux.c:50
+#: grub-core/loader/arm/linux.c:494 grub-core/loader/efi/linux.c:583
+#: grub-core/loader/emu/linux.c:172 grub-core/loader/i386/linux.c:1157
+#: grub-core/loader/i386/pc/linux.c:483 grub-core/loader/i386/xen.c:969
+#: grub-core/loader/i386/xen.c:971 grub-core/loader/ia64/efi/linux.c:591
+#: grub-core/loader/mips/linux.c:498
+#: grub-core/loader/powerpc/ieee1275/linux.c:406
 #: grub-core/loader/sparc64/ieee1275/linux.c:511
 msgid "Load Linux."
 msgstr "Linux betöltése."
 
-#: grub-core/loader/arm/linux.c:495 grub-core/loader/arm64/linux.c:385
-#: grub-core/loader/i386/linux.c:1133 grub-core/loader/i386/pc/linux.c:486
-#: grub-core/loader/i386/xen.c:974 grub-core/loader/ia64/efi/linux.c:594
-#: grub-core/loader/mips/linux.c:500
-#: grub-core/loader/powerpc/ieee1275/linux.c:385
-#: grub-core/loader/riscv/linux.c:52
+#: grub-core/loader/arm/linux.c:496 grub-core/loader/efi/linux.c:585
+#: grub-core/loader/emu/linux.c:174 grub-core/loader/i386/linux.c:1159
+#: grub-core/loader/i386/pc/linux.c:486 grub-core/loader/i386/xen.c:973
+#: grub-core/loader/ia64/efi/linux.c:594 grub-core/loader/mips/linux.c:500
+#: grub-core/loader/powerpc/ieee1275/linux.c:408
 #: grub-core/loader/sparc64/ieee1275/linux.c:513
 msgid "Load initrd."
 msgstr "Initrd betöltése."
 
 #. TRANSLATORS: DTB stands for device tree blob.
-#: grub-core/loader/arm/linux.c:498 grub-core/loader/efi/fdt.c:173
+#: grub-core/loader/arm/linux.c:499 grub-core/loader/efi/fdt.c:176
 msgid "Load DTB file."
 msgstr "DTB fájl betöltése."
 
-#: grub-core/loader/arm64/linux.c:59
-msgid ""
-"plain image kernel not supported - rebuild with CONFIG_(U)EFI_STUB enabled"
-msgstr ""
-"egyszerű lemezkép kernel nem támogatott - fordítsa újra engedélyezett "
-"CONFIG_(U)EFI_STUB használatával"
-
-#: grub-core/loader/arm64/xen_boot.c:156
+#: grub-core/loader/arm64/xen_boot.c:142
 msgid "failed to get FDT"
 msgstr "az FDT elérése sikertelen"
 
-#: grub-core/loader/arm64/xen_boot.c:418
+#: grub-core/loader/arm64/xen_boot.c:404
 msgid "you need to load the Xen Hypervisor first"
 msgstr "először a Xen hipervizort kell betöltenie"
 
-#: grub-core/loader/arm64/xen_boot.c:516
+#: grub-core/loader/arm64/xen_boot.c:500
 msgid "Load a xen hypervisor."
 msgstr "Töltsön be egy Xen hipervizort"
 
-#: grub-core/loader/arm64/xen_boot.c:519
+#: grub-core/loader/arm64/xen_boot.c:503
 msgid "Load a xen module."
 msgstr "Xen modul betöltése."
 
@@ -3505,6 +4024,46 @@ msgstr "BIOS-alapú rendszer indítása."
 #: grub-core/loader/i386/pc/chainloader.c:303
 msgid "Load another boot loader."
 msgstr "Másik rendszerbetöltő betöltése."
+
+#: grub-core/loader/efi/linux.c:100
+msgid ""
+"plain image kernel not supported - rebuild with CONFIG_(U)EFI_STUB enabled"
+msgstr ""
+"egyszerű lemezkép kernel nem támogatott - fordítsa újra engedélyezett "
+"CONFIG_(U)EFI_STUB használatával"
+
+#: grub-core/loader/efi/linux.c:416
+#, fuzzy
+msgid "failed to install protocols"
+msgstr "ne telepítsen indítószektort"
+
+#: grub-core/loader/emu/linux.c:65
+msgid "error trying to perform kexec load operation"
+msgstr ""
+
+#: grub-core/loader/emu/linux.c:71
+msgid "use '"
+msgstr ""
+
+#: grub-core/loader/emu/linux.c:82
+#, c-format
+msgid "error trying to perform 'systemctl kexec': %d"
+msgstr ""
+
+#: grub-core/loader/emu/linux.c:93
+#, c-format
+msgid "error trying to directly perform 'kexec -ex': %d"
+msgstr ""
+
+#: grub-core/loader/emu/linux.c:123
+#, fuzzy, c-format
+msgid "cannot find kernel file %s"
+msgstr "nem található a területi beállítás: „%s”"
+
+#: grub-core/loader/emu/linux.c:156
+#, fuzzy, c-format
+msgid "Cannot find initrd file %s"
+msgstr "nem található a területi beállítás: „%s”"
 
 #: grub-core/loader/i386/bsd.c:104
 msgid "Display output on all consoles."
@@ -3613,7 +4172,7 @@ msgid "size"
 msgstr "méret"
 
 #: grub-core/loader/i386/bsd.c:1153 grub-core/loader/i386/linux.c:467
-#: grub-core/loader/i386/xnu.c:1030
+#: grub-core/loader/i386/xnu.c:1025
 msgid "Booting in blind mode"
 msgstr "Indítás vak módban"
 
@@ -3663,12 +4222,12 @@ msgstr "kOpenBSD memórialemez betöltése."
 msgid "Load another coreboot payload"
 msgstr "Másik magindítási tartalom betöltése."
 
-#: grub-core/loader/i386/linux.c:882
+#: grub-core/loader/i386/linux.c:894
 msgid "Legacy `ask' parameter no longer supported."
 msgstr "Az örökölt „ask” paraméter többé nem támogatott."
 
-#: grub-core/loader/i386/linux.c:898 grub-core/loader/i386/linux.c:908
-#: grub-core/loader/i386/linux.c:938
+#: grub-core/loader/i386/linux.c:910 grub-core/loader/i386/linux.c:920
+#: grub-core/loader/i386/linux.c:950
 #, c-format
 msgid "%s is deprecated. Use set gfxpayload=%s before linux command instead.\n"
 msgstr ""
@@ -3677,7 +4236,7 @@ msgstr ""
 
 #. TRANSLATORS: "x" has to be entered in, like an identifier,
 #. so please don't use better Unicode codepoints.
-#: grub-core/loader/i386/linux.c:921
+#: grub-core/loader/i386/linux.c:933
 #, c-format
 msgid ""
 "%s is deprecated. VGA mode %d isn't recognized. Use set "
@@ -3685,6 +4244,10 @@ msgid ""
 msgstr ""
 "%s elavult. A(z) %d VGA mód nem azonosítható. Használja helyette a "
 "gfxpayload=SZÉLESSÉGxMAGASSÁG[xMÉLYSÉG] beállítást a linux parancs előtt.\n"
+
+#: grub-core/loader/i386/linux.c:1104
+msgid "the size of initrd is bigger than addr_max"
+msgstr ""
 
 #: grub-core/loader/i386/pc/chainloader.c:302
 msgid "[--force|--bpb] FILE"
@@ -3733,22 +4296,22 @@ msgstr "Egy PXE lemezkép betöltése."
 msgid "Load Truecrypt ISO."
 msgstr "Truecrypt ISO betöltése."
 
-#: grub-core/loader/i386/xen.c:789 grub-core/loader/i386/xen.c:873
+#: grub-core/loader/i386/xen.c:789 grub-core/loader/i386/xen.c:872
 msgid "initrd already loaded"
 msgstr "az initrd már be van töltve"
 
-#: grub-core/loader/i386/xen.c:976
+#: grub-core/loader/i386/xen.c:975
 msgid "Load module."
 msgstr "Modul betöltése."
 
-#: grub-core/loader/i386/xnu.c:1003
+#: grub-core/loader/i386/xnu.c:998
 msgid "Press any key to launch xnu"
 msgstr "Nyomjon meg egy billentyűt az xnu indításához"
 
 #. TRANSLATORS: `device-properties'
 #. is a variable name,
 #. not a program.
-#: grub-core/loader/i386/xnu.c:1159
+#: grub-core/loader/i386/xnu.c:1154
 msgid "Load `device-properties' dump."
 msgstr "„device-properties” kiíratás betöltése."
 
@@ -3797,14 +4360,17 @@ msgstr "Multiboot kernel betöltése."
 msgid "Load a multiboot module."
 msgstr "Multiboot modul betöltése."
 
-#: grub-core/loader/riscv/linux.c:30 grub-core/loader/riscv/linux.c:40
-msgid "Linux not supported yet"
-msgstr "a Linux még nem támogatott"
+#: grub-core/loader/multiboot_elfxx.c:208
+msgid "memory being set is larger than allocated memory"
+msgstr ""
+
+#: grub-core/loader/multiboot_elfxx.c:254
+msgid "ELF section header region is larger than the file size"
+msgstr ""
 
 #: grub-core/loader/xnu.c:674
-#, fuzzy
 msgid "missing p-list filename"
-msgstr "Hiányzó bemeneti fájl\n"
+msgstr "hiányzó p-list fájlnév"
 
 #: grub-core/loader/xnu.c:1435 grub-core/term/gfxterm_background.c:45
 msgid "Background image mode."
@@ -3884,158 +4450,161 @@ msgstr "ETTŐL[K|M|G] EDDIG[K|M|G]"
 msgid "Remove any memory regions in specified range."
 msgstr "Memóriaterületek eltávolítása a megadott tartományból."
 
-#: grub-core/net/bootp.c:689
+#: grub-core/net/bootp.c:692
 msgid "four arguments expected"
 msgstr "négy argumentumot kell megadni"
 
-#: grub-core/net/bootp.c:697 grub-core/net/net.c:1160
+#: grub-core/net/bootp.c:700 grub-core/net/net.c:1184
 #, c-format
 msgid "unrecognised network interface `%s'"
 msgstr "azonosítatlan hálózati csatoló: „%s”"
 
-#: grub-core/net/bootp.c:700
+#: grub-core/net/bootp.c:703
 msgid "no DHCP info found"
 msgstr "nem található DHCP információ"
 
-#: grub-core/net/bootp.c:710
+#: grub-core/net/bootp.c:713
 msgid "no DHCP options found"
 msgstr "nem találhatók DHCP kapcsolók"
 
-#: grub-core/net/bootp.c:718
+#: grub-core/net/bootp.c:721
 msgid "invalid DHCP option code"
 msgstr "érvénytelen DHCP kapcsolókód"
 
-#: grub-core/net/bootp.c:722
+#: grub-core/net/bootp.c:725
 #, c-format
 msgid "no DHCP option %u found"
 msgstr "nem található %u DHCP kapcsoló"
 
-#: grub-core/net/bootp.c:779
+#: grub-core/net/bootp.c:782
 #, c-format
 msgid "unrecognised DHCP option format specification `%s'"
 msgstr "azonosítatlan DHCP kapcsolóformátum specifikáció: „%s”"
 
-#: grub-core/net/bootp.c:803
+#: grub-core/net/bootp.c:806
 msgid "no network card found"
 msgstr "nem található hálózati kártya"
 
-#: grub-core/net/bootp.c:895 grub-core/net/net.c:394
+#: grub-core/net/bootp.c:898 grub-core/net/net.c:395
 #, c-format
 msgid "couldn't autoconfigure %s"
 msgstr "%s automatikus beállítása nem sikerült"
 
-#: grub-core/net/bootp.c:909 grub-core/net/bootp.c:912
+#: grub-core/net/bootp.c:912 grub-core/net/bootp.c:915
 msgid "[CARD]"
 msgstr "[KÁRTYA]"
 
-#: grub-core/net/bootp.c:910
+#: grub-core/net/bootp.c:913
 msgid "perform a bootp autoconfiguration"
 msgstr "egy bootp automatikus beállítás végrehajtása"
 
-#: grub-core/net/bootp.c:913
+#: grub-core/net/bootp.c:916
 msgid "perform a DHCP autoconfiguration"
 msgstr "egy DHCP automatikus beállítás végrehajtása"
 
-#: grub-core/net/bootp.c:915
+#: grub-core/net/bootp.c:918
 msgid "VAR INTERFACE NUMBER DESCRIPTION"
 msgstr "VÁLTOZÓ CSATOLÓ SZÁM LEÍRÁS"
 
-#: grub-core/net/bootp.c:916
+#: grub-core/net/bootp.c:919
 msgid ""
 "retrieve DHCP option and save it into VAR. If VAR is - then print the value."
 msgstr ""
 "DHCP kapcsoló lekérése és elmentése a VÁLTOZÓBA. Ha a VÁLTOZÓ -, akkor "
 "kiírja az értéket."
 
-#: grub-core/net/dns.c:466
+#: grub-core/net/dns.c:455
 msgid "no DNS servers configured"
 msgstr "nincsenek beállított DNS kiszolgálók"
 
-#: grub-core/net/dns.c:529
+#: grub-core/net/dns.c:518
 msgid "domain name component is too long"
 msgstr "a tartománynév komponens túl hosszú"
 
-#: grub-core/net/dns.c:625 grub-core/net/dns.c:673
+#: grub-core/net/dns.c:614 grub-core/net/dns.c:664
 msgid "no DNS record found"
 msgstr "nem található DNS rekord"
 
-#: grub-core/net/dns.c:633
+#: grub-core/net/dns.c:622
 msgid "no DNS reply received"
 msgstr "nem érkezett DNS válasz"
 
-#: grub-core/net/dns.c:689
+#: grub-core/net/dns.c:680
 msgid "only ipv4"
 msgstr "csak ipv4"
 
-#: grub-core/net/dns.c:693
+#: grub-core/net/dns.c:684
 msgid "only ipv6"
 msgstr "csak ipv6"
 
-#: grub-core/net/dns.c:697
+#: grub-core/net/dns.c:688
 msgid "prefer ipv4"
 msgstr "ipv4 előnyben részesítése"
 
-#: grub-core/net/dns.c:701
+#: grub-core/net/dns.c:692
 msgid "prefer ipv6"
 msgstr "ipv6 előnyben részesítése"
 
-#: grub-core/net/dns.c:766
+#: grub-core/net/dns.c:760
 msgid "ADDRESS DNSSERVER"
 msgstr "CÍM DNSKISZOLGÁLÓ"
 
-#: grub-core/net/dns.c:767
+#: grub-core/net/dns.c:761
 msgid "Perform a DNS lookup"
 msgstr "Egy DNS keresés végrehajtása"
 
-#: grub-core/net/dns.c:769 grub-core/net/dns.c:772
+#: grub-core/net/dns.c:763 grub-core/net/dns.c:766
 msgid "DNSSERVER"
 msgstr "DNSKISZOLGÁLÓ"
 
-#: grub-core/net/dns.c:770
+#: grub-core/net/dns.c:764
 msgid "Add a DNS server"
 msgstr "Egy DNS kiszolgáló hozzáadása"
 
-#: grub-core/net/dns.c:773
+#: grub-core/net/dns.c:767
 msgid "Remove a DNS server"
 msgstr "Egy DNS kiszolgáló eltávolítása"
 
-#: grub-core/net/dns.c:775
+#: grub-core/net/dns.c:769
 msgid "List DNS servers"
 msgstr "DNS kiszolgálók felsorolása"
 
-#: grub-core/net/drivers/efi/efinet.c:49 grub-core/net/drivers/efi/efinet.c:65
-#: grub-core/net/drivers/efi/efinet.c:77 grub-core/net/drivers/emu/emunet.c:62
+#: grub-core/net/drivers/efi/efinet.c:44
+msgid "network protocol not available, can't send packet"
+msgstr ""
+
+#: grub-core/net/drivers/efi/efinet.c:52 grub-core/net/drivers/efi/efinet.c:68
+#: grub-core/net/drivers/efi/efinet.c:80 grub-core/net/drivers/emu/emunet.c:62
 #: grub-core/net/drivers/i386/pc/pxe.c:273
 #: grub-core/net/drivers/ieee1275/ofnet.c:75
 #: grub-core/net/drivers/uboot/ubootnet.c:62
 msgid "couldn't send network packet"
 msgstr "nem sikerült elküldeni a hálózati csomagot"
 
-#: grub-core/net/drivers/ieee1275/ofnet.c:326
-#: grub-core/net/drivers/ieee1275/ofnet.c:359
-msgid "interpret is not supported"
-msgstr "az interpret nem támogatott"
-
-#: grub-core/net/drivers/ieee1275/ofnet.c:336
+#: grub-core/net/drivers/ieee1275/ofnet.c:329
 msgid "alloc-mem failed"
 msgstr "az alloc-mem sikertelen"
 
-#: grub-core/net/drivers/ieee1275/ofnet.c:370
+#: grub-core/net/drivers/ieee1275/ofnet.c:357
 msgid "free-mem failed"
 msgstr "a free-mem sikertelen"
 
-#: grub-core/net/http.c:105
+#: grub-core/net/http.c:71
+msgid "invalid HTTP header - LF without CR"
+msgstr ""
+
+#: grub-core/net/http.c:109
 msgid "unsupported HTTP response"
 msgstr "nem támogatott HTTP válasz"
 
 #. TRANSLATORS: GRUB HTTP code is pretty young. So even perfectly
 #. valid answers like 403 will trigger this very generic message.
-#: grub-core/net/http.c:126
+#: grub-core/net/http.c:130
 #, c-format
 msgid "unsupported HTTP error %d: %s"
 msgstr "nem támogatott %d HTTP hiba: %s"
 
-#: grub-core/net/http.c:429 grub-core/net/tftp.c:396
+#: grub-core/net/http.c:442 grub-core/net/tftp.c:400
 #, c-format
 msgid "time out opening `%s'"
 msgstr "„%s” megnyitása túllépte az időkorlátot"
@@ -4044,128 +4613,160 @@ msgstr "„%s” megnyitása túllépte az időkorlátot"
 msgid "timeout: could not resolve hardware address"
 msgstr "időtúllépés: nem sikerült feloldani a hardvercímet"
 
-#: grub-core/net/net.c:553
+#: grub-core/net/net.c:563
 #, c-format
 msgid "unresolvable address %s"
 msgstr "feloldhatatlan cím: %s"
 
-#: grub-core/net/net.c:599
+#: grub-core/net/net.c:609
 #, c-format
 msgid "unrecognised network address `%s'"
 msgstr "azonosítatlan hálózati cím: „%s”"
 
-#: grub-core/net/net.c:666
+#: grub-core/net/net.c:676
 msgid "destination unreachable"
 msgstr "a cél elérhetetlen"
 
 #. TRANSLATORS: route loop is a condition when e.g.
 #. to contact server A you need to go through B
 #. and to contact B you need to go through A.
-#: grub-core/net/net.c:689
+#: grub-core/net/net.c:699
 msgid "route loop detected"
 msgstr "úthurok észlelhető"
 
-#: grub-core/net/net.c:705
+#: grub-core/net/net.c:715
 msgid "address not found"
 msgstr "a cím nem található"
 
-#: grub-core/net/net.c:709
+#: grub-core/net/net.c:719
 msgid "you can't delete this address"
 msgstr "nem törölheti ezt a címet"
 
-#: grub-core/net/net.c:781 grub-core/net/net.c:797
+#: grub-core/net/net.c:791 grub-core/net/net.c:821
 #, c-format
 msgid "Unsupported hw address type %d\n"
 msgstr "Nem támogatott hardvercím típus: %d\n"
 
-#: grub-core/net/net.c:818
+#: grub-core/net/net.c:842
 #, c-format
 msgid "Unsupported address type %d\n"
 msgstr "Nem támogatott címtípus: %d\n"
 
-#: grub-core/net/net.c:1022 grub-core/net/net.c:1136
+#: grub-core/net/net.c:1046 grub-core/net/net.c:1160
 msgid "three arguments expected"
 msgstr "három argumentumot kell megadni"
 
-#: grub-core/net/net.c:1028
+#: grub-core/net/net.c:1052
 msgid "card not found"
 msgstr "nem található kártya"
 
+#: grub-core/net/net.c:1205
+#, c-format
+msgid "non-numeric or invalid number `%s'"
+msgstr ""
+
+#: grub-core/net/net.c:1209
+#, c-format
+msgid "vlan id `%s' not in the valid range of 0-4094"
+msgstr ""
+
+#: grub-core/net/net.c:1222
+#, fuzzy
+msgid "network interface not found"
+msgstr "nem található hálózati kártya"
+
 #. TRANSLATORS: it refers to the network address.
-#: grub-core/net/net.c:1172
+#: grub-core/net/net.c:1232
 msgid "temporary"
 msgstr "átmeneti"
 
-#: grub-core/net/net.c:1195
+#: grub-core/net/net.c:1255
 #, c-format
 msgid "Unknown address type %d\n"
 msgstr "Ismeretlen címtípus: %d\n"
 
-#: grub-core/net/net.c:1303
+#: grub-core/net/net.c:1368
 msgid "no server is specified"
 msgstr "nincs kiszolgáló megadva"
 
-#: grub-core/net/net.c:1642
+#: grub-core/net/net.c:1383
+msgid "mismatched [ in address"
+msgstr ""
+
+#: grub-core/net/net.c:1393 grub-core/net/net.c:1422
+msgid "bad port number"
+msgstr ""
+
+#: grub-core/net/net.c:1772
 #, c-format
 msgid "timeout reading `%s'"
 msgstr "„%s” olvasása túllépte az időkorlátot"
 
 #. TRANSLATORS: HWADDRESS stands for
 #. "hardware address".
-#: grub-core/net/net.c:1899
+#: grub-core/net/net.c:2035
 msgid "SHORTNAME CARD ADDRESS [HWADDRESS]"
 msgstr "RÖVIDNÉV KÁRTYA CÍM [HARDVERCÍM]"
 
-#: grub-core/net/net.c:1900
+#: grub-core/net/net.c:2036
 msgid "Add a network address."
 msgstr "Egy hálózati cím hozzáadása."
 
-#: grub-core/net/net.c:1903
+#: grub-core/net/net.c:2039
 msgid "[CARD [HWADDRESS]]"
 msgstr "[KÁRTYA [HARDVERCÍM]]"
 
-#: grub-core/net/net.c:1904
+#: grub-core/net/net.c:2040
 msgid "Perform an IPV6 autoconfiguration"
 msgstr "Egy IPv6 automatikus beállítás végrehajtása"
 
-#: grub-core/net/net.c:1907 grub-core/net/net.c:1914
+#: grub-core/net/net.c:2043 grub-core/net/net.c:2050
 msgid "SHORTNAME"
 msgstr "RÖVIDNÉV"
 
-#: grub-core/net/net.c:1908
+#: grub-core/net/net.c:2044
 msgid "Delete a network address."
 msgstr "Egy hálózati cím törlése."
 
 #. TRANSLATORS: "gw" is a keyword.
-#: grub-core/net/net.c:1911
+#: grub-core/net/net.c:2047
 msgid "SHORTNAME NET [INTERFACE| gw GATEWAY]"
 msgstr "RÖVIDNÉV NET [CSATOLÓ| gw ÁTJÁRÓ]"
 
-#: grub-core/net/net.c:1912
+#: grub-core/net/net.c:2048
 msgid "Add a network route."
 msgstr "Egy hálózati út hozzáadása."
 
-#: grub-core/net/net.c:1915
+#: grub-core/net/net.c:2051
 msgid "Delete a network route."
 msgstr "Egy hálózati út törlése."
 
-#: grub-core/net/net.c:1917
+#: grub-core/net/net.c:2053
+#, fuzzy
+msgid "SHORTNAME VLANID"
+msgstr "RÖVIDNÉV"
+
+#: grub-core/net/net.c:2054
+msgid "Set an interface's vlan id."
+msgstr ""
+
+#: grub-core/net/net.c:2056
 msgid "list network routes"
 msgstr "hálózati utak felsorolása"
 
-#: grub-core/net/net.c:1919
+#: grub-core/net/net.c:2058
 msgid "list network cards"
 msgstr "hálózati kártyák felsorolása"
 
-#: grub-core/net/net.c:1921
+#: grub-core/net/net.c:2060
 msgid "list network addresses"
 msgstr "hálózati címek felsorolása"
 
-#: grub-core/net/tcp.c:681
+#: grub-core/net/tcp.c:686
 msgid "connection refused"
 msgstr "kapcsolat visszautasítva"
 
-#: grub-core/net/tcp.c:684
+#: grub-core/net/tcp.c:689
 msgid "connection timeout"
 msgstr "kapcsolati időtúllépés"
 
@@ -4245,35 +4846,35 @@ msgid "ESC at any time exits."
 msgstr "Az ESC mindig kilép."
 
 #: grub-core/normal/main.c:381
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Minimal BASH-like line editing is supported. For the first word, TAB lists "
 "possible command completions. Anywhere else TAB lists possible device or "
-"file completions. %s"
+"file completions. To enable less(1)-like paging, \"set pager=1\". %s"
 msgstr ""
 "Minimális BASH-szerű szerkesztés támogatott. Az első szóhoz a TAB felsorolja "
 "a lehetséges parancskiegészítéseket. Bárhol máshol a TAB felsorolja a "
 "lehetséges eszköz- vagy fájlkiegészítéseket. %s"
 
 #. TRANSLATORS: it's command line prompt.
-#: grub-core/normal/main.c:413
+#: grub-core/normal/main.c:414
 msgid ">"
 msgstr ">"
 
 #. TRANSLATORS: it's command line prompt.
-#: grub-core/normal/main.c:416
+#: grub-core/normal/main.c:417
 msgid "grub>"
 msgstr "grub>"
 
-#: grub-core/normal/main.c:536
+#: grub-core/normal/main.c:537
 msgid "Clear the screen."
 msgstr "A képernyő törlése."
 
-#: grub-core/normal/main.c:545
+#: grub-core/normal/main.c:546
 msgid "Enter normal mode."
 msgstr "Belépés a normál módba."
 
-#: grub-core/normal/main.c:547
+#: grub-core/normal/main.c:548
 msgid "Exit from normal mode."
 msgstr "Kilépés a normál módból."
 
@@ -4281,17 +4882,17 @@ msgstr "Kilépés a normál módból."
 msgid "Press any key to continue..."
 msgstr "Nyomjon meg egy billentyűt a folytatáshoz…"
 
-#: grub-core/normal/menu.c:814
+#: grub-core/normal/menu.c:824
 #, c-format
 msgid "Booting `%s'"
 msgstr "„%s” indítása"
 
-#: grub-core/normal/menu.c:826
+#: grub-core/normal/menu.c:837
 #, c-format
 msgid "Falling back to `%s'"
 msgstr "Visszaváltás erre: „%s”"
 
-#: grub-core/normal/menu.c:842
+#: grub-core/normal/menu.c:853
 msgid "Failed to boot both default and fallback entries.\n"
 msgstr "Az alapértelmezett és a tartalék bejegyzések indítása is sikertelen.\n"
 
@@ -4458,7 +5059,7 @@ msgstr "--TOVÁBB--"
 msgid "cannot open configuration file `%s': %s"
 msgstr "nem nyitható meg a(z) „%s” konfigurációs fájl: %s"
 
-#: grub-core/osdep/aros/hostdisk.c:523
+#: grub-core/osdep/aros/hostdisk.c:521
 msgid "Success"
 msgstr "Sikerült"
 
@@ -4468,7 +5069,7 @@ msgid "no compression is available for your platform"
 msgstr "nem érhető el tömörítés a platformhoz"
 
 #: grub-core/osdep/basic/no_platform.c:30
-#: grub-core/osdep/windows/platform.c:418
+#: grub-core/osdep/windows/platform.c:428
 msgid "no IEEE1275 routines are available for your platform"
 msgstr "nem érhetők el IEEE1275 rutinok a platformhoz"
 
@@ -4477,7 +5078,7 @@ msgid "no EFI routines are available for your platform"
 msgstr "nem érhetők el EFI rutinok a platformhoz"
 
 #: grub-core/osdep/basic/no_platform.c:45
-#: grub-core/osdep/windows/platform.c:425
+#: grub-core/osdep/windows/platform.c:435
 msgid "no SGI routines are available for your platform"
 msgstr "nem érhetők el SGI rutinok a platformhoz"
 
@@ -4487,15 +5088,76 @@ msgstr "nem érhetők el SGI rutinok a platformhoz"
 msgid "no random number generator is available for your OS"
 msgstr "nem érhető el véletlen szám generátor az operációs rendszerhez"
 
-#: grub-core/osdep/devmapper/getroot.c:81
+#: grub-core/osdep/devmapper/getroot.c:78
 msgid "Failed to create `device-mapper' tree"
 msgstr "A „device-mapper” fa előállítása sikertelen"
 
-#: grub-core/osdep/devmapper/getroot.c:197
+#: grub-core/osdep/devmapper/getroot.c:196
 #: grub-core/osdep/freebsd/getroot.c:202
 #, c-format
 msgid "can't mount encrypted volume `%s': %s"
 msgstr "nem lehet csatolni a titkosított „%s” kötetet: %s"
+
+#: grub-core/osdep/devmapper/getroot.c:218
+#, fuzzy, c-format
+msgid "cannot open grub disk `%s'"
+msgstr "a(z) „%s” OS fájl nem nyitható meg: %s"
+
+#: grub-core/osdep/devmapper/getroot.c:221
+#, c-format
+msgid "cannot get cryptodisk from source disk `%s'"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:230
+#, c-format
+msgid "cannot get dm node name for grub dev `%s'"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:237
+msgid "can't create dm task DM_DEVICE_TABLE"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:239
+#, c-format
+msgid "can't set dm task name to `%s'"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:241
+#, fuzzy, c-format
+msgid "can't run dm task for `%s'"
+msgstr "nem található a parancs: „%s”"
+
+#: grub-core/osdep/devmapper/getroot.c:249
+#, c-format
+msgid "dm target of type `%s' is not `crypt'"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:261
+#, c-format
+msgid "can't get cipher from dm-crypt parameters `%s'"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:265
+msgid "could not strndup cipher of length `%"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:272
+#, c-format
+msgid "can't get cipher mode from dm-crypt parameters `%s'"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:276
+msgid "could not strndup cipher_mode of length `%"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:283
+#, c-format
+msgid "can't set cipher of cryptodisk `%s' to `%s' with mode `%s'"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:297
+msgid "can't lookup hash sha256 by name"
+msgstr ""
 
 #. TRANSLATORS: geom is the name of (k)FreeBSD device framework.
 #. Usually left untranslated.
@@ -4520,26 +5182,26 @@ msgstr "a geli UUID lekérése nem sikerült"
 msgid "couldn't find geom `part' class"
 msgstr "nem található geom „part” osztály"
 
-#: grub-core/osdep/freebsd/hostdisk.c:72 grub-core/osdep/linux/hostdisk.c:93
+#: grub-core/osdep/freebsd/hostdisk.c:70 grub-core/osdep/linux/hostdisk.c:92
 msgid "unaligned device size"
 msgstr "igazítatlan eszközméret"
 
-#: grub-core/osdep/generic/blocklist.c:56
+#: grub-core/osdep/generic/blocklist.c:80
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB"
 msgstr "kísérlet a(z) „%s” magkép beolvasására a GRUB-ból"
 
-#: grub-core/osdep/generic/blocklist.c:57
+#: grub-core/osdep/generic/blocklist.c:81
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB again"
 msgstr "kísérlet a(z) „%s” magkép beolvasására a GRUB-ból újra"
 
-#: grub-core/osdep/generic/blocklist.c:115
+#: grub-core/osdep/generic/blocklist.c:139
 #, c-format
 msgid "cannot read `%s' correctly"
 msgstr "„%s” nem olvasható be megfelelően"
 
-#: grub-core/osdep/generic/blocklist.c:126
+#: grub-core/osdep/generic/blocklist.c:150
 msgid "failed to read the sectors of the core image"
 msgstr "a magkép szektorainak beolvasása meghiúsult"
 
@@ -4619,35 +5281,34 @@ msgstr "érvénytelen nulla blokkméret"
 msgid "can't retrieve blocklists"
 msgstr "nem lehet lekérni a blokklistákat"
 
-#: grub-core/osdep/linux/getroot.c:154
+#: grub-core/osdep/linux/getroot.c:151
 #, c-format
 msgid "ioctl RAID_VERSION error: %s"
 msgstr "ioctl RAID_VERSION hiba: %s"
 
-#: grub-core/osdep/linux/getroot.c:160 grub-core/osdep/linux/getroot.c:164
+#: grub-core/osdep/linux/getroot.c:157 grub-core/osdep/linux/getroot.c:161
 #, c-format
 msgid "unsupported RAID version: %d.%d"
 msgstr "nem támogatott RAID verzió: %d.%d"
 
-#: grub-core/osdep/linux/getroot.c:169
+#: grub-core/osdep/linux/getroot.c:166
 #, c-format
 msgid "ioctl GET_ARRAY_INFO error: %s"
 msgstr "ioctl GET_ARRAY_INFO hiba: %s"
 
-#: grub-core/osdep/linux/getroot.c:178
+#: grub-core/osdep/linux/getroot.c:176
 #, c-format
 msgid "ioctl GET_DISK_INFO error: %s"
 msgstr "ioctl GET_DISK_INFO hiba: %s"
 
-#: grub-core/osdep/linux/getroot.c:608 grub-core/osdep/linux/getroot.c:678
-#: grub-core/osdep/linux/hostdisk.c:126 grub-core/osdep/unix/getroot.c:253
-#: grub-core/osdep/unix/getroot.c:642 grub-core/osdep/unix/platform.c:92
-#: grub-core/osdep/unix/platform.c:100
+#: grub-core/osdep/linux/getroot.c:605 grub-core/osdep/linux/getroot.c:675
+#: grub-core/osdep/unix/getroot.c:249 grub-core/osdep/unix/getroot.c:638
+#: grub-core/osdep/unix/platform.c:92 grub-core/osdep/unix/platform.c:100
 #, c-format
 msgid "Unable to open stream from %s: %s"
 msgstr "Nem lehet megnyitni a folyamot innen: %s: %s"
 
-#: grub-core/osdep/linux/getroot.c:1046
+#: grub-core/osdep/linux/getroot.c:1043
 #, c-format
 msgid "unknown kind of RAID device `%s'"
 msgstr "a RAID eszköz fajtája ismeretlen: „%s”"
@@ -4659,9 +5320,9 @@ msgstr ""
 "az „obppath” nem található a(z) „%s” szülő könyvtáraiban, nincs IEEE1275 név "
 "felderítés"
 
-#: grub-core/osdep/linux/ofpath.c:222 grub-core/osdep/unix/getroot.c:505
-#: grub-core/osdep/unix/getroot.c:529 grub-core/osdep/unix/relpath.c:49
-#: util/grub-install.c:992 util/grub-install.c:1339 util/grub-probe.c:323
+#: grub-core/osdep/linux/ofpath.c:222 grub-core/osdep/unix/getroot.c:501
+#: grub-core/osdep/unix/getroot.c:525 grub-core/osdep/unix/relpath.c:49
+#: util/grub-install.c:1010 util/grub-install.c:1406 util/grub-probe.c:323
 #, c-format
 msgid "failed to get canonical path of `%s'"
 msgstr "„%s” egyszerűsített útvonalának lekérése sikertelen"
@@ -4687,19 +5348,19 @@ msgstr "Nem lehet elágazni: %s"
 msgid "Unable to create pipe: %s"
 msgstr "Nem lehet csövet létrehozni: %s"
 
-#: grub-core/osdep/unix/getroot.c:370
+#: grub-core/osdep/unix/getroot.c:366
 msgid "cannot save the original directory"
 msgstr "nem lehet menteni az eredeti könyvtárat"
 
-#: grub-core/osdep/unix/getroot.c:423 grub-core/osdep/unix/getroot.c:480
-#: grub-core/osdep/unix/getroot.c:489
+#: grub-core/osdep/unix/getroot.c:419 grub-core/osdep/unix/getroot.c:476
+#: grub-core/osdep/unix/getroot.c:485
 msgid "cannot restore the original directory"
 msgstr "nem lehet visszaállítani az eredeti könyvtárat"
 
 #. TRANSLATORS: "stat" comes from the name of POSIX function.
-#: grub-core/osdep/unix/getroot.c:551 grub-core/osdep/unix/hostdisk.c:61
+#: grub-core/osdep/unix/getroot.c:547 grub-core/osdep/unix/hostdisk.c:61
 #: grub-core/osdep/unix/relpath.c:73 grub-core/osdep/unix/relpath.c:97
-#: util/getroot.c:160 util/getroot.c:162 util/grub-install.c:782
+#: util/getroot.c:160 util/getroot.c:162 util/grub-install.c:785
 #: util/grub-macbless.c:70
 #, c-format
 msgid "cannot stat `%s': %s"
@@ -4761,14 +5422,15 @@ msgstr "nincs „/” az egyszerűsített fájlnévben"
 msgid "cygwin_conv_path() failed"
 msgstr "cygwin_conv_path() sikertelen"
 
-#: grub-core/osdep/windows/hostdisk.c:501 util/grub-install.c:578
+#: grub-core/osdep/windows/hostdisk.c:499 util/grub-install.c:581
 msgid "couldn't retrieve random data"
 msgstr "nem sikerült lekérni a véletlen adatokat"
 
 #: grub-core/osdep/windows/platform.c:97
 msgid "Insufficient privileges to access firmware, assuming BIOS"
 msgstr ""
-"Nincs megfelelő jogosultság a firmware hozzáféréséhez, BIOS feltételezve"
+"Nincs megfelelő jogosultság a belső vezérlőprogram hozzáféréséhez, BIOS "
+"feltételezve"
 
 #: grub-core/osdep/windows/platform.c:225
 msgid "no EFI routines are available when running in BIOS mode"
@@ -4906,9 +5568,9 @@ msgstr "nem lehet lefoglalni parancspuffert"
 
 #: grub-core/script/function.c:68
 msgid "attempt to redefine a function being executed"
-msgstr ""
+msgstr "kísérlet egy végrehajtódó függvény felüldefiniálására"
 
-#: grub-core/script/lexer.c:149 util/grub-fstest.c:330
+#: grub-core/script/lexer.c:149 util/grub-fstest.c:336
 msgid "unexpected end of file"
 msgstr "nem várt fájlvége"
 
@@ -4970,52 +5632,60 @@ msgstr "Háttérszín beállítása az aktív terminálhoz."
 msgid "Show CBMEM console content."
 msgstr "CBMEM konzoltartalom megjelenítése."
 
-#: grub-core/term/serial.c:57
+#: grub-core/term/serial.c:55
 msgid "Set the serial unit."
 msgstr "A soros egység beállítása."
 
-#: grub-core/term/serial.c:58
+#: grub-core/term/serial.c:56
 msgid "Set the serial port address."
 msgstr "A soros port címének beállítása."
 
-#: grub-core/term/serial.c:59
+#: grub-core/term/serial.c:57
 msgid "Set the serial port speed."
 msgstr "A soros port sebességének beállítása."
 
-#: grub-core/term/serial.c:60
+#: grub-core/term/serial.c:58
 msgid "Set the serial port word length."
 msgstr "A soros port szóhosszának beállítása."
 
-#: grub-core/term/serial.c:61
+#: grub-core/term/serial.c:59
 msgid "Set the serial port parity."
 msgstr "A soros port paritásának beállítása."
 
-#: grub-core/term/serial.c:62
+#: grub-core/term/serial.c:60
 msgid "Set the serial port stop bits."
 msgstr "A soros port stop bitjeinek beállítása."
 
-#: grub-core/term/serial.c:63
+#: grub-core/term/serial.c:61
 msgid "Set the base frequency."
 msgstr "Az alapfrekvencia beállítása."
 
-#: grub-core/term/serial.c:64
+#: grub-core/term/serial.c:62
 msgid "Enable/disable RTS/CTS."
 msgstr "RTS/CTS engedélyezése/letiltása."
 
-#: grub-core/term/serial.c:218
+#: grub-core/term/serial.c:181
+msgid "incorrect MMIO address syntax"
+msgstr ""
+
+#: grub-core/term/serial.c:205
+msgid "incorrect MMIO access size"
+msgstr ""
+
+#: grub-core/term/serial.c:279
 #, c-format
 msgid "serial port `%s' isn't found"
 msgstr "a(z) „%s” soros port nem található"
 
-#: grub-core/term/serial.c:254
+#: grub-core/term/serial.c:315
 msgid "unsupported serial port flow control"
 msgstr "nem támogatott soros port folyamvezérlés"
 
-#: grub-core/term/serial.c:429
+#: grub-core/term/serial.c:490
 msgid "[OPTIONS...]"
 msgstr "[KAPCSOLÓK…]"
 
-#: grub-core/term/serial.c:430
+#: grub-core/term/serial.c:491
 msgid "Configure serial port."
 msgstr "Soros port beállítása."
 
@@ -5080,14 +5750,12 @@ msgid "terminal %s isn't found or it's not handled by terminfo"
 msgstr "a(z) %s terminál nem található vagy nem kezeli a terminfo"
 
 #: grub-core/term/terminfo.c:788
-#, fuzzy
 msgid "[[-a|-u|-v] [-g WxH] [TERM] [TYPE]]"
-msgstr "[[-a|-u|-v] [-g SzxM] TERM [TÍPUS]]"
+msgstr "[[-a|-u|-v] [-g WxH] [TERMINÁL] [TÍPUS]]"
 
 #: grub-core/term/terminfo.c:789
-#, fuzzy
 msgid "Set terminfo type of TERM to TYPE.\n"
-msgstr "A TERM terminfo típusának beállítása a TÍPUSRA.\n"
+msgstr "A TERMINÁL terminfo típusának beállítása a TÍPUSRA.\n"
 
 #. TRANSLATORS: this is the BLOCK-argument, not
 #. environment block.
@@ -5117,9 +5785,8 @@ msgid "no suitable video mode found"
 msgstr "nem található megfelelő videomód"
 
 #: include/grub/buffer.h:123
-#, fuzzy
 msgid "peek out of range"
-msgstr "betűtartomány beállítása"
+msgstr "a betekintés kívül esik a tartományon"
 
 #: include/grub/crypto.h:402
 msgid "access denied"
@@ -5201,13 +5868,13 @@ msgstr "FÁJL beágyazása az aláírás-ellenőrzés nyilvános kulcsaként"
 
 #: include/grub/util/install.h:67 util/grub-mkimage.c:84
 msgid "SBAT metadata"
-msgstr ""
+msgstr "SBAT metaadatok"
 
 #: include/grub/util/install.h:69 util/grub-mkimage.c:85
 msgid "disable shim_lock verifier"
-msgstr ""
+msgstr "a shim_lock ellenőrző letiltása"
 
-#: util/editenv.c:71 util/grub-editenv.c:207 util/grub-install-common.c:700
+#: util/editenv.c:71 util/grub-editenv.c:207 util/grub-install-common.c:718
 #: util/grub-mkimage.c:331 util/setup.c:794
 #, c-format
 msgid "cannot sync `%s': %s"
@@ -5220,15 +5887,15 @@ msgstr "nem lehet átnevezni a(z) %s fájlt erre: %s"
 
 #: util/editenv.c:94 util/editenv.c:131
 #, fuzzy, c-format
-msgid "cannot rename the file %s to %s: %m"
-msgstr "nem lehet átnevezni a(z) %s fájlt erre: %s"
+msgid "cannot rename the file %s to %s: %s"
+msgstr "nem lehet átnevezni a(z) %s fájlt %s névre: %m"
 
 #: util/getroot.c:402
 #, c-format
 msgid "disk does not exist, so falling back to partition device %s"
 msgstr "a lemez nem létezik, így visszatérés a(z) %s partícióeszközre"
 
-#: util/grub-editenv.c:45 util/grub-fstest.c:506
+#: util/grub-editenv.c:45 util/grub-fstest.c:512
 msgid "Commands:"
 msgstr "Parancsok:"
 
@@ -5288,9 +5955,9 @@ msgstr ""
 "használja az „rm %s” parancsot."
 
 #: util/grub-editenv.c:149
-#, fuzzy, c-format
+#, c-format
 msgid "cannot get file location `%s': %s"
-msgstr "„%s” nem írható: %s"
+msgstr "nem lehet lekérni a(z) „%s” fájlhelyet: %s"
 
 #: util/grub-editenv.c:168
 msgid "invalid environment block"
@@ -5335,159 +6002,159 @@ msgstr "nem lehet írni a szabványos kimenetre: %s"
 msgid "compare fail at offset %llu"
 msgstr "összehasonlítási hiba a(z) %llu eltolásnál"
 
-#: util/grub-fstest.c:280 util/grub-fstest.c:314
+#: util/grub-fstest.c:280 util/grub-fstest.c:320
 #, c-format
 msgid "OS file %s open error: %s"
 msgstr "a(z) %s OS fájl megnyitási hiba: %s"
 
-#: util/grub-fstest.c:402 util/grub-mount.c:392
+#: util/grub-fstest.c:408 util/grub-mount.c:412
 #, c-format
 msgid "`loopback' command fails: %s"
 msgstr "a „loopback” parancs meghiúsult: %s"
 
-#: util/grub-fstest.c:413 util/grub-mount.c:402
+#: util/grub-fstest.c:419 util/grub-mount.c:422
 #, c-format
 msgid "`cryptomount' command fails: %s"
 msgstr "a „cryptomount” parancs meghiúsult: %s"
 
-#: util/grub-fstest.c:474 util/grub-fstest.c:478
+#: util/grub-fstest.c:480 util/grub-fstest.c:484
 msgid "couldn't retrieve UUID"
 msgstr "az UUID lekérése nem sikerült"
 
-#: util/grub-fstest.c:507
+#: util/grub-fstest.c:513
 msgid "ls PATH"
 msgstr "ls ÚTVONAL"
 
-#: util/grub-fstest.c:507
+#: util/grub-fstest.c:513
 msgid "List files in PATH."
 msgstr "Fájlok felsorolása az ÚTVONALON."
 
-#: util/grub-fstest.c:508
+#: util/grub-fstest.c:514
 msgid "cp FILE LOCAL"
 msgstr "cp FÁJL HELYI"
 
-#: util/grub-fstest.c:508
+#: util/grub-fstest.c:514
 msgid "Copy FILE to local file LOCAL."
 msgstr "A FÁJL átmásolása a HELYI helyi fájlba."
 
-#: util/grub-fstest.c:509
+#: util/grub-fstest.c:515
 msgid "cat FILE"
 msgstr "cat FÁJL"
 
-#: util/grub-fstest.c:509
+#: util/grub-fstest.c:515
 msgid "Copy FILE to standard output."
 msgstr "A FÁJL átmásolása a szabványos kimenetre."
 
-#: util/grub-fstest.c:510
+#: util/grub-fstest.c:516
 msgid "cmp FILE LOCAL"
 msgstr "cmp FÁJL HELYI"
 
-#: util/grub-fstest.c:510
+#: util/grub-fstest.c:516
 msgid "Compare FILE with local file LOCAL."
 msgstr "A FÁJL összehasonlítása a HELYI helyi fájllal."
 
-#: util/grub-fstest.c:511
+#: util/grub-fstest.c:517
 msgid "hex FILE"
 msgstr "hex FÁJL"
 
-#: util/grub-fstest.c:511
+#: util/grub-fstest.c:517
 msgid "Show contents of FILE in hex."
 msgstr "A FÁJL tartalmának megjelenítése hexadecimálisan."
 
-#: util/grub-fstest.c:512
+#: util/grub-fstest.c:518
 msgid "crc FILE"
 msgstr "crc FÁJL"
 
-#: util/grub-fstest.c:512
+#: util/grub-fstest.c:518
 msgid "Get crc32 checksum of FILE."
 msgstr "A FÁJL crc32 ellenőrző-összegének lekérése."
 
-#: util/grub-fstest.c:513
+#: util/grub-fstest.c:519
 msgid "blocklist FILE"
 msgstr "blocklist FÁJL"
 
-#: util/grub-fstest.c:513
+#: util/grub-fstest.c:519
 msgid "Display blocklist of FILE."
 msgstr "A FÁJL blokklistájának megjelenítése."
 
-#: util/grub-fstest.c:514
+#: util/grub-fstest.c:520
 msgid "xnu_uuid DEVICE"
 msgstr "xnu_uuid ESZKÖZ"
 
-#: util/grub-fstest.c:514
+#: util/grub-fstest.c:520
 msgid "Compute XNU UUID of the device."
 msgstr "Az eszköz XNU UUID-jának kiszámítása."
 
 #. TRANSLATORS: bitmaps are images like e.g. in JPEG.
-#: util/grub-fstest.c:517 util/grub-fstest.c:518 util/grub-fstest.c:519
-#: util/grub-mkfont.c:938 util/grub-mkfont.c:951 util/grub-mkfont.c:952
+#: util/grub-fstest.c:523 util/grub-fstest.c:524 util/grub-fstest.c:525
+#: util/grub-mkfont.c:984 util/grub-mkfont.c:997 util/grub-mkfont.c:998
 #: util/grub-mkpasswd-pbkdf2.c:46 util/grub-mkpasswd-pbkdf2.c:47
 #: util/grub-mkpasswd-pbkdf2.c:48
 msgid "NUM"
 msgstr "SZÁM"
 
-#: util/grub-fstest.c:517
+#: util/grub-fstest.c:523
 msgid "Skip N bytes from output file."
 msgstr "N bájt átugrása a kimeneti fájlból."
 
-#: util/grub-fstest.c:518
+#: util/grub-fstest.c:524
 msgid "Handle N bytes in output file."
 msgstr "N bájt kezelése a kimeneti fájlban."
 
-#: util/grub-fstest.c:519
+#: util/grub-fstest.c:525
 msgid "Specify the number of input files."
 msgstr "A bemeneti fájlok számának megadása."
 
-#: util/grub-fstest.c:520 util/grub-mount.c:453
+#: util/grub-fstest.c:526 util/grub-mount.c:473
 msgid "Set debug environment variable."
 msgstr "Hibakeresési környezeti változó beállítása."
 
-#: util/grub-fstest.c:521 util/grub-mount.c:454
+#: util/grub-fstest.c:527 util/grub-mount.c:474
 msgid "Mount crypto devices."
 msgstr "Titkosított eszközök csatolása."
 
 #. TRANSLATORS: "prompt" is a keyword.
-#: util/grub-fstest.c:524 util/grub-mount.c:457
+#: util/grub-fstest.c:530 util/grub-mount.c:477
 msgid "FILE|prompt"
 msgstr "FÁJL|prompt"
 
-#: util/grub-fstest.c:524 util/grub-mount.c:457
+#: util/grub-fstest.c:530 util/grub-mount.c:477
 msgid "Load zfs crypto key."
 msgstr "Zfs titkosító kulcs betöltése."
 
-#: util/grub-fstest.c:526
+#: util/grub-fstest.c:532
 msgid "Uncompress data."
 msgstr "Adatok kibontása."
 
-#: util/grub-fstest.c:605
+#: util/grub-fstest.c:611
 msgid "Invalid disk count.\n"
 msgstr "Érvénytelen lemezszám.\n"
 
 #. TRANSLATORS: disk count is optional but if it's there it must
 #. be before disk list. So please don't imply disk count as mandatory.
 #.
-#: util/grub-fstest.c:613
+#: util/grub-fstest.c:619
 msgid "Disk count must precede disks list.\n"
 msgstr "A lemezszámnak meg kell előznie a lemezek listáját.\n"
 
-#: util/grub-fstest.c:633
+#: util/grub-fstest.c:639
 msgid "No command is specified.\n"
 msgstr "Nincs megadva parancs.\n"
 
-#: util/grub-fstest.c:638
+#: util/grub-fstest.c:644
 msgid "Not enough parameters to command.\n"
 msgstr "Nincs elég paraméter a parancshoz.\n"
 
-#: util/grub-fstest.c:711
+#: util/grub-fstest.c:717
 #, c-format
 msgid "Invalid command %s.\n"
 msgstr "Érvénytelen parancs: %s.\n"
 
-#: util/grub-fstest.c:724
+#: util/grub-fstest.c:730
 msgid "IMAGE_PATH COMMANDS"
 msgstr "KÉP_ÚTVONAL PARANCSOK"
 
-#: util/grub-fstest.c:725 util/grub-mount.c:553
+#: util/grub-fstest.c:731 util/grub-mount.c:575
 msgid "Debug tool for filesystem driver."
 msgstr "Hibakeresési eszköz a fájlrendszer-illesztőprogramhoz."
 
@@ -5527,62 +6194,67 @@ msgstr "a(z) „%s” nem másolható ide: „%s”: %s"
 msgid "can't compress `%s' to `%s'"
 msgstr "a(z) „%s” nem tömöríthető ide: „%s”"
 
-#: util/grub-install-common.c:234 util/grub-install-common.c:717
-#: util/grub-install-common.c:744 util/grub-install-common.c:786
+#: util/grub-install-common.c:182 util/grub-install-common.c:189
+#, fuzzy, c-format
+msgid "failed to make directory: '%s'"
+msgstr "nem hozható létre átmeneti könyvtár: %s"
+
+#: util/grub-install-common.c:239 util/grub-install-common.c:735
+#: util/grub-install-common.c:762 util/grub-install-common.c:807
 #, c-format
 msgid "cannot open directory `%s': %s"
 msgstr "a(z) „%s” könyvtár nem nyitható meg: %s"
 
-#: util/grub-install-common.c:259
+#: util/grub-install-common.c:264
 #, fuzzy, c-format
 msgid "cannot backup `%s': %s"
 msgstr "„%s” nem olvasható: %s"
 
-#: util/grub-install-common.c:269
+#: util/grub-install-common.c:274
 #, fuzzy, c-format
 msgid "cannot restore `%s': %s"
 msgstr "„%s” nem írható: %s"
 
-#: util/grub-install-common.c:276
+#: util/grub-install-common.c:281
 #, c-format
 msgid "cannot delete `%s': %s"
 msgstr "a(z) „%s” nem törölhető: %s"
 
-#: util/grub-install-common.c:477 util/grub-mkimage.c:213
+#: util/grub-install-common.c:482 util/grub-mkimage.c:213
 msgid "grub-mkimage is compiled without XZ support"
 msgstr "a grub-mkimage XZ támogatás nélkül lett lefordítva"
 
-#: util/grub-install-common.c:485 util/grub-mkimage.c:221
+#: util/grub-install-common.c:490 util/grub-mkimage.c:221
 #, c-format
 msgid "Unknown compression format %s"
 msgstr "Ismeretlen tömörítési formátum: %s"
 
-#: util/grub-install-common.c:562
+#: util/grub-install-common.c:567
 #, c-format
 msgid "Unrecognized compression `%s'"
 msgstr "Azonosítatlan tömörítés: „%s”"
 
-#: util/grub-install-common.c:673
+#: util/grub-install-common.c:691
 #, c-format
 msgid "unknown target format %s"
 msgstr "ismeretlen célformátum: %s"
 
-#: util/grub-install-common.c:865
+#: util/grub-install-common.c:886
 #, c-format
 msgid "cannot find locale `%s'"
 msgstr "nem található a területi beállítás: „%s”"
 
-#: util/grub-install-common.c:1104
+#: util/grub-install-common.c:1126
 #, c-format
 msgid "%s doesn't exist. Please specify --target or --directory"
 msgstr "%s nem létezik. Adja meg a --target vagy --directory kapcsolókat."
 
-#: util/grub-install-common.c:1113 util/grub-install-common.c:1116
+#: util/grub-install-common.c:1135 util/grub-install-common.c:1138
 #, c-format
 msgid "invalid modinfo file `%s'"
 msgstr "érvénytelen modinfo fájl: „%s”"
 
-#: util/grub-install-common.c:1131
+#: util/grub-install-common.c:1153
 #, c-format
 msgid "Unknown platform `%s-%s'"
 msgstr "Ismeretlen platform: „%s-%s”"
@@ -5705,15 +6377,15 @@ msgstr "SZÍN használata a címke hátterénél"
 msgid "use STRING as product version"
 msgstr "SZÖVEG használata termékverzióként"
 
-#: util/grub-install.c:369
+#: util/grub-install.c:371
 msgid "[OPTION] [INSTALL_DEVICE]"
 msgstr "[KAPCSOLÓ] [TELEPÍTÉSI_ESZKÖZ]"
 
-#: util/grub-install.c:370
+#: util/grub-install.c:372
 msgid "Install GRUB on your drive."
 msgstr "GRUB telepítése a meghajtójára."
 
-#: util/grub-install.c:371
+#: util/grub-install.c:373
 #, c-format
 msgid ""
 "INSTALL_DEVICE must be system device filename.\n"
@@ -5724,56 +6396,66 @@ msgstr ""
 "A(z) %s átmásolja a GRUB lemezképeket ebbe: %s. Néhány platformon a indítási "
 "szektorba is telepítheti a GRUB-ot."
 
-#: util/grub-install.c:680
+#: util/grub-install.c:683
 #, c-format
 msgid "the drive %s is defined multiple times in the device map %s"
 msgstr "a(z) %s meghajtó többször van megadva a(z) %s eszköztérképen"
 
-#: util/grub-install.c:886
+#: util/grub-install.c:841
+#, fuzzy, c-format
+msgid "Unable to open %s: %s"
+msgstr "Nem lehet megnyitni a folyamot innen: %s: %s"
+
+#: util/grub-install.c:902
 msgid "Unable to determine your platform. Use --target."
 msgstr "Nem lehet meghatározni a platformot. Használja a --target kapcsolót."
 
-#: util/grub-install.c:899
+#: util/grub-install.c:915
 #, c-format
 msgid "Installing for %s platform.\n"
 msgstr "Telepítés a(z) %s platformhoz.\n"
 
-#: util/grub-install.c:947
+#: util/grub-install.c:964
 msgid "install device isn't specified"
 msgstr "a telepítési eszköz nincs megadva"
 
-#: util/grub-install.c:1065
+#: util/grub-install.c:1098
 msgid "cannot find EFI directory"
 msgstr "nem található az EFI könyvtár"
 
-#: util/grub-install.c:1068 util/grub-install.c:1217 util/grub-install.c:1262
+#: util/grub-install.c:1101 util/grub-install.c:1261 util/grub-install.c:1299
 #: util/grub-macbless.c:76 util/grub-probe.c:329 util/setup.c:320
 #, c-format
 msgid "cannot find a device for %s (is /dev mounted?)"
 msgstr "nem található eszköz ehhez: %s (a /dev csatolva van?)"
 
-#: util/grub-install.c:1077 util/grub-install.c:1225 util/grub-install.c:1278
-#: util/grub-install.c:1373 util/grub-macbless.c:80 util/grub-probe.c:372
+#: util/grub-install.c:1110 util/grub-install.c:1269 util/grub-install.c:1315
+#: util/grub-install.c:1387 util/grub-macbless.c:80 util/grub-probe.c:372
 #, c-format
 msgid "cannot find a GRUB drive for %s.  Check your device.map"
 msgstr ""
 "nem található GRUB meghajtó ehhez: %s. Ellenőrizze a device.map bejegyzéseit."
 
-#: util/grub-install.c:1095
+#: util/grub-install.c:1130
+#, fuzzy, c-format
+msgid "%s doesn't look like an EFI partition, system may not boot"
+msgstr "a(z) %s nem EFI partíciónak néz ki."
+
+#: util/grub-install.c:1132
 #, c-format
 msgid "%s doesn't look like an EFI partition"
 msgstr "a(z) %s nem EFI partíciónak néz ki."
 
-#: util/grub-install.c:1137 util/grub-install.c:1622
+#: util/grub-install.c:1178 util/grub-install.c:1670
 msgid "You've found a bug"
 msgstr "Egy hibát talált"
 
-#: util/grub-install.c:1239
+#: util/grub-install.c:1283
 #, c-format
 msgid "filesystem on %s is neither HFS nor HFS+"
 msgstr "a(z) %s fájlrendszere sem HFS, sem HFS+"
 
-#: util/grub-install.c:1307
+#: util/grub-install.c:1344
 #, c-format
 msgid ""
 "attempt to install to encrypted disk without cryptodisk enabled. Set `%s' in "
@@ -5782,30 +6464,30 @@ msgstr ""
 "kísérlet a titkosított lemezre telepíteni cryptodisk engedélyezés nélkül. "
 "Állítsa be „%s” értékét a(z) „%s” fájlban"
 
-#: util/grub-install.c:1418 util/grub-install.c:1791 util/grub-install.c:1895
+#: util/grub-install.c:1464 util/grub-install.c:1840 util/grub-install.c:1945
 #, c-format
 msgid "Can't create file: %s"
 msgstr "Nem lehet létrehozni a fájlt: %s"
 
-#: util/grub-install.c:1499
+#: util/grub-install.c:1546
 msgid "no hints available for your platform. Expect reduced performance"
 msgstr "nem érhető el tipp a platformhoz. Csökkentett teljesítmény várható."
 
 #. TRANSLATORS: This is a prefix in the log to indicate that usually
 #. a command would be executed but due to an option was skipped.
-#: util/grub-install.c:1710
+#: util/grub-install.c:1759
 msgid "NOT RUNNING: "
 msgstr "NEM FUT: "
 
-#: util/grub-install.c:1827
+#: util/grub-install.c:1876
 msgid "the chosen partition is not a PReP partition"
 msgstr "a választott partíció nem egy PReP partíció"
 
-#: util/grub-install.c:1832
+#: util/grub-install.c:1881
 msgid "failed to copy Grub to the PReP partition"
 msgstr "a GRUB átmásolása nem sikerült a PReP partícióra"
 
-#: util/grub-install.c:1837
+#: util/grub-install.c:1887
 #, c-format
 msgid ""
 "the PReP partition is not empty. If you are sure you want to use it, run dd "
@@ -5814,20 +6496,20 @@ msgstr ""
 "a PReP partíció nem üres. Ha biztos benne, hogy azt szeretné használni, "
 "futtassa a dd parancsot a törléséhez: „%s”"
 
-#: util/grub-install.c:1913 util/grub-install.c:1960
+#: util/grub-install.c:1963 util/grub-install.c:2011
 #, c-format
 msgid "efibootmgr failed to register the boot entry: %s"
 msgstr "az efibootmgr nem tudta regisztrálni a rendszerindítás-bejegyzést: %s"
 
-#: util/grub-install.c:1944
+#: util/grub-install.c:1995
 msgid "EFI bootloader id isn't specified."
 msgstr "az EFI rendszerbetöltő-azonosító nincs megadva."
 
-#: util/grub-install.c:1978
+#: util/grub-install.c:2029
 msgid "WARNING: no platform-specific install was performed"
 msgstr "FIGYELMEZTETÉS: nem lett platform-specifikus telepítés végrehajtva"
 
-#: util/grub-install.c:1993
+#: util/grub-install.c:2044
 msgid "Installation finished. No error reported."
 msgstr "A telepítés befejeződött. Nem jelentettek hibát."
 
@@ -5839,7 +6521,7 @@ msgstr "bless az x86-alapú mac-ekhez"
 msgid "bless for ppc-based macs"
 msgstr "bless a ppc-alapú mac-ekhez"
 
-#: util/grub-macbless.c:136 util/grub-probe.c:823
+#: util/grub-macbless.c:136 util/grub-probe.c:824
 msgid "No path or device is specified.\n"
 msgstr "Nincs megadva útvonal vagy eszköz.\n"
 
@@ -5856,7 +6538,7 @@ msgstr "Mac-stílusú bless ezen: HFS vagy HFS+"
 msgid "Usage: %s [INFILE [OUTFILE]]\n"
 msgstr "Használat: %s [BEFÁJL [KIFÁJL]]\n"
 
-#: util/grub-mkfont.c:157
+#: util/grub-mkfont.c:162
 #, c-format
 msgid "Freetype Error %d loading glyph 0x%x for U+0x%x%s"
 msgstr "Freetype hiba (%d) a 0x%x glyph betöltésekor ehhez: U+0x%x%s"
@@ -5866,52 +6548,57 @@ msgstr "Freetype hiba (%d) a 0x%x glyph betöltésekor ehhez: U+0x%x%s"
 #. and not logical order and if used in left-to-right script then
 #. leftmost is initial but with right-to-left script like Arabic
 #. rightmost is the initial.
-#: util/grub-mkfont.c:165
+#: util/grub-mkfont.c:170
 msgid " (medial)"
 msgstr " (középső)"
 
-#: util/grub-mkfont.c:166
+#: util/grub-mkfont.c:171
 msgid " (leftmost)"
 msgstr " (bal szélső)"
 
-#: util/grub-mkfont.c:167
+#: util/grub-mkfont.c:172
 msgid " (rightmost)"
 msgstr " (jobb szélső)"
 
-#: util/grub-mkfont.c:481
-#, c-format
-msgid "Out of range substitution (%d, %d)\n"
+#: util/grub-mkfont.c:486
+#, fuzzy, c-format
+msgid "Out of range substitution (%d, %u)\n"
 msgstr "Tartományon kívüli helyettesítés (%d, %d)\n"
 
 #. TRANSLATORS: "lookup" is taken directly from font specifications
 #. which are formulated as "Under condition X replace LOOKUP with
 #. SUBSTITUITION".  "
-#: util/grub-mkfont.c:506
+#: util/grub-mkfont.c:517
 #, c-format
 msgid "Out of range lookup: %d\n"
 msgstr "Tartományon kívüli keresés: %d\n"
 
-#: util/grub-mkfont.c:514
+#: util/grub-mkfont.c:525
 #, c-format
 msgid "Unsupported substitution type: %d\n"
 msgstr "Nem támogatott helyettesítési típus: %d\n"
 
-#: util/grub-mkfont.c:550
-#, c-format
-msgid "Unsupported substitution specification: %d\n"
+#: util/grub-mkfont.c:566
+#, fuzzy, c-format
+msgid "Unsupported substitution specification: %u\n"
 msgstr "Nem támogatott helyettesítési specifikáció: %d\n"
 
-#: util/grub-mkfont.c:582
-#, c-format
-msgid "Unsupported coverage specification: %d\n"
+#. TRANSLATORS: It refers to the range of characters in font.
+#: util/grub-mkfont.c:600 util/grub-mkfont.c:1105 util/grub-mkfont.c:1121
+msgid "invalid font range"
+msgstr "érvénytelen betűtartomány"
+
+#: util/grub-mkfont.c:613
+#, fuzzy, c-format
+msgid "Unsupported coverage specification: %u\n"
 msgstr "Nem támogatott kiterjedés specifikáció: %d\n"
 
-#: util/grub-mkfont.c:622
+#: util/grub-mkfont.c:665
 #, c-format
 msgid "WARNING: unsupported font feature parameters: %x\n"
 msgstr "FIGYELEM: nem támogatott betűkészlet szolgáltatás paraméterek: %x\n"
 
-#: util/grub-mkfont.c:936 util/grub-mkrescue.c:98 util/grub-mkstandalone.c:48
+#: util/grub-mkfont.c:982 util/grub-mkrescue.c:98 util/grub-mkstandalone.c:51
 #: util/grub-kbdcomp.in:29
 msgid "save output in FILE [required]"
 msgstr "kimenet mentése FÁJLBA [szükséges]"
@@ -5919,54 +6606,54 @@ msgstr "kimenet mentése FÁJLBA [szükséges]"
 #. TRANSLATORS: some font files may have multiple faces (fonts).
 #. This option is used to chose among them, the first face being '0'.
 #. Rarely used.
-#: util/grub-mkfont.c:942
+#: util/grub-mkfont.c:988
 msgid "select face index"
 msgstr "betűkép index kiválasztása"
 
-#: util/grub-mkfont.c:943
+#: util/grub-mkfont.c:989
 msgid "FROM-TO[,FROM-TO]"
 msgstr "TÓL-IG[,TÓL-IG]"
 
 #. TRANSLATORS: It refers to the range of characters in font.
-#: util/grub-mkfont.c:945
+#: util/grub-mkfont.c:991
 msgid "set font range"
 msgstr "betűtartomány beállítása"
 
-#: util/grub-mkfont.c:946
+#: util/grub-mkfont.c:992
 msgid "NAME"
 msgstr "NÉV"
 
 #. TRANSLATORS: "family name" for font is just a generic name without suffix
 #. like "Bold".
-#: util/grub-mkfont.c:949
+#: util/grub-mkfont.c:995
 msgid "set font family name"
 msgstr "betűcsaládnév beállítása"
 
-#: util/grub-mkfont.c:950
+#: util/grub-mkfont.c:996
 msgid "SIZE"
 msgstr "MÉRET"
 
-#: util/grub-mkfont.c:950
+#: util/grub-mkfont.c:996
 msgid "set font size"
 msgstr "betűméret beállítása"
 
-#: util/grub-mkfont.c:951
+#: util/grub-mkfont.c:997
 msgid "set font descent"
 msgstr "betűleszállítás beállítása"
 
-#: util/grub-mkfont.c:952
+#: util/grub-mkfont.c:998
 msgid "set font ascent"
 msgstr "betűemelkedés beállítása"
 
-#: util/grub-mkfont.c:953
+#: util/grub-mkfont.c:999
 msgid "convert to bold font"
 msgstr "átalakítás félkövér betűre"
 
-#: util/grub-mkfont.c:954
+#: util/grub-mkfont.c:1000
 msgid "force autohint"
 msgstr "automatikus javaslat erőltetése"
 
-#: util/grub-mkfont.c:955
+#: util/grub-mkfont.c:1001
 msgid "disable hinting"
 msgstr "javaslatok tiltása"
 
@@ -5974,38 +6661,33 @@ msgstr "javaslatok tiltása"
 #. some sizes. This option forces rerendering even if
 #. pre-rendered bitmap is available.
 #.
-#: util/grub-mkfont.c:961
+#: util/grub-mkfont.c:1007
 msgid "ignore bitmap strikes when loading"
 msgstr "bitmap strikes mellőzése betöltéskor"
 
-#. TRANSLATORS: It refers to the range of characters in font.
-#: util/grub-mkfont.c:1059 util/grub-mkfont.c:1075
-msgid "invalid font range"
-msgstr "érvénytelen betűtartomány"
-
-#: util/grub-mkfont.c:1151
+#: util/grub-mkfont.c:1197
 msgid "[OPTIONS] FONT_FILES"
 msgstr "[KAPCSOLÓK] BETŰ_FÁJLOK"
 
-#: util/grub-mkfont.c:1152
+#: util/grub-mkfont.c:1198
 msgid "Convert common font file formats into PF2"
 msgstr "A gyakori betűfájl formátumok átalakítása PF2 formátumra"
 
-#: util/grub-mkfont.c:1182 util/grub-mkrescue.c:483
-#: util/grub-mkstandalone.c:306 util/grub-kbdcomp.in:70
+#: util/grub-mkfont.c:1228 util/grub-mkrescue.c:503
+#: util/grub-mkstandalone.c:327 util/grub-kbdcomp.in:70
 msgid "output file must be specified"
 msgstr "a kimeneti fájlt meg kell adni"
 
-#: util/grub-mkfont.c:1185
+#: util/grub-mkfont.c:1231
 msgid "FT_Init_FreeType fails"
 msgstr "FT_Init_FreeType meghiúsult"
 
-#: util/grub-mkfont.c:1199
+#: util/grub-mkfont.c:1245
 #, c-format
 msgid "can't open file %s, index %d: error %d"
 msgstr "nem lehet megnyitni a(z) %s fájlt, %d indexet: hiba %d"
 
-#: util/grub-mkfont.c:1229
+#: util/grub-mkfont.c:1275
 #, c-format
 msgid "can't set %dx%d font size: Freetype error %d: %s"
 msgstr "nem lehet beállítani a(z) %dx%d betűméretet: Freetype hiba %d: %s"
@@ -6049,15 +6731,15 @@ msgstr ""
 msgid "FORMAT"
 msgstr "FORMÁTUM"
 
-#: util/grub-mkimage.c:102 util/grub-mkstandalone.c:62
+#: util/grub-mkimage.c:102 util/grub-mkstandalone.c:65
 msgid "generate an image in FORMAT"
 msgstr "egy kép előállítása FORMÁTUMBAN"
 
-#: util/grub-mkimage.c:103 util/grub-mkstandalone.c:63
+#: util/grub-mkimage.c:103 util/grub-mkstandalone.c:66
 msgid "available formats:"
 msgstr "elérhető formátumok:"
 
-#: util/grub-mkimage.c:156 util/grub-mkstandalone.c:96
+#: util/grub-mkimage.c:156 util/grub-mkstandalone.c:99
 #, c-format
 msgid "unknown target format %s\n"
 msgstr "ismeretlen célformátum: %s\n"
@@ -6070,7 +6752,7 @@ msgstr "[KAPCSOLÓ]… [MODULOK]"
 msgid "Make a bootable image of GRUB."
 msgstr "Egy indítható GRUB lemezkép készítése."
 
-#: util/grub-mkimage.c:288 util/grub-mkstandalone.c:309
+#: util/grub-mkimage.c:288 util/grub-mkstandalone.c:330
 msgid "Target format not specified (use the -O option)."
 msgstr "A célformátum nincs megadva (használja a -O kapcsolót)."
 
@@ -6083,7 +6765,7 @@ msgstr "Az előtag nincs megadva (használja a -p kapcsolót)."
 msgid "cannot close `%s': %s"
 msgstr "„%s” nem zárható be: %s"
 
-#: util/grub-mkimagexx.c:2191
+#: util/grub-mkimagexx.c:2320
 #, c-format
 msgid ""
 "`%s' is miscompiled: its start address is 0x%llx instead of 0x%llx: ld.gold "
@@ -6137,13 +6819,13 @@ msgstr ""
 "Előkészíti a hálózati GRUB rendszerindító lemezképet a hálózati_könyvtár/"
 "alkönyvtár helyen, feltételezve, hogy a hálózati_könyvtár a TFTP gyökere."
 
-#: util/grub-mknetdir.c:146
+#: util/grub-mknetdir.c:147
 #, c-format
 msgid "unsupported platform %s"
 msgstr "nem támogatott platform: %s"
 
 #. TRANSLATORS: First %s is replaced by platform name. Second one by filename.
-#: util/grub-mknetdir.c:168
+#: util/grub-mknetdir.c:169
 #, c-format
 msgid ""
 "Netboot directory for %s created. Configure your DHCP server to point to %s\n"
@@ -6261,20 +6943,20 @@ msgid "Mail xorriso support requests to <bug-xorriso@gnu.org>."
 msgstr ""
 "A xorriso támogatási kéréseket erre a címre küldje: <bug-xorriso@gnu.org>."
 
-#: util/grub-mkrescue.c:221 util/grub-mkstandalone.c:114
+#: util/grub-mkrescue.c:221 util/grub-mkstandalone.c:117
 msgid "[OPTION] SOURCE..."
 msgstr "[KAPCSOLÓ] FORRÁS…"
 
-#: util/grub-mkrescue.c:257 util/grub-mkrescue.c:300 util/grub-mkrescue.c:591
+#: util/grub-mkrescue.c:258 util/grub-mkrescue.c:320 util/grub-mkrescue.c:612
 #, c-format
 msgid "enabling %s support ..."
 msgstr "%s támogatás engedélyezése…"
 
-#: util/grub-mkrescue.c:486
+#: util/grub-mkrescue.c:506
 msgid "xorriso not found"
 msgstr "a xorriso nem található"
 
-#: util/grub-mkrescue.c:626
+#: util/grub-mkrescue.c:647
 msgid ""
 "Your xorriso doesn't support `--grub2-boot-info'. Some features are "
 "disabled. Please use xorriso 1.2.9 or later."
@@ -6282,7 +6964,7 @@ msgstr ""
 "A xorriso nem támogatja a „--grub2-boot-info” kapcsolót. Néhány funkció le "
 "van tiltva. Használja a xorriso 1.2.9 vagy későbbi verzióját."
 
-#: util/grub-mkrescue.c:653
+#: util/grub-mkrescue.c:674
 msgid ""
 "Your xorriso doesn't support `--grub2-boot-info'. Your core image is too "
 "big. Boot as disk is disabled. Please use xorriso 1.2.9 or later."
@@ -6291,23 +6973,28 @@ msgstr ""
 "nagy. A lemezként való indítás le van tiltva. Használja a xorriso 1.2.9 vagy "
 "későbbi verzióját."
 
-#: util/grub-mkstandalone.c:115
+#: util/grub-mkstandalone.c:118
 msgid ""
 "Generate a standalone image (containing all modules) in the selected format"
 msgstr ""
 "Egy egyedülálló (minden modult tartalmazó) lemezkép előállítása a kijelölt "
 "formátumban"
 
-#: util/grub-mkstandalone.c:115
+#: util/grub-mkstandalone.c:118
 msgid "Graft point syntax (E.g. /boot/grub/grub.cfg=./grub.cfg) is accepted"
 msgstr ""
 "Graft pont szintaxis (például /boot/grub/grub.cfg=./grub.cfg) elfogadott"
 
-#: util/grub-mount.c:552
+#: util/grub-mount.c:567
+#, fuzzy, c-format
+msgid "cannot find `%s': %s"
+msgstr "„%s” nem olvasható: %s"
+
+#: util/grub-mount.c:574
 msgid "IMAGE1 [IMAGE2 ...] MOUNTPOINT"
 msgstr "KÉPFÁJL1 [KÉPFÁJL2 …] CSATOLÁSI_PONT"
 
-#: util/grub-mount.c:575
+#: util/grub-mount.c:597
 msgid "need an image and mountpoint"
 msgstr "egy képfájl és egy csatolási pont szükséges"
 
@@ -6316,27 +7003,31 @@ msgid "given argument is a system device, not a path"
 msgstr "a megadott argumentum egy rendszereszköz, nem egy útvonal"
 
 #: util/grub-probe.c:736
+msgid "print verbose messages (pass twice to enable debug printing)."
+msgstr ""
+
+#: util/grub-probe.c:737
 msgid "separate items in output using ASCII NUL characters"
 msgstr "az elemek elválasztása a kimenetben ASCII NULL karakterekkel"
 
-#: util/grub-probe.c:754
+#: util/grub-probe.c:755
 #, c-format
 msgid "[default=%s]"
 msgstr "[alapértelmezett=%s]"
 
-#: util/grub-probe.c:756
+#: util/grub-probe.c:757
 msgid "print TARGET"
 msgstr "CÉL kiírása"
 
-#: util/grub-probe.c:757
+#: util/grub-probe.c:758
 msgid "available targets:"
 msgstr "elérhető célok:"
 
-#: util/grub-probe.c:839
+#: util/grub-probe.c:840
 msgid "[OPTION]... [PATH|DEVICE]"
 msgstr "[KAPCSOLÓ]… [ÚTVONAL|ESZKÖZ]"
 
-#: util/grub-probe.c:840
+#: util/grub-probe.c:841
 msgid ""
 "Probe device information for a given path (or device, if the -d option is "
 "given)."
@@ -6452,58 +7143,63 @@ msgstr "kimenet írása FÁJLBA [alapértelmezett=szabványos kimenet]."
 msgid "Transform syslinux config into GRUB one."
 msgstr "A syslinux beállítás átalakítása GRUB beállításra."
 
-#: util/mkimage.c:688 util/mkimage.c:717 util/mkimage.c:734
+#: util/mkimage.c:704 util/mkimage.c:733 util/mkimage.c:750
 msgid "cannot compress the kernel image"
 msgstr "a rendszermagkép nem tömöríthető"
 
-#: util/mkimage.c:766 util/mkimage.c:1141
+#: util/mkimage.c:782 util/mkimage.c:1157
 #, c-format
 msgid "unknown compression %d"
 msgstr "ismeretlen tömörítés: %d"
 
-#: util/mkimage.c:833
+#: util/mkimage.c:849
 #, c-format
 msgid "section name %s length is bigger than %lu"
-msgstr ""
+msgstr "a(z) %s szakasznév hossza nagyobb mint %lu"
 
-#: util/mkimage.c:930
+#: util/mkimage.c:946
 msgid ".sbat section can be embedded into EFI images only"
-msgstr ""
+msgstr "az .sbat szakasz csak EFI-lemezképekbe ágyazható be"
 
-#: util/mkimage.c:1152
+#: util/mkimage.c:1168
 msgid "Decompressor is too big"
 msgstr "A kibontó túl nagy"
 
-#: util/mkimage.c:1197
+#: util/mkimage.c:1213
 #, c-format
 msgid "core image is too big (0x%x > 0x%x)"
 msgstr "a magkép túl nagy (0x%x > 0x%x)"
 
-#: util/mkimage.c:1204
+#: util/mkimage.c:1220
 #, c-format
 msgid "kernel image is too big (0x%x > 0x%x)"
 msgstr "a rendszermagkép túl nagy (0x%x > 0x%x)"
 
-#: util/mkimage.c:1284 util/mkimage.c:1532
+#: util/mkimage.c:1300 util/mkimage.c:1569
 #, c-format
 msgid "diskboot.img size must be %u bytes"
 msgstr "a diskboot.img mérete %u bájt kell legyen"
 
-#: util/mkimage.c:1602
+#: util/mkimage.c:1639
 msgid ""
 "fwstart.img doesn't match the known good version. proceed at your own risk"
 msgstr ""
 "Az fwstart.img nem egyezik az ismert jó verzióval. Folytatás csak saját "
 "felelősségre."
 
-#: util/mkimage.c:1606 util/mkimage.c:1632
+#: util/mkimage.c:1643 util/mkimage.c:1669
 msgid "firmware image is too big"
-msgstr "a firmware lemezkép túl nagy"
+msgstr "a belső vezérlőprogram lemezképe túl nagy"
 
 #: util/resolve.c:93
 #, c-format
 msgid "invalid line format: %s"
 msgstr "érvénytelen sorformátum: %s"
+
+#: util/resolve.c:132
+#, c-format
+msgid "line too long, length greater than %zu: module %s"
+msgstr ""
 
 #: util/setup.c:167
 msgid "the first sector of the core file is not sector-aligned"
@@ -6727,12 +7423,12 @@ msgstr "%s: Ezt rendszergazdaként kell futtatnia\\n"
 msgid "%s: Not found.\\n"
 msgstr "%s: nem található.\\n"
 
-#: util/grub-mkconfig.in:262
+#: util/grub-mkconfig.in:266
 msgid "Generating grub configuration file ..."
 msgstr "GRUB beállítófájl előállítása…"
 
 #. TRANSLATORS: %s is replaced by filename
-#: util/grub-mkconfig.in:295
+#: util/grub-mkconfig.in:299
 msgid ""
 "Syntax errors are detected in generated GRUB config file.\n"
 "Ensure that there are no errors in /etc/default/grub\n"
@@ -6744,7 +7440,7 @@ msgstr ""
 "és a /etc/grub.d/* fájlokban, vagy küldjön egy hibajelentést a(z)\n"
 "%s fájllal mellékelve."
 
-#: util/grub-mkconfig.in:308
+#: util/grub-mkconfig.in:315
 msgid "done"
 msgstr "kész"
 
@@ -6766,7 +7462,7 @@ msgstr ""
 msgid ""
 "expect GRUB images under the directory DIR/%s instead of the %s directory"
 msgstr ""
-"a GRUB lemezképek elvárása a KVT/%s könyvtárban a(z) %s könyvtár helyett"
+"a GRUB-lemezképek elvárása a KVT/%s könyvtárban a(z) %s könyvtár helyett"
 
 #: util/grub-reboot.in:56
 msgid ""
@@ -6793,6 +7489,10 @@ msgid ""
 "when it is stored on an MDRAID or LVM device, the chosen boot menu entry "
 "will remain the default even after reboot. "
 msgstr ""
+"MEGJEGYZÉS: olyan esetekben, ahol a GRUB nem tud írni a környezeti blokkba, "
+"például ha MDRAID vagy LVM eszközön van tárolva, a kiválasztott "
+"rendszerindítási menübejegyzés alapértelmezett marad még az újraindítás után "
+"is. "
 
 #: util/grub-reboot.in:110 util/grub-set-default.in:104
 msgid "More than one menu entry?"
@@ -6805,6 +7505,8 @@ msgstr "A menübejegyzés nincs megadva."
 #: util/grub-reboot.in:143
 msgid "%s will remain the default boot entry until manually cleared with:\\n"
 msgstr ""
+"a(z) %s marad az alapértelmezett rendszerindítási bejegyzés, amíg nincs "
+"kézzel kitörölve ezzel:\\n"
 
 #: util/grub-set-default.in:48
 msgid "Set the default boot menu entry for GRUB."
@@ -6863,24 +7565,24 @@ msgstr "Megtalált GNU Mach: %s"
 msgid "Found Hurd module: %s"
 msgstr "Megtalált Hurd modul: %s"
 
-#: util/grub.d/10_hurd.in:77
+#: util/grub.d/10_hurd.in:95
 #, c-format
 msgid "Some Hurd stuff found, but not enough to boot."
 msgstr "Néhány Hurd dolog található, de nem elegendő a rendszerindításhoz."
 
-#: util/grub.d/10_hurd.in:91
+#: util/grub.d/10_hurd.in:109
 #, c-format
 msgid "%s, with Hurd %s (recovery mode)"
 msgstr "%s, Hurd %s verzióval (helyreállítási mód)"
 
-#: util/grub.d/10_hurd.in:94
+#: util/grub.d/10_hurd.in:112
 #, c-format
 msgid "%s, with Hurd %s"
 msgstr "%s, Hurd %s verzióval"
 
-#: util/grub.d/10_hurd.in:100 util/grub.d/10_kfreebsd.in:87
-#: util/grub.d/10_linux.in:103 util/grub.d/10_netbsd.in:113
-#: util/grub.d/20_linux_xen.in:128 util/grub.d/30_os-prober.in:289
+#: util/grub.d/10_hurd.in:118 util/grub.d/10_kfreebsd.in:87
+#: util/grub.d/10_linux.in:105 util/grub.d/10_netbsd.in:113
+#: util/grub.d/20_linux_xen.in:131 util/grub.d/30_os-prober.in:293
 #, c-format
 msgid ""
 "Please don't use old title `%s' for GRUB_DEFAULT, use `%s' (for versions "
@@ -6889,20 +7591,20 @@ msgstr ""
 "Ne használja a régi „%s” címet a GRUB_DEFAULT értékénél, használja ezeket: "
 "„%s” (a 2.00 előtti verzióknál) vagy „%s” (2.00 vagy későbbi verzióknál)"
 
-#: util/grub.d/10_hurd.in:112
+#: util/grub.d/10_hurd.in:130
 #, c-format
 msgid "Loading GNU Mach ..."
 msgstr "GNU Mach betöltése…"
 
-#: util/grub.d/10_hurd.in:128
+#: util/grub.d/10_hurd.in:148
 #, c-format
 msgid "Loading the Hurd ..."
 msgstr "A Hurd betöltése…"
 
 #. TRANSLATORS: %s is replaced with an OS name
-#: util/grub.d/10_hurd.in:172 util/grub.d/10_kfreebsd.in:233
-#: util/grub.d/10_linux.in:282 util/grub.d/10_netbsd.in:176
-#: util/grub.d/30_os-prober.in:265
+#: util/grub.d/10_hurd.in:252 util/grub.d/10_kfreebsd.in:243
+#: util/grub.d/10_linux.in:296 util/grub.d/10_netbsd.in:182
+#: util/grub.d/30_os-prober.in:269
 #, c-format
 msgid "Advanced options for %s"
 msgstr "Speciális beállítások ehhez: %s"
@@ -6927,43 +7629,43 @@ msgstr "%s, kFreeBSD %s verzióval"
 msgid "Loading kernel of FreeBSD %s ..."
 msgstr "A FreeBSD %s kernelének betöltése…"
 
-#: util/grub.d/10_kfreebsd.in:164
+#: util/grub.d/10_kfreebsd.in:174
 #, c-format
 msgid "Found kernel of FreeBSD: %s\\n"
 msgstr "Megtalált FreeBSD kernel: %s\\n"
 
-#: util/grub.d/10_kfreebsd.in:213
+#: util/grub.d/10_kfreebsd.in:223
 #, c-format
 msgid "Found kernel module directory: %s\\n"
 msgstr "Megtalált kernelmodul könyvtár: %s\\n"
 
-#: util/grub.d/10_linux.in:95
+#: util/grub.d/10_linux.in:97
 #, c-format
 msgid "%s, with Linux %s (recovery mode)"
 msgstr "%s, Linux %s verzióval (helyreállítási mód)"
 
-#: util/grub.d/10_linux.in:97
+#: util/grub.d/10_linux.in:99
 #, c-format
 msgid "%s, with Linux %s"
 msgstr "%s, Linux %s verzióval"
 
-#: util/grub.d/10_linux.in:141 util/grub.d/20_linux_xen.in:144
+#: util/grub.d/10_linux.in:143 util/grub.d/20_linux_xen.in:147
 #, c-format
 msgid "Loading Linux %s ..."
 msgstr "Linux %s betöltése…"
 
 #. TRANSLATORS: ramdisk isn't identifier. Should be translated.
-#: util/grub.d/10_linux.in:148 util/grub.d/20_linux_xen.in:158
+#: util/grub.d/10_linux.in:150 util/grub.d/20_linux_xen.in:161
 #, c-format
 msgid "Loading initial ramdisk ..."
 msgstr "Kiinduló ramdisk betöltése…"
 
-#: util/grub.d/10_linux.in:197 util/grub.d/20_linux_xen.in:274
+#: util/grub.d/10_linux.in:209 util/grub.d/20_linux_xen.in:289
 #, c-format
 msgid "Found linux image: %s\\n"
 msgstr "Megtalált linux lemezkép: %s\\n"
 
-#: util/grub.d/10_linux.in:236 util/grub.d/20_linux_xen.in:305
+#: util/grub.d/10_linux.in:250 util/grub.d/20_linux_xen.in:325
 #, c-format
 msgid "Found initrd image: %s\\n"
 msgstr "Megtalált initrd lemezkép: %s\\n"
@@ -6978,7 +7680,7 @@ msgstr "%s, %s kernellel (%s közvetítésével, helyreállítási mód)"
 msgid "%s, with kernel %s (via %s)"
 msgstr "%s, %s kernellel (%s közvetítésével)"
 
-#: util/grub.d/10_netbsd.in:158
+#: util/grub.d/10_netbsd.in:164
 #, c-format
 msgid "Found NetBSD kernel: %s\\n"
 msgstr "Megtalált NetBSD kernel: %s\\n"
@@ -7012,49 +7714,49 @@ msgstr "(64-bit)"
 
 #. TRANSLATORS: it refers on the OS residing on device %s
 #: util/grub.d/10_xnu.in:38 util/grub.d/30_os-prober.in:56
-#: util/grub.d/30_os-prober.in:152 util/grub.d/30_os-prober.in:184
-#: util/grub.d/30_os-prober.in:225 util/grub.d/30_os-prober.in:305
+#: util/grub.d/30_os-prober.in:156 util/grub.d/30_os-prober.in:188
+#: util/grub.d/30_os-prober.in:229 util/grub.d/30_os-prober.in:309
 #, c-format
 msgid "(on %s)"
 msgstr "(ezen: %s)"
 
-#: util/grub.d/20_linux_xen.in:112
-#, fuzzy, c-format
+#: util/grub.d/20_linux_xen.in:115
+#, c-format
 msgid "%s (XSM enabled)"
-msgstr "APM engedélyezve\n"
+msgstr "%s (XSM engedélyezve)"
 
-#: util/grub.d/20_linux_xen.in:120
+#: util/grub.d/20_linux_xen.in:123
 #, c-format
 msgid "%s, with Xen %s and Linux %s (recovery mode)"
 msgstr "%s, Xen %s és Linux %s verzióval (helyreállítási mód)"
 
-#: util/grub.d/20_linux_xen.in:122
+#: util/grub.d/20_linux_xen.in:125
 #, c-format
 msgid "%s, with Xen %s and Linux %s"
 msgstr "%s, Xen %s és Linux %s verzióval"
 
-#: util/grub.d/20_linux_xen.in:132
+#: util/grub.d/20_linux_xen.in:135
 #, c-format
 msgid "%s, with Xen hypervisor"
 msgstr "%s, Xen hypervisorral"
 
-#: util/grub.d/20_linux_xen.in:143
+#: util/grub.d/20_linux_xen.in:146
 #, c-format
 msgid "Loading Xen %s ..."
 msgstr "Xen %s betöltése…"
 
-#: util/grub.d/20_linux_xen.in:169
-#, fuzzy, c-format
+#: util/grub.d/20_linux_xen.in:172
+#, c-format
 msgid "Loading XSM policy ..."
-msgstr "Xen %s betöltése…"
+msgstr "XSM házirend betöltése…"
 
-#: util/grub.d/20_linux_xen.in:249 util/grub.d/20_linux_xen.in:338
+#: util/grub.d/20_linux_xen.in:265 util/grub.d/20_linux_xen.in:358
 #, c-format
 msgid "Xen hypervisor, version %s"
 msgstr "Xen hypervisor, %s verzió"
 
 #. TRANSLATORS: %s is replaced with an OS name
-#: util/grub.d/20_linux_xen.in:337
+#: util/grub.d/20_linux_xen.in:357
 #, c-format
 msgid "Advanced options for %s (with Xen hypervisor)"
 msgstr "Speciális beállítások ehhez: %s (Xen hypervisorral)"
@@ -7066,6 +7768,10 @@ msgid ""
 "\\nSystems on them will not be added to the GRUB boot configuration.\\nCheck "
 "GRUB_DISABLE_OS_PROBER documentation entry."
 msgstr ""
+"Az operációs rendszer felderítő nem lesz végrehajtva más indítható partíciók "
+"felismeréséhez.\\nA rajtuk lévő rendszerek nem lesznek hozzáadva a GRUB "
+"rendszerindítási beállításához.\\nNézze meg a GRUB_DISABLE_OS_PROBER "
+"dokumentációs bejegyzést."
 
 #: util/grub.d/30_os-prober.in:39
 #, c-format
@@ -7073,345 +7779,33 @@ msgid ""
 "os-prober will be executed to detect other bootable partitions.\\nIts output "
 "will be used to detect bootable binaries on them and create new boot entries."
 msgstr ""
+"Az operációs rendszer felderítő végre lesz hajtva más indítható partíciók "
+"felismeréséhez.\\nA kimenete felhasználásra kerül a rajtuk lévő indítható "
+"binárisok felismeréséhez és új rendszerindítási bejegyzések létrehozásához."
 
-#: util/grub.d/30_os-prober.in:147
+#: util/grub.d/30_os-prober.in:151
 #, c-format
 msgid "Found %s on %s\\n"
 msgstr "Megtalált %s ezen: %s\\n"
 
 #. TRANSLATORS: %s is replaced by OS name.
-#: util/grub.d/30_os-prober.in:343
+#: util/grub.d/30_os-prober.in:347
 #, c-format
 msgid "%s is not yet supported by grub-mkconfig.\\n"
 msgstr "A(z) %s rendszert még nem támogatja a grub-mkconfig.\\n"
 
-#: util/grub.d/30_uefi-firmware.in:37
+#: util/grub.d/30_uefi-firmware.in:31
 #, c-format
 msgid "Adding boot menu entry for UEFI Firmware Settings ...\\n"
 msgstr ""
+"Rendszerindítási menübejegyzés hozzáadása az UEFI belső vezérlőprogramjának "
+"beállításaihoz…\\n"
 
-#~ msgid "module cannot be loaded in UEFI secure boot mode: %s"
-#~ msgstr ""
-#~ "a modult nem lehet betölteni UEFI biztonságos rendszerindítás módban: %s"
+#~ msgid "SOURCE|-u UUID|-a|-b"
+#~ msgstr "FORRÁS|-u UUID|-a|-b"
 
-#~ msgid "cannot boot due to dangerous module in memory: %s"
-#~ msgstr ""
-#~ "nem lehet indítani a rendszert, mert veszélyes modul van a memóriában: %s"
+#~ msgid "Linux not supported yet"
+#~ msgstr "a Linux még nem támogatott"
 
-#~ msgid "ARGP_HELP_FMT: %s value is less than or equal to %s"
-#~ msgstr "ARGP_HELP_FMT: %s értéke nem nagyobb mint %s"
-
-#~ msgid "%.*s: ARGP_HELP_FMT parameter requires a value"
-#~ msgstr "%.*s: Az ARGP_HELP_FMT paraméter értéket igényel"
-
-#~ msgid "%.*s: Unknown ARGP_HELP_FMT parameter"
-#~ msgstr "%.*s: Ismeretlen ARGP_HELP_FMT paraméter"
-
-#~ msgid "Garbage in ARGP_HELP_FMT: %s"
-#~ msgstr "Szemét az ARGP_HELP_FMT-ben: %s"
-
-#~ msgid ""
-#~ "Mandatory or optional arguments to long options are also mandatory or "
-#~ "optional for any corresponding short options."
-#~ msgstr ""
-#~ "A hosszú kapcsolók kötelező vagy opcionális argumentumai szintén "
-#~ "kötelezők vagy opcionálisak bármely megfelelő rövid kapcsolónál."
-
-#~ msgid "  or: "
-#~ msgstr "  vagy: "
-
-#~ msgid " [OPTION...]"
-#~ msgstr " [KAPCSOLÓ…]"
-
-#~ msgid "Try '%s --help' or '%s --usage' for more information.\n"
-#~ msgstr ""
-#~ "További információkért próbálja a(z) „%s --help” vagy „%s --usage” "
-#~ "parancsot.\n"
-
-#~ msgid "Report bugs to %s.\n"
-#~ msgstr "A hibák itt jelenthetők: %s.\n"
-
-#~ msgid "Unknown system error"
-#~ msgstr "Ismeretlen rendszerhiba"
-
-#~ msgid "give this help list"
-#~ msgstr "ezen súgólista megjelenítése"
-
-#~ msgid "give a short usage message"
-#~ msgstr "rövid használati utasítás megjelenítése"
-
-#~ msgid "set the program name"
-#~ msgstr "a program nevének beállítása"
-
-#~ msgid "hang for SECS seconds (default 3600)"
-#~ msgstr "szünet MP másodpercre (alapértelmezetten 3600)"
-
-#~ msgid "print program version"
-#~ msgstr "a programverzió kiírása"
-
-#~ msgid "(PROGRAM ERROR) No version known!?"
-#~ msgstr "(PROGRAMHIBA) A verzió nem ismert!"
-
-#~ msgid "%s: Too many arguments\n"
-#~ msgstr "%s: Túl sok argumentum\n"
-
-#~ msgid "(PROGRAM ERROR) Option should have been recognized!?"
-#~ msgstr "(PROGRAMHIBA) A kapcsolót ismerni kellene?"
-
-#~ msgid "%s: option '%s%s' is ambiguous\n"
-#~ msgstr "%s: a(z) „%s%s” kapcsoló nem egyértelmű\n"
-
-#~ msgid "%s: option '%s%s' is ambiguous; possibilities:"
-#~ msgstr "%s: a(z) „%s%s” kapcsoló nem egyértelmű, lehetőségek:"
-
-#~ msgid "%s: unrecognized option '%s%s'\n"
-#~ msgstr "%s: ismeretlen „%s%s” kapcsoló\n"
-
-#~ msgid "%s: option '%s%s' doesn't allow an argument\n"
-#~ msgstr "%s: a(z) „%s%s” kapcsoló nem enged meg argumentumot\n"
-
-#~ msgid "%s: option '%s%s' requires an argument\n"
-#~ msgstr "%s: a(z) „%s%s” kapcsolóhoz egy argumentum szükséges\n"
-
-#~ msgid "%s: invalid option -- '%c'\n"
-#~ msgstr "%s: érvénytelen kapcsoló -- „%c”\n"
-
-#~ msgid "%s: option requires an argument -- '%c'\n"
-#~ msgstr "%s: a kapcsoló egy argumentumot igényel -- „%c”\n"
-
-#~ msgid "unable to record current working directory"
-#~ msgstr "nem lehet rögzíteni a jelenlegi munkakönyvtárat"
-
-#~ msgid "failed to return to initial working directory"
-#~ msgstr "nem sikerült visszatérni a kezdeti munkakönyvtárhoz"
-
-#~ msgid "Invalid regular expression"
-#~ msgstr "Érvénytelen reguláris kifejezés"
-
-#~ msgid "Invalid collation character"
-#~ msgstr "Érvénytelen egyeztető karakter"
-
-#~ msgid "Invalid character class name"
-#~ msgstr "Érvénytelen karakterosztálynév"
-
-#~ msgid "Trailing backslash"
-#~ msgstr "Záró visszaper"
-
-#~ msgid "Invalid back reference"
-#~ msgstr "Érvénytelen visszahivatkozás"
-
-#~ msgid "Unmatched [, [^, [:, [., or [="
-#~ msgstr "Pár nélküli [, [^, [:, [. vagy [="
-
-#~ msgid "Unmatched ( or \\("
-#~ msgstr "Pár nélküli ( vagy \\("
-
-#~ msgid "Unmatched \\{"
-#~ msgstr "Pár nélküli \\{"
-
-#~ msgid "Invalid content of \\{\\}"
-#~ msgstr "A \\{\\} tartalma érvénytelen"
-
-#~ msgid "Invalid range end"
-#~ msgstr "Érvénytelen tartományvég"
-
-#~ msgid "Memory exhausted"
-#~ msgstr "Elfogyott a memória"
-
-#~ msgid "Invalid preceding regular expression"
-#~ msgstr "Érvénytelen megelőző reguláris kifejezés"
-
-#~ msgid "Premature end of regular expression"
-#~ msgstr "A reguláris kifejezés túl korán véget ért"
-
-#~ msgid "Regular expression too big"
-#~ msgstr "A reguláris kifejezés túl nagy"
-
-#~ msgid "Unmatched ) or \\)"
-#~ msgstr "Pár nélküli ) vagy \\)"
-
-#~ msgid "unknown regexp error"
-#~ msgstr "ismeretlen reguláris kifejezés hiba"
-
-#~ msgid "No previous regular expression"
-#~ msgstr "Nincs előző reguláris kifejezés"
-
-#~ msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
-#~ msgstr "%.*s: Az ARGP_HELP_FMT paraméternek pozitívnak kell lennie"
-
-#~ msgid "%s: option '--%s' doesn't allow an argument\n"
-#~ msgstr "%s: a(z) „--%s” kapcsoló nem enged meg argumentumot\n"
-
-#~ msgid "%s: unrecognized option '--%s'\n"
-#~ msgstr "%s: ismeretlen „--%s” kapcsoló\n"
-
-#~ msgid "%s: option '-W %s' doesn't allow an argument\n"
-#~ msgstr "%s: a „-W %s” kapcsoló nem enged meg argumentumot\n"
-
-#~ msgid "%s: option '-W %s' requires an argument\n"
-#~ msgstr "%s: a „-W %s” kapcsolóhoz egy argumentum szükséges\n"
-
-#~ msgid "Unsupported substitution flag: 0x%x\n"
-#~ msgstr "Nem támogatott helyettesítési jelző: 0x%x\n"
-
-#~ msgid "Unknown gsub font feature 0x%x (%s)\n"
-#~ msgstr "Ismeretlen gsub betűkészlet szolgáltatás 0x%x (%s)\n"
-
-#~ msgid "Expose v1 tables."
-#~ msgstr "v1 táblák megjelenítése."
-
-#~ msgid "Fake BIOS."
-#~ msgstr "BIOS hamisítása."
-
-#~ msgid "Check hash list file."
-#~ msgstr "Hashlista-fájl ellenőrzése"
-
-#~ msgid "DIRECTORY"
-#~ msgstr "MAPPA"
-
-#~ msgid "Unload PXE environment."
-#~ msgstr "PXE környezet eltávolítása."
-
-#~ msgid "Read word from PORT."
-#~ msgstr "Szó olvasása a PORTRÓL."
-
-#~ msgid "Read dword from PORT."
-#~ msgstr "Dupla szó olvasása a PORTRÓL"
-
-#~ msgid "Write word VALUE to PORT."
-#~ msgstr "Szó ÉRTÉK írása a PORTRA."
-
-#~ msgid "Write dword VALUE to PORT."
-#~ msgstr "Dupla szó ÉRTÉK írása a PORTRA."
-
-#~ msgid "[--shift] [--ctrl] [--alt]"
-#~ msgstr "[--shift] [--ctrl] [--alt]"
-
-#~ msgid "[-1|-2]"
-#~ msgstr "[-1|-2]"
-
-#~ msgid "Read word from ADDR."
-#~ msgstr "Szó olvasása a CÍMRŐL."
-
-#~ msgid "Read dword from ADDR."
-#~ msgstr "Duplaszó olvasása a CÍMRŐL."
-
-#~ msgid "Write word VALUE to ADDR."
-#~ msgstr "A szó ÉRTÉK kiírása a CÍMRE."
-
-#~ msgid "Write dword VALUE to ADDR."
-#~ msgstr "A duplaszó ÉRTÉK kiírása a CÍMRE."
-
-#~ msgid "Menu entry definition as a string."
-#~ msgstr "Menübejegyzés-definíció karakterláncként."
-
-#~ msgid "[DEVICE]"
-#~ msgstr "[ESZKÖZ]"
-
-#~ msgid "Variable names to update with matches."
-#~ msgstr "Ezen változónevek aktualizálása a találatokkal."
-
-#~ msgid "Load XNU hibernate image."
-#~ msgstr "XNU hibernálási rendszerkép betöltése."
-
-#~ msgid "Authenticate users"
-#~ msgstr "Felhasználók hitelesítése"
-
-#~ msgid "[n]"
-#~ msgstr "[n]"
-
-#~ msgid "UTF-8 visual"
-#~ msgstr "UTF-8 vizuális"
-
-#~ msgid "If FILENAME is '-', the default value %s is used."
-#~ msgstr "Ha a FÁJLNÉV „-”, akkor az alap %s érték kerül felhasználásra."
-
-#~ msgid "write error"
-#~ msgstr "írási hiba"
-
-#~ msgid "open error"
-#~ msgstr "megnyitási hiba"
-
-#~ msgid "seek error"
-#~ msgstr "pozicionálási hiba"
-
-#~ msgid "Hex dump FILE."
-#~ msgstr "A FÁJL hexa kiíratása."
-
-#~ msgid "Must use absolute path.\n"
-#~ msgstr "Abszolút elérési utat kell használni.\n"
-
-#~ msgid "the core image is too small"
-#~ msgstr "a magkép túl kicsi"
-
-#~ msgid "prefix is too long"
-#~ msgstr "az előtag túl hosszú"
-
-#~ msgid ""
-#~ "Usage: %s [OPTION]... [MODULES]\n"
-#~ "\n"
-#~ "Make a bootable image of GRUB.\n"
-#~ "\n"
-#~ "  -d, --directory=DIR     use images and modules under DIR [default=%s/"
-#~ "@platform@]\n"
-#~ "  -p, --prefix=DIR        set grub_prefix directory [default=%s]\n"
-#~ "  -m, --memdisk=FILE      embed FILE as a memdisk image\n"
-#~ "  -c, --config=FILE       embed FILE as boot config\n"
-#~ "  -n, --note              add NOTE segment for CHRP Open Firmware\n"
-#~ "  -o, --output=FILE       output a generated image to FILE "
-#~ "[default=stdout]\n"
-#~ "  -O, --format=FORMAT     generate an image in format\n"
-#~ "                          available formats: %s\n"
-#~ "  -C, --compression=(xz|none|auto)  choose the compression to use\n"
-#~ "  -h, --help              display this message and exit\n"
-#~ "  -V, --version           print version information and exit\n"
-#~ "  -v, --verbose           print verbose messages\n"
-#~ "\n"
-#~ "Report bugs to <%s>.\n"
-#~ msgstr ""
-#~ "Használat: %s [KAPCSOLÓ]… [MODULOK]\n"
-#~ "\n"
-#~ "Indítható memóriakép készítése a GRUB-ból.\n"
-#~ "\n"
-#~ "  -d, --directory=KÖNYVTÁR  a KÖNYVTÁR alatti memóriaképek és modulok\n"
-#~ "                            használata [alapértelmezett=%s]\n"
-#~ "  -p, --prefix=KÖNYVTÁR   a grub_prefix könyvtár beállítása "
-#~ "[alapértelmezett=%s]\n"
-#~ "  -m, --memdisk=FÁJL      a FÁJL beágyazása memórialemez-képként\n"
-#~ "  -f, --font=FÁJL         a FÁJL beágyazása rendszerindítási "
-#~ "betűkészletként\n"
-#~ "  -c, --config=FÁJL       a FÁJL beágyazása rendszerindítási "
-#~ "konfigurációként\n"
-#~ "  -o, --output=FÁJL       az előállított memóriaképfájl kiírása a FÁJLBA\n"
-#~ "                            [alapértelmezett=stdout]\n"
-#~ "  -O, --format=FORMÁTUM   memóriaképfájl előállítása a FORMÁTUMBA\n"
-#~ "                            elérhető formátumok: %s\n"
-#~ "  -C, --compression=(xz|none|auto)  használandó tömörítés\n"
-#~ "  -h, --help              ezen üzenet kiírása és kilépés\n"
-#~ "  -V, --version           verzióinformációk kiírása és kilépés\n"
-#~ "  -v, --verbose           részletes üzenetek kiírása\n"
-#~ "\n"
-#~ "A hibákat itt jelentheti: <%s>.\n"
-
-#~ msgid "cannot open %s"
-#~ msgstr "%s nem nyitható meg"
-
-#~ msgid ""
-#~ "embedding is not possible, but this is required when the root device is "
-#~ "on a RAID array or LVM volume"
-#~ msgstr ""
-#~ "A beágyazás nem lehetséges, noha ez szükséges, ha a gyökéreszköz RAID "
-#~ "tömbön vagy LVM köteten van."
-
-#~ msgid "failed to read the first sector of the core image"
-#~ msgstr "a magkép első szektorának beolvasása meghiúsult"
-
-#~ msgid "DEV"
-#~ msgstr "ESZK"
-
-#~ msgid "Use DEV as the root device [default=guessed]"
-#~ msgstr "Az ESZK használata gyökéreszközként [alap=felismert]"
-
-#~ msgid "cannot guess the root device. Specify the option `--root-device'"
-#~ msgstr ""
-#~ "A gyökéreszköz nem határozható meg. Adja meg a „--root-device” kapcsolót."
+#~ msgid "interpret is not supported"
+#~ msgstr "az interpret nem támogatott"

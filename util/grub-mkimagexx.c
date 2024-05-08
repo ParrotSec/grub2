@@ -44,6 +44,7 @@
 #include <grub/arm/reloc.h>
 #include <grub/arm64/reloc.h>
 #include <grub/ia64/reloc.h>
+#include <grub/loongarch64/reloc.h>
 #include <grub/osdep/hostfile.h>
 #include <grub/util/install.h>
 #include <grub/util/mkimage.h>
@@ -284,7 +285,7 @@ SUFFIX (grub_mkimage_generate_elf) (const struct grub_install_image_target_desc 
   phdr->p_align = grub_host_to_target32 (layout->align > image_target->link_align ?
 					 layout->align : image_target->link_align);
   if (image_target->id == IMAGE_LOONGSON_ELF)
-    ehdr->e_flags = grub_host_to_target32 (0x1000 | EF_MIPS_NOREORDER 
+    ehdr->e_flags = grub_host_to_target32 (0x1000 | EF_MIPS_NOREORDER
 					   | EF_MIPS_PIC | EF_MIPS_CPIC);
   else
     ehdr->e_flags = 0;
@@ -457,7 +458,7 @@ SUFFIX (grub_mkimage_generate_elf) (const struct grub_install_image_target_desc 
   if (note)
     {
       int note_size = sizeof (struct grub_ieee1275_note);
-      struct grub_ieee1275_note *note_ptr = (struct grub_ieee1275_note *) 
+      struct grub_ieee1275_note *note_ptr = (struct grub_ieee1275_note *)
 	(elf_img + program_size + header_size);
 
       grub_util_info ("adding CHRP NOTE segment");
@@ -784,6 +785,8 @@ SUFFIX (relocate_addrs) (Elf_Ehdr *e, struct section_metadata *smd,
   struct grub_ia64_trampoline *tr = (void *) (pe_target + tramp_off);
   grub_uint64_t *gpptr = (void *) (pe_target + got_off);
   unsigned unmatched_adr_got_page = 0;
+  struct grub_loongarch64_stack stack;
+  grub_loongarch64_stack_init (&stack);
 #define MASK19 ((1 << 19) - 1)
 #else
   grub_uint32_t *tr = (void *) (pe_target + tramp_off);
@@ -1123,6 +1126,71 @@ SUFFIX (relocate_addrs) (Elf_Ehdr *e, struct section_metadata *smd,
 		   }
 	       break;
 	       }
+	     case EM_LOONGARCH:
+	       {
+		 grub_int64_t pc;
+
+		 grub_uint32_t *t32 = (grub_uint32_t *) target;
+		 sym_addr += addend;
+
+		 pc = offset + target_section_addr + image_target->vaddr_offset;
+
+		 switch (ELF_R_TYPE (info))
+		   {
+		   case R_LARCH_64:
+		     {
+		       grub_uint64_t *t64 = (grub_uint64_t *) target;
+		       *t64 = grub_host_to_target64 (grub_target_to_host64 (*t64) + sym_addr);
+		     }
+		     break;
+		   case R_LARCH_MARK_LA:
+		     break;
+		   case R_LARCH_SOP_PUSH_PCREL:
+		   case R_LARCH_SOP_PUSH_PLT_PCREL:
+		     grub_loongarch64_sop_push (&stack, sym_addr
+						-(target_section_addr
+						  +offset
+						  +image_target->vaddr_offset));
+		     break;
+		   case R_LARCH_B26:
+		     {
+		       grub_int64_t off;
+
+		       off = sym_addr - pc;
+
+		       grub_loongarch64_b26 (t32, off);
+		     }
+		     break;
+		   case R_LARCH_ABS_HI20:
+		     grub_loongarch64_xxx_hi20 (t32, sym_addr);
+		     break;
+		   case R_LARCH_ABS64_LO20:
+		     grub_loongarch64_abs64_lo20 (t32, sym_addr);
+		     break;
+		   case R_LARCH_ABS64_HI12:
+		     grub_loongarch64_abs64_hi12 (t32, sym_addr);
+		     break;
+		   case R_LARCH_PCALA_HI20:
+		     {
+		       grub_int32_t hi20;
+
+		       hi20 = (((sym_addr + 0x800) & ~0xfffULL) - (pc & ~0xfffULL));
+
+		       grub_loongarch64_xxx_hi20 (t32, hi20);
+		     }
+		     break;
+		   case R_LARCH_ABS_LO12:
+		   case R_LARCH_PCALA_LO12:
+		     grub_loongarch64_xxx_lo12 (t32, sym_addr);
+		     break;
+		   GRUB_LOONGARCH64_RELOCATION (&stack, target, sym_addr)
+		   default:
+		     grub_util_error (_("relocation 0x%x is not implemented yet"),
+				      (unsigned int) ELF_R_TYPE (info));
+		     break;
+		   }
+		 break;
+	       }
 #endif
 #if defined(MKIMAGE_ELF32)
 	     case EM_ARM:
@@ -1294,6 +1362,7 @@ SUFFIX (relocate_addrs) (Elf_Ehdr *e, struct section_metadata *smd,
 		     }
 		     break;
 		   case R_RISCV_CALL:
+		   case R_RISCV_CALL_PLT:
 		     {
 		       grub_uint32_t hi20, lo12;
 
@@ -1631,6 +1700,7 @@ translate_relocation_pe (struct translate_context *ctx,
 	}
       break;
     case EM_AARCH64:
+#if defined(MKIMAGE_ELF64)
       switch (ELF_R_TYPE (info))
 	{
 	case R_AARCH64_ABS64:
@@ -1666,7 +1736,65 @@ translate_relocation_pe (struct translate_context *ctx,
 			   (unsigned int) ELF_R_TYPE (info));
 	  break;
 	}
+#endif /* defined(MKIMAGE_ELF64) */
       break;
+    case EM_LOONGARCH:
+#if defined(MKIMAGE_ELF64)
+      switch (ELF_R_TYPE (info))
+	{
+	case R_LARCH_64:
+	  {
+	    ctx->current_address = add_fixup_entry (&ctx->lst,
+						    GRUB_PE32_REL_BASED_DIR64,
+						    addr, 0, ctx->current_address,
+						    image_target);
+	  }
+	  break;
+	case R_LARCH_MARK_LA:
+	  {
+	    ctx->current_address = add_fixup_entry (&ctx->lst,
+						    GRUB_PE32_REL_BASED_LOONGARCH64_MARK_LA,
+						    addr, 0, ctx->current_address,
+						    image_target);
+	  }
+	  break;
+	  /* Relative relocations do not require fixup entries. */
+	case R_LARCH_NONE:
+	case R_LARCH_SOP_PUSH_PCREL:
+	case R_LARCH_SOP_PUSH_ABSOLUTE:
+	case R_LARCH_SOP_PUSH_PLT_PCREL:
+	case R_LARCH_SOP_SUB:
+	case R_LARCH_SOP_SL:
+	case R_LARCH_SOP_SR:
+	case R_LARCH_SOP_ADD:
+	case R_LARCH_SOP_AND:
+	case R_LARCH_SOP_IF_ELSE:
+	case R_LARCH_SOP_POP_32_S_10_5:
+	case R_LARCH_SOP_POP_32_U_10_12:
+	case R_LARCH_SOP_POP_32_S_10_12:
+	case R_LARCH_SOP_POP_32_S_10_16:
+	case R_LARCH_SOP_POP_32_S_10_16_S2:
+	case R_LARCH_SOP_POP_32_S_5_20:
+	case R_LARCH_SOP_POP_32_S_0_5_10_16_S2:
+	case R_LARCH_SOP_POP_32_S_0_10_10_16_S2:
+	case R_LARCH_B26:
+	case R_LARCH_ABS_HI20:
+	case R_LARCH_ABS_LO12:
+	case R_LARCH_ABS64_LO20:
+	case R_LARCH_ABS64_HI12:
+	case R_LARCH_PCALA_HI20:
+	case R_LARCH_PCALA_LO12:
+	  grub_util_info ("  %s:  not adding fixup: 0x%08x : 0x%08x",
+			  __FUNCTION__,
+			  (unsigned int) addr,
+			  (unsigned int) ctx->current_address);
+	  break;
+	default:
+	  grub_util_error (_("relocation 0x%x is not implemented yet"),
+			   (unsigned int) ELF_R_TYPE (info));
+	  break;
+	}
+#endif /* defined(MKIMAGE_ELF64) */
       break;
 #if defined(MKIMAGE_ELF32)
     case EM_ARM:
@@ -1725,6 +1853,7 @@ translate_relocation_pe (struct translate_context *ctx,
 	case R_RISCV_BRANCH:
 	case R_RISCV_JAL:
 	case R_RISCV_CALL:
+	case R_RISCV_CALL_PLT:
 	case R_RISCV_PCREL_HI20:
 	case R_RISCV_PCREL_LO12_I:
 	case R_RISCV_PCREL_LO12_S:
@@ -2041,7 +2170,7 @@ SUFFIX (is_text_section) (Elf_Shdr *s, const struct grub_install_image_target_de
 static int
 SUFFIX (is_data_section) (Elf_Shdr *s, const struct grub_install_image_target_desc *image_target)
 {
-  if (!is_relocatable (image_target) 
+  if (!is_relocatable (image_target)
       && grub_target_to_host32 (s->sh_type) != SHT_PROGBITS)
     return 0;
   return ((grub_target_to_host (s->sh_flags) & (SHF_EXECINSTR | SHF_ALLOC))
@@ -2227,7 +2356,7 @@ SUFFIX (locate_sections) (Elf_Ehdr *e, const char *kernel_path,
 
   layout->bss_start = layout->kernel_size;
   layout->end = layout->kernel_size;
-  
+
   /* .bss */
   for (i = 0, s = smd->sections;
        i < smd->num_sections;

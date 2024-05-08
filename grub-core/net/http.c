@@ -29,11 +29,7 @@
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
-enum
-  {
-    HTTP_PORT = 80
-  };
-
+#define HTTP_PORT	((grub_uint16_t) 80)
 
 typedef struct http_data
 {
@@ -68,7 +64,15 @@ parse_line (grub_file_t file, http_data_t data, char *ptr, grub_size_t len)
   char *end = ptr + len;
   while (end > ptr && *(end - 1) == '\r')
     end--;
+
+  /* LF without CR. */
+  if (end == ptr + len)
+    {
+      data->errmsg = grub_strdup (_("invalid HTTP header - LF without CR"));
+      return GRUB_ERR_NONE;
+    }
   *end = 0;
+
   /* Trailing CRLF.  */
   if (data->in_chunk_len == 1)
     {
@@ -145,7 +149,7 @@ parse_line (grub_file_t file, http_data_t data, char *ptr, grub_size_t len)
       return GRUB_ERR_NONE;
     }
 
-  return GRUB_ERR_NONE;  
+  return GRUB_ERR_NONE;
 }
 
 static void
@@ -190,9 +194,7 @@ http_receive (grub_net_tcp_socket_t sock __attribute__ ((unused)),
 	  int have_line = 1;
 	  char *t;
 	  ptr = grub_memchr (nb->data, '\n', nb->tail - nb->data);
-	  if (ptr)
-	    ptr++;
-	  else
+	  if (ptr == NULL)
 	    {
 	      have_line = 0;
 	      ptr = (char *) nb->tail;
@@ -205,7 +207,7 @@ http_receive (grub_net_tcp_socket_t sock __attribute__ ((unused)),
 	      grub_net_tcp_close (data->sock, GRUB_NET_TCP_ABORT);
 	      return grub_errno;
 	    }
-	      
+
 	  data->current_line = t;
 	  grub_memcpy (data->current_line + data->current_line_len,
 		       nb->data, ptr - (char *) nb->data);
@@ -261,7 +263,7 @@ http_receive (grub_net_tcp_socket_t sock __attribute__ ((unused)),
 	{
 	  grub_netbuff_free (nb);
 	  return GRUB_ERR_NONE;
-	} 
+	}
       err = grub_netbuff_pull (nb, ptr - (char *) nb->data);
       if (err)
 	{
@@ -312,12 +314,14 @@ http_establish (struct grub_file *file, grub_off_t offset, int initial)
   int i;
   struct grub_net_buff *nb;
   grub_err_t err;
+  char *server = file->device->net->server;
+  grub_uint16_t port = file->device->net->port;
 
   nb = grub_netbuff_alloc (GRUB_NET_TCP_RESERVE_SIZE
 			   + sizeof ("GET ") - 1
 			   + grub_strlen (data->filename)
 			   + sizeof (" HTTP/1.1\r\nHost: ") - 1
-			   + grub_strlen (file->device->net->server)
+			   + grub_strlen (server) + sizeof (":XXXXXXXXXX")
 			   + sizeof ("\r\nUser-Agent: " PACKAGE_STRING
 				     "\r\n") - 1
 			   + sizeof ("Range: bytes=XXXXXXXXXXXXXXXXXXXX"
@@ -356,7 +360,7 @@ http_establish (struct grub_file *file, grub_off_t offset, int initial)
 	       sizeof (" HTTP/1.1\r\nHost: ") - 1);
 
   ptr = nb->tail;
-  err = grub_netbuff_put (nb, grub_strlen (file->device->net->server));
+  err = grub_netbuff_put (nb, grub_strlen (server));
   if (err)
     {
       grub_netbuff_free (nb);
@@ -365,8 +369,14 @@ http_establish (struct grub_file *file, grub_off_t offset, int initial)
   grub_memcpy (ptr, file->device->net->server,
 	       grub_strlen (file->device->net->server));
 
+  if (port)
+    {
+      ptr = nb->tail;
+      grub_snprintf ((char *) ptr, sizeof (":XXXXXXXXXX"), ":%d", port);
+    }
+
   ptr = nb->tail;
-  err = grub_netbuff_put (nb, 
+  err = grub_netbuff_put (nb,
 			  sizeof ("\r\nUser-Agent: " PACKAGE_STRING "\r\n")
 			  - 1);
   if (err)
@@ -390,8 +400,10 @@ http_establish (struct grub_file *file, grub_off_t offset, int initial)
   grub_netbuff_put (nb, 2);
   grub_memcpy (ptr, "\r\n", 2);
 
-  data->sock = grub_net_tcp_open (file->device->net->server,
-				  HTTP_PORT, http_receive,
+  grub_dprintf ("http", "opening path %s on host %s TCP port %d\n",
+		data->filename, server, port ? port : HTTP_PORT);
+  data->sock = grub_net_tcp_open (server,
+				  port ? port : HTTP_PORT, http_receive,
 				  http_err, NULL,
 				  file);
   if (!data->sock)
@@ -409,7 +421,7 @@ http_establish (struct grub_file *file, grub_off_t offset, int initial)
       return err;
     }
 
-  for (i = 0; !data->headers_recv && i < 100; i++)
+  for (i = 0; data->sock && !data->headers_recv && i < 100; i++)
     {
       grub_net_tcp_retransmit ();
       grub_net_poll_cards (300, &data->headers_recv);
@@ -417,7 +429,8 @@ http_establish (struct grub_file *file, grub_off_t offset, int initial)
 
   if (!data->headers_recv)
     {
-      grub_net_tcp_close (data->sock, GRUB_NET_TCP_ABORT);
+      if (data->sock)
+        grub_net_tcp_close (data->sock, GRUB_NET_TCP_ABORT);
       if (data->err)
 	{
 	  char *str = data->errmsg;
@@ -542,7 +555,7 @@ http_packets_pulled (struct grub_file *file)
   return 0;
 }
 
-static struct grub_net_app_protocol grub_http_protocol = 
+static struct grub_net_app_protocol grub_http_protocol =
   {
     .name = "http",
     .open = http_open,

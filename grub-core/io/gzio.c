@@ -447,7 +447,7 @@ huft_build (unsigned *b,	/* code lengths in bits (all assumed <= BMAX) */
   int l;			/* bits per table (returned in m) */
   register unsigned *p;		/* pointer into c[], b[], or v[] */
   register struct huft *q;	/* points to current table */
-  struct huft r;		/* table entry for structure assignment */
+  struct huft r = {0};		/* table entry for structure assignment */
   struct huft *u[BMAX];		/* table stack */
   unsigned v[N_MAX];		/* values in order of bit length */
   register int w;		/* bits before this table == (l * h) */
@@ -1188,9 +1188,10 @@ initialize_tables (grub_gzio_t gzio)
 }
 
 
-/* Open a new decompressing object on the top of IO. If TRANSPARENT is true,
-   even if IO does not contain data compressed by gzip, return a valid file
-   object. Note that this function won't close IO, even if an error occurs.  */
+/*
+ * Open a new decompressing object on the top of IO.
+ * Note that this function won't close IO, even if an error occurs.
+ */
 static grub_file_t
 grub_gzio_open (grub_file_t io, enum grub_file_type type)
 {
@@ -1252,7 +1253,7 @@ static int
 test_zlib_header (grub_gzio_t gzio)
 {
   grub_uint8_t cmf, flg;
-  
+
   cmf = get_byte (gzio);
   flg = get_byte (gzio);
 

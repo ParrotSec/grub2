@@ -98,7 +98,7 @@ grub_mod_fini (void)
 #endif
 #else
 #ifdef __APPLE__
-#define GRUB_MOD_SECTION(x) _ ## x , _ ##x 
+#define GRUB_MOD_SECTION(x) _ ## x , _ ##x
 #else
 #define GRUB_MOD_SECTION(x) . ## x
 #endif
@@ -203,7 +203,6 @@ grub_dl_t EXPORT_FUNC(grub_dl_load) (const char *name);
 grub_dl_t grub_dl_load_core (void *addr, grub_size_t size);
 grub_dl_t EXPORT_FUNC(grub_dl_load_core_noinit) (void *addr, grub_size_t size);
 int EXPORT_FUNC(grub_dl_unload) (grub_dl_t mod);
-extern void grub_dl_unload_unneeded (void);
 extern int EXPORT_FUNC(grub_dl_ref) (grub_dl_t mod);
 extern int EXPORT_FUNC(grub_dl_unref) (grub_dl_t mod);
 extern int EXPORT_FUNC(grub_dl_ref_count) (grub_dl_t mod);
@@ -301,6 +300,7 @@ grub_arch_dl_get_tramp_got_size (const void *ehdr, grub_size_t *tramp,
 #endif
 
 #if defined (__aarch64__) || defined (__sparc__) || \
+    defined (__loongarch_lp64) || \
     (defined(__riscv) && (__riscv_xlen == 64))
 #define GRUB_ARCH_DL_TRAMP_ALIGN 8
 #define GRUB_ARCH_DL_GOT_ALIGN 8

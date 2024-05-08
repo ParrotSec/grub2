@@ -31,9 +31,6 @@
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
-/* Real mode IVT slot (seg:off far pointer) for interrupt 0x13.  */
-static grub_uint32_t *const int13slot = (grub_uint32_t *) (4 * 0x13);
-
 /* Remember to update enum opt_idxs accordingly.  */
 static const struct grub_arg_option options[] = {
   /* TRANSLATORS: In this file "mapping" refers to a change GRUB makes so if
@@ -185,7 +182,7 @@ list_mappings (void)
       return GRUB_ERR_NONE;
     }
 
-  /* TRANSLATORS:  This is the header of mapping list. 
+  /* TRANSLATORS:  This is the header of mapping list.
      On the left is how OS will see the disks and
      on the right current GRUB vision.  */
   grub_puts_ (N_("OS disk #num ------> GRUB/BIOS device"));
@@ -280,6 +277,8 @@ install_int13_handler (int noret __attribute__ ((unused)))
   grub_uint8_t *handler_base = 0;
   /* Address of the map within the deployed bundle.  */
   int13map_node_t *handler_map;
+  /* Real mode IVT slot (seg:off far pointer) for interrupt 0x13. */
+  grub_uint32_t *int13slot = (grub_uint32_t *) grub_absolute_pointer (4 * 0x13);
 
   int i;
   int entries = 0;
@@ -354,6 +353,9 @@ install_int13_handler (int noret __attribute__ ((unused)))
 static grub_err_t
 uninstall_int13_handler (void)
 {
+  /* Real mode IVT slot (seg:off far pointer) for interrupt 0x13. */
+  grub_uint32_t *int13slot = (grub_uint32_t *) grub_absolute_pointer (4 * 0x13);
+
   if (! grub_drivemap_oldhandler)
     return GRUB_ERR_NONE;
 

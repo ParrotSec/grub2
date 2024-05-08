@@ -107,6 +107,7 @@ enum grub_install_plat
     GRUB_INSTALL_PLATFORM_I386_XEN_PVH,
     GRUB_INSTALL_PLATFORM_ARM64_EFI,
     GRUB_INSTALL_PLATFORM_ARM_COREBOOT,
+    GRUB_INSTALL_PLATFORM_LOONGARCH64_EFI,
     GRUB_INSTALL_PLATFORM_RISCV32_EFI,
     GRUB_INSTALL_PLATFORM_RISCV64_EFI,
     GRUB_INSTALL_PLATFORM_MAX
@@ -236,11 +237,11 @@ void
 grub_install_sgi_setup (const char *install_device,
 			const char *imgfile, const char *destname);
 
-int 
+int
 grub_install_compress_gzip (const char *src, const char *dest);
-int 
+int
 grub_install_compress_lzop (const char *src, const char *dest);
-int 
+int
 grub_install_compress_xz (const char *src, const char *dest);
 
 void

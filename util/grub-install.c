@@ -86,17 +86,17 @@ enum
     OPTION_ROOT_DIRECTORY,
     OPTION_TARGET,
     OPTION_SETUP,
-    OPTION_MKRELPATH, 
-    OPTION_MKDEVICEMAP, 
-    OPTION_PROBE, 
-    OPTION_EDITENV, 
-    OPTION_ALLOW_FLOPPY, 
-    OPTION_RECHECK, 
+    OPTION_MKRELPATH,
+    OPTION_MKDEVICEMAP,
+    OPTION_PROBE,
+    OPTION_EDITENV,
+    OPTION_ALLOW_FLOPPY,
+    OPTION_RECHECK,
     OPTION_FORCE,
     OPTION_FORCE_FILE_ID,
-    OPTION_NO_NVRAM, 
-    OPTION_REMOVABLE, 
-    OPTION_BOOTLOADER_ID, 
+    OPTION_NO_NVRAM,
+    OPTION_REMOVABLE,
+    OPTION_BOOTLOADER_ID,
     OPTION_EFI_DIRECTORY,
     OPTION_FONT,
     OPTION_DEBUG,
@@ -114,7 +114,7 @@ enum
 
 static int fs_probe = 1;
 
-static error_t 
+static error_t
 argp_parser (int key, char *arg, struct argp_state *state)
 {
   if (grub_install_parse (key, arg))
@@ -324,6 +324,8 @@ get_default_platform (void)
    return "arm64-efi";
 #elif defined (__amd64__) || defined (__x86_64__) || defined (__i386__)
    return grub_install_get_default_x86_platform ();
+#elif defined (__loongarch_lp64)
+   return "loongarch64-efi";
 #elif defined (__riscv)
 #if __riscv_xlen == 32
    return "riscv32-efi";
@@ -370,7 +372,7 @@ struct argp argp = {
   N_("Install GRUB on your drive.")"\v"
   N_("INSTALL_DEVICE must be system device filename.\n"
      "%s copies GRUB images into %s.  On some platforms, it"
-     " may also install GRUB into the boot sector."), 
+     " may also install GRUB into the boot sector."),
   NULL, help_filter, NULL
 };
 
@@ -485,6 +487,7 @@ have_bootdev (enum grub_install_plat pl)
     case GRUB_INSTALL_PLATFORM_IA64_EFI:
     case GRUB_INSTALL_PLATFORM_ARM_EFI:
     case GRUB_INSTALL_PLATFORM_ARM64_EFI:
+    case GRUB_INSTALL_PLATFORM_LOONGARCH64_EFI:
     case GRUB_INSTALL_PLATFORM_RISCV32_EFI:
     case GRUB_INSTALL_PLATFORM_RISCV64_EFI:
     case GRUB_INSTALL_PLATFORM_I386_IEEE1275:
@@ -696,7 +699,7 @@ write_to_disk (grub_device_t dev, const char *fn)
 
   core_size = grub_util_get_image_size (fn);
 
-  core_img = grub_util_read_image (fn);    
+  core_img = grub_util_read_image (fn);
 
   grub_util_info ("writing `%s' to `%s'", fn, dev->disk->name);
   err = grub_disk_write (dev->disk, 0, 0,
@@ -725,7 +728,7 @@ is_prep_partition (grub_device_t dev)
       if (grub_disk_read (dev->disk, p->offset, p->index,
 			  sizeof (gptdata), &gptdata) == 0)
 	{
-	  const grub_gpt_part_guid_t template = {
+	  const grub_guid_t template = {
 	    grub_cpu_to_le32_compile_time (0x9e1a2d38),
 	    grub_cpu_to_le16_compile_time (0xc612),
 	    grub_cpu_to_le16_compile_time (0x4316),
@@ -827,6 +830,19 @@ fill_core_services (const char *core_services)
   free (sysv_plist);
 }
 
+#ifdef __linux__
+static void
+try_open (const char *path)
+{
+  FILE *f;
+
+  f = grub_util_fopen (path, "r+");
+  if (f == NULL)
+    grub_util_error (_("Unable to open %s: %s"), path, strerror (errno));
+  fclose (f);
+}
+#endif
+
 int
 main (int argc, char *argv[])
 {
@@ -882,11 +898,11 @@ main (int argc, char *argv[])
 	  const char * t;
 	  t = get_default_platform ();
 	  if (!t)
-	    grub_util_error ("%s", 
+	    grub_util_error ("%s",
 			     _("Unable to determine your platform."
 			       " Use --target.")
 			     );
-	  target = xstrdup (t); 
+	  target = xstrdup (t);
 	}
       grub_install_source_directory
 	= grub_util_path_concat (2, grub_util_get_pkglibdir (), target);
@@ -910,6 +926,7 @@ main (int argc, char *argv[])
     case GRUB_INSTALL_PLATFORM_X86_64_EFI:
     case GRUB_INSTALL_PLATFORM_ARM_EFI:
     case GRUB_INSTALL_PLATFORM_ARM64_EFI:
+    case GRUB_INSTALL_PLATFORM_LOONGARCH64_EFI:
     case GRUB_INSTALL_PLATFORM_RISCV32_EFI:
     case GRUB_INSTALL_PLATFORM_RISCV64_EFI:
     case GRUB_INSTALL_PLATFORM_IA64_EFI:
@@ -957,6 +974,7 @@ main (int argc, char *argv[])
     case GRUB_INSTALL_PLATFORM_X86_64_EFI:
     case GRUB_INSTALL_PLATFORM_ARM_EFI:
     case GRUB_INSTALL_PLATFORM_ARM64_EFI:
+    case GRUB_INSTALL_PLATFORM_LOONGARCH64_EFI:
     case GRUB_INSTALL_PLATFORM_RISCV32_EFI:
     case GRUB_INSTALL_PLATFORM_RISCV64_EFI:
     case GRUB_INSTALL_PLATFORM_IA64_EFI:
@@ -1012,6 +1030,7 @@ main (int argc, char *argv[])
     case GRUB_INSTALL_PLATFORM_X86_64_EFI:
     case GRUB_INSTALL_PLATFORM_ARM_EFI:
     case GRUB_INSTALL_PLATFORM_ARM64_EFI:
+    case GRUB_INSTALL_PLATFORM_LOONGARCH64_EFI:
     case GRUB_INSTALL_PLATFORM_RISCV32_EFI:
     case GRUB_INSTALL_PLATFORM_RISCV64_EFI:
     case GRUB_INSTALL_PLATFORM_IA64_EFI:
@@ -1023,6 +1042,20 @@ main (int argc, char *argv[])
 
       /* pacify warning.  */
     case GRUB_INSTALL_PLATFORM_MAX:
+      break;
+    }
+
+  switch (platform)
+    {
+    case GRUB_INSTALL_PLATFORM_I386_IEEE1275:
+    case GRUB_INSTALL_PLATFORM_POWERPC_IEEE1275:
+#ifdef __linux__
+      /* On Linux, ensure /dev/nvram is _functional_. */
+      if (update_nvram)
+        try_open ("/dev/nvram");
+#endif
+      break;
+    default:
       break;
     }
 
@@ -1071,7 +1104,7 @@ main (int argc, char *argv[])
 
       for (curdev = efidir_device_names; *curdev; curdev++)
 	  grub_util_pull_device (*curdev);
-      
+
       efidir_grub_devname = grub_util_get_grub_dev (efidir_device_names[0]);
       if (!efidir_grub_devname)
 	grub_util_error (_("cannot find a GRUB drive for %s.  Check your device.map"),
@@ -1092,7 +1125,12 @@ main (int argc, char *argv[])
 	efidir_is_mac = 1;
 
       if (!efidir_is_mac && grub_strcmp (fs->name, "fat") != 0)
-	grub_util_error (_("%s doesn't look like an EFI partition"), efidir);
+	{
+	  if (force)
+	    grub_util_warn (_("%s doesn't look like an EFI partition, system may not boot"), efidir);
+	  else
+	    grub_util_error (_("%s doesn't look like an EFI partition"), efidir);
+	}
 
       /* The EFI specification requires that an EFI System Partition must
 	 contain an "EFI" subdirectory, and that OS loaders are stored in
@@ -1127,6 +1165,9 @@ main (int argc, char *argv[])
 	    case GRUB_INSTALL_PLATFORM_ARM64_EFI:
 	      efi_file = "BOOTAA64.EFI";
 	      break;
+	    case GRUB_INSTALL_PLATFORM_LOONGARCH64_EFI:
+	      efi_file = "BOOTLOONGARCH64.EFI";
+	      break;
 	    case GRUB_INSTALL_PLATFORM_RISCV32_EFI:
 	      efi_file = "BOOTRISCV32.EFI";
 	      break;
@@ -1159,6 +1200,9 @@ main (int argc, char *argv[])
 	      break;
 	    case GRUB_INSTALL_PLATFORM_ARM64_EFI:
 	      efi_file = "grubaa64.efi";
+	      break;
+	    case GRUB_INSTALL_PLATFORM_LOONGARCH64_EFI:
+	      efi_file = "grubloongarch64.efi";
 	      break;
 	    case GRUB_INSTALL_PLATFORM_RISCV32_EFI:
 	      efi_file = "grubriscv32.efi";
@@ -1219,12 +1263,12 @@ main (int argc, char *argv[])
 
 	  for (curdev = macppcdir_device_names; *curdev; curdev++)
 	    grub_util_pull_device (*curdev);
-      
+
 	  macppcdir_grub_devname = grub_util_get_grub_dev (macppcdir_device_names[0]);
 	  if (!macppcdir_grub_devname)
 	    grub_util_error (_("cannot find a GRUB drive for %s.  Check your device.map"),
 			     macppcdir_device_names[0]);
-	  
+
 	  macppcdir_grub_dev = grub_device_open (macppcdir_grub_devname);
 	  if (! macppcdir_grub_dev)
 	    grub_util_error ("%s", grub_errmsg);
@@ -1246,13 +1290,6 @@ main (int argc, char *argv[])
 	    }
 	}
     }
-
-  grub_install_copy_files (grub_install_source_directory,
-			   grubdir, platform);
-
-  char *envfile = grub_util_path_concat (2, grubdir, "grubenv");
-  if (!grub_util_is_regular (envfile))
-    grub_util_create_envblk_file (envfile);
 
   size_t ndev = 0;
 
@@ -1329,29 +1366,6 @@ main (int argc, char *argv[])
       relative_grubdir = xstrdup ("/");
     }
 
-  char *platname =  grub_install_get_platform_name (platform);
-  char *platdir;
-  {
-    char *t = grub_util_path_concat (2, grubdir,
-				   platname);
-    platdir = grub_canonicalize_file_name (t);
-    if (!platdir)
-      grub_util_error (_("failed to get canonical path of `%s'"),
-		       t);
-    free (t);
-  }
-  load_cfg = grub_util_path_concat (2, platdir,
-				  "load.cfg");
-
-  grub_util_unlink (load_cfg);
-
-  if (debug_image && debug_image[0])
-    {
-      load_cfg_f = grub_util_fopen (load_cfg, "wb");
-      have_load_cfg = 1;
-      fprintf (load_cfg_f, "set debug='%s'\n",
-	      debug_image);
-    }
   char *prefix_drive = NULL;
   char *install_drive = NULL;
 
@@ -1373,6 +1387,38 @@ main (int argc, char *argv[])
 	    grub_util_error (_("cannot find a GRUB drive for %s.  Check your device.map"),
 			     install_device);
 	}
+    }
+
+  grub_install_copy_files (grub_install_source_directory,
+                           grubdir, platform);
+
+  char *envfile = grub_util_path_concat (2, grubdir, "grubenv");
+  if (!grub_util_is_regular (envfile))
+    grub_util_create_envblk_file (envfile);
+
+  char *platname =  grub_install_get_platform_name (platform);
+  char *platdir;
+  {
+    char *t = grub_util_path_concat (2, grubdir,
+                                   platname);
+    platdir = grub_canonicalize_file_name (t);
+    if (!platdir)
+      grub_util_error (_("failed to get canonical path of `%s'"),
+                       t);
+    free (t);
+  }
+
+  load_cfg = grub_util_path_concat (2, platdir,
+                                  "load.cfg");
+
+  grub_util_unlink (load_cfg);
+
+  if (debug_image && debug_image[0])
+    {
+      load_cfg_f = grub_util_fopen (load_cfg, "wb");
+      have_load_cfg = 1;
+      fprintf (load_cfg_f, "set debug='%s'\n",
+              debug_image);
     }
 
   if (!have_abstractions)
@@ -1468,6 +1514,7 @@ main (int argc, char *argv[])
 		  case GRUB_INSTALL_PLATFORM_X86_64_EFI:
 		  case GRUB_INSTALL_PLATFORM_ARM_EFI:
 		  case GRUB_INSTALL_PLATFORM_ARM64_EFI:
+		  case GRUB_INSTALL_PLATFORM_LOONGARCH64_EFI:
 		  case GRUB_INSTALL_PLATFORM_RISCV32_EFI:
 		  case GRUB_INSTALL_PLATFORM_RISCV64_EFI:
 		  case GRUB_INSTALL_PLATFORM_IA64_EFI:
@@ -1563,6 +1610,7 @@ main (int argc, char *argv[])
     case GRUB_INSTALL_PLATFORM_X86_64_EFI:
     case GRUB_INSTALL_PLATFORM_ARM_EFI:
     case GRUB_INSTALL_PLATFORM_ARM64_EFI:
+    case GRUB_INSTALL_PLATFORM_LOONGARCH64_EFI:
     case GRUB_INSTALL_PLATFORM_RISCV32_EFI:
     case GRUB_INSTALL_PLATFORM_RISCV64_EFI:
     case GRUB_INSTALL_PLATFORM_IA64_EFI:
@@ -1668,6 +1716,7 @@ main (int argc, char *argv[])
       break;
     case GRUB_INSTALL_PLATFORM_ARM_EFI:
     case GRUB_INSTALL_PLATFORM_ARM64_EFI:
+    case GRUB_INSTALL_PLATFORM_LOONGARCH64_EFI:
     case GRUB_INSTALL_PLATFORM_RISCV32_EFI:
     case GRUB_INSTALL_PLATFORM_RISCV64_EFI:
     case GRUB_INSTALL_PLATFORM_IA64_EFI:
@@ -1697,7 +1746,7 @@ main (int argc, char *argv[])
     {
     case GRUB_INSTALL_PLATFORM_I386_PC:
       {
-	char *boot_img_src = grub_util_path_concat (2, 
+	char *boot_img_src = grub_util_path_concat (2,
 						  grub_install_source_directory,
 						  "boot.img");
 	char *boot_img = grub_util_path_concat (2, platdir,
@@ -1716,7 +1765,7 @@ main (int argc, char *argv[])
 			platdir,
 			device_map,
 			install_device);
-			
+
 	/*  Now perform the installation.  */
 	if (install_bootsector)
 	  {
@@ -1731,7 +1780,7 @@ main (int argc, char *argv[])
       }
     case GRUB_INSTALL_PLATFORM_SPARC64_IEEE1275:
       {
-	char *boot_img_src = grub_util_path_concat (2, 
+	char *boot_img_src = grub_util_path_concat (2,
 						  grub_install_source_directory,
 						  "boot.img");
 	char *boot_img = grub_util_path_concat (2, platdir,
@@ -1747,7 +1796,7 @@ main (int argc, char *argv[])
 			platdir,
 			device_map,
 			install_drive);
-			
+
 	/*  Now perform the installation.  */
 	if (install_bootsector)
 	  {
@@ -1830,6 +1879,7 @@ main (int argc, char *argv[])
 	    {
 	      if (write_to_disk (ins_dev, imgfile))
 		grub_util_error ("%s", _("failed to copy Grub to the PReP partition"));
+	      grub_set_install_backup_ponr ();
 	    }
 	  else
 	    {
@@ -1922,6 +1972,7 @@ main (int argc, char *argv[])
       /* FALLTHROUGH */
     case GRUB_INSTALL_PLATFORM_ARM_EFI:
     case GRUB_INSTALL_PLATFORM_ARM64_EFI:
+    case GRUB_INSTALL_PLATFORM_LOONGARCH64_EFI:
     case GRUB_INSTALL_PLATFORM_RISCV32_EFI:
     case GRUB_INSTALL_PLATFORM_RISCV64_EFI:
     case GRUB_INSTALL_PLATFORM_IA64_EFI:

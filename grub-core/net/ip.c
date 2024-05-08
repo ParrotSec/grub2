@@ -25,6 +25,7 @@
 #include <grub/net/netbuff.h>
 #include <grub/mm.h>
 #include <grub/priority_queue.h>
+#include <grub/safemath.h>
 #include <grub/time.h>
 
 struct iphdr {
@@ -157,7 +158,7 @@ send_fragmented (struct grub_net_network_level_interface * inf,
       iph->service = 0;
       iph->len = grub_cpu_to_be16 (len + sizeof (struct iphdr));
       iph->ident = grub_cpu_to_be16 (id);
-      iph->frags = grub_cpu_to_be16 (off | (((grub_ssize_t) len 
+      iph->frags = grub_cpu_to_be16 (off | (((grub_ssize_t) len
 					     == nb->tail - nb->data)
 					    ? 0 : MORE_FRAGMENTS));
       iph->ttl = 0xff;
@@ -254,7 +255,7 @@ handle_dgram (struct grub_net_buff *nb,
 	    if (expected != chk)
 	      {
 		grub_dprintf ("net", "Invalid UDP checksum. "
-			      "Expected %x, got %x\n", 
+			      "Expected %x, got %x\n",
 			      grub_be_to_cpu16 (expected),
 			      grub_be_to_cpu16 (chk));
 		grub_netbuff_free (nb);
@@ -271,7 +272,7 @@ handle_dgram (struct grub_net_buff *nb,
 	  }
 
 	bootp = (const struct grub_net_bootp_packet *) nb->data;
-	
+
 	FOR_NET_NETWORK_LEVEL_INTERFACES (inf)
 	  if (inf->card == card
 	      && inf->address.type == GRUB_NET_NETWORK_LEVEL_PROTOCOL_DHCP_RECV
@@ -314,7 +315,7 @@ handle_dgram (struct grub_net_buff *nb,
 	&& hwaddress->type == GRUB_NET_LINK_LEVEL_PROTOCOL_ETHERNET
 	&& hwaddress->mac[0] == 0x33 && hwaddress->mac[1] == 0x33
 	&& hwaddress->mac[2] == 0xff
-	&& hwaddress->mac[3] == ((grub_be_to_cpu64 (inf->address.ipv6[1]) 
+	&& hwaddress->mac[3] == ((grub_be_to_cpu64 (inf->address.ipv6[1])
 				  >> 16) & 0xff)
 	&& hwaddress->mac[4] == ((grub_be_to_cpu64 (inf->address.ipv6[1])
 				  >> 8) & 0xff)
@@ -325,7 +326,7 @@ handle_dgram (struct grub_net_buff *nb,
 	break;
       }
   }
- 
+
   if (!inf && !(dest->type == GRUB_NET_NETWORK_LEVEL_PROTOCOL_IPV6
 		&& dest->ipv6[0] == grub_be_to_cpu64_compile_time (0xff02ULL
 								   << 48)
@@ -439,7 +440,7 @@ grub_net_recv_ip4_packets (struct grub_net_buff *nb,
       }
     if (actual_size < expected_size)
       {
-	grub_dprintf ("net", "Cut IP packet actual: %" PRIuGRUB_SIZE 
+	grub_dprintf ("net", "Cut IP packet actual: %" PRIuGRUB_SIZE
 		      ", expected %" PRIuGRUB_SIZE "\n", actual_size,
 		      expected_size);
 	grub_netbuff_free (nb);
@@ -512,7 +513,14 @@ grub_net_recv_ip4_packets (struct grub_net_buff *nb,
     {
       rsm->total_len = (8 * (grub_be_to_cpu16 (iph->frags) & OFFSET_MASK)
 			+ (nb->tail - nb->data));
-      rsm->total_len -= ((iph->verhdrlen & 0xf) * sizeof (grub_uint32_t));
+
+      if (grub_sub (rsm->total_len, (iph->verhdrlen & 0xf) * sizeof (grub_uint32_t),
+		    &rsm->total_len))
+	{
+	  grub_dprintf ("net", "IP reassembly size underflow\n");
+	  return GRUB_ERR_NONE;
+	}
+
       rsm->asm_netbuff = grub_netbuff_alloc (rsm->total_len);
       if (!rsm->asm_netbuff)
 	{
@@ -701,7 +709,7 @@ grub_net_recv_ip6_packets (struct grub_net_buff *nb,
       }
     if (actual_size < expected_size)
       {
-	grub_dprintf ("net", "Cut IP packet actual: %" PRIuGRUB_SIZE 
+	grub_dprintf ("net", "Cut IP packet actual: %" PRIuGRUB_SIZE
 		      ", expected %" PRIuGRUB_SIZE "\n", actual_size,
 		      expected_size);
 	grub_netbuff_free (nb);

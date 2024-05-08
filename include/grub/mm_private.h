@@ -20,16 +20,29 @@
 #define GRUB_MM_PRIVATE_H	1
 
 #include <grub/mm.h>
+#include <grub/misc.h>
+
+/* For context, see kern/mm.c */
 
 /* Magic words.  */
 #define GRUB_MM_FREE_MAGIC	0x2d3c2808
 #define GRUB_MM_ALLOC_MAGIC	0x6db08fa4
 
+/* A header describing a block of memory - either allocated or free */
 typedef struct grub_mm_header
 {
+  /*
+   * The 'next' free block in this region's circular free list.
+   * Only meaningful if the block is free.
+   */
   struct grub_mm_header *next;
+  /* The block size, not in bytes but the number of cells of
+   * GRUB_MM_ALIGN bytes. Includes the header cell.
+   */
   grub_size_t size;
+  /* either free or alloc magic, depending on the block type. */
   grub_size_t magic;
+  /* pad to cell size: see the top of kern/mm.c. */
 #if GRUB_CPU_SIZEOF_VOID_P == 4
   char padding[4];
 #elif GRUB_CPU_SIZEOF_VOID_P == 8
@@ -48,17 +61,55 @@ typedef struct grub_mm_header
 
 #define GRUB_MM_ALIGN	(1 << GRUB_MM_ALIGN_LOG2)
 
+/* A region from which we can make allocations. */
 typedef struct grub_mm_region
 {
+  /* The first free block in this region. */
   struct grub_mm_header *first;
+
+  /*
+   * The next region in the linked list of regions. Regions are initially
+   * sorted in order of increasing size, but can grow, in which case the
+   * ordering may not be preserved.
+   */
   struct grub_mm_region *next;
+
+  /*
+   * A grub_mm_region will always be aligned to cell size. The pre-size is
+   * the number of bytes we were given but had to skip in order to get that
+   * alignment.
+   */
   grub_size_t pre_size;
+
+  /*
+   * Likewise, the post-size is the number of bytes we wasted at the end
+   * of the allocation because it wasn't a multiple of GRUB_MM_ALIGN
+   */
+  grub_size_t post_size;
+
+  /* How many bytes are in this region? (free and allocated) */
   grub_size_t size;
+
+  /* pad to a multiple of cell size */
+  char padding[3 * GRUB_CPU_SIZEOF_VOID_P];
 }
 *grub_mm_region_t;
 
 #ifndef GRUB_MACHINE_EMU
 extern grub_mm_region_t EXPORT_VAR (grub_mm_base);
 #endif
+
+static inline void
+grub_mm_size_sanity_check (void) {
+  /* Ensure we preserve alignment when doing h = (grub_mm_header_t) (r + 1). */
+  COMPILE_TIME_ASSERT ((sizeof (struct grub_mm_region) %
+		        sizeof (struct grub_mm_header)) == 0);
+
+  /*
+   * GRUB_MM_ALIGN is supposed to represent cell size, and a mm_header is
+   * supposed to be 1 cell.
+   */
+  COMPILE_TIME_ASSERT (sizeof (struct grub_mm_header) == GRUB_MM_ALIGN);
+}
 
 #endif

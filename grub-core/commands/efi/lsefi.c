@@ -29,11 +29,11 @@
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
-struct known_protocol
+static struct known_protocol
 {
-  grub_efi_guid_t guid;
+  grub_guid_t guid;
   const char *name;
-} known_protocols[] = 
+} known_protocols[] =
   {
     { GRUB_EFI_DISK_IO_GUID, "disk" },
     { GRUB_EFI_BLOCK_IO_GUID, "block" },
@@ -55,6 +55,7 @@ struct known_protocol
     { GRUB_EFI_ABSOLUTE_POINTER_PROTOCOL_GUID, "absolute pointer" },
     { GRUB_EFI_DRIVER_BINDING_PROTOCOL_GUID, "EFI driver binding" },
     { GRUB_EFI_LOAD_FILE_PROTOCOL_GUID, "load file" },
+    { GRUB_EFI_LOAD_FILE2_PROTOCOL_GUID, "load file2" },
     { GRUB_EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_GUID, "simple FS" },
     { GRUB_EFI_TAPE_IO_PROTOCOL_GUID, "tape I/O" },
     { GRUB_EFI_UNICODE_COLLATION_PROTOCOL_GUID, "unicode collation" },
@@ -95,7 +96,7 @@ grub_cmd_lsefi (grub_command_t cmd __attribute__ ((unused)),
       grub_efi_handle_t handle = handles[i];
       grub_efi_status_t status;
       grub_efi_uintn_t num_protocols;
-      grub_efi_packed_guid_t **protocols;
+      grub_packed_guid_t **protocols;
       grub_efi_device_path_t *dp;
 
       grub_printf ("Handle %p\n", handle);
@@ -107,8 +108,9 @@ grub_cmd_lsefi (grub_command_t cmd __attribute__ ((unused)),
 	  grub_efi_print_device_path (dp);
 	}
 
-      status = efi_call_3 (grub_efi_system_table->boot_services->protocols_per_handle,
-			   handle, &protocols, &num_protocols);
+      status = grub_efi_system_table->boot_services->protocols_per_handle (handle,
+									   &protocols,
+									   &num_protocols);
       if (status != GRUB_EFI_SUCCESS) {
 	grub_printf ("Unable to retrieve protocols\n");
 	continue;
@@ -122,18 +124,7 @@ grub_cmd_lsefi (grub_command_t cmd __attribute__ ((unused)),
 	  if (k < ARRAY_SIZE (known_protocols))
 	    grub_printf ("  %s\n", known_protocols[k].name);
 	  else
-	    grub_printf ("  %08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x\n",
-			 protocols[j]->data1,
-			 protocols[j]->data2,
-			 protocols[j]->data3,
-			 (unsigned) protocols[j]->data4[0],
-			 (unsigned) protocols[j]->data4[1],
-			 (unsigned) protocols[j]->data4[2],
-			 (unsigned) protocols[j]->data4[3],
-			 (unsigned) protocols[j]->data4[4],
-			 (unsigned) protocols[j]->data4[5],
-			 (unsigned) protocols[j]->data4[6],
-			 (unsigned) protocols[j]->data4[7]);
+	    grub_printf ("  %pG\n", protocols[j]);
 	}
 
     }

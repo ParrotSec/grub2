@@ -35,12 +35,7 @@
 #include <limits.h>
 #endif
 
-#if defined(MAJOR_IN_MKDEV)
-#include <sys/mkdev.h>
-#elif defined(MAJOR_IN_SYSMACROS)
-#include <sys/sysmacros.h>
-#endif
-
+#include <grub/osdep/major.h>
 #include <grub/types.h>
 #include <sys/ioctl.h>         /* ioctl */
 #include <sys/mount.h>
@@ -49,6 +44,7 @@
 
 #include <grub/mm.h>
 #include <grub/misc.h>
+#include <grub/disk.h>
 #include <grub/emu/misc.h>
 #include <grub/emu/hostdisk.h>
 #include <grub/emu/getroot.h>
@@ -139,6 +135,7 @@ static char **
 grub_util_raid_getmembers (const char *name, int bootable)
 {
   int fd, ret, i, j;
+  int remaining;
   char **devicelist;
   mdu_version_t version;
   mdu_array_info_t info;
@@ -170,22 +167,22 @@ grub_util_raid_getmembers (const char *name, int bootable)
 
   devicelist = xcalloc (info.nr_disks + 1, sizeof (char *));
 
-  for (i = 0, j = 0; j < info.nr_disks; i++)
+  remaining = info.nr_disks;
+  for (i = 0, j = 0; i < GRUB_MDRAID_MAX_DISKS && remaining > 0; i++)
     {
       disk.number = i;
       ret = ioctl (fd, GET_DISK_INFO, &disk);
       if (ret != 0)
 	grub_util_error (_("ioctl GET_DISK_INFO error: %s"), strerror (errno));
-      
+
+      /* Skip: MD_DISK_REMOVED slots don't contribute to "remaining" count. */
       if (disk.state & (1 << MD_DISK_REMOVED))
 	continue;
+      remaining--;
 
+      /* Only record disks that are actively participating in the array. */
       if (disk.state & (1 << MD_DISK_ACTIVE))
-	devicelist[j] = grub_find_device (NULL,
-					  makedev (disk.major, disk.minor));
-      else
-	devicelist[j] = NULL;
-      j++;
+        devicelist[j++] = grub_find_device (NULL, makedev (disk.major, disk.minor));
     }
 
   devicelist[j] = NULL;
@@ -273,12 +270,12 @@ get_btrfs_fs_prefix (const char *mount_path)
   char *ret = NULL;
 
   fd = open (mount_path, O_RDONLY);
-	  
+
   if (fd < 0)
     return NULL;
   memset (&args, 0, sizeof(args));
   args.objectid = GRUB_BTRFS_TREE_ROOT_OBJECTID;
-  
+
   if (ioctl (fd, BTRFS_IOC_INO_LOOKUP, &args) < 0)
     goto fail;
   tree_id = args.treeid;
@@ -615,7 +612,7 @@ get_mdadm_uuid (const char *os_dev)
       if (strncmp (buf, "MD_UUID=", sizeof ("MD_UUID=") - 1) == 0)
 	{
 	  char *name_start, *ptri, *ptro;
-	  
+
 	  free (name);
 	  name_start = buf + sizeof ("MD_UUID=") - 1;
 	  ptro = name = xmalloc (strlen (name_start) + 1);
@@ -703,7 +700,7 @@ grub_util_is_imsm (const char *os_dev)
 		       sizeof ("MD_METADATA=imsm") - 1) == 0)
 	    {
 	      is_imsm = 1;
-	      grub_util_info ("%s is imsm", dev);	      
+	      grub_util_info ("%s is imsm", dev);
 	      break;
 	    }
 	}

@@ -286,7 +286,7 @@ grub_linux_setup_video (struct linux_kernel_params *params)
 	  params->lfb_size >>= 16;
 	  params->have_vga = GRUB_VIDEO_LINUX_TYPE_VESA;
 	  break;
-	
+
 	case GRUB_VIDEO_DRIVER_EFI_UGA:
 	case GRUB_VIDEO_DRIVER_EFI_GOP:
 	  params->have_vga = GRUB_VIDEO_LINUX_TYPE_EFIFB;
@@ -591,9 +591,9 @@ grub_linux_boot (void)
 					 &efi_desc_size, &efi_desc_version);
     if (err)
       return err;
-    
+
     /* Note that no boot services are available from here.  */
-    efi_mmap_target = ctx.real_mode_target 
+    efi_mmap_target = ctx.real_mode_target
       + ((grub_uint8_t *) efi_mmap_buf - (grub_uint8_t *) real_mode_mem);
     /* Pass EFI parameters.  */
     if (grub_le_to_cpu16 (ctx.params->version) >= 0x0208)
@@ -622,6 +622,18 @@ grub_linux_boot (void)
 	ctx.params->v0204.efi_mmap_size = efi_mmap_size;
       }
   }
+#endif
+
+#if defined (__x86_64__) && defined (GRUB_MACHINE_EFI)
+  if (grub_le_to_cpu16 (ctx.params->version) >= 0x020c &&
+      (linux_params.xloadflags & LINUX_X86_XLF_KERNEL_64) != 0)
+    {
+      struct grub_relocator64_efi_state state64;
+
+      state64.rsi = ctx.real_mode_target;
+      state64.rip = ctx.params->code32_start + LINUX_X86_STARTUP64_OFFSET;
+      return grub_relocator64_efi_boot (relocator, state64);
+    }
 #endif
 
   /* FIXME.  */
@@ -743,7 +755,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
       align = 0;
       relocatable = 0;
     }
-    
+
   if (grub_le_to_cpu16 (lh.version) >= 0x020a)
     {
       min_align = lh.min_alignment;
@@ -1085,8 +1097,21 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
 
   addr_min = (grub_addr_t) prot_mode_target + prot_init_space;
 
+  /* Make sure the maximum address is able to store the initrd. */
+  if (addr_max < aligned_size)
+    {
+      grub_error (GRUB_ERR_OUT_OF_RANGE,
+                  N_("the size of initrd is bigger than addr_max"));
+      goto fail;
+    }
+
   /* Put the initrd as high as possible, 4KiB aligned.  */
   addr = (addr_max - aligned_size) & ~0xFFF;
+
+  grub_dprintf ("linux",
+                "Initrd at addr 0x%" PRIxGRUB_ADDR " which is expected in"
+                " ranger 0x%" PRIxGRUB_ADDR " ~ 0x%" PRIxGRUB_ADDR "\n",
+                addr, addr_min, addr_max);
 
   if (addr < addr_min)
     {
@@ -1107,11 +1132,11 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
     initrd_mem_target = get_physical_target_address (ch);
   }
 
-  if (grub_initrd_load (&initrd_ctx, argv, initrd_mem))
+  if (grub_initrd_load (&initrd_ctx, initrd_mem))
     goto fail;
 
-  grub_dprintf ("linux", "Initrd, addr=0x%x, size=0x%x\n",
-		(unsigned) addr, (unsigned) size);
+  grub_dprintf ("linux", "Initrd (%p) at 0x%" PRIxGRUB_ADDR ", size=0x%" PRIxGRUB_SIZE "\n",
+		initrd_mem, initrd_mem_target, size);
 
   linux_params.ramdisk_image = initrd_mem_target;
   linux_params.ramdisk_size = size;
@@ -1123,6 +1148,7 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
   return grub_errno;
 }
 
+#ifndef GRUB_MACHINE_EFI
 static grub_command_t cmd_linux, cmd_initrd;
 
 GRUB_MOD_INIT(linux)
@@ -1139,3 +1165,10 @@ GRUB_MOD_FINI(linux)
   grub_unregister_command (cmd_linux);
   grub_unregister_command (cmd_initrd);
 }
+#else
+extern grub_err_t __attribute__((alias("grub_cmd_linux")))
+grub_cmd_linux_x86_legacy (grub_command_t cmd, int argc, char *argv[]);
+
+extern grub_err_t __attribute__((alias("grub_cmd_initrd")))
+grub_cmd_initrd_x86_legacy (grub_command_t cmd, int argc, char *argv[]);
+#endif

@@ -35,12 +35,12 @@ enum
     GRUB_NET_OUR_IPV4_HEADER_SIZE = 20,
     GRUB_NET_OUR_IPV6_HEADER_SIZE = 40,
     GRUB_NET_OUR_MAX_IP_HEADER_SIZE = 40,
-    GRUB_NET_TCP_RESERVE_SIZE = GRUB_NET_TCP_HEADER_SIZE 
+    GRUB_NET_TCP_RESERVE_SIZE = GRUB_NET_TCP_HEADER_SIZE
     + GRUB_NET_OUR_IPV4_HEADER_SIZE
     + GRUB_NET_MAX_LINK_HEADER_SIZE
   };
 
-typedef enum grub_link_level_protocol_id 
+typedef enum grub_link_level_protocol_id
 {
   GRUB_NET_LINK_LEVEL_PROTOCOL_ETHERNET
 } grub_link_level_protocol_id_t;
@@ -64,7 +64,8 @@ typedef enum grub_net_interface_flags
 typedef enum grub_net_card_flags
   {
     GRUB_NET_CARD_HWADDRESS_IMMUTABLE = 1,
-    GRUB_NET_CARD_NO_MANUAL_INTERFACES = 2
+    GRUB_NET_CARD_NO_MANUAL_INTERFACES = 2,
+    GRUB_NET_CARD_NO_CLOSE_ON_FINI_HW = 4
   } grub_net_card_flags_t;
 
 struct grub_net_card;
@@ -149,7 +150,7 @@ struct grub_net_card
 
 struct grub_net_network_level_interface;
 
-typedef enum grub_network_level_protocol_id 
+typedef enum grub_network_level_protocol_id
 {
   GRUB_NET_NETWORK_LEVEL_PROTOCOL_DHCP_RECV,
   GRUB_NET_NETWORK_LEVEL_PROTOCOL_IPV4,
@@ -182,11 +183,11 @@ typedef struct grub_net_network_level_netaddress
   {
     struct {
       grub_uint32_t base;
-      int masksize; 
+      int masksize;
     } ipv4;
     struct {
       grub_uint64_t base[2];
-      int masksize; 
+      int masksize;
     } ipv6;
   };
 } grub_net_network_level_netaddress_t;
@@ -252,7 +253,7 @@ typedef struct grub_net_app_protocol *grub_net_app_level_t;
 
 typedef struct grub_net_socket *grub_net_socket_t;
 
-struct grub_net_app_protocol 
+struct grub_net_app_protocol
 {
   struct grub_net_app_protocol *next;
   struct grub_net_app_protocol **prev;
@@ -270,12 +271,14 @@ typedef struct grub_net
 {
   char *server;
   char *name;
+  grub_uint16_t port;
   grub_net_app_level_t protocol;
   grub_net_packets_t packs;
   grub_off_t offset;
   grub_fs_t fs;
   int eof;
   int stall;
+  int broken;
 } *grub_net_t;
 
 extern grub_net_t (*EXPORT_VAR (grub_net_open)) (const char *name);
@@ -512,11 +515,17 @@ grub_net_addr_cmp (const grub_net_network_level_address_t *a,
 
 #define GRUB_NET_MAX_STR_HWADDR_LEN (sizeof ("XX:XX:XX:XX:XX:XX"))
 
+/* Max VLAN id = 4094 */
+#define GRUB_NET_MAX_STR_VLAN_LEN (sizeof ("vlanXXXX"))
+
 void
 grub_net_addr_to_str (const grub_net_network_level_address_t *target,
 		      char *buf);
 void
 grub_net_hwaddr_to_str (const grub_net_link_level_address_t *addr, char *str);
+
+void
+grub_net_vlan_to_str (grub_uint16_t vlantag, char *str);
 
 grub_err_t
 grub_env_set_net_property (const char *intername, const char *suffix,

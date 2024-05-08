@@ -109,14 +109,36 @@ grub_util_find_hurd_root_device (const char *path)
     grub_util_error (_("translator `%s' for path `%s' is given only options, "
                        "cannot find device part"), argz, path);
 
+  int part = -1;
+  if (strncmp (name, "part:", sizeof ("part:") - 1) == 0)
+    {
+      char *next = strchr (name + sizeof ("part:") - 1, ':');
+      if (next)
+        {
+          part = atoi (name + sizeof ("part:") - 1);
+          name = next + 1;
+        }
+    }
   if (strncmp (name, "device:", sizeof ("device:") - 1) == 0)
     {
       char *dev_name = name + sizeof ("device:") - 1;
-      size_t size = sizeof ("/dev/") - 1 + strlen (dev_name) + 1;
-      char *next;
-      ret = malloc (size);
-      next = stpncpy (ret, "/dev/", size);
-      stpncpy (next, dev_name, size - (next - ret));
+
+      if (dev_name[0] == '@')
+        {
+	  /*
+	   * Non-bootstrap disk driver, the /dev/ entry is normally set up with
+	   * the same @.
+	   */
+          char *next_name = strchr (dev_name, ':');
+
+          if (next_name)
+            dev_name = next_name + 1;
+        }
+
+      if (part >= 0)
+        ret = xasprintf("/dev/%ss%u", dev_name, part);
+      else
+        ret = xasprintf("/dev/%s", dev_name);
     }
   else if (!strncmp (name, "file:", sizeof ("file:") - 1))
     ret = strdup (name + sizeof ("file:") - 1);

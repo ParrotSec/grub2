@@ -96,22 +96,15 @@ This edition documents version @value{VERSION}.
 * Filesystem::                  Filesystem syntax and semantics
 * Interface::                   The menu and the command-line
 * Environment::                 GRUB environment variables
-* Commands::                    The list of available builtin commands
+* Modules::                     Available modules
+* Commands::                    Available builtin commands
 * Internationalisation::        Topics relating to language support
 * Security::                    Authentication, authorisation, and signatures
-* Platform limitations::        The list of platform-specific limitations
+* Platform limitations::        Platform-specific limitations
 * Platform-specific operations:: Platform-specific operations
-* Supported kernels::           The list of supported kernels
+* Supported kernels::           Supported kernels
 * Troubleshooting::             Error messages produced by GRUB
-* Invoking grub-install::       How to use the GRUB installer
-* Invoking grub-mkconfig::      Generate a GRUB configuration file
-* Invoking grub-mkpasswd-pbkdf2::
-                                Generate GRUB password hashes
-* Invoking grub-mkrelpath::     Make system path relative to its root
-* Invoking grub-mkrescue::      Make a GRUB rescue image
-* Invoking grub-mount::         Mount a file system using GRUB
-* Invoking grub-probe::         Probe device information for GRUB
-* Invoking grub-script-check::  Check GRUB script file for syntax errors
+* User-space utilities::        Usage of user-space utilities
 * Obtaining and Building GRUB:: How to obtain and build GRUB
 * Reporting bugs::              Where you should send a bug report
 * Future::                      Some future plans on GRUB
@@ -836,22 +829,29 @@ use difficult disk access methods like ahci. Hence GRUB will warn if attempted
 to install into small MBR gap except in a small number of configurations
 that were grandfathered. The grandfathered config must:
 
-* use biosdisk as disk access module for @file{/boot}
-* not use any additional partition maps to access @file{/boot}
-* @file{/boot} must be on one of following filesystems:
-   * AFFS, AFS, BFS, cpio, newc, odc, ext2/3/4, FAT, exFAT,
+@itemize @bullet
+@item
+use biosdisk as disk access module for @file{/boot}
+
+@item
+not use any additional partition maps to access @file{/boot}
+
+@item
+@file{/boot} must be on one of following filesystems:
+   AFFS, AFS, BFS, cpio, newc, odc, ext2/3/4, FAT, exFAT,
    F2FS, HFS, uncompressed HFS+, ISO9660, JFS, Minix, Minix2, Minix3, NILFS2,
    NTFS, ReiserFS, ROMFS, SFS, tar, UDF, UFS1, UFS2, XFS
+@end itemize
 
 MBR gap has few technical problems.  There is no way to reserve space in
 the embedding area with complete safety, and some proprietary software is
 known to use it to make it difficult for users to work around licensing
-restrictions. GRUB works it around by detecting sectors by other software and
+restrictions. GRUB works around it by detecting sectors by other software and
 avoiding them and protecting its own sectors using Reed-Solomon encoding.
 
-GRUB team recommends having MBR gap of at least 1000 KiB
+GRUB team recommends having MBR gap of at least 1000 KiB.
 
-Should it be not possible GRUB has support for a fallback solution which is
+Should it not be possible, GRUB has support for a fallback solution which is
 heavily recommended against. Installing to a filesystem means that GRUB is
 vulnerable to its blocks being moved around by filesystem features such as
 tail packing, or even by aggressive fsck implementations, so this approach
@@ -916,17 +916,17 @@ magic.
 @node General boot methods
 @section How to boot operating systems
 
-GRUB has two distinct boot methods. One of the two is to load an
-operating system directly, and the other is to chain-load another boot
-loader which then will load an operating system actually. Generally
-speaking, the former is more desirable, because you don't need to
-install or maintain other boot loaders and GRUB is flexible enough to
-load an operating system from an arbitrary disk/partition. However,
-the latter is sometimes required, since GRUB doesn't support all the
-existing operating systems natively.
+GRUB has three distinct boot methods: loading an operating system
+directly, using kexec from userspace, and chainloading another
+bootloader. Generally speaking, the first two are more desirable
+because you don't need to install or maintain other boot loaders and
+GRUB is flexible enough to load an operating system from an arbitrary
+disk/partition. However, chainloading is sometimes required, as GRUB
+doesn't support all existing operating systems natively.
 
 @menu
 * Loading an operating system directly::
+* Kexec::
 * Chain-loading::
 @end menu
 
@@ -952,13 +952,27 @@ use more complicated instructions. @xref{DOS/Windows}, for more
 information.
 
 
+@node Kexec
+@subsection Kexec with grub2-emu
+
+GRUB can be run in userspace by invoking the grub2-emu tool. It will
+read all configuration scripts as if booting directly (see @ref{Loading
+an operating system directly}). With the @code{--kexec} flag, and
+kexec(8) support from the operating system, the @command{linux} command
+will directly boot the target image. For systems that lack working
+systemctl(1) support for kexec, passing the @code{--kexec} flag twice
+will fallback to invoking kexec(8) directly; note however that this
+fallback may be unsafe outside read-only environments, as it does not
+invoke shutdown machinery.
+
+
 @node Chain-loading
 @subsection Chain-loading an OS
 
 Operating systems that do not support Multiboot and do not have specific
 support in GRUB (specific support is available for Linux, FreeBSD, NetBSD
 and OpenBSD) must be chain-loaded, which involves loading another boot
-loader and jumping to it in real mode.
+loader and jumping to it in real mode or via the firmware.
 
 The @command{chainloader} command (@pxref{chainloader}) is used to set this
 up.  It is normally also necessary to load some GRUB modules and set the
@@ -990,21 +1004,22 @@ is discovered. This is achieved by GRUB loading a specially made
 small image and passing it as ramdisk to the kernel. This is achieved
 by commands @command{kfreebsd_module}, @command{knetbsd_module_elf},
 @command{kopenbsd_ramdisk}, @command{initrd} (@pxref{initrd}),
-@command{initrd16} (@pxref{initrd}), @command{multiboot_module},
+@command{initrd16} (@pxref{initrd16}), @command{multiboot_module},
 @command{multiboot2_module} or @command{xnu_ramdisk}
 depending on the loader. Note that for knetbsd the image must be put
 inside miniroot.kmod and the whole miniroot.kmod has to be loaded. In
-kopenbsd payload this is disabled by default. Aditionally behaviour of
+kopenbsd payload this is disabled by default. Additionally, behaviour of
 initial ramdisk depends on command line options. Several distributors provide
 the image for this purpose or it's integrated in their standard ramdisk and
 activated by special option. Consult your kernel and distribution manual for
-more details. Other loaders like appleloader, chainloader (BIOS, EFI, coreboot),
-freedos, ntldr and plan9 provide no possibility of loading initial ramdisk and
+more details. Other loaders like @command{appleloader}, @command{chainloader}
+(BIOS, EFI, coreboot), @command{freedos}, @command{ntldr}, @command{plan9}
+and @command{truecrypt} provide no possibility of loading initial ramdisk and
 as far as author is aware the payloads in question don't support either initial
 ramdisk or discovering loopback boot in other way and as such not bootable this
 way. Please consider alternative boot methods like copying all files
 from the image to actual partition. Consult your OS documentation for
-more details
+more details.
 
 @node LVM cache booting
 @section Booting from LVM cache logical volume
@@ -1411,6 +1426,13 @@ entry for recovery mode.  This option lists command-line arguments to add
 only to the default menu entry, after those listed in
 @samp{GRUB_CMDLINE_LINUX}.
 
+@item GRUB_CMDLINE_LINUX_RECOVERY
+Unless @samp{GRUB_DISABLE_RECOVERY} is set to @samp{true}, two menu
+entries will be generated for each Linux kernel: one default entry and one
+entry for recovery mode. This option lists command-line arguments to add
+only to the recovery menu entry, before those listed in @samp{GRUB_CMDLINE_LINUX}.
+The default is @samp{single}.
+
 @item GRUB_CMDLINE_NETBSD
 @itemx GRUB_CMDLINE_NETBSD_DEFAULT
 As @samp{GRUB_CMDLINE_LINUX} and @samp{GRUB_CMDLINE_LINUX_DEFAULT}, but for
@@ -1428,6 +1450,16 @@ for all respectively normal entries.
 @item GRUB_CMDLINE_LINUX_XEN_REPLACE_DEFAULT
 The values of these options replace the values of @samp{GRUB_CMDLINE_LINUX}
 and @samp{GRUB_CMDLINE_LINUX_DEFAULT} for Linux and Xen menu entries.
+
+@item GRUB_TOP_LEVEL
+@item GRUB_TOP_LEVEL_XEN
+This option should be an absolute path to a kernel image. If provided, the
+image specified will be made the top-level entry if it is found in the scan.
+
+@item GRUB_TOP_LEVEL_OS_PROBER
+This option should be a line of output from @command{os-prober}. As
+@samp{GRUB_TOP_LEVEL}, if provided, the image specified will be made the
+top-level entry if it is found in the scan.
 
 @item GRUB_EARLY_INITRD_LINUX_CUSTOM
 @itemx GRUB_EARLY_INITRD_LINUX_STOCK
@@ -1500,7 +1532,8 @@ resolution.  @xref{gfxmode}.
 Set a background image for use with the @samp{gfxterm} graphical terminal.
 The value of this option must be a file readable by GRUB at boot time, and
 it must end with @file{.png}, @file{.tga}, @file{.jpg}, or @file{.jpeg}.
-The image will be scaled if necessary to fit the screen.
+The image will be scaled if necessary to fit the screen. Image height and
+width will be restricted by an artificial limit of 16384.
 
 @item GRUB_THEME
 Set a theme for use with the @samp{gfxterm} graphical terminal.
@@ -1655,7 +1688,8 @@ command.
 @end multitable
 
 Remember, @samp{GRUB_DISABLE_LINUX_PARTUUID} and @samp{GRUB_DISABLE_LINUX_UUID}
-are also considered to be set to @samp{false} when they are unset.
+are also considered to be set to @samp{true} and @samp{false}, respectively,
+when they are unset.
 
 @node Shell-like scripting
 @section Writing full configuration files directly
@@ -1774,18 +1808,20 @@ of the last command that executes.  If the expansion of the items following
 status is 0.
 
 @item if @var{list}; then @var{list}; [elif @var{list}; then @var{list};] @dots{} [else @var{list};] fi
-The @code{if} @var{list} is executed.  If its exit status is zero, the
-@code{then} @var{list} is executed.  Otherwise, each @code{elif} @var{list}
-is executed in turn, and if its exit status is zero, the corresponding
-@code{then} @var{list} is executed and the command completes.  Otherwise,
-the @code{else} @var{list} is executed, if present.  The exit status is the
-exit status of the last command executed, or zero if no condition tested
-true.
+The @code{if} @var{list} is executed, where @var{list} is a series of
+@dfn{simple command}s separated by a ";".  If its exit status of the last
+command is zero, the @code{then} @var{list} is executed.  Otherwise, each
+@code{elif} @var{list} is executed in turn, and if its last command's exit
+status is zero, the corresponding @code{then} @var{list} is executed and the
+command completes. Otherwise, the @code{else} @var{list} is executed, if
+present.  The exit status is the exit status of the last command executed, or
+zero if no condition tested true.
 
 @item while @var{cond}; do @var{list}; done
 @itemx until @var{cond}; do @var{list}; done
 The @code{while} command continuously executes the @code{do} @var{list} as
-long as the last command in @var{cond} returns an exit status of zero.  The
+long as the last command in @var{cond} returns an exit status of zero, where
+@var{cond} is a list of @dfn{simple command}s separated by a ";".  The
 @code{until} command is identical to the @code{while} command, except that
 the test is negated; the @code{do} @var{list} is executed as long as the
 last command in @var{cond} returns a non-zero exit status.  The exit status
@@ -2597,6 +2633,12 @@ The network interface's IP address.  Read-only.
 @item net_@var{<interface>}_mac
 The network interface's MAC address.  Read-only.
 
+@item net_@var{<interface>}_clientid
+The client id provided by DHCP.  Read-only.
+
+@item net_@var{<interface>}_clientuuid
+The client uuid provided by DHCP.  Read-only.
+
 @item net_@var{<interface>}_hostname
 The client host name provided by DHCP.  Read-only.
 
@@ -2667,8 +2709,11 @@ grub> @kbd{terminal_input serial; terminal_output serial}
 The command @command{serial} initializes the serial unit 0 with the
 speed 9600bps. The serial unit 0 is usually called @samp{COM1}, so, if
 you want to use COM2, you must specify @samp{--unit=1} instead. This
-command accepts many other options, so please refer to @ref{serial},
-for more details.
+command accepts many other options, @pxref{serial} for more details.
+
+Without argument or with @samp{--port=auto}, GRUB will attempt to use
+ACPI when available to auto-detect the default serial port and its
+configuration.
 
 The commands @command{terminal_input} (@pxref{terminal_input}) and
 @command{terminal_output} (@pxref{terminal_output}) choose which type of
@@ -3004,6 +3049,18 @@ environment variable @samp{net_default_server} is used.
 Before using the network drive, you must initialize the network.
 @xref{Network}, for more information.
 
+When using @samp{http} or @samp{tftp}, ports other than @samp{80} can be
+specified using a colon (@samp{:}) after the address.  To avoid parsing
+conflicts, when using IPv6 addresses with custom ports, the addresses
+must be enclosed with square brackets (@samp{[]}), as is standard
+practice.
+
+@example
+(http,grub.example.com:31337)
+(http,192.0.2.1:339)
+(http,[2001:db8::1]:11235)
+@end example
+
 If you boot GRUB from a CD-ROM, @samp{(cd)} is available. @xref{Making
 a GRUB bootable CD-ROM}, for details.
 
@@ -3036,16 +3093,18 @@ snapshot name is omitted.
 
 A block list is used for specifying a file that doesn't appear in the
 filesystem, like a chainloader. The syntax is
-@code{[@var{offset}]+@var{length}[,[@var{offset}]+@var{length}]@dots{}}.
+@code{[@var{offset}]+[@var{length}][,[@var{offset}]+[@var{length}]]@dots{}}.
 Here is an example:
 
 @example
-@code{0+100,200+1,300+300}
+@code{0+100,200+1,300+300,800+}
 @end example
 
 This represents that GRUB should read blocks 0 through 99, block 200,
-and blocks 300 through 599. If you omit an offset, then GRUB assumes
-the offset is zero.
+blocks 300 through 599, and blocks 800 until the end of the device.
+If you omit an offset, then GRUB assumes the offset is zero. If the
+length is omitted, then GRUB assumes the block list extends until the
+end of the device.
 
 Like the file name syntax (@pxref{File name syntax}), if a blocklist
 does not contain a device name, then GRUB uses GRUB's @dfn{root
@@ -3080,9 +3139,8 @@ The command-line interface provides a prompt and after it an editable
 text area much like a command-line in Unix or DOS. Each command is
 immediately executed after it is entered@footnote{However, this
 behavior will be changed in the future version, in a user-invisible
-way.}. The commands (@pxref{Command-line and menu entry commands}) are a
-subset of those available in the configuration file, used with exactly
-the same syntax.
+way.}. The commands (@pxref{Commands}) are a subset of those available
+in the configuration file, used with exactly the same syntax.
 
 Cursor movement and editing of the text on the line can be done via a
 subset of the functions available in the Bash shell:
@@ -3164,6 +3222,9 @@ If you protect the menu interface with a password (@pxref{Security}),
 all you can do is choose an entry by pressing @key{RET}, or press
 @key{p} to enter the password.
 
+Pressing @key{Ctrl-l} will refresh the menu, which can be useful when
+connecting via serial after the menu has been drawn.
+
 
 @node Menu entry editor
 @section Editing a menu entry
@@ -3227,9 +3288,12 @@ These variables have special meaning to GRUB.
 * icondir::
 * lang::
 * locale_dir::
+* lockdown::
 * menu_color_highlight::
 * menu_color_normal::
 * net_@var{<interface>}_boot_file::
+* net_@var{<interface>}_clientid::
+* net_@var{<interface>}_clientuuid::
 * net_@var{<interface>}_dhcp_server_name::
 * net_@var{<interface>}_domain::
 * net_@var{<interface>}_extensionspath::
@@ -3248,10 +3312,12 @@ These variables have special meaning to GRUB.
 * pxe_default_gateway::
 * pxe_default_server::
 * root::
+* shim_lock::
 * superusers::
 * theme::
 * timeout::
 * timeout_style::
+* tpm_fail_fatal::
 @end menu
 
 
@@ -3379,9 +3445,16 @@ processed by commands @command{configfile} (@pxref{configfile}) or @command{norm
 @subsection debug
 
 This variable may be set to enable debugging output from various components
-of GRUB.  The value is a list of debug facility names separated by
-whitespace or @samp{,}, or @samp{all} to enable all available debugging
-output. The facility names are the first argument to grub_dprintf. Consult
+of GRUB. The value is an ordered list of debug facility names separated by
+whitespace or @samp{,}. If the special facility named @samp{all} is present
+then debugging output of all facility names is enabled at the start of
+processing the value of this variable. A facility's debug output can then be
+disabled by prefixing its name with a @samp{-}. The last occurence facility
+name with or without a leading @samp{-} takes precendent over any previous
+occurence. This allows the easy enabling or disabling of facilities by
+appending a @samp{,} and then the facility name with or without the leading
+@samp{-}, which will preserve the state of the rest of the facilities.
+The facility names are the first argument to grub_dprintf. Consult the
 source for more details.
 
 
@@ -3535,6 +3608,13 @@ default for this variable if internationalization is needed and any
 translation files are available.
 
 
+@node lockdown
+@subsection lockdown
+
+If this variable is set to @samp{y}, it means that GRUB has entered
+@pxref{Lockdown} mode.
+
+
 @node menu_color_highlight
 @subsection menu_color_highlight
 
@@ -3560,6 +3640,18 @@ The default is the value of @samp{color_normal} (@pxref{color_normal}).
 
 @node net_@var{<interface>}_boot_file
 @subsection net_@var{<interface>}_boot_file
+
+@xref{Network}.
+
+
+@node net_@var{<interface>}_clientid
+@subsection net_@var{<interface>}_clientid
+
+@xref{Network}.
+
+
+@node net_@var{<interface>}_clientuuid
+@subsection net_@var{<interface>}_clientuuid
 
 @xref{Network}.
 
@@ -3684,6 +3776,13 @@ disk, then @samp{prefix} might be set to @samp{(hd0,msdos1)/boot/grub} and
 @samp{root} to @samp{hd0,msdos1}.
 
 
+@node shim_lock
+@subsection shim_lock
+
+If this variable is set to @samp{y}, it means that the shim_lock verifier
+is registered (see @pxref{UEFI secure boot and shim}).
+
+
 @node superusers
 @subsection superusers
 
@@ -3726,6 +3825,20 @@ displaying the menu.  See the documentation of @samp{GRUB_TIMEOUT_STYLE}
 (@pxref{Simple configuration}) for details.
 
 
+@node tpm_fail_fatal
+@subsection tpm_fail_fatal
+
+If this variable is set and true (i.e., not set to ``0'', ``false'',
+``disable'', or ``no''), TPM measurements that fail will be treated as
+fatal. Otherwise, they will merely be debug-logged and boot will
+continue.
+
+Call to EFI firmware, like hash_log_extend_event(), can return an unknown
+error, i.e. due to bug present in firmware. When this variable is set and
+true (same values as with TPM measurements) this situation will be considered
+to be fatal and error-logged as ``unknown TPM error''. If not set, booting
+the OS will be enabled.
+
 @node Environment block
 @section The GRUB environment block
 
@@ -3752,9 +3865,40 @@ using BIOS or EFI functions (no ATA, USB or IEEE1275).
 @command{grub-mkconfig} uses this facility to implement
 @samp{GRUB_SAVEDEFAULT} (@pxref{Simple configuration}).
 
+@node Modules
+@chapter Modules
+
+In this chapter, we list all modules that are available in GRUB (currently incomplete).
+
+Modules can be loaded via the @command{insmod} (@pxref{insmod}) command.
+
+@menu
+* bli::
+@end menu
+
+@node bli
+@section bli
+This module provides basic support for the Boot Loader Interface. The Boot
+Loader Interface specifies a set of EFI variables that are used to communicate
+boot-time information between the bootloader and the operating system.
+
+The following variables are placed under the vendor UUID
+@code{4a67b082-0a4c-41cf-b6c7-440b29bb8c4f} when the module is loaded:
+
+The GPT partition UUID of the EFI System Partition used during boot is
+published via the @code{LoaderDevicePartUUID} variable. The Boot Loader
+Interface specification requires GPT formatted drives. The bli module
+ignores drives/partitions in any other format. If GRUB is loaded from
+a non-GPT partition, e.g. from an MSDOS formatted drive or network,
+this variable will not be set.
+
+A string identifying GRUB as the active bootloader including the version
+number is stored in @code{LoaderInfo}.
+
+This module is only available on UEFI platforms.
 
 @node Commands
-@chapter The list of available commands
+@chapter Available commands
 
 In this chapter, we list all commands that are available in GRUB.
 
@@ -3771,14 +3915,16 @@ shell}.
 
 @menu
 * Menu-specific commands::
+* Loader commands::
 * General commands::
-* Command-line and menu entry commands::
+* Command-line commands::
 * Networking commands::
+* Undocumented commands::
 @end menu
 
 
 @node Menu-specific commands
-@section The list of commands for the menu only
+@section Commands for the menu only
 
 The semantics used in parsing the configuration file are the following:
 
@@ -3858,8 +4004,196 @@ All options are the same as in the @command{menuentry} command
 @end deffn
 
 
+@node Loader commands
+@section Various loader commands
+
+These commands are used to load necessary components to boot desired OS.
+Many of the loader commands are not sufficiently documented. The following is
+a list of commands that could use more documentation:
+
+@itemize @bullet
+@item @command{appleloader} -  Boot BIOS-based system.
+@item @command{freedos} - Load FreeDOS kernel.sys.
+@item @command{kfreebsd_loadenv} - Load FreeBSD env.
+@item @command{kfreebsd_module_elf} - Load FreeBSD kernel module (ELF).
+@item @command{kfreebsd_module} - Load FreeBSD kernel module.
+@item @command{kfreebsd} - Load kernel of FreeBSD.
+@item @command{knetbsd_module_elf} - Load NetBSD kernel module (ELF).
+@item @command{knetbsd_module} - Load NetBSD kernel module.
+@item @command{knetbsd} - Load kernel of NetBSD.
+@item @command{kopenbsd} - Load kernel of OpenBSD.
+@item @command{kopenbsd_ramdisk} -  Load kOpenBSD ramdisk.
+@item @command{legacy_initrd_nounzip} - Simulate grub-legacy `modulenounzip' command
+@item @command{legacy_initrd} - Simulate grub-legacy `initrd' command
+@item @command{legacy_kernel} - Simulate grub-legacy `kernel' command
+@item @command{module2} - Load a multiboot 2 module.
+@item @command{module} - Load a multiboot module.
+@item @command{multiboot2} - Load a multiboot 2 kernel.
+@item @command{multiboot} - Load a multiboot kernel.
+@item @command{ntldr} - Load NTLDR or BootMGR.
+@item @command{plan9} - Load Plan9 kernel.
+@item @command{pxechainloader} - Load a PXE image.
+@item @command{truecrypt} - Load Truecrypt ISO.
+@item @command{xnu_kernel64} - Load 64-bit XNU image.
+@item @command{xnu_kernel} - Load XNU image.
+@item @command{xnu_kextdir} -  Load XNU extension directory.
+@item @command{xnu_kext} - Load XNU extension.
+@item @command{xnu_mkext} - Load XNU extension package.
+@item @command{xnu_ramdisk} -  Load XNU ramdisk. It will be available in OS as md0.
+@item @command{xnu_resume} - Load an image of hibernated XNU.
+@item @command{xnu_splash} - Load a splash image for XNU.
+@end itemize
+
+
+@menu
+* chainloader::                 Chain-load another boot loader
+* initrd::                      Load a Linux initrd
+* initrd16::                    Load a Linux initrd (16-bit mode)
+* linux::                       Load a Linux kernel
+* linux16::                     Load a Linux kernel (16-bit mode)
+@comment * xen_*::              Xen boot commands for AArch64
+* xen_hypervisor::              Load xen hypervisor binary (only on AArch64)
+* xen_module::                  Load xen modules for xen hypervisor (only on AArch64)
+@end menu
+
+
+@node chainloader
+@subsection chainloader
+
+@deffn Command chainloader [@option{--force}] file [args...]
+Load @var{file} as a chain-loader. Like any other file loaded by the
+filesystem code, it can use the blocklist notation (@pxref{Block list
+syntax}) to grab the first sector of the current partition with @samp{+1}.
+On EFI platforms, any arguments after @var{file} will be sent to the loaded
+image.
+
+If you specify the option @option{--force}, then load @var{file} forcibly,
+whether it has a correct signature or not. This is required when you want to
+load a defective boot loader, such as SCO UnixWare 7.1.
+@end deffn
+
+
+@node initrd
+@subsection initrd
+
+@deffn Command initrd file [file @dots{}]
+Load, in order, all initrds for a Linux kernel image, and set the
+appropriate parameters in the Linux setup area in memory.  This may only
+be used after the @command{linux} command (@pxref{linux}) has been run.
+See @ref{GNU/Linux} for more info on booting GNU/Linux.  For more
+information on initrds see the GNU/Linux kernel
+@uref{https://docs.kernel.org/filesystems/ramfs-rootfs-initramfs.html,
+documentation}.
+
+A new-style initrd (for kernels newer than 2.6) containing one file
+with leading path components can also be generated at run time. This
+can be done by prefixing an argument with @code{newc:} followed by the
+path of the file in the new initrd, a @code{:}, and then the GRUB file
+path to the file data to be be included.
+
+For example:
+@example
+initrd newc:/etc/ssh/config:(hd0,2)/home/user/.ssh/config \
+       newc:/etc/ssh/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key \
+       /boot/initrd.gz \
+       newc:/init:/home/user/init.fixed
+@end example
+
+This command will generate two new-style initrds on the fly. The first
+contains the path @samp{/etc/ssh/config} with the contents of
+@samp{(hd0,2)/home/user/.ssh/config} and the path
+@samp{/etc/ssh/ssh_host_rsa_key} with the contents of
+@samp{/etc/ssh/ssh_host_rsa_key} on the @var{root} device. Parent directory
+paths will automatically be generated as needed. This first generated initrd
+will then have @samp{/boot/initrd.gz} concatenated after it. Next, another
+new-style archive will be generated with the contents of @samp{/home/user/init.fixed}
+in the path @samp{/init} and appended to the previous concatenation. Finally,
+the result will be sent to the kernel when booted.
+
+Keep in mind that paths that come later will take precedence. So in the
+example above, the generated path @samp{/init} will overwrite any @samp{/init}
+in @samp{/boot/initrd.gz}. This can be useful when changing the main initrd
+is undesirable or difficult.
+@end deffn
+
+
+@node initrd16
+@subsection initrd16
+
+@deffn Command initrd16 file [file @dots{}]
+Load, in order, all initrds for a Linux kernel image to be booted in
+16-bit mode, and set the appropriate parameters in the Linux setup area in
+memory.  This may only be used after the @command{linux16} command
+(@pxref{linux16}) has been run.  See also @ref{GNU/Linux} and the @command{initrd}
+command (@pxref{initrd}) for more details on arguments.
+
+This command is only available on the pc platform for x86 systems.
+@end deffn
+
+
+@node linux
+@subsection linux
+
+@deffn Command linux file @dots{}
+Load a Linux kernel image from @var{file}.  The rest of the line is passed
+verbatim as the @dfn{kernel command-line}.  Any initrd must be reloaded
+after using this command (@pxref{initrd}).
+
+On x86 systems, the kernel will be booted using the 32-bit boot protocol.
+Note that this means that the @samp{vga=} boot option will not work; if you
+want to set a special video mode, you will need to use GRUB commands such as
+@samp{set gfxpayload=1024x768} or @samp{set gfxpayload=keep} (to keep the
+same mode as used in GRUB) instead.  GRUB can automatically detect some uses
+of @samp{vga=} and translate them to appropriate settings of
+@samp{gfxpayload}.  The @command{linux16} command (@pxref{linux16}) avoids
+this restriction.
+@end deffn
+
+
+@node linux16
+@subsection linux16
+
+@deffn Command linux16 file @dots{}
+Load a Linux kernel image from @var{file} in 16-bit mode.  The rest of the
+line is passed verbatim as the @dfn{kernel command-line}.  Any initrd must
+be reloaded after using this command (@pxref{initrd16}).
+
+The kernel will be booted using the traditional 16-bit boot protocol.  As
+well as bypassing problems with @samp{vga=} described in @ref{linux}, this
+permits booting some other programs that implement the Linux boot protocol
+for the sake of convenience.
+
+This command is only available on x86 systems.
+@end deffn
+
+
+@node xen_hypervisor
+@subsection xen_hypervisor
+
+@deffn Command xen_hypervisor file  [arguments] @dots{}
+Load a Xen hypervisor binary from @var{file}. The rest of the line is passed
+verbatim as the @dfn{kernel command-line}. Any other binaries must be
+reloaded after using this command.
+This command is only available on AArch64 systems.
+@end deffn
+
+
+@node xen_module
+@subsection xen_module
+
+@deffn Command xen_module [--nounzip] file [arguments]
+Load a module for xen hypervisor at the booting process of xen.
+The rest of the line is passed verbatim as the module command line.
+Modules should be loaded in the following order:
+ - dom0 kernel image
+ - dom0 ramdisk if present
+ - XSM policy if present
+This command is only available on AArch64 systems.
+@end deffn
+
+
 @node General commands
-@section The list of general commands
+@section General commands
 
 Commands usable anywhere in the menu and in the command-line.
 
@@ -3877,17 +4211,52 @@ Commands usable anywhere in the menu and in the command-line.
 @deffn Command serial [@option{--unit=unit}] [@option{--port=port}] [@option{--speed=speed}] [@option{--word=word}] [@option{--parity=parity}] [@option{--stop=stop}]
 Initialize a serial device. @var{unit} is a number in the range 0-3
 specifying which serial port to use; default is 0, which corresponds to
-the port often called COM1. @var{port} is the I/O port where the UART
-is to be found; if specified it takes precedence over @var{unit}.
+the port often called COM1.
+
+@var{port} is the I/O port where the UART is to be found or, if prefixed
+with @samp{mmio,}, the MMIO address of the UART. If specified it takes
+precedence over @var{unit}.
+
+Additionally, an MMIO address can be suffixed with:
+@itemize @bullet
+@item
+@samp{.b} for bytes access (default)
+@item
+@samp{.w} for 16-bit word access
+@item
+@samp{.l} for 32-bit long word access or
+@item
+@samp{.q} for 64-bit long long word access
+@end itemize
+
+Also, @var{port} can be of the form @samp{pci,XX:XX.X} to indicate a serial
+device exposed on the PCI bus.
+
 @var{speed} is the transmission speed; default is 9600. @var{word} and
 @var{stop} are the number of data bits and stop bits. Data bits must
 be in the range 5-8 and stop bits must be 1 or 2. Default is 8 data
 bits and one stop bit. @var{parity} is one of @samp{no}, @samp{odd},
 @samp{even} and defaults to @samp{no}.
 
+If passed no @var{unit} nor @var{port}, or if @var{port} is set to
+@samp{auto} then GRUB will attempt to use ACPI to automatically detect
+the system default serial port and its configuration. If this information
+is not available, it will default to @var{unit} 0.
+
 The serial port is not used as a communication channel unless the
 @command{terminal_input} or @command{terminal_output} command is used
 (@pxref{terminal_input}, @pxref{terminal_output}).
+
+Note, valid @var{port} values, excluding IO port addresses, can be found
+by listing terminals with @command{terminal_output}, selecting all names
+prefixed by @samp{serial_} and removing that prefix.
+
+Examples:
+@example
+serial --port=0x3f8 --speed=9600
+serial --port=mmio,fefb0000.l --speed=115200
+serial --port=pci,00:16.3 --speed=115200
+@end example
 
 See also @ref{Serial terminal}.
 @end deffn
@@ -3958,8 +4327,8 @@ printed.
 @end deffn
 
 
-@node Command-line and menu entry commands
-@section The list of command-line and menu entry commands
+@node Command-line commands
+@section Command-line commands
 
 These commands are usable in the command-line and in menu entries.  If
 you forget a command, you can run the command @command{help}
@@ -3975,7 +4344,6 @@ you forget a command, you can run the command @command{help}
 * blocklist::                   Print a block list
 * boot::                        Start up your operating system
 * cat::                         Show the contents of a file
-* chainloader::                 Chain-load another boot loader
 * clear::                       Clear the screen
 * cmosclean::                   Clear bit in CMOS
 * cmosdump::                    Dump CMOS contents
@@ -3991,20 +4359,20 @@ you forget a command, you can run the command @command{help}
 * distrust::                    Remove a pubkey from trusted keys
 * drivemap::                    Map a drive to another
 * echo::                        Display a line of text
+* efitextmode::                 Set/Get text output mode resolution
 * eval::                        Evaluate agruments as GRUB commands
 * export::                      Export an environment variable
 * false::                       Do nothing, unsuccessfully
+* fwsetup::                     Reboot into the firmware setup menu
+* gdbinfo::                     Provide info for debugging with GDB
 * gettext::                     Translate a string
 * gptsync::                     Fill an MBR based on GPT entries
 * halt::                        Shut down your computer
 * hashsum::                     Compute or check hash checksum
 * help::                        Show help messages
-* initrd::                      Load a Linux initrd
-* initrd16::                    Load a Linux initrd (16-bit mode)
+* hexdump::                     Show raw contents of a file or memory
 * insmod::                      Insert a module
 * keystatus::                   Check key modifier status
-* linux::                       Load a Linux kernel
-* linux16::                     Load a Linux kernel (16-bit mode)
 * list_env::                    List variables in environment block
 * list_trusted::                List trusted public keys
 * load_env::                    Load variables from environment block
@@ -4022,6 +4390,7 @@ you forget a command, you can run the command @command{help}
 * parttool::                    Modify partition table entries
 * password::                    Set a clear-text password
 * password_pbkdf2::             Set a hashed password
+* plainmount::                  Open device encrypted in plain mode
 * play::                        Play a tune
 * probe::                       Retrieve device info
 * rdmsr::                       Read values from model-specific registers
@@ -4046,10 +4415,7 @@ you forget a command, you can run the command @command{help}
 @comment * vbeinfo::                     List available video modes
 * verify_detached::             Verify detached digital signature
 * videoinfo::                   List available video modes
-@comment * xen_*::              Xen boot commands for AArch64
 * wrmsr::                       Write values to model-specific registers
-* xen_hypervisor::              Load xen hypervisor binary (only on AArch64)
-* xen_module::                  Load xen modules for xen hypervisor (only on AArch64)
 @end menu
 
 
@@ -4184,19 +4550,12 @@ will be displayed as a simple new line.  Otherwise, the carriage return will
 be displayed as a control character (@samp{<d>}) to make it easier to see
 when boot problems are caused by a file formatted using DOS-style line
 endings.
-@end deffn
 
-
-@node chainloader
-@subsection chainloader
-
-@deffn Command chainloader [@option{--force}] file
-Load @var{file} as a chain-loader. Like any other file loaded by the
-filesystem code, it can use the blocklist notation (@pxref{Block list
-syntax}) to grab the first sector of the current partition with @samp{+1}.
-If you specify the option @option{--force}, then load @var{file} forcibly,
-whether it has a correct signature or not. This is required when you want to
-load a defective boot loader, such as SCO UnixWare 7.1.
+Note: @command{cat} can be used to view the contents of devices using the
+block list syntax (@pxref{Block list syntax}). However, it is not advised
+to view binary data because it will try to decode UTF-8 strings, which can
+lead to some bytes missing or added in the output. Instead, use the
+@command{hexdump} command (@pxref{hexdump}).
 @end deffn
 
 
@@ -4239,9 +4598,14 @@ on platforms that support CMOS.
 @node cmp
 @subsection cmp
 
-@deffn Command cmp file1 file2
-Compare the file @var{file1} with the file @var{file2}. If they differ
-in size, print the sizes like this:
+@deffn Command cmp [@option{-v}] file1 file2
+Compare the file @var{file1} with the file @var{file2}. If they are completely
+identical, @code{$?} will be set to 0. Otherwise, if the files are not identical,
+@code{$?} will be set to a nonzero value.
+
+By default nothing will be output. If the @option{-v} is used, verbose mode is
+enabled. In this mode when when the files differ in size, print the sizes like
+this:
 
 @example
 Differ in size: 0x1234 [foo], 0x4321 [bar]
@@ -4254,7 +4618,6 @@ bytes like this:
 Differ at the offset 777: 0xbe [foo], 0xef [bar]
 @end example
 
-If they are completely identical, nothing will be printed.
 @end deffn
 
 
@@ -4298,20 +4661,38 @@ Alias for @code{hashsum --hash crc32 arg @dots{}}. See command @command{hashsum}
 @node cryptomount
 @subsection cryptomount
 
-@deffn Command cryptomount device|@option{-u} uuid|@option{-a}|@option{-b}
-Setup access to encrypted device. If necessary, passphrase
-is requested interactively. Option @var{device} configures specific grub device
+@deffn Command cryptomount [ [@option{-p} password] | [@option{-k} keyfile [@option{-O} keyoffset] [@option{-S} keysize] ] ] [@option{-H} file] device|@option{-u} uuid|@option{-a}|@option{-b}
+Setup access to encrypted device. A passphrase will be requested interactively,
+if neither the @option{-p} nor @option{-k} options are given. The option
+@option{-p} can be used to supply a passphrase (useful for scripts).
+Alternatively the @option{-k} option can be used to supply a keyfile with
+options @option{-O} and @option{-S} optionally supplying the offset and size,
+respectively, of the key data in the given key file. The @option{-H} options can
+be used to supply cryptomount backends with an alternative header file (aka
+detached header). Not all backends have headers nor support alternative header
+files (currently only LUKS1 and LUKS2 support them).
+Argument @var{device} configures specific grub device
 (@pxref{Naming convention}); option @option{-u} @var{uuid} configures device
 with specified @var{uuid}; option @option{-a} configures all detected encrypted
 devices; option @option{-b} configures all geli containers that have boot flag set.
+
+Devices are not allowed to be given as key files nor as detached header files.
+However, this limitation can be worked around by using blocklist syntax. So
+for instance, @code{(hd1,gpt2)} can not be used, but @code{(hd1,gpt2)0+} will
+achieve the desired result.
 
 GRUB suports devices encrypted using LUKS, LUKS2 and geli. Note that necessary
 modules (@var{luks}, @var{luks2} and @var{geli}) have to be loaded manually
 before this command can be used. For LUKS2 only the PBKDF2 key derivation
 function is supported, as Argon2 is not yet supported.
 
-Also, note that, unlike filesystem UUIDs, UUIDs for encrypted devices must be
-specified without dash separators.
+Successfully decrypted disks are named as (cryptoX) and have increasing numeration
+suffix for each new decrypted disk. If the encrypted disk hosts some higher level
+of abstraction (like LVM2 or MDRAID) it will be created under a separate device
+namespace in addition to the cryptodisk namespace.
+
+Support for plain encryption mode (plain dm-crypt) is provided via separate
+@command{@pxref{plainmount}} command.
 @end deffn
 
 @node cutmem
@@ -4397,6 +4778,8 @@ For example:
 @example
 drivemap -s (hd0) (hd1)
 @end example
+
+NOTE: Only available on i386-pc.
 @end deffn
 
 
@@ -4443,6 +4826,47 @@ character will print that character.
 @end deffn
 
 
+@node efitextmode
+@subsection efitextmode
+
+@deffn Command efitextmode [min | max | <mode_num> | <cols> <rows>]
+When used with no arguments displays all available text output modes. The
+set mode determines the columns and rows of the text display when in
+text mode. An asterisk, @samp{*}, will be at the end of the line of the
+currently set mode.
+
+If given a single parameter, it must be @samp{min}, @samp{max}, or a mode
+number given by the listing when run with no arguments. These arguments set
+the mode to the minimum, maximum, and particular mode respectively.
+
+Otherwise, the command must be given two numerical arguments specifying the
+columns and rows of the desired mode. Specifying a columns and rows
+combination that corresponds to no supported mode, will return error, but
+otherwise have no effect.
+
+By default GRUB will start in whatever mode the EFI firmware defaults to.
+There are firmwares known to set up the default mode such that output
+behaves strangely, for example the cursor in the GRUB shell never reaches
+the bottom of the screen or, when typing characters at the prompt,
+characters from previous command output are overwritten. Setting the mode
+may fix this.
+
+The EFI specification says that mode 0 must be available and have
+columns and rows of 80 and 25 respectively. Mode 1 may be defined and if
+so must have columns and rows of 80 and 50 respectively. Any other modes
+may have columns and rows arbitrarily defined by the firmware. This means
+that a mode with columns and rows of 100 and 31 on one firmware may be
+a different mode number on a different firmware or not exist at all.
+Likewise, mode number 2 on one firmware may have a different number of
+columns and rows than mode 2 on a different firmware. So one should not
+rely on a particular mode number or a mode of a certain number of columns
+and rows existing on all firmwares, except for mode 0.
+
+Note: This command is only available on EFI platforms and is similar to
+EFI shell "mode" command.
+@end deffn
+
+
 @node eval
 @subsection eval
 
@@ -4467,6 +4891,28 @@ to subsidiary configuration files loaded using @command{configfile}.
 @deffn Command false
 Do nothing, unsuccessfully.  This is mainly useful in control constructs
 such as @code{if} and @code{while} (@pxref{Shell-like scripting}).
+@end deffn
+
+
+@node fwsetup
+@subsection fwsetup
+
+@deffn Command fwsetup [@option{--is-supported}]
+Reboot into the firmware setup menu. If @option{--is-supported} option is
+specified, instead check whether the firmware supports a setup menu and
+exit successfully if so.
+@end deffn
+
+
+@node gdbinfo
+@subsection gdbinfo
+
+@deffn Command gdbinfo
+Output text to be used as a GDB command for a GDB session using the gdb_grub
+script and attached to a running GRUB instance. The GDB command that is
+output will tell GDB how to load debugging symbols to their proper runtime
+address. Currently this is only available for EFI platforms. See the Debugging
+in the developer documentation for more information.
 @end deffn
 
 
@@ -4505,10 +4951,10 @@ type are omitted, then the partition will be inactive.
 @node halt
 @subsection halt
 
-@deffn Command halt @option{--no-apm}
-The command halts the computer. If the @option{--no-apm} option
-is specified, no APM BIOS call is performed. Otherwise, the computer
-is shut down using APM.
+@deffn Command halt [@option{--no-apm}]
+The command halts the computer. On the i386-pc target, the @option{--no-apm}
+option, or short @option{-n}, is specified, no APM BIOS call is performed.
+Otherwise, the computer is shut down using APM on that target.
 @end deffn
 
 
@@ -4549,27 +4995,17 @@ about each of the commands whose names begin with those @var{patterns}.
 @end deffn
 
 
-@node initrd
-@subsection initrd
+@node hexdump
+@subsection hexdump
 
-@deffn Command initrd file [file @dots{}]
-Load, in order, all initial ramdisks for a Linux kernel image, and set
-the appropriate parameters in the Linux setup area in memory.  This may only
-be used after the @command{linux} command (@pxref{linux}) has been run.  See
-also @ref{GNU/Linux}.
-@end deffn
+@deffn Command hexdump [--skip offset] [--length len] FILE_OR_DEVICE
+Show raw contents of a file or memory. When option @option{--skip} is given,
+@samp{offset} number of bytes are skipped from the start of the device or
+file given. And @option{--length} allows specifying a maximum number of bytes
+to be shown.
 
-
-@node initrd16
-@subsection initrd16
-
-@deffn Command initrd16 file [file @dots{}]
-Load, in order, all initial ramdisks for a Linux kernel image to be booted in
-16-bit mode, and set the appropriate parameters in the Linux setup area in
-memory.  This may only be used after the @command{linux16} command
-(@pxref{linux16}) has been run.  See also @ref{GNU/Linux}.
-
-This command is only available on x86 systems.
+If given the special device named @samp{(mem)}, then the @samp{offset} given to
+@option{--skip} is treated as the address of a memory location to dump from.
 @end deffn
 
 
@@ -4592,42 +5028,6 @@ control over behaviour without having to wait for a keypress.
 Checking key modifier status is only supported on some platforms. If invoked
 without any options, the @command{keystatus} command returns true if and
 only if checking key modifier status is supported.
-@end deffn
-
-
-@node linux
-@subsection linux
-
-@deffn Command linux file @dots{}
-Load a Linux kernel image from @var{file}.  The rest of the line is passed
-verbatim as the @dfn{kernel command-line}.  Any initrd must be reloaded
-after using this command (@pxref{initrd}).
-
-On x86 systems, the kernel will be booted using the 32-bit boot protocol.
-Note that this means that the @samp{vga=} boot option will not work; if you
-want to set a special video mode, you will need to use GRUB commands such as
-@samp{set gfxpayload=1024x768} or @samp{set gfxpayload=keep} (to keep the
-same mode as used in GRUB) instead.  GRUB can automatically detect some uses
-of @samp{vga=} and translate them to appropriate settings of
-@samp{gfxpayload}.  The @command{linux16} command (@pxref{linux16}) avoids
-this restriction.
-@end deffn
-
-
-@node linux16
-@subsection linux16
-
-@deffn Command linux16 file @dots{}
-Load a Linux kernel image from @var{file} in 16-bit mode.  The rest of the
-line is passed verbatim as the @dfn{kernel command-line}.  Any initrd must
-be reloaded after using this command (@pxref{initrd16}).
-
-The kernel will be booted using the traditional 16-bit boot protocol.  As
-well as bypassing problems with @samp{vga=} described in @ref{linux}, this
-permits booting some other programs that implement the Linux boot protocol
-for the sake of convenience.
-
-This command is only available on x86 systems.
 @end deffn
 
 
@@ -4703,7 +5103,7 @@ suffix @samp{.pf2} appended. @xref{Theme file format,,Fonts}.
 @node loopback
 @subsection loopback
 
-@deffn Command loopback [@option{-d}] device file
+@deffn Command loopback [@option{-d}] [@option{-D}] device file
 Make the device named @var{device} correspond to the contents of the
 filesystem image in @var{file}.  For example:
 
@@ -4711,6 +5111,9 @@ filesystem image in @var{file}.  For example:
 loopback loop0 /path/to/image
 ls (loop0)/
 @end example
+
+Specifying the @option{-D} option allows the loopback file to be tranparently
+decompressed if there is an appropriate decompressor loaded.
 
 With the @option{-d} option, delete a device previously created using this
 command.
@@ -4878,6 +5281,77 @@ to generate password hashes.  @xref{Security}.
 @end deffn
 
 
+@node plainmount
+@subsection plainmount
+
+@deffn Command plainmount device @option{-c} cipher @option{-s} key size [@option{-h} hash]
+[@option{-S} sector size] [@option{-p} password] [@option{-u} uuid]
+[[@option{-d} keyfile] [@option{-O} keyfile offset]]
+
+
+Setup access to the encrypted device in plain mode. Offset of the encrypted
+data at the device is specified in terms of 512 byte sectors using the blocklist
+syntax and loopback device. The following example shows how to specify 1MiB
+offset:
+
+@example
+loopback node (hd0,gpt1)2048+
+plainmount node @var{...}
+@end example
+
+The @command{plainmount} command can be used to open LUKS encrypted volume
+if its master key and parameters (key size, cipher, offset, etc) are known.
+
+There are two ways to specify a password: a keyfile and a secret passphrase.
+The keyfile path parameter has higher priority than the secret passphrase
+parameter and is specified with the option @option{-d}. Password data obtained
+from keyfiles is not hashed and is used directly as a cipher key. An optional
+offset of password data in the keyfile can be specified with the option
+@option{-O} or directly with the option @option{-d} and GRUB blocklist syntax,
+if the keyfile data can be accessed from a device and is 512 byte aligned.
+The following example shows both methods to specify password data in the
+keyfile at offset 1MiB:
+
+@example
+plainmount -d (hd0,gpt1)2048+ @var{...}
+plainmount -d (hd0,gpt1)+ -O 1048576 @var{...}
+@end example
+
+If no keyfile is specified then the password is set to the string specified
+by option @option{-p} or is requested interactively from the console. In both
+cases the provided password is hashed with the algorithm specified by the
+option @option{-h}. This option is mandatory if no keyfile is specified, but
+it can be set to @samp{plain} which means that no hashing is done and such
+password is used directly as a key.
+
+Cipher @option{-c} and keysize @option{-s} options specify the cipher algorithm
+and the key size respectively and are mandatory options. Cipher must be specified
+with the mode separated by a dash (for example, @samp{aes-xts-plain64}). Key size
+option @option{-s} is the key size of the cipher in bits, not to be confused with
+the offset of the key data in a keyfile specified with the @option{-O} option. It
+must not exceed 1024 bits, so a 32 byte key would be specified as 256 bits
+
+The optional parameter @option{-S} specifies encrypted device sector size. It
+must be at least 512 bytes long (default value) and a power of 2. @footnote{Current
+implementation of cryptsetup supports only 512/1024/2048/4096 byte sectors}.
+Disk sector size is configured when creating the encrypted volume. Attempting
+to decrypt volumes with a different sector size than it was created with will
+not result in an error, but will decrypt to random bytes and thus prevent
+accessing the volume (in some cases the filesystem driver can detect the presence
+of a filesystem, but nevertheless will refuse to mount it).
+
+By default new plainmount devices will be given a UUID starting with
+'109fea84-a6b7-34a8-4bd1-1c506305a401' where the last digits are incremented
+by one for each plainmounted device beyond the first up to 2^10 devices.
+
+All encryption arguments (cipher, hash, key size, disk offset and disk sector
+size) must match the parameters used to create the volume. If any of them does
+not match the actual arguments used during the initial encryption, plainmount
+will create virtual device with the garbage data and GRUB will report unknown
+filesystem for such device.
+@end deffn
+
+
 @node play
 @subsection play
 
@@ -4929,10 +5403,11 @@ and the system will reboot.
 @node read
 @subsection read
 
-@deffn Command read [var]
+@deffn Command read [-s] [var]
 Read a line of input from the user.  If an environment variable @var{var} is
 given, set that environment variable to the line of input that was read,
-with no terminating newline.
+with no terminating newline. If the parameter @option{-s} is used, enable
+silent mode where input is not printed to the terminal.
 @end deffn
 
 
@@ -4991,21 +5466,33 @@ unbootable. @xref{Using digital signatures}, for more information.
 
 @deffn Command search @
  [@option{--file}|@option{--label}|@option{--fs-uuid}] @
- [@option{--set} [var]] [@option{--no-floppy}] name
+ [@option{--set} [var]] [@option{--no-floppy}|@option{--efidisk-only}] name
 Search devices by file (@option{-f}, @option{--file}), filesystem label
 (@option{-l}, @option{--label}), or filesystem UUID (@option{-u},
 @option{--fs-uuid}).
 
-If the @option{--set} option is used, the first device found is set as the
-value of environment variable @var{var}.  The default variable is
+If the (@option{-s}, @option{--set}) option is used, the first device found is
+set as the value of environment variable @var{var}. The default variable is
 @samp{root}.
 
-The @option{--no-floppy} option prevents searching floppy devices, which can
-be slow.
+The (@option{-n}, @option{--no-floppy}) option prevents searching floppy
+devices, which can be slow.
+
+The (@option{--efidisk-only}) option prevents searching any other devices then
+EFI disks. This is typically used when chainloading to local EFI partition.
 
 The @samp{search.file}, @samp{search.fs_label}, and @samp{search.fs_uuid}
 commands are aliases for @samp{search --file}, @samp{search --label}, and
 @samp{search --fs-uuid} respectively.
+
+Also hints as to which device may be the most likely to contain the item
+searched for may be given via the (@option{-h}, @option{--hint}) option with
+a device name as an argument. If the argument ends with a comma, then partitions
+on the device are also searched. Furthermore, platform specific hints may be
+given via the options @option{--hint-ieee1275}, @option{--hint-bios},
+@option{--hint-baremetal}, @option{--hint-efi}, and @option{--hint-arc}. When
+specified, these options take an argument and operate like @option{--hint}, but
+only on the specified platform.
 @end deffn
 
 
@@ -5025,7 +5512,9 @@ Insert keystrokes into the keyboard buffer when booting.  Sometimes an
 operating system or chainloaded boot loader requires particular keys to be
 pressed: for example, one might need to press a particular key to enter
 "safe mode", or when chainloading another boot loader one might send
-keystrokes to it to navigate its menu.  
+keystrokes to it to navigate its menu.
+
+Note: This command is currently only available on the i386-pc target.
 
 You may provide up to 16 keystrokes (the length of the BIOS keyboard
 buffer).  Keystroke names may be upper-case or lower-case letters, digits,
@@ -5162,7 +5651,9 @@ This command is only available on PC BIOS systems.
 
 @deffn Command set [envvar=value]
 Set the environment variable @var{envvar} to @var{value}. If invoked with no
-arguments, print all environment variables with their values.
+arguments, print all environment variables with their values. For the list of
+environment variables currently used by GRUB itself see the relevant section
+@pxref{Environment}.
 @end deffn
 
 
@@ -5451,31 +5942,8 @@ Note: The command is not allowed when lockdown is enforced (@pxref{Lockdown}).
       This is done to prevent subverting various security mechanisms.
 @end deffn
 
-@node xen_hypervisor
-@subsection xen_hypervisor
-
-@deffn Command xen_hypervisor file  [arguments] @dots{}
-Load a Xen hypervisor binary from @var{file}. The rest of the line is passed
-verbatim as the @dfn{kernel command-line}. Any other binaries must be
-reloaded after using this command.
-This command is only available on AArch64 systems.
-@end deffn
-
-@node xen_module
-@subsection xen_module
-
-@deffn Command xen_module [--nounzip] file [arguments]
-Load a module for xen hypervisor at the booting process of xen.
-The rest of the line is passed verbatim as the module command line.
-Modules should be loaded in the following order:
- - dom0 kernel image
- - dom0 ramdisk if present
- - XSM policy if present
-This command is only available on AArch64 systems.
-@end deffn
-
 @node Networking commands
-@section The list of networking commands
+@section Networking commands
 
 @menu
 * net_add_addr::                Add a network address
@@ -5493,6 +5961,7 @@ This command is only available on AArch64 systems.
 * net_ls_dns::                  List DNS servers
 * net_ls_routes::               List routing entries
 * net_nslookup::                Perform a DNS lookup
+* net_set_vlan::                Set vlan id on an interface
 @end menu
 
 
@@ -5667,6 +6136,123 @@ List routing entries.
 Resolve address of @var{name} using DNS server @var{server}. If no server
 is given, use default list of servers.
 @end deffn
+
+
+@node net_set_vlan
+@subsection net_set_vlan
+
+@deffn Command net_set_vlan @var{interface} @var{vlanid}
+Set the 802.1Q VLAN identifier on @var{interface} to @var{vlanid}. For example,
+to set the VLAN identifier on interface @samp{efinet1} to @samp{100}:
+
+@example
+net_set_vlan efinet1 100
+@end example
+
+The VLAN identifier can be removed by setting it to @samp{0}:
+
+@example
+net_set_vlan efinet1 0
+@end example
+@end deffn
+
+
+@node Undocumented commands
+@section Commands currently undocumented
+Unfortunately, not all GRUB commands are documented at this time due to
+developer resource constraints. One way to contribute back to the GRUB
+project would be to help document these commands, and submit patches or
+ideas to the mailing list. The following is a (most likely incomplete)
+list of undocumented or poorly documented commands and not all of them
+are allowed for all platforms. Running the command help from within the
+GRUB shell may provide more information on parameters and usage.
+
+@itemize @bullet
+@item @command{all_functional_test} - Run all functional tests.
+@item @command{backtrace} - Print backtrace.
+@item @command{boottime} - Show boot time statistics.
+@item @command{cacheinfo} - Get disk cache info.
+@item @command{cbmemc} - Show CBMEM console content.
+@item @command{cmosset} -  Set bit at BYTE:BIT in CMOS.
+@item @command{coreboot_boottime} - Show coreboot boot time statistics.
+@item @command{dump} - Show memory contents.
+@item @command{efiemu_loadcore} - Load and initialize EFI emulator.
+@item @command{efiemu_prepare} - Finalize loading of EFI emulator.
+@item @command{efiemu_unload} - Unload EFI emulator.
+@item @command{exit} - Exit from GRUB.
+@item @command{extract_entries_configfile} - Load another config file but take only menu entries.
+@item @command{extract_entries_source} - Load another config file without changing context but take only menu entries.
+@item @command{extract_legacy_entries_configfile} - Parse legacy config in new context taking only menu entries
+@item @command{extract_legacy_entries_source} - Parse legacy config in same context taking only menu entries
+@item @command{extract_syslinux_entries_configfile} - Execute syslinux config in new context taking only menu entries
+@item @command{extract_syslinux_entries_source} - Execute syslinux config in same context taking only menu entries
+@item @command{fakebios} - Create BIOS-like structures for backward compatibility with existing OS.
+@item @command{file} - Check if FILE is of specified type.
+@item @command{fix_video} - Fix video problem.
+@item @command{fpswa} - Display FPSWA version.
+@item @command{functional_test} - Run all loaded functional tests.
+@item @command{gdbstub_break} - Break into GDB
+@item @command{gdbstub} -  Start GDB stub on given port
+@item @command{gdbstub_stop} - Stop GDB stub
+@item @command{hdparm} - Get/set ATA disk parameters.
+@item @command{hexdump_random} - Hexdump random data.
+@item @command{inb} - Read 8-bit value from PORT.
+@item @command{inl} - Read 32-bit value from PORT.
+@item @command{inw} - Read 16-bit value from PORT.
+@item @command{jpegtest} - Tests loading of JPEG bitmap.
+@item @command{keymap} - Load a keyboard layout.
+@item @command{legacy_check_password} - Simulate grub-legacy `password' command in menu entry mode
+@item @command{legacy_configfile} - Parse legacy config in new context
+@item @command{legacy_password} - Simulate grub-legacy `password' command
+@item @command{legacy_source} -  Parse legacy config in same context
+@item @command{loadbios} - Load BIOS dump.
+@item @command{lsacpi} - Show ACPI information.
+@item @command{lsapm} - Show APM information.
+@item @command{lscoreboot} - List coreboot tables.
+@item @command{lsdev} - List devices.
+@item @command{lsefi} - Display EFI handles.
+@item @command{lsefimmap} - Display EFI memory map.
+@item @command{lsefisystab} - Display EFI system tables.
+@item @command{lsmmap} - List memory map provided by firmware.
+@item @command{lspci} - List PCI devices.
+@item @command{lssal} - Display SAL system table.
+@item @command{lsspd} - Print Memory information.
+@item @command{macppcbless} - Bless DIR of HFS or HFS+ partition for PPC macs.
+@item @command{mactelbless} - Bless FILE of HFS or HFS+ partition for intel macs.
+@item @command{net_set_vlan} - Set an interface's vlan id.
+@item @command{outb} - Write 8-bit VALUE to PORT.
+@item @command{outl} - Write 32-bit VALUE to PORT.
+@item @command{outw} - Write 16-bit VALUE to PORT.
+@item @command{pcidump} - Show raw dump of the PCI configuration space.
+@item @command{pngtest} - Tests loading of PNG bitmap.
+@item @command{read_byte} - Read 8-bit value from ADDR.
+@item @command{read_dword} - Read 32-bit value from ADDR.
+@item @command{read_word} - Read 16-bit value from ADDR.
+@item @command{setpci} - Manipulate PCI devices.
+@item @command{suspend} - Return to IEEE1275 prompt.
+@item @command{syslinux_configfile} - Execute syslinux config in new context
+@item @command{syslinux_source} - Execute syslinux config in same context
+@item @command{test_blockarg} - Print and execute block argument., 0
+@item @command{testload} - Load the same file in multiple ways.
+@item @command{testspeed} - Test file read speed.
+@item @command{tgatest} - Tests loading of TGA bitmap.
+@item @command{time} - Measure time used by COMMAND
+@item @command{tr} - Translate SET1 characters to SET2 in STRING.
+@item @command{usb} - Test USB support.
+@item @command{vbeinfo} - List available video modes. If resolution is given show only modes matching it.
+@item @command{vbetest} - Test video subsystem.
+@item @command{videotest} - Test video subsystem in mode WxH.
+@item @command{write_byte} - Write 8-bit VALUE to ADDR.
+@item @command{write_dword} - Write 32-bit VALUE to ADDR.
+@item @command{write_word} - Write 16-bit VALUE to ADDR.
+@item @command{xen_cat} - List Xen storage.
+@item @command{xen_ls} - List Xen storage.
+@item @command{xnu_devprop_load} - Load `device-properties' dump.
+@item @command{xnu_uuid} - Transform 64-bit UUID to format suitable for XNU. If -l is given keep it lowercase as done by blkid.
+@item @command{zfs-bootfs} - Print ZFS-BOOTFSOBJ or store it into VARIABLE
+@item @command{zfsinfo} - Print ZFS info about DEVICE.
+@item @command{zfskey} - Import ZFS wrapping key stored in FILE.
+@end itemize
 
 
 @node Internationalisation
@@ -6023,7 +6609,8 @@ tpm module is loaded. As such it is recommended that the tpm module be built
 into @file{core.img} in order to avoid a potential gap in measurement between
 @file{core.img} being loaded and the tpm module being loaded.
 
-Measured boot is currently only supported on EFI platforms.
+Measured boot is currently only supported on EFI and IBM IEEE1275 PowerPC
+platforms.
 
 @node Lockdown
 @section Lockdown when booting on a secure setup
@@ -6463,8 +7050,24 @@ entry which claims partition start at block 0. This change will not hamper
 bootability on other machines.
 
 
+@node User-space utilities
+@chapter User-space utilities
+
+@menu
+* Invoking grub-install::       How to use the GRUB installer
+* Invoking grub-mkconfig::      Generate a GRUB configuration file
+* Invoking grub-mkpasswd-pbkdf2::
+                                Generate GRUB password hashes
+* Invoking grub-mkrelpath::     Make system path relative to its root
+* Invoking grub-mkrescue::      Make a GRUB rescue image
+* Invoking grub-mount::         Mount a file system using GRUB
+* Invoking grub-probe::         Probe device information for GRUB
+* Invoking grub-script-check::  Check GRUB script file for syntax errors
+@end menu
+
+
 @node Invoking grub-install
-@chapter Invoking grub-install
+@section Invoking grub-install
 
 The program @command{grub-install} generates a GRUB core image using
 @command{grub-mkimage} and installs it on your system.  You must specify the
@@ -6530,7 +7133,7 @@ outside of the MBR.  Disable the Reed-Solomon codes with this option.
 @end table
 
 @node Invoking grub-mkconfig
-@chapter Invoking grub-mkconfig
+@section Invoking grub-mkconfig
 
 The program @command{grub-mkconfig} generates a configuration file for GRUB
 (@pxref{Simple configuration}).
@@ -6556,7 +7159,7 @@ it to standard output.
 
 
 @node Invoking grub-mkpasswd-pbkdf2
-@chapter Invoking grub-mkpasswd-pbkdf2
+@section Invoking grub-mkpasswd-pbkdf2
 
 The program @command{grub-mkpasswd-pbkdf2} generates password hashes for
 GRUB (@pxref{Security}).
@@ -6584,7 +7187,7 @@ Length of the salt.  Defaults to 64.
 
 
 @node Invoking grub-mkrelpath
-@chapter Invoking grub-mkrelpath
+@section Invoking grub-mkrelpath
 
 The program @command{grub-mkrelpath} makes a file system path relative to
 the root of its containing file system.  For instance, if @file{/usr} is a
@@ -6611,7 +7214,7 @@ Print the version number of GRUB and exit.
 
 
 @node Invoking grub-mkrescue
-@chapter Invoking grub-mkrescue
+@section Invoking grub-mkrescue
 
 The program @command{grub-mkrescue} generates a bootable GRUB rescue image
 (@pxref{Making a GRUB bootable CD-ROM}).
@@ -6669,7 +7272,7 @@ built-in default.
 
 
 @node Invoking grub-mount
-@chapter Invoking grub-mount
+@section Invoking grub-mount
 
 The program @command{grub-mount} performs a read-only mount of any file
 system or file system image that GRUB understands, using GRUB's file system
@@ -6756,7 +7359,7 @@ Print verbose messages.
 
 
 @node Invoking grub-probe
-@chapter Invoking grub-probe
+@section Invoking grub-probe
 
 The program @command{grub-probe} probes device information for a given path
 or device.
@@ -6842,7 +7445,7 @@ Print verbose messages.
 
 
 @node Invoking grub-script-check
-@chapter Invoking grub-script-check
+@section Invoking grub-script-check
 
 The program @command{grub-script-check} takes a GRUB script file
 (@pxref{Shell-like scripting}) and checks it for syntax errors, similar to

@@ -23,6 +23,8 @@
 #ifndef GRUB_EFI_CONSOLE_CONTROL_HEADER
 #define GRUB_EFI_CONSOLE_CONTROL_HEADER	1
 
+#include <grub/efi/api.h>
+
 #define GRUB_EFI_CONSOLE_CONTROL_GUID	\
   { 0xf42f7782, 0x12e, 0x4c12, \
     { 0x99, 0x56, 0x49, 0xf9, 0x43, 0x4, 0xf7, 0x21 } \
@@ -39,18 +41,18 @@ typedef enum grub_efi_screen_mode grub_efi_screen_mode_t;
 struct grub_efi_console_control_protocol
 {
   grub_efi_status_t
-  (*get_mode) (struct grub_efi_console_control_protocol *this,
-	       grub_efi_screen_mode_t *mode,
-	       grub_efi_boolean_t *uga_exists,
-	       grub_efi_boolean_t *std_in_locked);
+  (__grub_efi_api *get_mode) (struct grub_efi_console_control_protocol *this,
+			      grub_efi_screen_mode_t *mode,
+			      grub_efi_boolean_t *uga_exists,
+			      grub_efi_boolean_t *std_in_locked);
 
   grub_efi_status_t
-  (*set_mode) (struct grub_efi_console_control_protocol *this,
-	       grub_efi_screen_mode_t mode);
+  (__grub_efi_api *set_mode) (struct grub_efi_console_control_protocol *this,
+			      grub_efi_screen_mode_t mode);
 
   grub_efi_status_t
-  (*lock_std_in) (struct grub_efi_console_control_protocol *this,
-		  grub_efi_char16_t *password);
+  (__grub_efi_api *lock_std_in) (struct grub_efi_console_control_protocol *this,
+				 grub_efi_char16_t *password);
 };
 typedef struct grub_efi_console_control_protocol grub_efi_console_control_protocol_t;
 

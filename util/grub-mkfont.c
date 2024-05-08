@@ -50,10 +50,10 @@
 #include FT_SYNTHESIS_H
 
 #undef __FTERRORS_H__
-#define FT_ERROR_START_LIST   const char *ft_errmsgs[] = { 
+#define FT_ERROR_START_LIST   const char *ft_errmsgs[] = {
 #define FT_ERRORDEF(e, v, s)  [e] = s,
 #define FT_ERROR_END_LIST     };
-#include FT_ERRORS_H   
+#include FT_ERRORS_H
 
 #ifndef GRUB_BUILD
 #include "progname.h"
@@ -66,6 +66,11 @@
 #define GRUB_FONT_DEFAULT_SIZE		16
 
 #define GRUB_FONT_RANGE_BLOCK		1024
+
+#define GSUB_PTR_VALID(x, end)	assert ((grub_uint8_t *) (x) <= (end))
+
+#define GSUB_ARRAY_SIZE_VALID(a, sz, end) \
+    assert ((sz) >= 0 && ((sz) <= ((end) - (grub_uint8_t *) (a)) / sizeof (*(a))))
 
 struct grub_glyph_info
 {
@@ -312,7 +317,7 @@ add_char (struct grub_font_info *font_info, FT_Face face,
 			 char_code | GRUB_FONT_CODE_RIGHT_JOINED, nocut);
 	    break;
 	  }
-	      
+
     }
 
   for (cur = subst_leftjoin; cur; cur = cur->next)
@@ -338,7 +343,7 @@ add_char (struct grub_font_info *font_info, FT_Face face,
 			 char_code | GRUB_FONT_CODE_LEFT_JOINED, nocut);
 	    break;
 	  }
-	      
+
     }
   for (cur = subst_medijoin; cur; cur = cur->next)
     if (cur->from == glyph_idx)
@@ -365,7 +370,7 @@ add_char (struct grub_font_info *font_info, FT_Face face,
 			 | GRUB_FONT_CODE_RIGHT_JOINED, nocut);
 	    break;
 	  }
-	      
+
     }
 }
 
@@ -440,7 +445,7 @@ struct gsub_coverage_ranges
 {
   grub_uint16_t type;
   grub_uint16_t count;
-  struct 
+  struct
   {
     grub_uint16_t start;
     grub_uint16_t end;
@@ -478,7 +483,7 @@ subst (const struct gsub_substitution *sub, grub_uint32_t glyph,
   if (substtype == GSUB_SUBSTITUTION_DELTA)
     add_subst (glyph, glyph + grub_be_to_cpu16 (sub->delta), target);
   else if (*i >= grub_be_to_cpu16 (sub->count))
-    printf (_("Out of range substitution (%d, %d)\n"), *i,
+    printf (_("Out of range substitution (%d, %u)\n"), *i,
 	    grub_be_to_cpu16 (sub->count));
   else
     add_subst (glyph, grub_be_to_cpu16 (sub->repl[(*i)++]), target);
@@ -487,34 +492,40 @@ subst (const struct gsub_substitution *sub, grub_uint32_t glyph,
 static void
 process_cursive (struct gsub_feature *feature,
 		 struct gsub_lookup_list *lookups,
-		 grub_uint32_t feattag)
+		 grub_uint32_t feattag,
+		 grub_uint32_t num_glyphs,
+		 grub_uint8_t *gsub_end)
 {
   int j, k;
   int i;
+  int lookup_count = grub_be_to_cpu16 (feature->lookupcount);
   struct glyph_replace **target = NULL;
   struct gsub_substitution *sub;
 
-  for (j = 0; j < grub_be_to_cpu16 (feature->lookupcount); j++)
+  GSUB_ARRAY_SIZE_VALID (feature->lookupindices, lookup_count, gsub_end);
+
+  for (j = 0; j < lookup_count; j++)
     {
       int lookup_index = grub_be_to_cpu16 (feature->lookupindices[j]);
+      int sub_count;
       struct gsub_lookup *lookup;
       if (lookup_index >= grub_be_to_cpu16 (lookups->count))
 	{
 	  /* TRANSLATORS: "lookup" is taken directly from font specifications
-	   which are formulated as "Under condition X replace LOOKUP with 
+	   which are formulated as "Under condition X replace LOOKUP with
 	   SUBSTITUITION".  "*/
 	  printf (_("Out of range lookup: %d\n"), lookup_index);
 	  continue;
 	}
       lookup = (struct gsub_lookup *)
-	((grub_uint8_t *) lookups 
+	((grub_uint8_t *) lookups
 	 + grub_be_to_cpu16 (lookups->offsets[lookup_index]));
       if (grub_be_to_cpu16 (lookup->type) != GSUB_SINGLE_SUBSTITUTION)
 	{
 	  printf (_("Unsupported substitution type: %d\n"),
 		  grub_be_to_cpu16 (lookup->type));
 	  continue;
-	}		      
+	}
       if (grub_be_to_cpu16 (lookup->flag) & ~GSUB_RTL_CHAR)
 	{
 	  grub_util_info ("unsupported substitution flag: 0x%x",
@@ -536,9 +547,14 @@ process_cursive (struct gsub_feature *feature,
 	  break;
 	case FEATURE_MEDI:
 	  target = &subst_medijoin;
-	  break;	  
+	  break;
 	}
-      for (k = 0; k < grub_be_to_cpu16 (lookup->subtablecount); k++)
+
+      sub_count = grub_be_to_cpu16 (lookup->subtablecount);
+
+      GSUB_ARRAY_SIZE_VALID (lookup->subtables, sub_count, gsub_end);
+
+      for (k = 0; k < sub_count; k++)
 	{
 	  sub = (struct gsub_substitution *)
 	    ((grub_uint8_t *) lookup + grub_be_to_cpu16 (lookup->subtables[k]));
@@ -547,7 +563,7 @@ process_cursive (struct gsub_feature *feature,
 	  if (substtype != GSUB_SUBSTITUTION_MAP
 	      && substtype != GSUB_SUBSTITUTION_DELTA)
 	    {
-	      printf (_("Unsupported substitution specification: %d\n"),
+	      printf (_("Unsupported substitution specification: %u\n"),
 		      substtype);
 	      continue;
 	    }
@@ -559,18 +575,33 @@ process_cursive (struct gsub_feature *feature,
 	  if (covertype == GSUB_COVERAGE_LIST)
 	    {
 	      struct gsub_coverage_list *cover = coverage;
+	      int count = grub_be_to_cpu16 (cover->count);
 	      int l;
-	      for (l = 0; l < grub_be_to_cpu16 (cover->count); l++)
+
+	      GSUB_ARRAY_SIZE_VALID (cover->glyphs, count, gsub_end);
+
+	      for (l = 0; l < count; l++)
 		subst (sub, grub_be_to_cpu16 (cover->glyphs[l]), target, &i);
 	    }
 	  else if (covertype == GSUB_COVERAGE_RANGE)
 	    {
 	      struct gsub_coverage_ranges *cover = coverage;
+	      int count = grub_be_to_cpu16 (cover->count);
 	      int l, m;
-	      for (l = 0; l < grub_be_to_cpu16 (cover->count); l++)
-		for (m = grub_be_to_cpu16 (cover->ranges[l].start);
-		     m <= grub_be_to_cpu16 (cover->ranges[l].end); m++)
-		  subst (sub, m, target, &i);
+
+	      GSUB_ARRAY_SIZE_VALID (cover->ranges, count, gsub_end);
+
+	      for (l = 0; l < count; l++)
+		{
+		  grub_uint16_t start = grub_be_to_cpu16 (cover->ranges[l].start);
+		  grub_uint16_t end = grub_be_to_cpu16 (cover->ranges[l].end);
+
+		  if (start > end || end > num_glyphs)
+		    grub_util_error ("%s", _("invalid font range"));
+
+		  for (m = start; m <= end; m++)
+		    subst (sub, m, target, &i);
+		}
 	    }
 	  else
 	    /* TRANSLATORS: most font transformations apply only to
@@ -579,7 +610,7 @@ process_cursive (struct gsub_feature *feature,
 	       This warning is thrown when another coverage specification
 	       is detected.  */
 	    fprintf (stderr,
-		     _("Unsupported coverage specification: %d\n"), covertype);
+		     _("Unsupported coverage specification: %u\n"), covertype);
 	}
     }
 }
@@ -589,6 +620,7 @@ add_font (struct grub_font_info *font_info, FT_Face face, int nocut)
 {
   struct gsub_header *gsub = NULL;
   FT_ULong gsub_len = 0;
+  grub_uint8_t *gsub_end = NULL;
 
   if (!FT_Load_Sfnt_Table (face, TTAG_GSUB, 0, NULL, &gsub_len))
     {
@@ -600,9 +632,12 @@ add_font (struct grub_font_info *font_info, FT_Face face, int nocut)
 	  gsub_len = 0;
 	}
     }
+
+  gsub_end = (grub_uint8_t *) gsub + gsub_len;
+
   if (gsub)
     {
-      struct gsub_features *features 
+      struct gsub_features *features
 	= (struct gsub_features *) (((grub_uint8_t *) gsub)
 				    + grub_be_to_cpu16 (gsub->features_off));
       struct gsub_lookup_list *lookups
@@ -610,6 +645,11 @@ add_font (struct grub_font_info *font_info, FT_Face face, int nocut)
 				       + grub_be_to_cpu16 (gsub->lookups_off));
       int i;
       int nfeatures = grub_be_to_cpu16 (features->count);
+
+      GSUB_PTR_VALID (features, gsub_end);
+      GSUB_PTR_VALID (lookups, gsub_end);
+      GSUB_ARRAY_SIZE_VALID (features->features, nfeatures, gsub_end);
+
       for (i = 0; i < nfeatures; i++)
 	{
 	  struct gsub_feature *feature = (struct gsub_feature *)
@@ -617,6 +657,9 @@ add_font (struct grub_font_info *font_info, FT_Face face, int nocut)
 	     + grub_be_to_cpu16 (features->features[i].offset));
 	  grub_uint32_t feattag
 	    = grub_be_to_cpu32 (features->features[i].feature_tag);
+
+	  GSUB_PTR_VALID (feature, gsub_end);
+
 	  if (feature->params)
 	    fprintf (stderr,
 		     _("WARNING: unsupported font feature parameters: %x\n"),
@@ -636,7 +679,8 @@ add_font (struct grub_font_info *font_info, FT_Face face, int nocut)
 	    case FEATURE_FINA:
 	    case FEATURE_INIT:
 	    case FEATURE_MEDI:
-	      process_cursive (feature, lookups, feattag);
+	      process_cursive (feature, lookups, feattag,
+			       face->num_glyphs, gsub_end);
 	      break;
 
 	    default:
@@ -655,6 +699,7 @@ add_font (struct grub_font_info *font_info, FT_Face face, int nocut)
 	      }
 	    }
 	}
+      free (gsub);
     }
 
   if (font_info->num_range)
@@ -928,6 +973,7 @@ write_font_pf2 (struct grub_font_info *font_info, char *output_file)
 			     file, output_file);
     }
 
+  free (font_name);
   fclose (file);
 }
 
@@ -940,10 +986,10 @@ static struct argp_option options[] = {
       This option is used to chose among them, the first face being '0'.
       Rarely used.  */
    N_("select face index"), 0},
-  {"range",  'r', N_("FROM-TO[,FROM-TO]"), 0, 
+  {"range",  'r', N_("FROM-TO[,FROM-TO]"), 0,
    /* TRANSLATORS: It refers to the range of characters in font.  */
    N_("set font range"), 0},
-  {"name",  'n', N_("NAME"), 0, 
+  {"name",  'n', N_("NAME"), 0,
    /* TRANSLATORS: "family name" for font is just a generic name without suffix
       like "Bold".  */
    N_("set font family name"), 0},
@@ -1185,7 +1231,7 @@ main (int argc, char *argv[])
     grub_util_error ("%s", _("FT_Init_FreeType fails"));
 
   {
-    size_t i;      
+    size_t i;
     for (i = 0; i < arguments.nfiles; i++)
       {
 	FT_Face ft_face;
@@ -1277,11 +1323,15 @@ main (int argc, char *argv[])
   if (font_verbosity > 1)
     print_glyphs (&arguments.font_info);
 
+  free (arguments.font_info.glyphs_sorted);
+
   {
     size_t i;
     for (i = 0; i < arguments.nfiles; i++)
       free (arguments.files[i]);
   }
+
+  free (arguments.files);
 
   return 0;
 }

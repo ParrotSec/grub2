@@ -29,8 +29,6 @@
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
-#define MAX_PASSPHRASE 256
-
 #define LUKS_KEY_ENABLED  0x00AC71F3
 
 /* On disk LUKS header */
@@ -65,20 +63,16 @@ gcry_err_code_t AF_merge (const gcry_md_spec_t * hash, grub_uint8_t * src,
 			  grub_size_t blocknumbers);
 
 static grub_cryptodisk_t
-configure_ciphers (grub_disk_t disk, const char *check_uuid,
-		   int check_boot)
+luks_scan (grub_disk_t disk, grub_cryptomount_args_t cargs)
 {
   grub_cryptodisk_t newdev;
-  const char *iptr;
   struct grub_luks_phdr header;
-  char *optr;
-  char uuid[sizeof (header.uuid) + 1];
   char ciphername[sizeof (header.cipherName) + 1];
   char ciphermode[sizeof (header.cipherMode) + 1];
   char hashspec[sizeof (header.hashSpec) + 1];
   grub_err_t err;
 
-  if (check_boot)
+  if (cargs->check_boot)
     return NULL;
 
   /* Read the LUKS header.  */
@@ -95,19 +89,9 @@ configure_ciphers (grub_disk_t disk, const char *check_uuid,
       || grub_be_to_cpu16 (header.version) != 1)
     return NULL;
 
-  grub_memset (uuid, 0, sizeof (uuid));
-  optr = uuid;
-  for (iptr = header.uuid; iptr < &header.uuid[ARRAY_SIZE (header.uuid)];
-       iptr++)
+  if (cargs->search_uuid != NULL && grub_uuidcasecmp (cargs->search_uuid, header.uuid, sizeof (header.uuid)) != 0)
     {
-      if (*iptr != '-')
-	*optr++ = *iptr;
-    }
-  *optr = 0;
-
-  if (check_uuid && grub_strcasecmp (check_uuid, uuid) != 0)
-    {
-      grub_dprintf ("luks", "%s != %s\n", uuid, check_uuid);
+      grub_dprintf ("luks", "%s != %s\n", header.uuid, cargs->search_uuid);
       return NULL;
     }
 
@@ -126,7 +110,7 @@ configure_ciphers (grub_disk_t disk, const char *check_uuid,
   newdev->source_disk = NULL;
   newdev->log_sector_size = GRUB_LUKS1_LOG_SECTOR_SIZE;
   newdev->total_sectors = grub_disk_native_sectors (disk) - newdev->offset_sectors;
-  grub_memcpy (newdev->uuid, uuid, sizeof (uuid));
+  grub_memcpy (newdev->uuid, header.uuid, sizeof (header.uuid));
   newdev->modname = "luks";
 
   /* Configure the hash used for the AF splitter and HMAC.  */
@@ -146,24 +130,26 @@ configure_ciphers (grub_disk_t disk, const char *check_uuid,
       return NULL;
     }
 
-  COMPILE_TIME_ASSERT (sizeof (newdev->uuid) >= sizeof (uuid));
+  COMPILE_TIME_ASSERT (sizeof (newdev->uuid) >= sizeof (header.uuid));
   return newdev;
 }
 
 static grub_err_t
 luks_recover_key (grub_disk_t source,
-		  grub_cryptodisk_t dev)
+		  grub_cryptodisk_t dev,
+		  grub_cryptomount_args_t cargs)
 {
   struct grub_luks_phdr header;
   grub_size_t keysize;
   grub_uint8_t *split_key = NULL;
-  char passphrase[MAX_PASSPHRASE] = "";
   grub_uint8_t candidate_digest[sizeof (header.mkDigest)];
   unsigned i;
   grub_size_t length;
   grub_err_t err;
   grub_size_t max_stripes = 1;
-  char *tmp;
+
+  if (cargs->key_data == NULL || cargs->key_len == 0)
+    return grub_error (GRUB_ERR_BAD_ARGUMENT, "no key data");
 
   err = grub_disk_read (source, 0, 0, sizeof (header), &header);
   if (err)
@@ -183,20 +169,6 @@ luks_recover_key (grub_disk_t source,
   if (!split_key)
     return grub_errno;
 
-  /* Get the passphrase from the user.  */
-  tmp = NULL;
-  if (source->partition)
-    tmp = grub_partition_get_name (source->partition);
-  grub_printf_ (N_("Enter passphrase for %s%s%s (%s): "), source->name,
-	       source->partition ? "," : "", tmp ? : "",
-	       dev->uuid);
-  grub_free (tmp);
-  if (!grub_password_get (passphrase, MAX_PASSPHRASE))
-    {
-      grub_free (split_key);
-      return grub_error (GRUB_ERR_BAD_ARGUMENT, "Passphrase not supplied");
-    }
-
   /* Try to recover master key from each active keyslot.  */
   for (i = 0; i < ARRAY_SIZE (header.keyblock); i++)
     {
@@ -211,8 +183,8 @@ luks_recover_key (grub_disk_t source,
       grub_dprintf ("luks", "Trying keyslot %d\n", i);
 
       /* Calculate the PBKDF2 of the user supplied passphrase.  */
-      gcry_err = grub_crypto_pbkdf2 (dev->hash, (grub_uint8_t *) passphrase,
-				     grub_strlen (passphrase),
+      gcry_err = grub_crypto_pbkdf2 (dev->hash, cargs->key_data,
+				     cargs->key_len,
 				     header.keyblock[i].passwordSalt,
 				     sizeof (header.keyblock[i].passwordSalt),
 				     grub_be_to_cpu32 (header.keyblock[i].
@@ -227,7 +199,7 @@ luks_recover_key (grub_disk_t source,
 
       grub_dprintf ("luks", "PBKDF2 done\n");
 
-      gcry_err = grub_cryptodisk_setkey (dev, digest, keysize); 
+      gcry_err = grub_cryptodisk_setkey (dev, digest, keysize);
       if (gcry_err)
 	{
 	  grub_free (split_key);
@@ -295,7 +267,7 @@ luks_recover_key (grub_disk_t source,
       grub_printf_ (N_("Slot %d opened\n"), i);
 
       /* Set the master key.  */
-      gcry_err = grub_cryptodisk_setkey (dev, candidate_key, keysize); 
+      gcry_err = grub_cryptodisk_setkey (dev, candidate_key, keysize);
       if (gcry_err)
 	{
 	  grub_free (split_key);
@@ -312,7 +284,7 @@ luks_recover_key (grub_disk_t source,
 }
 
 struct grub_cryptodisk_dev luks_crypto = {
-  .scan = configure_ciphers,
+  .scan = luks_scan,
   .recover_key = luks_recover_key
 };
 

@@ -1,6 +1,6 @@
 This is grub.info, produced by makeinfo version 6.3 from grub.texi.
 
-This manual is for GNU GRUB (version 2.06, 10 May 2021).
+This manual is for GNU GRUB (version 2.12, 5 December 2023).
 
    Copyright (C)
 1999,2000,2001,2002,2004,2006,2008,2009,2010,2011,2012,2013 Free
@@ -33,9 +33,9 @@ This is the documentation of GNU GRUB, the GRand Unified Bootloader, a
 flexible and powerful boot loader program for a wide range of
 architectures.
 
-   This edition documents version 2.06.
+   This edition documents version 2.12.
 
-   This manual is for GNU GRUB (version 2.06, 10 May 2021).
+   This manual is for GNU GRUB (version 2.12, 5 December 2023).
 
    Copyright (C)
 1999,2000,2001,2002,2004,2006,2008,2009,2010,2011,2012,2013 Free
@@ -65,22 +65,15 @@ Software Foundation, Inc.
 * Filesystem::                  Filesystem syntax and semantics
 * Interface::                   The menu and the command-line
 * Environment::                 GRUB environment variables
-* Commands::                    The list of available builtin commands
+* Modules::                     Available modules
+* Commands::                    Available builtin commands
 * Internationalisation::        Topics relating to language support
 * Security::                    Authentication, authorisation, and signatures
-* Platform limitations::        The list of platform-specific limitations
+* Platform limitations::        Platform-specific limitations
 * Platform-specific operations:: Platform-specific operations
-* Supported kernels::           The list of supported kernels
+* Supported kernels::           Supported kernels
 * Troubleshooting::             Error messages produced by GRUB
-* Invoking grub-install::       How to use the GRUB installer
-* Invoking grub-mkconfig::      Generate a GRUB configuration file
-* Invoking grub-mkpasswd-pbkdf2::
-                                Generate GRUB password hashes
-* Invoking grub-mkrelpath::     Make system path relative to its root
-* Invoking grub-mkrescue::      Make a GRUB rescue image
-* Invoking grub-mount::         Mount a file system using GRUB
-* Invoking grub-probe::         Probe device information for GRUB
-* Invoking grub-script-check::  Check GRUB script file for syntax errors
+* User-space utilities::        Usage of user-space utilities
 * Obtaining and Building GRUB:: How to obtain and build GRUB
 * Reporting bugs::              Where you should send a bug report
 * Future::                      Some future plans on GRUB
@@ -779,22 +772,25 @@ warn if attempted to install into small MBR gap except in a small number
 of configurations that were grandfathered.  The grandfathered config
 must:
 
-   * use biosdisk as disk access module for '/boot' * not use any
-additional partition maps to access '/boot' * '/boot' must be on one of
-following filesystems: * AFFS, AFS, BFS, cpio, newc, odc, ext2/3/4, FAT,
-exFAT, F2FS, HFS, uncompressed HFS+, ISO9660, JFS, Minix, Minix2,
-Minix3, NILFS2, NTFS, ReiserFS, ROMFS, SFS, tar, UDF, UFS1, UFS2, XFS
+   * use biosdisk as disk access module for '/boot'
+
+   * not use any additional partition maps to access '/boot'
+
+   * '/boot' must be on one of following filesystems: AFFS, AFS, BFS,
+     cpio, newc, odc, ext2/3/4, FAT, exFAT, F2FS, HFS, uncompressed
+     HFS+, ISO9660, JFS, Minix, Minix2, Minix3, NILFS2, NTFS, ReiserFS,
+     ROMFS, SFS, tar, UDF, UFS1, UFS2, XFS
 
    MBR gap has few technical problems.  There is no way to reserve space
 in the embedding area with complete safety, and some proprietary
 software is known to use it to make it difficult for users to work
-around licensing restrictions.  GRUB works it around by detecting
+around licensing restrictions.  GRUB works around it by detecting
 sectors by other software and avoiding them and protecting its own
 sectors using Reed-Solomon encoding.
 
-   GRUB team recommends having MBR gap of at least 1000 KiB
+   GRUB team recommends having MBR gap of at least 1000 KiB.
 
-   Should it be not possible GRUB has support for a fallback solution
+   Should it not be possible, GRUB has support for a fallback solution
 which is heavily recommended against.  Installing to a filesystem means
 that GRUB is vulnerable to its blocks being moved around by filesystem
 features such as tail packing, or even by aggressive fsck
@@ -863,22 +859,22 @@ File: grub.info,  Node: General boot methods,  Next: Loopback booting,  Up: Boot
 5.1 How to boot operating systems
 =================================
 
-GRUB has two distinct boot methods.  One of the two is to load an
-operating system directly, and the other is to chain-load another boot
-loader which then will load an operating system actually.  Generally
-speaking, the former is more desirable, because you don't need to
-install or maintain other boot loaders and GRUB is flexible enough to
-load an operating system from an arbitrary disk/partition.  However, the
-latter is sometimes required, since GRUB doesn't support all the
-existing operating systems natively.
+GRUB has three distinct boot methods: loading an operating system
+directly, using kexec from userspace, and chainloading another
+bootloader.  Generally speaking, the first two are more desirable
+because you don't need to install or maintain other boot loaders and
+GRUB is flexible enough to load an operating system from an arbitrary
+disk/partition.  However, chainloading is sometimes required, as GRUB
+doesn't support all existing operating systems natively.
 
 * Menu:
 
 * Loading an operating system directly::
+* Kexec::
 * Chain-loading::
 
 
-File: grub.info,  Node: Loading an operating system directly,  Next: Chain-loading,  Up: General boot methods
+File: grub.info,  Node: Loading an operating system directly,  Next: Kexec,  Up: General boot methods
 
 5.1.1 How to boot an OS directly with GRUB
 ------------------------------------------
@@ -898,15 +894,31 @@ use more complicated instructions.  *Note DOS/Windows::, for more
 information.
 
 
-File: grub.info,  Node: Chain-loading,  Prev: Loading an operating system directly,  Up: General boot methods
+File: grub.info,  Node: Kexec,  Next: Chain-loading,  Prev: Loading an operating system directly,  Up: General boot methods
 
-5.1.2 Chain-loading an OS
+5.1.2 Kexec with grub2-emu
+--------------------------
+
+GRUB can be run in userspace by invoking the grub2-emu tool.  It will
+read all configuration scripts as if booting directly (see *note Loading
+an operating system directly::).  With the '--kexec' flag, and kexec(8)
+support from the operating system, the 'linux' command will directly
+boot the target image.  For systems that lack working systemctl(1)
+support for kexec, passing the '--kexec' flag twice will fallback to
+invoking kexec(8) directly; note however that this fallback may be
+unsafe outside read-only environments, as it does not invoke shutdown
+machinery.
+
+
+File: grub.info,  Node: Chain-loading,  Prev: Kexec,  Up: General boot methods
+
+5.1.3 Chain-loading an OS
 -------------------------
 
 Operating systems that do not support Multiboot and do not have specific
 support in GRUB (specific support is available for Linux, FreeBSD,
 NetBSD and OpenBSD) must be chain-loaded, which involves loading another
-boot loader and jumping to it in real mode.
+boot loader and jumping to it in real mode or via the firmware.
 
    The 'chainloader' command (*note chainloader::) is used to set this
 up.  It is normally also necessary to load some GRUB modules and set the
@@ -939,21 +951,22 @@ involves running a userspace program running before the real root is
 discovered.  This is achieved by GRUB loading a specially made small
 image and passing it as ramdisk to the kernel.  This is achieved by
 commands 'kfreebsd_module', 'knetbsd_module_elf', 'kopenbsd_ramdisk',
-'initrd' (*note initrd::), 'initrd16' (*note initrd::),
+'initrd' (*note initrd::), 'initrd16' (*note initrd16::),
 'multiboot_module', 'multiboot2_module' or 'xnu_ramdisk' depending on
 the loader.  Note that for knetbsd the image must be put inside
 miniroot.kmod and the whole miniroot.kmod has to be loaded.  In kopenbsd
-payload this is disabled by default.  Aditionally behaviour of initial
+payload this is disabled by default.  Additionally, behaviour of initial
 ramdisk depends on command line options.  Several distributors provide
 the image for this purpose or it's integrated in their standard ramdisk
 and activated by special option.  Consult your kernel and distribution
-manual for more details.  Other loaders like appleloader, chainloader
-(BIOS, EFI, coreboot), freedos, ntldr and plan9 provide no possibility
-of loading initial ramdisk and as far as author is aware the payloads in
-question don't support either initial ramdisk or discovering loopback
-boot in other way and as such not bootable this way.  Please consider
-alternative boot methods like copying all files from the image to actual
-partition.  Consult your OS documentation for more details
+manual for more details.  Other loaders like 'appleloader',
+'chainloader' (BIOS, EFI, coreboot), 'freedos', 'ntldr', 'plan9' and
+'truecrypt' provide no possibility of loading initial ramdisk and as far
+as author is aware the payloads in question don't support either initial
+ramdisk or discovering loopback boot in other way and as such not
+bootable this way.  Please consider alternative boot methods like
+copying all files from the image to actual partition.  Consult your OS
+documentation for more details.
 
 
 File: grub.info,  Node: LVM cache booting,  Next: OS-specific notes,  Prev: Loopback booting,  Up: Booting
@@ -1326,6 +1339,13 @@ it must be quoted.  For example:
      to add only to the default menu entry, after those listed in
      'GRUB_CMDLINE_LINUX'.
 
+'GRUB_CMDLINE_LINUX_RECOVERY'
+     Unless 'GRUB_DISABLE_RECOVERY' is set to 'true', two menu entries
+     will be generated for each Linux kernel: one default entry and one
+     entry for recovery mode.  This option lists command-line arguments
+     to add only to the recovery menu entry, before those listed in
+     'GRUB_CMDLINE_LINUX'.  The default is 'single'.
+
 'GRUB_CMDLINE_NETBSD'
 'GRUB_CMDLINE_NETBSD_DEFAULT'
      As 'GRUB_CMDLINE_LINUX' and 'GRUB_CMDLINE_LINUX_DEFAULT', but for
@@ -1344,6 +1364,17 @@ it must be quoted.  For example:
      The values of these options replace the values of
      'GRUB_CMDLINE_LINUX' and 'GRUB_CMDLINE_LINUX_DEFAULT' for Linux and
      Xen menu entries.
+
+'GRUB_TOP_LEVEL'
+'GRUB_TOP_LEVEL_XEN'
+     This option should be an absolute path to a kernel image.  If
+     provided, the image specified will be made the top-level entry if
+     it is found in the scan.
+
+'GRUB_TOP_LEVEL_OS_PROBER'
+     This option should be a line of output from 'os-prober'.  As
+     'GRUB_TOP_LEVEL', if provided, the image specified will be made the
+     top-level entry if it is found in the scan.
 
 'GRUB_EARLY_INITRD_LINUX_CUSTOM'
 'GRUB_EARLY_INITRD_LINUX_STOCK'
@@ -1421,6 +1452,8 @@ it must be quoted.  For example:
      terminal.  The value of this option must be a file readable by GRUB
      at boot time, and it must end with '.png', '.tga', '.jpg', or
      '.jpeg'.  The image will be scaled if necessary to fit the screen.
+     Image height and width will be restricted by an artificial limit of
+     16384.
 
 'GRUB_THEME'
      Set a theme for use with the 'gfxterm' graphical terminal.
@@ -1578,7 +1611,8 @@ true       true                          false                     fs UUID
 true       true                          true                      dev name
 
    Remember, 'GRUB_DISABLE_LINUX_PARTUUID' and 'GRUB_DISABLE_LINUX_UUID'
-are also considered to be set to 'false' when they are unset.
+are also considered to be set to 'true' and 'false', respectively, when
+they are unset.
 
 
 File: grub.info,  Node: Shell-like scripting,  Next: Multi-boot manual config,  Prev: Root Identifcation Heuristics,  Up: Configuration
@@ -1699,22 +1733,25 @@ for NAME in WORD ...; do LIST; done
      executed, and the return status is 0.
 
 if LIST; then LIST; [elif LIST; then LIST;] ... [else LIST;] fi
-     The 'if' LIST is executed.  If its exit status is zero, the 'then'
-     LIST is executed.  Otherwise, each 'elif' LIST is executed in turn,
-     and if its exit status is zero, the corresponding 'then' LIST is
-     executed and the command completes.  Otherwise, the 'else' LIST is
-     executed, if present.  The exit status is the exit status of the
-     last command executed, or zero if no condition tested true.
+     The 'if' LIST is executed, where LIST is a series of "simple
+     command"s separated by a ";".  If its exit status of the last
+     command is zero, the 'then' LIST is executed.  Otherwise, each
+     'elif' LIST is executed in turn, and if its last command's exit
+     status is zero, the corresponding 'then' LIST is executed and the
+     command completes.  Otherwise, the 'else' LIST is executed, if
+     present.  The exit status is the exit status of the last command
+     executed, or zero if no condition tested true.
 
 while COND; do LIST; done
 until COND; do LIST; done
      The 'while' command continuously executes the 'do' LIST as long as
-     the last command in COND returns an exit status of zero.  The
-     'until' command is identical to the 'while' command, except that
-     the test is negated; the 'do' LIST is executed as long as the last
-     command in COND returns a non-zero exit status.  The exit status of
-     the 'while' and 'until' commands is the exit status of the last
-     'do' LIST command executed, or zero if none was executed.
+     the last command in COND returns an exit status of zero, where COND
+     is a list of "simple command"s separated by a ";".  The 'until'
+     command is identical to the 'while' command, except that the test
+     is negated; the 'do' LIST is executed as long as the last command
+     in COND returns a non-zero exit status.  The exit status of the
+     'while' and 'until' commands is the exit status of the last 'do'
+     LIST command executed, or zero if none was executed.
 
 function NAME { COMMAND; ... }
      This defines a function named NAME.  The "body" of the function is
@@ -2537,6 +2574,12 @@ description <INTERFACE> is placeholder for the name of network interface
 'net_<INTERFACE>_mac'
      The network interface's MAC address.  Read-only.
 
+'net_<INTERFACE>_clientid'
+     The client id provided by DHCP. Read-only.
+
+'net_<INTERFACE>_clientuuid'
+     The client uuid provided by DHCP. Read-only.
+
 'net_<INTERFACE>_hostname'
      The client host name provided by DHCP. Read-only.
 
@@ -2605,7 +2648,11 @@ simple.  Here is an example:
    The command 'serial' initializes the serial unit 0 with the speed
 9600bps.  The serial unit 0 is usually called 'COM1', so, if you want to
 use COM2, you must specify '--unit=1' instead.  This command accepts
-many other options, so please refer to *note serial::, for more details.
+many other options, *note serial:: for more details.
+
+   Without argument or with '--port=auto', GRUB will attempt to use ACPI
+when available to auto-detect the default serial port and its
+configuration.
 
    The commands 'terminal_input' (*note terminal_input::) and
 'terminal_output' (*note terminal_output::) choose which type of
@@ -2937,6 +2984,15 @@ installing GRUB).
 'net_default_server' is used.  Before using the network drive, you must
 initialize the network.  *Note Network::, for more information.
 
+   When using 'http' or 'tftp', ports other than '80' can be specified
+using a colon (':') after the address.  To avoid parsing conflicts, when
+using IPv6 addresses with custom ports, the addresses must be enclosed
+with square brackets ('[]'), as is standard practice.
+
+     (http,grub.example.com:31337)
+     (http,192.0.2.1:339)
+     (http,[2001:db8::1]:11235)
+
    If you boot GRUB from a CD-ROM, '(cd)' is available.  *Note Making a
 GRUB bootable CD-ROM::, for details.
 
@@ -2972,13 +3028,15 @@ File: grub.info,  Node: Block list syntax,  Prev: File name syntax,  Up: Filesys
 
 A block list is used for specifying a file that doesn't appear in the
 filesystem, like a chainloader.  The syntax is
-'[OFFSET]+LENGTH[,[OFFSET]+LENGTH]...'.  Here is an example:
+'[OFFSET]+[LENGTH][,[OFFSET]+[LENGTH]]...'.  Here is an example:
 
-     0+100,200+1,300+300
+     0+100,200+1,300+300,800+
 
    This represents that GRUB should read blocks 0 through 99, block 200,
-and blocks 300 through 599.  If you omit an offset, then GRUB assumes
-the offset is zero.
+blocks 300 through 599, and blocks 800 until the end of the device.  If
+you omit an offset, then GRUB assumes the offset is zero.  If the length
+is omitted, then GRUB assumes the block list extends until the end of
+the device.
 
    Like the file name syntax (*note File name syntax::), if a blocklist
 does not contain a device name, then GRUB uses GRUB's "root device".  So
@@ -3015,9 +3073,9 @@ File: grub.info,  Node: Command-line interface,  Next: Menu interface,  Up: Inte
 The command-line interface provides a prompt and after it an editable
 text area much like a command-line in Unix or DOS. Each command is
 immediately executed after it is entered(1) (*note Command-line
-interface-Footnote-1::).  The commands (*note Command-line and menu
-entry commands::) are a subset of those available in the configuration
-file, used with exactly the same syntax.
+interface-Footnote-1::).  The commands (*note Commands::) are a subset
+of those available in the configuration file, used with exactly the same
+syntax.
 
    Cursor movement and editing of the text on the line can be done via a
 subset of the functions available in the Bash shell:
@@ -3105,6 +3163,9 @@ edit any of the "boot entries" by pressing <e>.
 all you can do is choose an entry by pressing <RET>, or press <p> to
 enter the password.
 
+   Pressing <Ctrl-l> will refresh the menu, which can be useful when
+connecting via serial after the menu has been drawn.
+
 
 File: grub.info,  Node: Menu entry editor,  Prev: Menu interface,  Up: Interface
 
@@ -3126,7 +3187,7 @@ press <Ctrl-x>.
 almost the same thing by just returning to the main menu using <ESC>.
 
 
-File: grub.info,  Node: Environment,  Next: Commands,  Prev: Interface,  Up: Top
+File: grub.info,  Node: Environment,  Next: Modules,  Prev: Interface,  Up: Top
 
 15 GRUB environment variables
 *****************************
@@ -3174,9 +3235,12 @@ These variables have special meaning to GRUB.
 * icondir::
 * lang::
 * locale_dir::
+* lockdown::
 * menu_color_highlight::
 * menu_color_normal::
 * net_<INTERFACE>_boot_file::
+* net_<INTERFACE>_clientid::
+* net_<INTERFACE>_clientuuid::
 * net_<INTERFACE>_dhcp_server_name::
 * net_<INTERFACE>_domain::
 * net_<INTERFACE>_extensionspath::
@@ -3195,10 +3259,12 @@ These variables have special meaning to GRUB.
 * pxe_default_gateway::
 * pxe_default_server::
 * root::
+* shim_lock::
 * superusers::
 * theme::
 * timeout::
 * timeout_style::
+* tpm_fail_fatal::
 
 
 File: grub.info,  Node: biosnum,  Next: check_signatures,  Up: Special environment variables
@@ -3341,10 +3407,17 @@ File: grub.info,  Node: debug,  Next: default,  Prev: config_file,  Up: Special 
 ------------
 
 This variable may be set to enable debugging output from various
-components of GRUB. The value is a list of debug facility names
-separated by whitespace or ',', or 'all' to enable all available
-debugging output.  The facility names are the first argument to
-grub_dprintf.  Consult source for more details.
+components of GRUB. The value is an ordered list of debug facility names
+separated by whitespace or ','.  If the special facility named 'all' is
+present then debugging output of all facility names is enabled at the
+start of processing the value of this variable.  A facility's debug
+output can then be disabled by prefixing its name with a '-'.  The last
+occurence facility name with or without a leading '-' takes precendent
+over any previous occurence.  This allows the easy enabling or disabling
+of facilities by appending a ',' and then the facility name with or
+without the leading '-', which will preserve the state of the rest of
+the facilities.  The facility names are the first argument to
+grub_dprintf.  Consult the source for more details.
 
 
 File: grub.info,  Node: default,  Next: fallback,  Prev: debug,  Up: Special environment variables
@@ -3496,7 +3569,7 @@ French would be named as 'fr', and Simplified Chinese as 'zh_CN'.
 reasonable default for this variable based on the system locale.
 
 
-File: grub.info,  Node: locale_dir,  Next: menu_color_highlight,  Prev: lang,  Up: Special environment variables
+File: grub.info,  Node: locale_dir,  Next: lockdown,  Prev: lang,  Up: Special environment variables
 
 15.1.19 locale_dir
 ------------------
@@ -3510,9 +3583,18 @@ default for this variable if internationalization is needed and any
 translation files are available.
 
 
-File: grub.info,  Node: menu_color_highlight,  Next: menu_color_normal,  Prev: locale_dir,  Up: Special environment variables
+File: grub.info,  Node: lockdown,  Next: menu_color_highlight,  Prev: locale_dir,  Up: Special environment variables
 
-15.1.20 menu_color_highlight
+15.1.20 lockdown
+----------------
+
+If this variable is set to 'y', it means that GRUB has entered *note
+Lockdown:: mode.
+
+
+File: grub.info,  Node: menu_color_highlight,  Next: menu_color_normal,  Prev: lockdown,  Up: Special environment variables
+
+15.1.21 menu_color_highlight
 ----------------------------
 
 This variable contains the foreground and background colors to be used
@@ -3526,7 +3608,7 @@ color_highlight::).
 
 File: grub.info,  Node: menu_color_normal,  Next: net_<INTERFACE>_boot_file,  Prev: menu_color_highlight,  Up: Special environment variables
 
-15.1.21 menu_color_normal
+15.1.22 menu_color_normal
 -------------------------
 
 This variable contains the foreground and background colors to be used
@@ -3537,17 +3619,33 @@ this variable changes those colors.  For the available color names,
    The default is the value of 'color_normal' (*note color_normal::).
 
 
-File: grub.info,  Node: net_<INTERFACE>_boot_file,  Next: net_<INTERFACE>_dhcp_server_name,  Prev: menu_color_normal,  Up: Special environment variables
+File: grub.info,  Node: net_<INTERFACE>_boot_file,  Next: net_<INTERFACE>_clientid,  Prev: menu_color_normal,  Up: Special environment variables
 
-15.1.22 net_<INTERFACE>_boot_file
+15.1.23 net_<INTERFACE>_boot_file
 ---------------------------------
 
 *Note Network::.
 
 
-File: grub.info,  Node: net_<INTERFACE>_dhcp_server_name,  Next: net_<INTERFACE>_domain,  Prev: net_<INTERFACE>_boot_file,  Up: Special environment variables
+File: grub.info,  Node: net_<INTERFACE>_clientid,  Next: net_<INTERFACE>_clientuuid,  Prev: net_<INTERFACE>_boot_file,  Up: Special environment variables
 
-15.1.23 net_<INTERFACE>_dhcp_server_name
+15.1.24 net_<INTERFACE>_clientid
+--------------------------------
+
+*Note Network::.
+
+
+File: grub.info,  Node: net_<INTERFACE>_clientuuid,  Next: net_<INTERFACE>_dhcp_server_name,  Prev: net_<INTERFACE>_clientid,  Up: Special environment variables
+
+15.1.25 net_<INTERFACE>_clientuuid
+----------------------------------
+
+*Note Network::.
+
+
+File: grub.info,  Node: net_<INTERFACE>_dhcp_server_name,  Next: net_<INTERFACE>_domain,  Prev: net_<INTERFACE>_clientuuid,  Up: Special environment variables
+
+15.1.26 net_<INTERFACE>_dhcp_server_name
 ----------------------------------------
 
 *Note Network::.
@@ -3555,7 +3653,7 @@ File: grub.info,  Node: net_<INTERFACE>_dhcp_server_name,  Next: net_<INTERFACE>
 
 File: grub.info,  Node: net_<INTERFACE>_domain,  Next: net_<INTERFACE>_extensionspath,  Prev: net_<INTERFACE>_dhcp_server_name,  Up: Special environment variables
 
-15.1.24 net_<INTERFACE>_domain
+15.1.27 net_<INTERFACE>_domain
 ------------------------------
 
 *Note Network::.
@@ -3563,7 +3661,7 @@ File: grub.info,  Node: net_<INTERFACE>_domain,  Next: net_<INTERFACE>_extension
 
 File: grub.info,  Node: net_<INTERFACE>_extensionspath,  Next: net_<INTERFACE>_hostname,  Prev: net_<INTERFACE>_domain,  Up: Special environment variables
 
-15.1.25 net_<INTERFACE>_extensionspath
+15.1.28 net_<INTERFACE>_extensionspath
 --------------------------------------
 
 *Note Network::.
@@ -3571,7 +3669,7 @@ File: grub.info,  Node: net_<INTERFACE>_extensionspath,  Next: net_<INTERFACE>_h
 
 File: grub.info,  Node: net_<INTERFACE>_hostname,  Next: net_<INTERFACE>_ip,  Prev: net_<INTERFACE>_extensionspath,  Up: Special environment variables
 
-15.1.26 net_<INTERFACE>_hostname
+15.1.29 net_<INTERFACE>_hostname
 --------------------------------
 
 *Note Network::.
@@ -3579,7 +3677,7 @@ File: grub.info,  Node: net_<INTERFACE>_hostname,  Next: net_<INTERFACE>_ip,  Pr
 
 File: grub.info,  Node: net_<INTERFACE>_ip,  Next: net_<INTERFACE>_mac,  Prev: net_<INTERFACE>_hostname,  Up: Special environment variables
 
-15.1.27 net_<INTERFACE>_ip
+15.1.30 net_<INTERFACE>_ip
 --------------------------
 
 *Note Network::.
@@ -3587,7 +3685,7 @@ File: grub.info,  Node: net_<INTERFACE>_ip,  Next: net_<INTERFACE>_mac,  Prev: n
 
 File: grub.info,  Node: net_<INTERFACE>_mac,  Next: net_<INTERFACE>_next_server,  Prev: net_<INTERFACE>_ip,  Up: Special environment variables
 
-15.1.28 net_<INTERFACE>_mac
+15.1.31 net_<INTERFACE>_mac
 ---------------------------
 
 *Note Network::.
@@ -3595,7 +3693,7 @@ File: grub.info,  Node: net_<INTERFACE>_mac,  Next: net_<INTERFACE>_next_server,
 
 File: grub.info,  Node: net_<INTERFACE>_next_server,  Next: net_<INTERFACE>_rootpath,  Prev: net_<INTERFACE>_mac,  Up: Special environment variables
 
-15.1.29 net_<INTERFACE>_next_server
+15.1.32 net_<INTERFACE>_next_server
 -----------------------------------
 
 *Note Network::.
@@ -3603,7 +3701,7 @@ File: grub.info,  Node: net_<INTERFACE>_next_server,  Next: net_<INTERFACE>_root
 
 File: grub.info,  Node: net_<INTERFACE>_rootpath,  Next: net_default_interface,  Prev: net_<INTERFACE>_next_server,  Up: Special environment variables
 
-15.1.30 net_<INTERFACE>_rootpath
+15.1.33 net_<INTERFACE>_rootpath
 --------------------------------
 
 *Note Network::.
@@ -3611,7 +3709,7 @@ File: grub.info,  Node: net_<INTERFACE>_rootpath,  Next: net_default_interface, 
 
 File: grub.info,  Node: net_default_interface,  Next: net_default_ip,  Prev: net_<INTERFACE>_rootpath,  Up: Special environment variables
 
-15.1.31 net_default_interface
+15.1.34 net_default_interface
 -----------------------------
 
 *Note Network::.
@@ -3619,7 +3717,7 @@ File: grub.info,  Node: net_default_interface,  Next: net_default_ip,  Prev: net
 
 File: grub.info,  Node: net_default_ip,  Next: net_default_mac,  Prev: net_default_interface,  Up: Special environment variables
 
-15.1.32 net_default_ip
+15.1.35 net_default_ip
 ----------------------
 
 *Note Network::.
@@ -3627,7 +3725,7 @@ File: grub.info,  Node: net_default_ip,  Next: net_default_mac,  Prev: net_defau
 
 File: grub.info,  Node: net_default_mac,  Next: net_default_server,  Prev: net_default_ip,  Up: Special environment variables
 
-15.1.33 net_default_mac
+15.1.36 net_default_mac
 -----------------------
 
 *Note Network::.
@@ -3635,7 +3733,7 @@ File: grub.info,  Node: net_default_mac,  Next: net_default_server,  Prev: net_d
 
 File: grub.info,  Node: net_default_server,  Next: pager,  Prev: net_default_mac,  Up: Special environment variables
 
-15.1.34 net_default_server
+15.1.37 net_default_server
 --------------------------
 
 *Note Network::.
@@ -3643,7 +3741,7 @@ File: grub.info,  Node: net_default_server,  Next: pager,  Prev: net_default_mac
 
 File: grub.info,  Node: pager,  Next: prefix,  Prev: net_default_server,  Up: Special environment variables
 
-15.1.35 pager
+15.1.38 pager
 -------------
 
 If set to '1', pause output after each screenful and wait for keyboard
@@ -3652,7 +3750,7 @@ input.  The default is not to pause output.
 
 File: grub.info,  Node: prefix,  Next: pxe_blksize,  Prev: pager,  Up: Special environment variables
 
-15.1.36 prefix
+15.1.39 prefix
 --------------
 
 The location of the '/boot/grub' directory as an absolute file name
@@ -3664,7 +3762,7 @@ order for many parts of GRUB to work.
 
 File: grub.info,  Node: pxe_blksize,  Next: pxe_default_gateway,  Prev: prefix,  Up: Special environment variables
 
-15.1.37 pxe_blksize
+15.1.40 pxe_blksize
 -------------------
 
 *Note Network::.
@@ -3672,7 +3770,7 @@ File: grub.info,  Node: pxe_blksize,  Next: pxe_default_gateway,  Prev: prefix, 
 
 File: grub.info,  Node: pxe_default_gateway,  Next: pxe_default_server,  Prev: pxe_blksize,  Up: Special environment variables
 
-15.1.38 pxe_default_gateway
+15.1.41 pxe_default_gateway
 ---------------------------
 
 *Note Network::.
@@ -3680,15 +3778,15 @@ File: grub.info,  Node: pxe_default_gateway,  Next: pxe_default_server,  Prev: p
 
 File: grub.info,  Node: pxe_default_server,  Next: root,  Prev: pxe_default_gateway,  Up: Special environment variables
 
-15.1.39 pxe_default_server
+15.1.42 pxe_default_server
 --------------------------
 
 *Note Network::.
 
 
-File: grub.info,  Node: root,  Next: superusers,  Prev: pxe_default_server,  Up: Special environment variables
+File: grub.info,  Node: root,  Next: shim_lock,  Prev: pxe_default_server,  Up: Special environment variables
 
-15.1.40 root
+15.1.43 root
 ------------
 
 The root device name (*note Device syntax::).  Any file names that do
@@ -3701,9 +3799,18 @@ first hard disk, then 'prefix' might be set to '(hd0,msdos1)/boot/grub'
 and 'root' to 'hd0,msdos1'.
 
 
-File: grub.info,  Node: superusers,  Next: theme,  Prev: root,  Up: Special environment variables
+File: grub.info,  Node: shim_lock,  Next: superusers,  Prev: root,  Up: Special environment variables
 
-15.1.41 superusers
+15.1.44 shim_lock
+-----------------
+
+If this variable is set to 'y', it means that the shim_lock verifier is
+registered (see *note UEFI secure boot and shim::).
+
+
+File: grub.info,  Node: superusers,  Next: theme,  Prev: shim_lock,  Up: Special environment variables
+
+15.1.45 superusers
 ------------------
 
 This variable may be set to a list of superuser names to enable
@@ -3712,7 +3819,7 @@ authentication support.  *Note Security::.
 
 File: grub.info,  Node: theme,  Next: timeout,  Prev: superusers,  Up: Special environment variables
 
-15.1.42 theme
+15.1.46 theme
 -------------
 
 This variable may be set to a directory containing a GRUB graphical menu
@@ -3724,7 +3831,7 @@ configuration::).
 
 File: grub.info,  Node: timeout,  Next: timeout_style,  Prev: theme,  Up: Special environment variables
 
-15.1.43 timeout
+15.1.47 timeout
 ---------------
 
 If this variable is set, it specifies the time in seconds to wait for
@@ -3739,15 +3846,32 @@ a timeout of '-1' (or unset) means to wait indefinitely.
 configuration::).
 
 
-File: grub.info,  Node: timeout_style,  Prev: timeout,  Up: Special environment variables
+File: grub.info,  Node: timeout_style,  Next: tpm_fail_fatal,  Prev: timeout,  Up: Special environment variables
 
-15.1.44 timeout_style
+15.1.48 timeout_style
 ---------------------
 
 This variable may be set to 'menu', 'countdown', or 'hidden' to control
 the way in which the timeout (*note timeout::) interacts with displaying
 the menu.  See the documentation of 'GRUB_TIMEOUT_STYLE' (*note Simple
 configuration::) for details.
+
+
+File: grub.info,  Node: tpm_fail_fatal,  Prev: timeout_style,  Up: Special environment variables
+
+15.1.49 tpm_fail_fatal
+----------------------
+
+If this variable is set and true (i.e., not set to "0", "false",
+"disable", or "no"), TPM measurements that fail will be treated as
+fatal.  Otherwise, they will merely be debug-logged and boot will
+continue.
+
+   Call to EFI firmware, like hash_log_extend_event(), can return an
+unknown error, i.e.  due to bug present in firmware.  When this variable
+is set and true (same values as with TPM measurements) this situation
+will be considered to be fatal and error-logged as "unknown TPM error".
+If not set, booting the OS will be enabled.
 
 
 File: grub.info,  Node: Environment block,  Prev: Special environment variables,  Up: Environment
@@ -3779,10 +3903,51 @@ ZFS), and using BIOS or EFI functions (no ATA, USB or IEEE1275).
 (*note Simple configuration::).
 
 
-File: grub.info,  Node: Commands,  Next: Internationalisation,  Prev: Environment,  Up: Top
+File: grub.info,  Node: Modules,  Next: Commands,  Prev: Environment,  Up: Top
 
-16 The list of available commands
-*********************************
+16 Modules
+**********
+
+In this chapter, we list all modules that are available in GRUB
+(currently incomplete).
+
+   Modules can be loaded via the 'insmod' (*note insmod::) command.
+
+* Menu:
+
+* bli::
+
+
+File: grub.info,  Node: bli,  Up: Modules
+
+16.1 bli
+========
+
+This module provides basic support for the Boot Loader Interface.  The
+Boot Loader Interface specifies a set of EFI variables that are used to
+communicate boot-time information between the bootloader and the
+operating system.
+
+   The following variables are placed under the vendor UUID
+'4a67b082-0a4c-41cf-b6c7-440b29bb8c4f' when the module is loaded:
+
+   The GPT partition UUID of the EFI System Partition used during boot
+is published via the 'LoaderDevicePartUUID' variable.  The Boot Loader
+Interface specification requires GPT formatted drives.  The bli module
+ignores drives/partitions in any other format.  If GRUB is loaded from a
+non-GPT partition, e.g.  from an MSDOS formatted drive or network, this
+variable will not be set.
+
+   A string identifying GRUB as the active bootloader including the
+version number is stored in 'LoaderInfo'.
+
+   This module is only available on UEFI platforms.
+
+
+File: grub.info,  Node: Commands,  Next: Internationalisation,  Prev: Modules,  Up: Top
+
+17 Available commands
+*********************
 
 In this chapter, we list all commands that are available in GRUB.
 
@@ -3799,15 +3964,17 @@ to do, then *note GRUB only offers a rescue shell::.
 * Menu:
 
 * Menu-specific commands::
+* Loader commands::
 * General commands::
-* Command-line and menu entry commands::
+* Command-line commands::
 * Networking commands::
+* Undocumented commands::
 
 
-File: grub.info,  Node: Menu-specific commands,  Next: General commands,  Up: Commands
+File: grub.info,  Node: Menu-specific commands,  Next: Loader commands,  Up: Commands
 
-16.1 The list of commands for the menu only
-===========================================
+17.1 Commands for the menu only
+===============================
 
 The semantics used in parsing the configuration file are the following:
 
@@ -3831,7 +3998,7 @@ The semantics used in parsing the configuration file are the following:
 
 File: grub.info,  Node: menuentry,  Next: submenu,  Up: Menu-specific commands
 
-16.1.1 menuentry
+17.1.1 menuentry
 ----------------
 
  -- Command: menuentry TITLE ['--class=class' ...] ['--users=users']
@@ -3869,7 +4036,7 @@ File: grub.info,  Node: menuentry,  Next: submenu,  Up: Menu-specific commands
 
 File: grub.info,  Node: submenu,  Prev: menuentry,  Up: Menu-specific commands
 
-16.1.2 submenu
+17.1.2 submenu
 --------------
 
  -- Command: submenu TITLE ['--class=class' ...] ['--users=users']
@@ -3883,10 +4050,204 @@ File: grub.info,  Node: submenu,  Prev: menuentry,  Up: Menu-specific commands
      menuentry::).
 
 
-File: grub.info,  Node: General commands,  Next: Command-line and menu entry commands,  Prev: Menu-specific commands,  Up: Commands
+File: grub.info,  Node: Loader commands,  Next: General commands,  Prev: Menu-specific commands,  Up: Commands
 
-16.2 The list of general commands
-=================================
+17.2 Various loader commands
+============================
+
+These commands are used to load necessary components to boot desired OS.
+Many of the loader commands are not sufficiently documented.  The
+following is a list of commands that could use more documentation:
+
+   * 'appleloader' - Boot BIOS-based system.
+   * 'freedos' - Load FreeDOS kernel.sys.
+   * 'kfreebsd_loadenv' - Load FreeBSD env.
+   * 'kfreebsd_module_elf' - Load FreeBSD kernel module (ELF).
+   * 'kfreebsd_module' - Load FreeBSD kernel module.
+   * 'kfreebsd' - Load kernel of FreeBSD.
+   * 'knetbsd_module_elf' - Load NetBSD kernel module (ELF).
+   * 'knetbsd_module' - Load NetBSD kernel module.
+   * 'knetbsd' - Load kernel of NetBSD.
+   * 'kopenbsd' - Load kernel of OpenBSD.
+   * 'kopenbsd_ramdisk' - Load kOpenBSD ramdisk.
+   * 'legacy_initrd_nounzip' - Simulate grub-legacy 'modulenounzip'
+     command
+   * 'legacy_initrd' - Simulate grub-legacy 'initrd' command
+   * 'legacy_kernel' - Simulate grub-legacy 'kernel' command
+   * 'module2' - Load a multiboot 2 module.
+   * 'module' - Load a multiboot module.
+   * 'multiboot2' - Load a multiboot 2 kernel.
+   * 'multiboot' - Load a multiboot kernel.
+   * 'ntldr' - Load NTLDR or BootMGR.
+   * 'plan9' - Load Plan9 kernel.
+   * 'pxechainloader' - Load a PXE image.
+   * 'truecrypt' - Load Truecrypt ISO.
+   * 'xnu_kernel64' - Load 64-bit XNU image.
+   * 'xnu_kernel' - Load XNU image.
+   * 'xnu_kextdir' - Load XNU extension directory.
+   * 'xnu_kext' - Load XNU extension.
+   * 'xnu_mkext' - Load XNU extension package.
+   * 'xnu_ramdisk' - Load XNU ramdisk.  It will be available in OS as
+     md0.
+   * 'xnu_resume' - Load an image of hibernated XNU.
+   * 'xnu_splash' - Load a splash image for XNU.
+
+* Menu:
+
+* chainloader::                 Chain-load another boot loader
+* initrd::                      Load a Linux initrd
+* initrd16::                    Load a Linux initrd (16-bit mode)
+* linux::                       Load a Linux kernel
+* linux16::                     Load a Linux kernel (16-bit mode)
+* xen_hypervisor::              Load xen hypervisor binary (only on AArch64)
+* xen_module::                  Load xen modules for xen hypervisor (only on AArch64)
+
+
+File: grub.info,  Node: chainloader,  Next: initrd,  Up: Loader commands
+
+17.2.1 chainloader
+------------------
+
+ -- Command: chainloader ['--force'] file [args...]
+     Load FILE as a chain-loader.  Like any other file loaded by the
+     filesystem code, it can use the blocklist notation (*note Block
+     list syntax::) to grab the first sector of the current partition
+     with '+1'.  On EFI platforms, any arguments after FILE will be sent
+     to the loaded image.
+
+     If you specify the option '--force', then load FILE forcibly,
+     whether it has a correct signature or not.  This is required when
+     you want to load a defective boot loader, such as SCO UnixWare 7.1.
+
+
+File: grub.info,  Node: initrd,  Next: initrd16,  Prev: chainloader,  Up: Loader commands
+
+17.2.2 initrd
+-------------
+
+ -- Command: initrd file [file ...]
+     Load, in order, all initrds for a Linux kernel image, and set the
+     appropriate parameters in the Linux setup area in memory.  This may
+     only be used after the 'linux' command (*note linux::) has been
+     run.  See *note GNU/Linux:: for more info on booting GNU/Linux.
+     For more information on initrds see the GNU/Linux kernel
+     documentation
+     (https://docs.kernel.org/filesystems/ramfs-rootfs-initramfs.html).
+
+     A new-style initrd (for kernels newer than 2.6) containing one file
+     with leading path components can also be generated at run time.
+     This can be done by prefixing an argument with 'newc:' followed by
+     the path of the file in the new initrd, a ':', and then the GRUB
+     file path to the file data to be be included.
+
+     For example:
+          initrd newc:/etc/ssh/config:(hd0,2)/home/user/.ssh/config \
+                 newc:/etc/ssh/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key \
+                 /boot/initrd.gz \
+                 newc:/init:/home/user/init.fixed
+
+     This command will generate two new-style initrds on the fly.  The
+     first contains the path '/etc/ssh/config' with the contents of
+     '(hd0,2)/home/user/.ssh/config' and the path
+     '/etc/ssh/ssh_host_rsa_key' with the contents of
+     '/etc/ssh/ssh_host_rsa_key' on the ROOT device.  Parent directory
+     paths will automatically be generated as needed.  This first
+     generated initrd will then have '/boot/initrd.gz' concatenated
+     after it.  Next, another new-style archive will be generated with
+     the contents of '/home/user/init.fixed' in the path '/init' and
+     appended to the previous concatenation.  Finally, the result will
+     be sent to the kernel when booted.
+
+     Keep in mind that paths that come later will take precedence.  So
+     in the example above, the generated path '/init' will overwrite any
+     '/init' in '/boot/initrd.gz'.  This can be useful when changing the
+     main initrd is undesirable or difficult.
+
+
+File: grub.info,  Node: initrd16,  Next: linux,  Prev: initrd,  Up: Loader commands
+
+17.2.3 initrd16
+---------------
+
+ -- Command: initrd16 file [file ...]
+     Load, in order, all initrds for a Linux kernel image to be booted
+     in 16-bit mode, and set the appropriate parameters in the Linux
+     setup area in memory.  This may only be used after the 'linux16'
+     command (*note linux16::) has been run.  See also *note GNU/Linux::
+     and the 'initrd' command (*note initrd::) for more details on
+     arguments.
+
+     This command is only available on the pc platform for x86 systems.
+
+
+File: grub.info,  Node: linux,  Next: linux16,  Prev: initrd16,  Up: Loader commands
+
+17.2.4 linux
+------------
+
+ -- Command: linux file ...
+     Load a Linux kernel image from FILE.  The rest of the line is
+     passed verbatim as the "kernel command-line".  Any initrd must be
+     reloaded after using this command (*note initrd::).
+
+     On x86 systems, the kernel will be booted using the 32-bit boot
+     protocol.  Note that this means that the 'vga=' boot option will
+     not work; if you want to set a special video mode, you will need to
+     use GRUB commands such as 'set gfxpayload=1024x768' or 'set
+     gfxpayload=keep' (to keep the same mode as used in GRUB) instead.
+     GRUB can automatically detect some uses of 'vga=' and translate
+     them to appropriate settings of 'gfxpayload'.  The 'linux16'
+     command (*note linux16::) avoids this restriction.
+
+
+File: grub.info,  Node: linux16,  Next: xen_hypervisor,  Prev: linux,  Up: Loader commands
+
+17.2.5 linux16
+--------------
+
+ -- Command: linux16 file ...
+     Load a Linux kernel image from FILE in 16-bit mode.  The rest of
+     the line is passed verbatim as the "kernel command-line".  Any
+     initrd must be reloaded after using this command (*note
+     initrd16::).
+
+     The kernel will be booted using the traditional 16-bit boot
+     protocol.  As well as bypassing problems with 'vga=' described in
+     *note linux::, this permits booting some other programs that
+     implement the Linux boot protocol for the sake of convenience.
+
+     This command is only available on x86 systems.
+
+
+File: grub.info,  Node: xen_hypervisor,  Next: xen_module,  Prev: linux16,  Up: Loader commands
+
+17.2.6 xen_hypervisor
+---------------------
+
+ -- Command: xen_hypervisor file [arguments] ...
+     Load a Xen hypervisor binary from FILE.  The rest of the line is
+     passed verbatim as the "kernel command-line".  Any other binaries
+     must be reloaded after using this command.  This command is only
+     available on AArch64 systems.
+
+
+File: grub.info,  Node: xen_module,  Prev: xen_hypervisor,  Up: Loader commands
+
+17.2.7 xen_module
+-----------------
+
+ -- Command: xen_module [--nounzip] file [arguments]
+     Load a module for xen hypervisor at the booting process of xen.
+     The rest of the line is passed verbatim as the module command line.
+     Modules should be loaded in the following order: - dom0 kernel
+     image - dom0 ramdisk if present - XSM policy if present This
+     command is only available on AArch64 systems.
+
+
+File: grub.info,  Node: General commands,  Next: Command-line commands,  Prev: Loader commands,  Up: Commands
+
+17.3 General commands
+=====================
 
 Commands usable anywhere in the menu and in the command-line.
 
@@ -3900,31 +4261,58 @@ Commands usable anywhere in the menu and in the command-line.
 
 File: grub.info,  Node: serial,  Next: terminal_input,  Up: General commands
 
-16.2.1 serial
+17.3.1 serial
 -------------
 
  -- Command: serial ['--unit=unit'] ['--port=port'] ['--speed=speed']
           ['--word=word'] ['--parity=parity'] ['--stop=stop']
      Initialize a serial device.  UNIT is a number in the range 0-3
      specifying which serial port to use; default is 0, which
-     corresponds to the port often called COM1.  PORT is the I/O port
-     where the UART is to be found; if specified it takes precedence
-     over UNIT.  SPEED is the transmission speed; default is 9600.  WORD
-     and STOP are the number of data bits and stop bits.  Data bits must
-     be in the range 5-8 and stop bits must be 1 or 2.  Default is 8
-     data bits and one stop bit.  PARITY is one of 'no', 'odd', 'even'
-     and defaults to 'no'.
+     corresponds to the port often called COM1.
+
+     PORT is the I/O port where the UART is to be found or, if prefixed
+     with 'mmio,', the MMIO address of the UART. If specified it takes
+     precedence over UNIT.
+
+     Additionally, an MMIO address can be suffixed with:
+        * '.b' for bytes access (default)
+        * '.w' for 16-bit word access
+        * '.l' for 32-bit long word access or
+        * '.q' for 64-bit long long word access
+
+     Also, PORT can be of the form 'pci,XX:XX.X' to indicate a serial
+     device exposed on the PCI bus.
+
+     SPEED is the transmission speed; default is 9600.  WORD and STOP
+     are the number of data bits and stop bits.  Data bits must be in
+     the range 5-8 and stop bits must be 1 or 2.  Default is 8 data bits
+     and one stop bit.  PARITY is one of 'no', 'odd', 'even' and
+     defaults to 'no'.
+
+     If passed no UNIT nor PORT, or if PORT is set to 'auto' then GRUB
+     will attempt to use ACPI to automatically detect the system default
+     serial port and its configuration.  If this information is not
+     available, it will default to UNIT 0.
 
      The serial port is not used as a communication channel unless the
      'terminal_input' or 'terminal_output' command is used (*note
      terminal_input::, *note terminal_output::).
+
+     Note, valid PORT values, excluding IO port addresses, can be found
+     by listing terminals with 'terminal_output', selecting all names
+     prefixed by 'serial_' and removing that prefix.
+
+     Examples:
+          serial --port=0x3f8 --speed=9600
+          serial --port=mmio,fefb0000.l --speed=115200
+          serial --port=pci,00:16.3 --speed=115200
 
      See also *note Serial terminal::.
 
 
 File: grub.info,  Node: terminal_input,  Next: terminal_output,  Prev: serial,  Up: General commands
 
-16.2.2 terminal_input
+17.3.2 terminal_input
 ---------------------
 
  -- Command: terminal_input ['--append'|'--remove'] [terminal1]
@@ -3944,7 +4332,7 @@ File: grub.info,  Node: terminal_input,  Next: terminal_output,  Prev: serial,  
 
 File: grub.info,  Node: terminal_output,  Next: terminfo,  Prev: terminal_input,  Up: General commands
 
-16.2.3 terminal_output
+17.3.3 terminal_output
 ----------------------
 
  -- Command: terminal_output ['--append'|'--remove'] [terminal1]
@@ -3964,7 +4352,7 @@ File: grub.info,  Node: terminal_output,  Next: terminfo,  Prev: terminal_input,
 
 File: grub.info,  Node: terminfo,  Prev: terminal_output,  Up: General commands
 
-16.2.4 terminfo
+17.3.4 terminfo
 ---------------
 
  -- Command: terminfo ['-a'|'-u'|'-v'] ['-g WxH'] [term] [type]
@@ -3991,10 +4379,10 @@ File: grub.info,  Node: terminfo,  Prev: terminal_output,  Up: General commands
      type is printed.
 
 
-File: grub.info,  Node: Command-line and menu entry commands,  Next: Networking commands,  Prev: General commands,  Up: Commands
+File: grub.info,  Node: Command-line commands,  Next: Networking commands,  Prev: General commands,  Up: Commands
 
-16.3 The list of command-line and menu entry commands
-=====================================================
+17.4 Command-line commands
+==========================
 
 These commands are usable in the command-line and in menu entries.  If
 you forget a command, you can run the command 'help' (*note help::).
@@ -4010,7 +4398,6 @@ you forget a command, you can run the command 'help' (*note help::).
 * blocklist::                   Print a block list
 * boot::                        Start up your operating system
 * cat::                         Show the contents of a file
-* chainloader::                 Chain-load another boot loader
 * clear::                       Clear the screen
 * cmosclean::                   Clear bit in CMOS
 * cmosdump::                    Dump CMOS contents
@@ -4026,20 +4413,20 @@ you forget a command, you can run the command 'help' (*note help::).
 * distrust::                    Remove a pubkey from trusted keys
 * drivemap::                    Map a drive to another
 * echo::                        Display a line of text
+* efitextmode::                 Set/Get text output mode resolution
 * eval::                        Evaluate agruments as GRUB commands
 * export::                      Export an environment variable
 * false::                       Do nothing, unsuccessfully
+* fwsetup::                     Reboot into the firmware setup menu
+* gdbinfo::                     Provide info for debugging with GDB
 * gettext::                     Translate a string
 * gptsync::                     Fill an MBR based on GPT entries
 * halt::                        Shut down your computer
 * hashsum::                     Compute or check hash checksum
 * help::                        Show help messages
-* initrd::                      Load a Linux initrd
-* initrd16::                    Load a Linux initrd (16-bit mode)
+* hexdump::                     Show raw contents of a file or memory
 * insmod::                      Insert a module
 * keystatus::                   Check key modifier status
-* linux::                       Load a Linux kernel
-* linux16::                     Load a Linux kernel (16-bit mode)
 * list_env::                    List variables in environment block
 * list_trusted::                List trusted public keys
 * load_env::                    Load variables from environment block
@@ -4057,6 +4444,7 @@ you forget a command, you can run the command 'help' (*note help::).
 * parttool::                    Modify partition table entries
 * password::                    Set a clear-text password
 * password_pbkdf2::             Set a hashed password
+* plainmount::                  Open device encrypted in plain mode
 * play::                        Play a tune
 * probe::                       Retrieve device info
 * rdmsr::                       Read values from model-specific registers
@@ -4081,22 +4469,20 @@ you forget a command, you can run the command 'help' (*note help::).
 * verify_detached::             Verify detached digital signature
 * videoinfo::                   List available video modes
 * wrmsr::                       Write values to model-specific registers
-* xen_hypervisor::              Load xen hypervisor binary (only on AArch64)
-* xen_module::                  Load xen modules for xen hypervisor (only on AArch64)
 
 
-File: grub.info,  Node: [,  Next: acpi,  Up: Command-line and menu entry commands
+File: grub.info,  Node: [,  Next: acpi,  Up: Command-line commands
 
-16.3.1 [
+17.4.1 [
 --------
 
  -- Command: '[' expression ']'
      Alias for 'test EXPRESSION' (*note test::).
 
 
-File: grub.info,  Node: acpi,  Next: authenticate,  Prev: [,  Up: Command-line and menu entry commands
+File: grub.info,  Node: acpi,  Next: authenticate,  Prev: [,  Up: Command-line commands
 
-16.3.2 acpi
+17.4.2 acpi
 -----------
 
  -- Command: acpi ['-1'|'-2']
@@ -4122,9 +4508,9 @@ File: grub.info,  Node: acpi,  Next: authenticate,  Prev: [,  Up: Command-line a
      later load and execute unsigned code.
 
 
-File: grub.info,  Node: authenticate,  Next: background_color,  Prev: acpi,  Up: Command-line and menu entry commands
+File: grub.info,  Node: authenticate,  Next: background_color,  Prev: acpi,  Up: Command-line commands
 
-16.3.3 authenticate
+17.4.3 authenticate
 -------------------
 
  -- Command: authenticate [userlist]
@@ -4134,9 +4520,9 @@ File: grub.info,  Node: authenticate,  Next: background_color,  Prev: acpi,  Up:
      *Note Security::.
 
 
-File: grub.info,  Node: background_color,  Next: background_image,  Prev: authenticate,  Up: Command-line and menu entry commands
+File: grub.info,  Node: background_color,  Next: background_image,  Prev: authenticate,  Up: Command-line commands
 
-16.3.4 background_color
+17.4.4 background_color
 -----------------------
 
  -- Command: background_color color
@@ -4150,9 +4536,9 @@ File: grub.info,  Node: background_color,  Next: background_image,  Prev: authen
      MENU_COLOR_HIGHLIGHT.  *Note Special environment variables::.
 
 
-File: grub.info,  Node: background_image,  Next: badram,  Prev: background_color,  Up: Command-line and menu entry commands
+File: grub.info,  Node: background_image,  Next: badram,  Prev: background_color,  Up: Command-line commands
 
-16.3.5 background_image
+17.4.5 background_image
 -----------------------
 
  -- Command: background_image [['--mode' 'stretch'|'normal'] file]
@@ -4163,9 +4549,9 @@ File: grub.info,  Node: background_image,  Next: badram,  Prev: background_color
      for terminal output.
 
 
-File: grub.info,  Node: badram,  Next: blocklist,  Prev: background_image,  Up: Command-line and menu entry commands
+File: grub.info,  Node: badram,  Next: blocklist,  Prev: background_image,  Up: Command-line commands
 
-16.3.6 badram
+17.4.6 badram
 -------------
 
  -- Command: badram addr,mask[,addr,mask...]
@@ -4194,18 +4580,18 @@ File: grub.info,  Node: badram,  Next: blocklist,  Prev: background_image,  Up: 
      secure boot.
 
 
-File: grub.info,  Node: blocklist,  Next: boot,  Prev: badram,  Up: Command-line and menu entry commands
+File: grub.info,  Node: blocklist,  Next: boot,  Prev: badram,  Up: Command-line commands
 
-16.3.7 blocklist
+17.4.7 blocklist
 ----------------
 
  -- Command: blocklist file
      Print a block list (*note Block list syntax::) for FILE.
 
 
-File: grub.info,  Node: boot,  Next: cat,  Prev: blocklist,  Up: Command-line and menu entry commands
+File: grub.info,  Node: boot,  Next: cat,  Prev: blocklist,  Up: Command-line commands
 
-16.3.8 boot
+17.4.8 boot
 -----------
 
  -- Command: boot
@@ -4214,9 +4600,9 @@ File: grub.info,  Node: boot,  Next: cat,  Prev: blocklist,  Up: Command-line an
      the end of a menu entry).
 
 
-File: grub.info,  Node: cat,  Next: chainloader,  Prev: boot,  Up: Command-line and menu entry commands
+File: grub.info,  Node: cat,  Next: clear,  Prev: boot,  Up: Command-line commands
 
-16.3.9 cat
+17.4.9 cat
 ----------
 
  -- Command: cat ['--dos'] file
@@ -4231,34 +4617,25 @@ File: grub.info,  Node: cat,  Next: chainloader,  Prev: boot,  Up: Command-line 
      make it easier to see when boot problems are caused by a file
      formatted using DOS-style line endings.
 
-
-File: grub.info,  Node: chainloader,  Next: clear,  Prev: cat,  Up: Command-line and menu entry commands
-
-16.3.10 chainloader
--------------------
-
- -- Command: chainloader ['--force'] file
-     Load FILE as a chain-loader.  Like any other file loaded by the
-     filesystem code, it can use the blocklist notation (*note Block
-     list syntax::) to grab the first sector of the current partition
-     with '+1'.  If you specify the option '--force', then load FILE
-     forcibly, whether it has a correct signature or not.  This is
-     required when you want to load a defective boot loader, such as SCO
-     UnixWare 7.1.
+     Note: 'cat' can be used to view the contents of devices using the
+     block list syntax (*note Block list syntax::).  However, it is not
+     advised to view binary data because it will try to decode UTF-8
+     strings, which can lead to some bytes missing or added in the
+     output.  Instead, use the 'hexdump' command (*note hexdump::).
 
 
-File: grub.info,  Node: clear,  Next: cmosclean,  Prev: chainloader,  Up: Command-line and menu entry commands
+File: grub.info,  Node: clear,  Next: cmosclean,  Prev: cat,  Up: Command-line commands
 
-16.3.11 clear
+17.4.10 clear
 -------------
 
  -- Command: clear
      Clear the screen.
 
 
-File: grub.info,  Node: cmosclean,  Next: cmosdump,  Prev: clear,  Up: Command-line and menu entry commands
+File: grub.info,  Node: cmosclean,  Next: cmosdump,  Prev: clear,  Up: Command-line commands
 
-16.3.12 cmosclean
+17.4.11 cmosclean
 -----------------
 
  -- Command: cmosclean byte:bit
@@ -4266,9 +4643,9 @@ File: grub.info,  Node: cmosclean,  Next: cmosdump,  Prev: clear,  Up: Command-l
      available only on platforms that support CMOS.
 
 
-File: grub.info,  Node: cmosdump,  Next: cmostest,  Prev: cmosclean,  Up: Command-line and menu entry commands
+File: grub.info,  Node: cmosdump,  Next: cmostest,  Prev: cmosclean,  Up: Command-line commands
 
-16.3.13 cmosdump
+17.4.12 cmosdump
 ----------------
 
  -- Dump: CMOS contents
@@ -4276,9 +4653,9 @@ File: grub.info,  Node: cmosdump,  Next: cmostest,  Prev: cmosclean,  Up: Comman
      available only on platforms that support CMOS.
 
 
-File: grub.info,  Node: cmostest,  Next: cmp,  Prev: cmosdump,  Up: Command-line and menu entry commands
+File: grub.info,  Node: cmostest,  Next: cmp,  Prev: cmosdump,  Up: Command-line commands
 
-16.3.14 cmostest
+17.4.13 cmostest
 ----------------
 
  -- Command: cmostest byte:bit
@@ -4287,14 +4664,19 @@ File: grub.info,  Node: cmostest,  Next: cmp,  Prev: cmosdump,  Up: Command-line
      only on platforms that support CMOS.
 
 
-File: grub.info,  Node: cmp,  Next: configfile,  Prev: cmostest,  Up: Command-line and menu entry commands
+File: grub.info,  Node: cmp,  Next: configfile,  Prev: cmostest,  Up: Command-line commands
 
-16.3.15 cmp
+17.4.14 cmp
 -----------
 
- -- Command: cmp file1 file2
-     Compare the file FILE1 with the file FILE2.  If they differ in
-     size, print the sizes like this:
+ -- Command: cmp ['-v'] file1 file2
+     Compare the file FILE1 with the file FILE2.  If they are completely
+     identical, '$?' will be set to 0.  Otherwise, if the files are not
+     identical, '$?' will be set to a nonzero value.
+
+     By default nothing will be output.  If the '-v' is used, verbose
+     mode is enabled.  In this mode when when the files differ in size,
+     print the sizes like this:
 
           Differ in size: 0x1234 [foo], 0x4321 [bar]
 
@@ -4303,12 +4685,10 @@ File: grub.info,  Node: cmp,  Next: configfile,  Prev: cmostest,  Up: Command-li
 
           Differ at the offset 777: 0xbe [foo], 0xef [bar]
 
-     If they are completely identical, nothing will be printed.
-
 
-File: grub.info,  Node: configfile,  Next: cpuid,  Prev: cmp,  Up: Command-line and menu entry commands
+File: grub.info,  Node: configfile,  Next: cpuid,  Prev: cmp,  Up: Command-line commands
 
-16.3.16 configfile
+17.4.15 configfile
 ------------------
 
  -- Command: configfile file
@@ -4318,9 +4698,9 @@ File: grub.info,  Node: configfile,  Next: cpuid,  Prev: cmp,  Up: Command-line 
      be preserved after 'configfile' returns.
 
 
-File: grub.info,  Node: cpuid,  Next: crc,  Prev: configfile,  Up: Command-line and menu entry commands
+File: grub.info,  Node: cpuid,  Next: crc,  Prev: configfile,  Up: Command-line commands
 
-16.3.17 cpuid
+17.4.16 cpuid
 -------------
 
  -- Command: cpuid [-l] [-p]
@@ -4337,9 +4717,9 @@ File: grub.info,  Node: cpuid,  Next: crc,  Prev: configfile,  Up: Command-line 
      had been invoked with '-l'.  This may change in the future.
 
 
-File: grub.info,  Node: crc,  Next: cryptomount,  Prev: cpuid,  Up: Command-line and menu entry commands
+File: grub.info,  Node: crc,  Next: cryptomount,  Prev: cpuid,  Up: Command-line commands
 
-16.3.18 crc
+17.4.17 crc
 -----------
 
  -- Command: crc arg ...
@@ -4347,18 +4727,33 @@ File: grub.info,  Node: crc,  Next: cryptomount,  Prev: cpuid,  Up: Command-line
      (*note hashsum::) for full description.
 
 
-File: grub.info,  Node: cryptomount,  Next: cutmem,  Prev: crc,  Up: Command-line and menu entry commands
+File: grub.info,  Node: cryptomount,  Next: cutmem,  Prev: crc,  Up: Command-line commands
 
-16.3.19 cryptomount
+17.4.18 cryptomount
 -------------------
 
- -- Command: cryptomount device|'-u' uuid|'-a'|'-b'
-     Setup access to encrypted device.  If necessary, passphrase is
-     requested interactively.  Option DEVICE configures specific grub
-     device (*note Naming convention::); option '-u' UUID configures
-     device with specified UUID; option '-a' configures all detected
-     encrypted devices; option '-b' configures all geli containers that
-     have boot flag set.
+ -- Command: cryptomount [ ['-p' password] | ['-k' keyfile ['-O'
+          keyoffset] ['-S' keysize] ] ] ['-H' file] device|'-u'
+          uuid|'-a'|'-b'
+     Setup access to encrypted device.  A passphrase will be requested
+     interactively, if neither the '-p' nor '-k' options are given.  The
+     option '-p' can be used to supply a passphrase (useful for
+     scripts).  Alternatively the '-k' option can be used to supply a
+     keyfile with options '-O' and '-S' optionally supplying the offset
+     and size, respectively, of the key data in the given key file.  The
+     '-H' options can be used to supply cryptomount backends with an
+     alternative header file (aka detached header).  Not all backends
+     have headers nor support alternative header files (currently only
+     LUKS1 and LUKS2 support them).  Argument DEVICE configures specific
+     grub device (*note Naming convention::); option '-u' UUID
+     configures device with specified UUID; option '-a' configures all
+     detected encrypted devices; option '-b' configures all geli
+     containers that have boot flag set.
+
+     Devices are not allowed to be given as key files nor as detached
+     header files.  However, this limitation can be worked around by
+     using blocklist syntax.  So for instance, '(hd1,gpt2)' can not be
+     used, but '(hd1,gpt2)0+' will achieve the desired result.
 
      GRUB suports devices encrypted using LUKS, LUKS2 and geli.  Note
      that necessary modules (LUKS, LUKS2 and GELI) have to be loaded
@@ -4366,13 +4761,19 @@ File: grub.info,  Node: cryptomount,  Next: cutmem,  Prev: crc,  Up: Command-lin
      PBKDF2 key derivation function is supported, as Argon2 is not yet
      supported.
 
-     Also, note that, unlike filesystem UUIDs, UUIDs for encrypted
-     devices must be specified without dash separators.
+     Successfully decrypted disks are named as (cryptoX) and have
+     increasing numeration suffix for each new decrypted disk.  If the
+     encrypted disk hosts some higher level of abstraction (like LVM2 or
+     MDRAID) it will be created under a separate device namespace in
+     addition to the cryptodisk namespace.
+
+     Support for plain encryption mode (plain dm-crypt) is provided via
+     separate '*note plainmount::' command.
 
 
-File: grub.info,  Node: cutmem,  Next: date,  Prev: cryptomount,  Up: Command-line and menu entry commands
+File: grub.info,  Node: cutmem,  Next: date,  Prev: cryptomount,  Up: Command-line commands
 
-16.3.20 cutmem
+17.4.19 cutmem
 --------------
 
  -- Command: cutmem from[K|M|G] to[K|M|G]
@@ -4393,9 +4794,9 @@ File: grub.info,  Node: cutmem,  Next: date,  Prev: cryptomount,  Up: Command-li
      secure boot.
 
 
-File: grub.info,  Node: date,  Next: devicetree,  Prev: cutmem,  Up: Command-line and menu entry commands
+File: grub.info,  Node: date,  Next: devicetree,  Prev: cutmem,  Up: Command-line commands
 
-16.3.21 date
+17.4.20 date
 ------------
 
  -- Command: date [[year-]month-day] [hour:minute[:second]]
@@ -4408,9 +4809,9 @@ File: grub.info,  Node: date,  Next: devicetree,  Prev: cutmem,  Up: Command-lin
      unchanged.
 
 
-File: grub.info,  Node: devicetree,  Next: distrust,  Prev: date,  Up: Command-line and menu entry commands
+File: grub.info,  Node: devicetree,  Next: distrust,  Prev: date,  Up: Command-line commands
 
-16.3.22 devicetree
+17.4.21 devicetree
 ------------------
 
  -- Command: devicetree file
@@ -4423,9 +4824,9 @@ File: grub.info,  Node: devicetree,  Next: distrust,  Prev: date,  Up: Command-l
      mechanisms.
 
 
-File: grub.info,  Node: distrust,  Next: drivemap,  Prev: devicetree,  Up: Command-line and menu entry commands
+File: grub.info,  Node: distrust,  Next: drivemap,  Prev: devicetree,  Up: Command-line commands
 
-16.3.23 distrust
+17.4.22 distrust
 ----------------
 
  -- Command: distrust pubkey_id
@@ -4440,9 +4841,9 @@ File: grub.info,  Node: distrust,  Next: drivemap,  Prev: devicetree,  Up: Comma
      signatures::, for more information.
 
 
-File: grub.info,  Node: drivemap,  Next: echo,  Prev: distrust,  Up: Command-line and menu entry commands
+File: grub.info,  Node: drivemap,  Next: echo,  Prev: distrust,  Up: Command-line commands
 
-16.3.24 drivemap
+17.4.23 drivemap
 ----------------
 
  -- Command: drivemap '-l'|'-r'|['-s'] from_drive to_drive
@@ -4463,10 +4864,12 @@ File: grub.info,  Node: drivemap,  Next: echo,  Prev: distrust,  Up: Command-lin
 
           drivemap -s (hd0) (hd1)
 
-
-File: grub.info,  Node: echo,  Next: eval,  Prev: drivemap,  Up: Command-line and menu entry commands
+     NOTE: Only available on i386-pc.
 
-16.3.25 echo
+
+File: grub.info,  Node: echo,  Next: efitextmode,  Prev: drivemap,  Up: Command-line commands
+
+17.4.24 echo
 ------------
 
  -- Command: echo ['-n'] ['-e'] string ...
@@ -4506,9 +4909,53 @@ File: grub.info,  Node: echo,  Next: eval,  Prev: drivemap,  Up: Command-line an
      other character will print that character.
 
 
-File: grub.info,  Node: eval,  Next: export,  Prev: echo,  Up: Command-line and menu entry commands
+File: grub.info,  Node: efitextmode,  Next: eval,  Prev: echo,  Up: Command-line commands
 
-16.3.26 eval
+17.4.25 efitextmode
+-------------------
+
+ -- Command: efitextmode [min | max | <mode_num> | <cols> <rows>]
+     When used with no arguments displays all available text output
+     modes.  The set mode determines the columns and rows of the text
+     display when in text mode.  An asterisk, '*', will be at the end of
+     the line of the currently set mode.
+
+     If given a single parameter, it must be 'min', 'max', or a mode
+     number given by the listing when run with no arguments.  These
+     arguments set the mode to the minimum, maximum, and particular mode
+     respectively.
+
+     Otherwise, the command must be given two numerical arguments
+     specifying the columns and rows of the desired mode.  Specifying a
+     columns and rows combination that corresponds to no supported mode,
+     will return error, but otherwise have no effect.
+
+     By default GRUB will start in whatever mode the EFI firmware
+     defaults to.  There are firmwares known to set up the default mode
+     such that output behaves strangely, for example the cursor in the
+     GRUB shell never reaches the bottom of the screen or, when typing
+     characters at the prompt, characters from previous command output
+     are overwritten.  Setting the mode may fix this.
+
+     The EFI specification says that mode 0 must be available and have
+     columns and rows of 80 and 25 respectively.  Mode 1 may be defined
+     and if so must have columns and rows of 80 and 50 respectively.
+     Any other modes may have columns and rows arbitrarily defined by
+     the firmware.  This means that a mode with columns and rows of 100
+     and 31 on one firmware may be a different mode number on a
+     different firmware or not exist at all.  Likewise, mode number 2 on
+     one firmware may have a different number of columns and rows than
+     mode 2 on a different firmware.  So one should not rely on a
+     particular mode number or a mode of a certain number of columns and
+     rows existing on all firmwares, except for mode 0.
+
+     Note: This command is only available on EFI platforms and is
+     similar to EFI shell "mode" command.
+
+
+File: grub.info,  Node: eval,  Next: export,  Prev: efitextmode,  Up: Command-line commands
+
+17.4.26 eval
 ------------
 
  -- Command: eval string ...
@@ -4516,9 +4963,9 @@ File: grub.info,  Node: eval,  Next: export,  Prev: echo,  Up: Command-line and 
      evaluate result as sequence of GRUB commands.
 
 
-File: grub.info,  Node: export,  Next: false,  Prev: eval,  Up: Command-line and menu entry commands
+File: grub.info,  Node: export,  Next: false,  Prev: eval,  Up: Command-line commands
 
-16.3.27 export
+17.4.27 export
 --------------
 
  -- Command: export envvar
@@ -4527,9 +4974,9 @@ File: grub.info,  Node: export,  Next: false,  Prev: eval,  Up: Command-line and
      'configfile'.
 
 
-File: grub.info,  Node: false,  Next: gettext,  Prev: export,  Up: Command-line and menu entry commands
+File: grub.info,  Node: false,  Next: fwsetup,  Prev: export,  Up: Command-line commands
 
-16.3.28 false
+17.4.28 false
 -------------
 
  -- Command: false
@@ -4537,9 +4984,34 @@ File: grub.info,  Node: false,  Next: gettext,  Prev: export,  Up: Command-line 
      constructs such as 'if' and 'while' (*note Shell-like scripting::).
 
 
-File: grub.info,  Node: gettext,  Next: gptsync,  Prev: false,  Up: Command-line and menu entry commands
+File: grub.info,  Node: fwsetup,  Next: gdbinfo,  Prev: false,  Up: Command-line commands
 
-16.3.29 gettext
+17.4.29 fwsetup
+---------------
+
+ -- Command: fwsetup ['--is-supported']
+     Reboot into the firmware setup menu.  If '--is-supported' option is
+     specified, instead check whether the firmware supports a setup menu
+     and exit successfully if so.
+
+
+File: grub.info,  Node: gdbinfo,  Next: gettext,  Prev: fwsetup,  Up: Command-line commands
+
+17.4.30 gdbinfo
+---------------
+
+ -- Command: gdbinfo
+     Output text to be used as a GDB command for a GDB session using the
+     gdb_grub script and attached to a running GRUB instance.  The GDB
+     command that is output will tell GDB how to load debugging symbols
+     to their proper runtime address.  Currently this is only available
+     for EFI platforms.  See the Debugging in the developer
+     documentation for more information.
+
+
+File: grub.info,  Node: gettext,  Next: gptsync,  Prev: gdbinfo,  Up: Command-line commands
+
+17.4.31 gettext
 ---------------
 
  -- Command: gettext string
@@ -4551,9 +5023,9 @@ File: grub.info,  Node: gettext,  Next: gptsync,  Prev: false,  Up: Command-line
      '/boot/grub/locale'.
 
 
-File: grub.info,  Node: gptsync,  Next: halt,  Prev: gettext,  Up: Command-line and menu entry commands
+File: grub.info,  Node: gptsync,  Next: halt,  Prev: gettext,  Up: Command-line commands
 
-16.3.30 gptsync
+17.4.32 gptsync
 ---------------
 
  -- Command: gptsync device [partition[+/-[type]]] ...
@@ -4572,20 +5044,21 @@ File: grub.info,  Node: gptsync,  Next: halt,  Prev: gettext,  Up: Command-line 
      and type are omitted, then the partition will be inactive.
 
 
-File: grub.info,  Node: halt,  Next: hashsum,  Prev: gptsync,  Up: Command-line and menu entry commands
+File: grub.info,  Node: halt,  Next: hashsum,  Prev: gptsync,  Up: Command-line commands
 
-16.3.31 halt
+17.4.33 halt
 ------------
 
- -- Command: halt '--no-apm'
-     The command halts the computer.  If the '--no-apm' option is
-     specified, no APM BIOS call is performed.  Otherwise, the computer
-     is shut down using APM.
+ -- Command: halt ['--no-apm']
+     The command halts the computer.  On the i386-pc target, the
+     '--no-apm' option, or short '-n', is specified, no APM BIOS call is
+     performed.  Otherwise, the computer is shut down using APM on that
+     target.
 
 
-File: grub.info,  Node: hashsum,  Next: help,  Prev: halt,  Up: Command-line and menu entry commands
+File: grub.info,  Node: hashsum,  Next: help,  Prev: halt,  Up: Command-line commands
 
-16.3.32 hashsum
+17.4.34 hashsum
 ---------------
 
  -- Command: hashsum '--hash' hash '--keep-going' '--uncompress'
@@ -4609,9 +5082,9 @@ File: grub.info,  Node: hashsum,  Next: help,  Prev: halt,  Up: Command-line and
      it fails, '$?' is set to a nonzero value.
 
 
-File: grub.info,  Node: help,  Next: initrd,  Prev: hashsum,  Up: Command-line and menu entry commands
+File: grub.info,  Node: help,  Next: hexdump,  Prev: hashsum,  Up: Command-line commands
 
-16.3.33 help
+17.4.35 help
 ------------
 
  -- Command: help [pattern ...]
@@ -4623,45 +5096,34 @@ File: grub.info,  Node: help,  Next: initrd,  Prev: hashsum,  Up: Command-line a
      each of the commands whose names begin with those PATTERNS.
 
 
-File: grub.info,  Node: initrd,  Next: initrd16,  Prev: help,  Up: Command-line and menu entry commands
+File: grub.info,  Node: hexdump,  Next: insmod,  Prev: help,  Up: Command-line commands
 
-16.3.34 initrd
---------------
+17.4.36 hexdump
+---------------
 
- -- Command: initrd file [file ...]
-     Load, in order, all initial ramdisks for a Linux kernel image, and
-     set the appropriate parameters in the Linux setup area in memory.
-     This may only be used after the 'linux' command (*note linux::) has
-     been run.  See also *note GNU/Linux::.
+ -- Command: hexdump [--skip offset] [--length len] FILE_OR_DEVICE
+     Show raw contents of a file or memory.  When option '--skip' is
+     given, 'offset' number of bytes are skipped from the start of the
+     device or file given.  And '--length' allows specifying a maximum
+     number of bytes to be shown.
 
-
-File: grub.info,  Node: initrd16,  Next: insmod,  Prev: initrd,  Up: Command-line and menu entry commands
-
-16.3.35 initrd16
-----------------
-
- -- Command: initrd16 file [file ...]
-     Load, in order, all initial ramdisks for a Linux kernel image to be
-     booted in 16-bit mode, and set the appropriate parameters in the
-     Linux setup area in memory.  This may only be used after the
-     'linux16' command (*note linux16::) has been run.  See also *note
-     GNU/Linux::.
-
-     This command is only available on x86 systems.
+     If given the special device named '(mem)', then the 'offset' given
+     to '--skip' is treated as the address of a memory location to dump
+     from.
 
 
-File: grub.info,  Node: insmod,  Next: keystatus,  Prev: initrd16,  Up: Command-line and menu entry commands
+File: grub.info,  Node: insmod,  Next: keystatus,  Prev: hexdump,  Up: Command-line commands
 
-16.3.36 insmod
+17.4.37 insmod
 --------------
 
  -- Command: insmod module
      Insert the dynamic GRUB module called MODULE.
 
 
-File: grub.info,  Node: keystatus,  Next: linux,  Prev: insmod,  Up: Command-line and menu entry commands
+File: grub.info,  Node: keystatus,  Next: list_env,  Prev: insmod,  Up: Command-line commands
 
-16.3.37 keystatus
+17.4.38 keystatus
 -----------------
 
  -- Command: keystatus ['--shift'] ['--ctrl'] ['--alt']
@@ -4675,48 +5137,9 @@ File: grub.info,  Node: keystatus,  Next: linux,  Prev: insmod,  Up: Command-lin
      true if and only if checking key modifier status is supported.
 
 
-File: grub.info,  Node: linux,  Next: linux16,  Prev: keystatus,  Up: Command-line and menu entry commands
+File: grub.info,  Node: list_env,  Next: list_trusted,  Prev: keystatus,  Up: Command-line commands
 
-16.3.38 linux
--------------
-
- -- Command: linux file ...
-     Load a Linux kernel image from FILE.  The rest of the line is
-     passed verbatim as the "kernel command-line".  Any initrd must be
-     reloaded after using this command (*note initrd::).
-
-     On x86 systems, the kernel will be booted using the 32-bit boot
-     protocol.  Note that this means that the 'vga=' boot option will
-     not work; if you want to set a special video mode, you will need to
-     use GRUB commands such as 'set gfxpayload=1024x768' or 'set
-     gfxpayload=keep' (to keep the same mode as used in GRUB) instead.
-     GRUB can automatically detect some uses of 'vga=' and translate
-     them to appropriate settings of 'gfxpayload'.  The 'linux16'
-     command (*note linux16::) avoids this restriction.
-
-
-File: grub.info,  Node: linux16,  Next: list_env,  Prev: linux,  Up: Command-line and menu entry commands
-
-16.3.39 linux16
----------------
-
- -- Command: linux16 file ...
-     Load a Linux kernel image from FILE in 16-bit mode.  The rest of
-     the line is passed verbatim as the "kernel command-line".  Any
-     initrd must be reloaded after using this command (*note
-     initrd16::).
-
-     The kernel will be booted using the traditional 16-bit boot
-     protocol.  As well as bypassing problems with 'vga=' described in
-     *note linux::, this permits booting some other programs that
-     implement the Linux boot protocol for the sake of convenience.
-
-     This command is only available on x86 systems.
-
-
-File: grub.info,  Node: list_env,  Next: list_trusted,  Prev: linux16,  Up: Command-line and menu entry commands
-
-16.3.40 list_env
+17.4.39 list_env
 ----------------
 
  -- Command: list_env ['--file' file]
@@ -4727,9 +5150,9 @@ File: grub.info,  Node: list_env,  Next: list_trusted,  Prev: linux16,  Up: Comm
      environment block.
 
 
-File: grub.info,  Node: list_trusted,  Next: load_env,  Prev: list_env,  Up: Command-line and menu entry commands
+File: grub.info,  Node: list_trusted,  Next: load_env,  Prev: list_env,  Up: Command-line commands
 
-16.3.41 list_trusted
+17.4.40 list_trusted
 --------------------
 
  -- Command: list_trusted
@@ -4741,9 +5164,9 @@ File: grub.info,  Node: list_trusted,  Next: load_env,  Prev: list_env,  Up: Com
      information about uses for these keys.
 
 
-File: grub.info,  Node: load_env,  Next: loadfont,  Prev: list_trusted,  Up: Command-line and menu entry commands
+File: grub.info,  Node: load_env,  Next: loadfont,  Prev: list_trusted,  Up: Command-line commands
 
-16.3.42 load_env
+17.4.41 load_env
 ----------------
 
  -- Command: load_env ['--file' file] ['--skip-sig']
@@ -4779,9 +5202,9 @@ File: grub.info,  Node: load_env,  Next: loadfont,  Prev: list_trusted,  Up: Com
      information.
 
 
-File: grub.info,  Node: loadfont,  Next: loopback,  Prev: load_env,  Up: Command-line and menu entry commands
+File: grub.info,  Node: loadfont,  Next: loopback,  Prev: load_env,  Up: Command-line commands
 
-16.3.43 loadfont
+17.4.42 loadfont
 ----------------
 
  -- Command: loadfont file ...
@@ -4790,25 +5213,29 @@ File: grub.info,  Node: loadfont,  Next: loopback,  Prev: load_env,  Up: Command
      appended.  *Note Fonts: Theme file format.
 
 
-File: grub.info,  Node: loopback,  Next: ls,  Prev: loadfont,  Up: Command-line and menu entry commands
+File: grub.info,  Node: loopback,  Next: ls,  Prev: loadfont,  Up: Command-line commands
 
-16.3.44 loopback
+17.4.43 loopback
 ----------------
 
- -- Command: loopback ['-d'] device file
+ -- Command: loopback ['-d'] ['-D'] device file
      Make the device named DEVICE correspond to the contents of the
      filesystem image in FILE.  For example:
 
           loopback loop0 /path/to/image
           ls (loop0)/
 
+     Specifying the '-D' option allows the loopback file to be
+     tranparently decompressed if there is an appropriate decompressor
+     loaded.
+
      With the '-d' option, delete a device previously created using this
      command.
 
 
-File: grub.info,  Node: ls,  Next: lsfonts,  Prev: loopback,  Up: Command-line and menu entry commands
+File: grub.info,  Node: ls,  Next: lsfonts,  Prev: loopback,  Up: Command-line commands
 
-16.3.45 ls
+17.4.44 ls
 ----------
 
  -- Command: ls [arg ...]
@@ -4825,27 +5252,27 @@ File: grub.info,  Node: ls,  Next: lsfonts,  Prev: loopback,  Up: Command-line a
      directory.
 
 
-File: grub.info,  Node: lsfonts,  Next: lsmod,  Prev: ls,  Up: Command-line and menu entry commands
+File: grub.info,  Node: lsfonts,  Next: lsmod,  Prev: ls,  Up: Command-line commands
 
-16.3.46 lsfonts
+17.4.45 lsfonts
 ---------------
 
  -- Command: lsfonts
      List loaded fonts.
 
 
-File: grub.info,  Node: lsmod,  Next: md5sum,  Prev: lsfonts,  Up: Command-line and menu entry commands
+File: grub.info,  Node: lsmod,  Next: md5sum,  Prev: lsfonts,  Up: Command-line commands
 
-16.3.47 lsmod
+17.4.46 lsmod
 -------------
 
  -- Command: lsmod
      Show list of loaded modules.
 
 
-File: grub.info,  Node: md5sum,  Next: module,  Prev: lsmod,  Up: Command-line and menu entry commands
+File: grub.info,  Node: md5sum,  Next: module,  Prev: lsmod,  Up: Command-line commands
 
-16.3.48 md5sum
+17.4.47 md5sum
 --------------
 
  -- Command: md5sum arg ...
@@ -4853,9 +5280,9 @@ File: grub.info,  Node: md5sum,  Next: module,  Prev: lsmod,  Up: Command-line a
      (*note hashsum::) for full description.
 
 
-File: grub.info,  Node: module,  Next: multiboot,  Prev: md5sum,  Up: Command-line and menu entry commands
+File: grub.info,  Node: module,  Next: multiboot,  Prev: md5sum,  Up: Command-line commands
 
-16.3.49 module
+17.4.48 module
 --------------
 
  -- Command: module [--nounzip] file [arguments]
@@ -4863,9 +5290,9 @@ File: grub.info,  Node: module,  Next: multiboot,  Prev: md5sum,  Up: Command-li
      passed verbatim as the module command line.
 
 
-File: grub.info,  Node: multiboot,  Next: nativedisk,  Prev: module,  Up: Command-line and menu entry commands
+File: grub.info,  Node: multiboot,  Next: nativedisk,  Prev: module,  Up: Command-line commands
 
-16.3.50 multiboot
+17.4.49 multiboot
 -----------------
 
  -- Command: multiboot [--quirk-bad-kludge]
@@ -4887,9 +5314,9 @@ File: grub.info,  Node: multiboot,  Next: nativedisk,  Prev: module,  Up: Comman
      Known afftected systems: VMWare.
 
 
-File: grub.info,  Node: nativedisk,  Next: normal,  Prev: multiboot,  Up: Command-line and menu entry commands
+File: grub.info,  Node: nativedisk,  Next: normal,  Prev: multiboot,  Up: Command-line commands
 
-16.3.51 nativedisk
+17.4.50 nativedisk
 ------------------
 
  -- Command: nativedisk
@@ -4899,9 +5326,9 @@ File: grub.info,  Node: nativedisk,  Next: normal,  Prev: multiboot,  Up: Comman
      x86_64-efi.
 
 
-File: grub.info,  Node: normal,  Next: normal_exit,  Prev: nativedisk,  Up: Command-line and menu entry commands
+File: grub.info,  Node: normal,  Next: normal_exit,  Prev: nativedisk,  Up: Command-line commands
 
-16.3.52 normal
+17.4.51 normal
 --------------
 
  -- Command: normal [file]
@@ -4920,9 +5347,9 @@ File: grub.info,  Node: normal,  Next: normal_exit,  Prev: nativedisk,  Up: Comm
      configfile::) for this.
 
 
-File: grub.info,  Node: normal_exit,  Next: parttool,  Prev: normal,  Up: Command-line and menu entry commands
+File: grub.info,  Node: normal_exit,  Next: parttool,  Prev: normal,  Up: Command-line commands
 
-16.3.53 normal_exit
+17.4.52 normal_exit
 -------------------
 
  -- Command: normal_exit
@@ -4930,9 +5357,9 @@ File: grub.info,  Node: normal_exit,  Next: parttool,  Prev: normal,  Up: Comman
      was not nested within another one, then return to rescue mode.
 
 
-File: grub.info,  Node: parttool,  Next: password,  Prev: normal_exit,  Up: Command-line and menu entry commands
+File: grub.info,  Node: parttool,  Next: password,  Prev: normal_exit,  Up: Command-line commands
 
-16.3.54 parttool
+17.4.53 parttool
 ----------------
 
  -- Command: parttool partition commands
@@ -4967,9 +5394,9 @@ File: grub.info,  Node: parttool,  Next: password,  Prev: normal_exit,  Up: Comm
           DOS/Windows::.
 
 
-File: grub.info,  Node: password,  Next: password_pbkdf2,  Prev: parttool,  Up: Command-line and menu entry commands
+File: grub.info,  Node: password,  Next: password_pbkdf2,  Prev: parttool,  Up: Command-line commands
 
-16.3.55 password
+17.4.54 password
 ----------------
 
  -- Command: password user clear-password
@@ -4977,9 +5404,9 @@ File: grub.info,  Node: password,  Next: password_pbkdf2,  Prev: parttool,  Up: 
      Security::.
 
 
-File: grub.info,  Node: password_pbkdf2,  Next: play,  Prev: password,  Up: Command-line and menu entry commands
+File: grub.info,  Node: password_pbkdf2,  Next: plainmount,  Prev: password,  Up: Command-line commands
 
-16.3.56 password_pbkdf2
+17.4.55 password_pbkdf2
 -----------------------
 
  -- Command: password_pbkdf2 user hashed-password
@@ -4988,9 +5415,89 @@ File: grub.info,  Node: password_pbkdf2,  Next: play,  Prev: password,  Up: Comm
      generate password hashes.  *Note Security::.
 
 
-File: grub.info,  Node: play,  Next: probe,  Prev: password_pbkdf2,  Up: Command-line and menu entry commands
+File: grub.info,  Node: plainmount,  Next: play,  Prev: password_pbkdf2,  Up: Command-line commands
 
-16.3.57 play
+17.4.56 plainmount
+------------------
+
+ -- Command: plainmount device '-c' cipher '-s' key size ['-h' hash]
+     ['-S' sector size] ['-p' password] ['-u' uuid] [['-d' keyfile]
+     ['-O' keyfile offset]]
+
+     Setup access to the encrypted device in plain mode.  Offset of the
+     encrypted data at the device is specified in terms of 512 byte
+     sectors using the blocklist syntax and loopback device.  The
+     following example shows how to specify 1MiB offset:
+
+          loopback node (hd0,gpt1)2048+
+          plainmount node ...
+
+     The 'plainmount' command can be used to open LUKS encrypted volume
+     if its master key and parameters (key size, cipher, offset, etc)
+     are known.
+
+     There are two ways to specify a password: a keyfile and a secret
+     passphrase.  The keyfile path parameter has higher priority than
+     the secret passphrase parameter and is specified with the option
+     '-d'.  Password data obtained from keyfiles is not hashed and is
+     used directly as a cipher key.  An optional offset of password data
+     in the keyfile can be specified with the option '-O' or directly
+     with the option '-d' and GRUB blocklist syntax, if the keyfile data
+     can be accessed from a device and is 512 byte aligned.  The
+     following example shows both methods to specify password data in
+     the keyfile at offset 1MiB:
+
+          plainmount -d (hd0,gpt1)2048+ ...
+          plainmount -d (hd0,gpt1)+ -O 1048576 ...
+
+     If no keyfile is specified then the password is set to the string
+     specified by option '-p' or is requested interactively from the
+     console.  In both cases the provided password is hashed with the
+     algorithm specified by the option '-h'.  This option is mandatory
+     if no keyfile is specified, but it can be set to 'plain' which
+     means that no hashing is done and such password is used directly as
+     a key.
+
+     Cipher '-c' and keysize '-s' options specify the cipher algorithm
+     and the key size respectively and are mandatory options.  Cipher
+     must be specified with the mode separated by a dash (for example,
+     'aes-xts-plain64').  Key size option '-s' is the key size of the
+     cipher in bits, not to be confused with the offset of the key data
+     in a keyfile specified with the '-O' option.  It must not exceed
+     1024 bits, so a 32 byte key would be specified as 256 bits
+
+     The optional parameter '-S' specifies encrypted device sector size.
+     It must be at least 512 bytes long (default value) and a power of
+     2.  (1) (*note plainmount-Footnote-1::).  Disk sector size is
+     configured when creating the encrypted volume.  Attempting to
+     decrypt volumes with a different sector size than it was created
+     with will not result in an error, but will decrypt to random bytes
+     and thus prevent accessing the volume (in some cases the filesystem
+     driver can detect the presence of a filesystem, but nevertheless
+     will refuse to mount it).
+
+     By default new plainmount devices will be given a UUID starting
+     with '109fea84-a6b7-34a8-4bd1-1c506305a401' where the last digits
+     are incremented by one for each plainmounted device beyond the
+     first up to 2^10 devices.
+
+     All encryption arguments (cipher, hash, key size, disk offset and
+     disk sector size) must match the parameters used to create the
+     volume.  If any of them does not match the actual arguments used
+     during the initial encryption, plainmount will create virtual
+     device with the garbage data and GRUB will report unknown
+     filesystem for such device.
+
+
+File: grub.info,  Node: plainmount-Footnotes,  Up: plainmount
+
+   (1) Current implementation of cryptsetup supports only
+512/1024/2048/4096 byte sectors
+
+
+File: grub.info,  Node: play,  Next: probe,  Prev: plainmount,  Up: Command-line commands
+
+17.4.57 play
 ------------
 
  -- Command: play file | tempo [pitch1 duration1] [pitch2 duration2] ...
@@ -5008,9 +5515,9 @@ File: grub.info,  Node: play,  Next: probe,  Prev: password_pbkdf2,  Up: Command
      pitch to 0 to produce a rest.
 
 
-File: grub.info,  Node: probe,  Next: rdmsr,  Prev: play,  Up: Command-line and menu entry commands
+File: grub.info,  Node: probe,  Next: rdmsr,  Prev: play,  Up: Command-line commands
 
-16.3.58 probe
+17.4.58 probe
 -------------
 
  -- Command: probe ['--set' var]
@@ -5023,9 +5530,9 @@ File: grub.info,  Node: probe,  Next: rdmsr,  Prev: play,  Up: Command-line and 
      and GPT formatted disks.
 
 
-File: grub.info,  Node: rdmsr,  Next: read,  Prev: probe,  Up: Command-line and menu entry commands
+File: grub.info,  Node: rdmsr,  Next: read,  Prev: probe,  Up: Command-line commands
 
-16.3.59 rdmsr
+17.4.59 rdmsr
 -------------
 
  -- Command:: rdmsr 0xADDR [-v VARNAME]
@@ -5043,29 +5550,31 @@ File: grub.info,  Node: rdmsr,  Next: read,  Prev: probe,  Up: Command-line and 
      being handled) and the system will reboot.
 
 
-File: grub.info,  Node: read,  Next: reboot,  Prev: rdmsr,  Up: Command-line and menu entry commands
+File: grub.info,  Node: read,  Next: reboot,  Prev: rdmsr,  Up: Command-line commands
 
-16.3.60 read
+17.4.60 read
 ------------
 
- -- Command: read [var]
+ -- Command: read [-s] [var]
      Read a line of input from the user.  If an environment variable VAR
      is given, set that environment variable to the line of input that
-     was read, with no terminating newline.
+     was read, with no terminating newline.  If the parameter '-s' is
+     used, enable silent mode where input is not printed to the
+     terminal.
 
 
-File: grub.info,  Node: reboot,  Next: regexp,  Prev: read,  Up: Command-line and menu entry commands
+File: grub.info,  Node: reboot,  Next: regexp,  Prev: read,  Up: Command-line commands
 
-16.3.61 reboot
+17.4.61 reboot
 --------------
 
  -- Command: reboot
      Reboot the computer.
 
 
-File: grub.info,  Node: regexp,  Next: rmmod,  Prev: reboot,  Up: Command-line and menu entry commands
+File: grub.info,  Node: regexp,  Next: rmmod,  Prev: reboot,  Up: Command-line commands
 
-16.3.62 regexp
+17.4.62 regexp
 --------------
 
  -- Command: regexp ['--set' [number:]var] regexp string
@@ -5076,18 +5585,18 @@ File: grub.info,  Node: regexp,  Next: rmmod,  Prev: reboot,  Up: Command-line a
      opening parentheses starting from '1'.  NUMBER defaults to '1'.
 
 
-File: grub.info,  Node: rmmod,  Next: save_env,  Prev: regexp,  Up: Command-line and menu entry commands
+File: grub.info,  Node: rmmod,  Next: save_env,  Prev: regexp,  Up: Command-line commands
 
-16.3.63 rmmod
+17.4.63 rmmod
 -------------
 
  -- Command: rmmod module
      Remove a loaded MODULE.
 
 
-File: grub.info,  Node: save_env,  Next: search,  Prev: rmmod,  Up: Command-line and menu entry commands
+File: grub.info,  Node: save_env,  Next: search,  Prev: rmmod,  Up: Command-line commands
 
-16.3.64 save_env
+17.4.64 save_env
 ----------------
 
  -- Command: save_env ['--file' file] var ...
@@ -5109,30 +5618,44 @@ File: grub.info,  Node: save_env,  Next: search,  Prev: rmmod,  Up: Command-line
      information.
 
 
-File: grub.info,  Node: search,  Next: sendkey,  Prev: save_env,  Up: Command-line and menu entry commands
+File: grub.info,  Node: search,  Next: sendkey,  Prev: save_env,  Up: Command-line commands
 
-16.3.65 search
+17.4.65 search
 --------------
 
  -- Command: search ['--file'|'--label'|'--fs-uuid'] ['--set' [var]]
-          ['--no-floppy'] name
+          ['--no-floppy'|'--efidisk-only'] name
      Search devices by file ('-f', '--file'), filesystem label ('-l',
      '--label'), or filesystem UUID ('-u', '--fs-uuid').
 
-     If the '--set' option is used, the first device found is set as the
-     value of environment variable VAR.  The default variable is 'root'.
+     If the ('-s', '--set') option is used, the first device found is
+     set as the value of environment variable VAR.  The default variable
+     is 'root'.
 
-     The '--no-floppy' option prevents searching floppy devices, which
-     can be slow.
+     The ('-n', '--no-floppy') option prevents searching floppy devices,
+     which can be slow.
+
+     The ('--efidisk-only') option prevents searching any other devices
+     then EFI disks.  This is typically used when chainloading to local
+     EFI partition.
 
      The 'search.file', 'search.fs_label', and 'search.fs_uuid' commands
      are aliases for 'search --file', 'search --label', and 'search
      --fs-uuid' respectively.
 
-
-File: grub.info,  Node: sendkey,  Next: set,  Prev: search,  Up: Command-line and menu entry commands
+     Also hints as to which device may be the most likely to contain the
+     item searched for may be given via the ('-h', '--hint') option with
+     a device name as an argument.  If the argument ends with a comma,
+     then partitions on the device are also searched.  Furthermore,
+     platform specific hints may be given via the options
+     '--hint-ieee1275', '--hint-bios', '--hint-baremetal', '--hint-efi',
+     and '--hint-arc'.  When specified, these options take an argument
+     and operate like '--hint', but only on the specified platform.
 
-16.3.66 sendkey
+
+File: grub.info,  Node: sendkey,  Next: set,  Prev: search,  Up: Command-line commands
+
+17.4.66 sendkey
 ---------------
 
  -- Command: sendkey
@@ -5143,6 +5666,9 @@ File: grub.info,  Node: sendkey,  Next: set,  Prev: search,  Up: Command-line an
      keys to be pressed: for example, one might need to press a
      particular key to enter "safe mode", or when chainloading another
      boot loader one might send keystrokes to it to navigate its menu.
+
+     Note: This command is currently only available on the i386-pc
+     target.
 
      You may provide up to 16 keystrokes (the length of the BIOS
      keyboard buffer).  Keystroke names may be upper-case or lower-case
@@ -5269,19 +5795,21 @@ File: grub.info,  Node: sendkey,  Next: set,  Prev: search,  Up: Command-line an
      This command is only available on PC BIOS systems.
 
 
-File: grub.info,  Node: set,  Next: sha1sum,  Prev: sendkey,  Up: Command-line and menu entry commands
+File: grub.info,  Node: set,  Next: sha1sum,  Prev: sendkey,  Up: Command-line commands
 
-16.3.67 set
+17.4.67 set
 -----------
 
  -- Command: set [envvar=value]
      Set the environment variable ENVVAR to VALUE.  If invoked with no
-     arguments, print all environment variables with their values.
+     arguments, print all environment variables with their values.  For
+     the list of environment variables currently used by GRUB itself see
+     the relevant section *note Environment::.
 
 
-File: grub.info,  Node: sha1sum,  Next: sha256sum,  Prev: set,  Up: Command-line and menu entry commands
+File: grub.info,  Node: sha1sum,  Next: sha256sum,  Prev: set,  Up: Command-line commands
 
-16.3.68 sha1sum
+17.4.68 sha1sum
 ---------------
 
  -- Command: sha1sum arg ...
@@ -5289,9 +5817,9 @@ File: grub.info,  Node: sha1sum,  Next: sha256sum,  Prev: set,  Up: Command-line
      (*note hashsum::) for full description.
 
 
-File: grub.info,  Node: sha256sum,  Next: sha512sum,  Prev: sha1sum,  Up: Command-line and menu entry commands
+File: grub.info,  Node: sha256sum,  Next: sha512sum,  Prev: sha1sum,  Up: Command-line commands
 
-16.3.69 sha256sum
+17.4.69 sha256sum
 -----------------
 
  -- Command: sha256sum arg ...
@@ -5299,9 +5827,9 @@ File: grub.info,  Node: sha256sum,  Next: sha512sum,  Prev: sha1sum,  Up: Comman
      (*note hashsum::) for full description.
 
 
-File: grub.info,  Node: sha512sum,  Next: sleep,  Prev: sha256sum,  Up: Command-line and menu entry commands
+File: grub.info,  Node: sha512sum,  Next: sleep,  Prev: sha256sum,  Up: Command-line commands
 
-16.3.70 sha512sum
+17.4.70 sha512sum
 -----------------
 
  -- Command: sha512sum arg ...
@@ -5309,9 +5837,9 @@ File: grub.info,  Node: sha512sum,  Next: sleep,  Prev: sha256sum,  Up: Command-
      (*note hashsum::) for full description.
 
 
-File: grub.info,  Node: sleep,  Next: smbios,  Prev: sha512sum,  Up: Command-line and menu entry commands
+File: grub.info,  Node: sleep,  Next: smbios,  Prev: sha512sum,  Up: Command-line commands
 
-16.3.71 sleep
+17.4.71 sleep
 -------------
 
  -- Command: sleep ['--verbose'] ['--interruptible'] count
@@ -5322,9 +5850,9 @@ File: grub.info,  Node: sleep,  Next: smbios,  Prev: sha512sum,  Up: Command-lin
      interrupted using any of the mentioned keys.
 
 
-File: grub.info,  Node: smbios,  Next: source,  Prev: sleep,  Up: Command-line and menu entry commands
+File: grub.info,  Node: smbios,  Next: source,  Prev: sleep,  Up: Command-line commands
 
-16.3.72 smbios
+17.4.72 smbios
 --------------
 
  -- Command: smbios ['--type' TYPE] ['--handle' HANDLE] ['--match'
@@ -5383,9 +5911,9 @@ File: grub.info,  Node: smbios,  Next: source,  Prev: sleep,  Up: Command-line a
           echo $system_manufacturer
 
 
-File: grub.info,  Node: source,  Next: test,  Prev: smbios,  Up: Command-line and menu entry commands
+File: grub.info,  Node: source,  Next: test,  Prev: smbios,  Up: Command-line commands
 
-16.3.73 source
+17.4.73 source
 --------------
 
  -- Command: source file
@@ -5397,9 +5925,9 @@ File: grub.info,  Node: source,  Next: test,  Prev: smbios,  Up: Command-line an
      menu will not be shown immediately.
 
 
-File: grub.info,  Node: test,  Next: true,  Prev: source,  Up: Command-line and menu entry commands
+File: grub.info,  Node: test,  Next: true,  Prev: source,  Up: Command-line commands
 
-16.3.74 test
+17.4.74 test
 ------------
 
  -- Command: test expression
@@ -5473,9 +6001,9 @@ File: grub.info,  Node: test,  Next: true,  Prev: source,  Up: Command-line and 
           either EXPRESSION1 or EXPRESSION2 is true
 
 
-File: grub.info,  Node: true,  Next: trust,  Prev: test,  Up: Command-line and menu entry commands
+File: grub.info,  Node: true,  Next: trust,  Prev: test,  Up: Command-line commands
 
-16.3.75 true
+17.4.75 true
 ------------
 
  -- Command: true
@@ -5483,9 +6011,9 @@ File: grub.info,  Node: true,  Next: trust,  Prev: test,  Up: Command-line and m
      constructs such as 'if' and 'while' (*note Shell-like scripting::).
 
 
-File: grub.info,  Node: trust,  Next: unset,  Prev: true,  Up: Command-line and menu entry commands
+File: grub.info,  Node: trust,  Next: unset,  Prev: true,  Up: Command-line commands
 
-16.3.76 trust
+17.4.76 trust
 -------------
 
  -- Command: trust ['--skip-sig'] pubkey_file
@@ -5500,18 +6028,18 @@ File: grub.info,  Node: trust,  Next: unset,  Prev: true,  Up: Command-line and 
      Using digital signatures::, for more information.
 
 
-File: grub.info,  Node: unset,  Next: verify_detached,  Prev: trust,  Up: Command-line and menu entry commands
+File: grub.info,  Node: unset,  Next: verify_detached,  Prev: trust,  Up: Command-line commands
 
-16.3.77 unset
+17.4.77 unset
 -------------
 
  -- Command: unset envvar
      Unset the environment variable ENVVAR.
 
 
-File: grub.info,  Node: verify_detached,  Next: videoinfo,  Prev: unset,  Up: Command-line and menu entry commands
+File: grub.info,  Node: verify_detached,  Next: videoinfo,  Prev: unset,  Up: Command-line commands
 
-16.3.78 verify_detached
+17.4.78 verify_detached
 -----------------------
 
  -- Command: verify_detached ['--skip-sig'] file signature_file
@@ -5531,9 +6059,9 @@ File: grub.info,  Node: verify_detached,  Next: videoinfo,  Prev: unset,  Up: Co
      digital signatures::, for more information.
 
 
-File: grub.info,  Node: videoinfo,  Next: wrmsr,  Prev: verify_detached,  Up: Command-line and menu entry commands
+File: grub.info,  Node: videoinfo,  Next: wrmsr,  Prev: verify_detached,  Up: Command-line commands
 
-16.3.79 videoinfo
+17.4.79 videoinfo
 -----------------
 
  -- Command: videoinfo [[WxH]xD]
@@ -5541,9 +6069,9 @@ File: grub.info,  Node: videoinfo,  Next: wrmsr,  Prev: verify_detached,  Up: Co
      matching modes.
 
 
-File: grub.info,  Node: wrmsr,  Next: xen_hypervisor,  Prev: videoinfo,  Up: Command-line and menu entry commands
+File: grub.info,  Node: wrmsr,  Prev: videoinfo,  Up: Command-line commands
 
-16.3.80 wrmsr
+17.4.80 wrmsr
 -------------
 
  -- Command:: wrmsr 0xADDR 0xVALUE
@@ -5562,35 +6090,10 @@ File: grub.info,  Node: wrmsr,  Next: xen_hypervisor,  Prev: videoinfo,  Up: Com
      mechanisms.
 
 
-File: grub.info,  Node: xen_hypervisor,  Next: xen_module,  Prev: wrmsr,  Up: Command-line and menu entry commands
+File: grub.info,  Node: Networking commands,  Next: Undocumented commands,  Prev: Command-line commands,  Up: Commands
 
-16.3.81 xen_hypervisor
-----------------------
-
- -- Command: xen_hypervisor file [arguments] ...
-     Load a Xen hypervisor binary from FILE.  The rest of the line is
-     passed verbatim as the "kernel command-line".  Any other binaries
-     must be reloaded after using this command.  This command is only
-     available on AArch64 systems.
-
-
-File: grub.info,  Node: xen_module,  Prev: xen_hypervisor,  Up: Command-line and menu entry commands
-
-16.3.82 xen_module
-------------------
-
- -- Command: xen_module [--nounzip] file [arguments]
-     Load a module for xen hypervisor at the booting process of xen.
-     The rest of the line is passed verbatim as the module command line.
-     Modules should be loaded in the following order: - dom0 kernel
-     image - dom0 ramdisk if present - XSM policy if present This
-     command is only available on AArch64 systems.
-
-
-File: grub.info,  Node: Networking commands,  Prev: Command-line and menu entry commands,  Up: Commands
-
-16.4 The list of networking commands
-====================================
+17.5 Networking commands
+========================
 
 * Menu:
 
@@ -5609,11 +6112,12 @@ File: grub.info,  Node: Networking commands,  Prev: Command-line and menu entry 
 * net_ls_dns::                  List DNS servers
 * net_ls_routes::               List routing entries
 * net_nslookup::                Perform a DNS lookup
+* net_set_vlan::                Set vlan id on an interface
 
 
 File: grub.info,  Node: net_add_addr,  Next: net_add_dns,  Up: Networking commands
 
-16.4.1 net_add_addr
+17.5.1 net_add_addr
 -------------------
 
  -- Command: net_add_addr INTERFACE CARD ADDRESS
@@ -5626,7 +6130,7 @@ File: grub.info,  Node: net_add_addr,  Next: net_add_dns,  Up: Networking comman
 
 File: grub.info,  Node: net_add_dns,  Next: net_add_route,  Prev: net_add_addr,  Up: Networking commands
 
-16.4.2 net_add_dns
+17.5.2 net_add_dns
 ------------------
 
  -- Command: net_add_dns SERVER
@@ -5636,7 +6140,7 @@ File: grub.info,  Node: net_add_dns,  Next: net_add_route,  Prev: net_add_addr, 
 
 File: grub.info,  Node: net_add_route,  Next: net_bootp,  Prev: net_add_dns,  Up: Networking commands
 
-16.4.3 net_add_route
+17.5.3 net_add_route
 --------------------
 
  -- Command: net_add_route SHORTNAME IP[/PREFIX] [INTERFACE | 'gw'
@@ -5650,7 +6154,7 @@ File: grub.info,  Node: net_add_route,  Next: net_bootp,  Prev: net_add_dns,  Up
 
 File: grub.info,  Node: net_bootp,  Next: net_del_addr,  Prev: net_add_route,  Up: Networking commands
 
-16.4.4 net_bootp
+17.5.4 net_bootp
 ----------------
 
  -- Command: net_bootp [CARD]
@@ -5661,7 +6165,7 @@ File: grub.info,  Node: net_bootp,  Next: net_del_addr,  Prev: net_add_route,  U
 
 File: grub.info,  Node: net_del_addr,  Next: net_del_dns,  Prev: net_bootp,  Up: Networking commands
 
-16.4.5 net_del_addr
+17.5.5 net_del_addr
 -------------------
 
  -- Command: net_del_addr INTERFACE
@@ -5670,7 +6174,7 @@ File: grub.info,  Node: net_del_addr,  Next: net_del_dns,  Prev: net_bootp,  Up:
 
 File: grub.info,  Node: net_del_dns,  Next: net_del_route,  Prev: net_del_addr,  Up: Networking commands
 
-16.4.6 net_del_dns
+17.5.6 net_del_dns
 ------------------
 
  -- Command: net_del_dns ADDRESS
@@ -5679,7 +6183,7 @@ File: grub.info,  Node: net_del_dns,  Next: net_del_route,  Prev: net_del_addr, 
 
 File: grub.info,  Node: net_del_route,  Next: net_dhcp,  Prev: net_del_dns,  Up: Networking commands
 
-16.4.7 net_del_route
+17.5.7 net_del_route
 --------------------
 
  -- Command: net_del_route SHORTNAME
@@ -5688,7 +6192,7 @@ File: grub.info,  Node: net_del_route,  Next: net_dhcp,  Prev: net_del_dns,  Up:
 
 File: grub.info,  Node: net_dhcp,  Next: net_get_dhcp_option,  Prev: net_del_route,  Up: Networking commands
 
-16.4.8 net_dhcp
+17.5.8 net_dhcp
 ---------------
 
  -- Command: net_dhcp [CARD]
@@ -5733,7 +6237,7 @@ File: grub.info,  Node: net_dhcp,  Next: net_get_dhcp_option,  Prev: net_del_rou
 
 File: grub.info,  Node: net_get_dhcp_option,  Next: net_ipv6_autoconf,  Prev: net_dhcp,  Up: Networking commands
 
-16.4.9 net_get_dhcp_option
+17.5.9 net_get_dhcp_option
 --------------------------
 
  -- Command: net_get_dhcp_option VAR INTERFACE NUMBER TYPE
@@ -5745,7 +6249,7 @@ File: grub.info,  Node: net_get_dhcp_option,  Next: net_ipv6_autoconf,  Prev: ne
 
 File: grub.info,  Node: net_ipv6_autoconf,  Next: net_ls_addr,  Prev: net_get_dhcp_option,  Up: Networking commands
 
-16.4.10 net_ipv6_autoconf
+17.5.10 net_ipv6_autoconf
 -------------------------
 
  -- Command: net_ipv6_autoconf [CARD]
@@ -5756,7 +6260,7 @@ File: grub.info,  Node: net_ipv6_autoconf,  Next: net_ls_addr,  Prev: net_get_dh
 
 File: grub.info,  Node: net_ls_addr,  Next: net_ls_cards,  Prev: net_ipv6_autoconf,  Up: Networking commands
 
-16.4.11 net_ls_addr
+17.5.11 net_ls_addr
 -------------------
 
  -- Command: net_ls_addr
@@ -5765,7 +6269,7 @@ File: grub.info,  Node: net_ls_addr,  Next: net_ls_cards,  Prev: net_ipv6_autoco
 
 File: grub.info,  Node: net_ls_cards,  Next: net_ls_dns,  Prev: net_ls_addr,  Up: Networking commands
 
-16.4.12 net_ls_cards
+17.5.12 net_ls_cards
 --------------------
 
  -- Command: net_ls_cards
@@ -5774,7 +6278,7 @@ File: grub.info,  Node: net_ls_cards,  Next: net_ls_dns,  Prev: net_ls_addr,  Up
 
 File: grub.info,  Node: net_ls_dns,  Next: net_ls_routes,  Prev: net_ls_cards,  Up: Networking commands
 
-16.4.13 net_ls_dns
+17.5.13 net_ls_dns
 ------------------
 
  -- Command: net_ls_dns
@@ -5783,16 +6287,16 @@ File: grub.info,  Node: net_ls_dns,  Next: net_ls_routes,  Prev: net_ls_cards,  
 
 File: grub.info,  Node: net_ls_routes,  Next: net_nslookup,  Prev: net_ls_dns,  Up: Networking commands
 
-16.4.14 net_ls_routes
+17.5.14 net_ls_routes
 ---------------------
 
  -- Command: net_ls_routes
      List routing entries.
 
 
-File: grub.info,  Node: net_nslookup,  Prev: net_ls_routes,  Up: Networking commands
+File: grub.info,  Node: net_nslookup,  Next: net_set_vlan,  Prev: net_ls_routes,  Up: Networking commands
 
-16.4.15 net_nslookup
+17.5.15 net_nslookup
 --------------------
 
  -- Command: net_nslookup NAME [SERVER]
@@ -5800,19 +6304,145 @@ File: grub.info,  Node: net_nslookup,  Prev: net_ls_routes,  Up: Networking comm
      given, use default list of servers.
 
 
+File: grub.info,  Node: net_set_vlan,  Prev: net_nslookup,  Up: Networking commands
+
+17.5.16 net_set_vlan
+--------------------
+
+ -- Command: net_set_vlan INTERFACE VLANID
+     Set the 802.1Q VLAN identifier on INTERFACE to VLANID.  For
+     example, to set the VLAN identifier on interface 'efinet1' to
+     '100':
+
+          net_set_vlan efinet1 100
+
+     The VLAN identifier can be removed by setting it to '0':
+
+          net_set_vlan efinet1 0
+
+
+File: grub.info,  Node: Undocumented commands,  Prev: Networking commands,  Up: Commands
+
+17.6 Commands currently undocumented
+====================================
+
+Unfortunately, not all GRUB commands are documented at this time due to
+developer resource constraints.  One way to contribute back to the GRUB
+project would be to help document these commands, and submit patches or
+ideas to the mailing list.  The following is a (most likely incomplete)
+list of undocumented or poorly documented commands and not all of them
+are allowed for all platforms.  Running the command help from within the
+GRUB shell may provide more information on parameters and usage.
+
+   * 'all_functional_test' - Run all functional tests.
+   * 'backtrace' - Print backtrace.
+   * 'boottime' - Show boot time statistics.
+   * 'cacheinfo' - Get disk cache info.
+   * 'cbmemc' - Show CBMEM console content.
+   * 'cmosset' - Set bit at BYTE:BIT in CMOS.
+   * 'coreboot_boottime' - Show coreboot boot time statistics.
+   * 'dump' - Show memory contents.
+   * 'efiemu_loadcore' - Load and initialize EFI emulator.
+   * 'efiemu_prepare' - Finalize loading of EFI emulator.
+   * 'efiemu_unload' - Unload EFI emulator.
+   * 'exit' - Exit from GRUB.
+   * 'extract_entries_configfile' - Load another config file but take
+     only menu entries.
+   * 'extract_entries_source' - Load another config file without
+     changing context but take only menu entries.
+   * 'extract_legacy_entries_configfile' - Parse legacy config in new
+     context taking only menu entries
+   * 'extract_legacy_entries_source' - Parse legacy config in same
+     context taking only menu entries
+   * 'extract_syslinux_entries_configfile' - Execute syslinux config in
+     new context taking only menu entries
+   * 'extract_syslinux_entries_source' - Execute syslinux config in same
+     context taking only menu entries
+   * 'fakebios' - Create BIOS-like structures for backward compatibility
+     with existing OS.
+   * 'file' - Check if FILE is of specified type.
+   * 'fix_video' - Fix video problem.
+   * 'fpswa' - Display FPSWA version.
+   * 'functional_test' - Run all loaded functional tests.
+   * 'gdbstub_break' - Break into GDB
+   * 'gdbstub' - Start GDB stub on given port
+   * 'gdbstub_stop' - Stop GDB stub
+   * 'hdparm' - Get/set ATA disk parameters.
+   * 'hexdump_random' - Hexdump random data.
+   * 'inb' - Read 8-bit value from PORT.
+   * 'inl' - Read 32-bit value from PORT.
+   * 'inw' - Read 16-bit value from PORT.
+   * 'jpegtest' - Tests loading of JPEG bitmap.
+   * 'keymap' - Load a keyboard layout.
+   * 'legacy_check_password' - Simulate grub-legacy 'password' command
+     in menu entry mode
+   * 'legacy_configfile' - Parse legacy config in new context
+   * 'legacy_password' - Simulate grub-legacy 'password' command
+   * 'legacy_source' - Parse legacy config in same context
+   * 'loadbios' - Load BIOS dump.
+   * 'lsacpi' - Show ACPI information.
+   * 'lsapm' - Show APM information.
+   * 'lscoreboot' - List coreboot tables.
+   * 'lsdev' - List devices.
+   * 'lsefi' - Display EFI handles.
+   * 'lsefimmap' - Display EFI memory map.
+   * 'lsefisystab' - Display EFI system tables.
+   * 'lsmmap' - List memory map provided by firmware.
+   * 'lspci' - List PCI devices.
+   * 'lssal' - Display SAL system table.
+   * 'lsspd' - Print Memory information.
+   * 'macppcbless' - Bless DIR of HFS or HFS+ partition for PPC macs.
+   * 'mactelbless' - Bless FILE of HFS or HFS+ partition for intel macs.
+   * 'net_set_vlan' - Set an interface's vlan id.
+   * 'outb' - Write 8-bit VALUE to PORT.
+   * 'outl' - Write 32-bit VALUE to PORT.
+   * 'outw' - Write 16-bit VALUE to PORT.
+   * 'pcidump' - Show raw dump of the PCI configuration space.
+   * 'pngtest' - Tests loading of PNG bitmap.
+   * 'read_byte' - Read 8-bit value from ADDR.
+   * 'read_dword' - Read 32-bit value from ADDR.
+   * 'read_word' - Read 16-bit value from ADDR.
+   * 'setpci' - Manipulate PCI devices.
+   * 'suspend' - Return to IEEE1275 prompt.
+   * 'syslinux_configfile' - Execute syslinux config in new context
+   * 'syslinux_source' - Execute syslinux config in same context
+   * 'test_blockarg' - Print and execute block argument., 0
+   * 'testload' - Load the same file in multiple ways.
+   * 'testspeed' - Test file read speed.
+   * 'tgatest' - Tests loading of TGA bitmap.
+   * 'time' - Measure time used by COMMAND
+   * 'tr' - Translate SET1 characters to SET2 in STRING.
+   * 'usb' - Test USB support.
+   * 'vbeinfo' - List available video modes.  If resolution is given
+     show only modes matching it.
+   * 'vbetest' - Test video subsystem.
+   * 'videotest' - Test video subsystem in mode WxH.
+   * 'write_byte' - Write 8-bit VALUE to ADDR.
+   * 'write_dword' - Write 32-bit VALUE to ADDR.
+   * 'write_word' - Write 16-bit VALUE to ADDR.
+   * 'xen_cat' - List Xen storage.
+   * 'xen_ls' - List Xen storage.
+   * 'xnu_devprop_load' - Load 'device-properties' dump.
+   * 'xnu_uuid' - Transform 64-bit UUID to format suitable for XNU. If
+     -l is given keep it lowercase as done by blkid.
+   * 'zfs-bootfs' - Print ZFS-BOOTFSOBJ or store it into VARIABLE
+   * 'zfsinfo' - Print ZFS info about DEVICE.
+   * 'zfskey' - Import ZFS wrapping key stored in FILE.
+
+
 File: grub.info,  Node: Internationalisation,  Next: Security,  Prev: Commands,  Up: Top
 
-17 Internationalisation
+18 Internationalisation
 ***********************
 
-17.1 Charset
+18.1 Charset
 ============
 
 GRUB uses UTF-8 internally other than in rendering where some
 GRUB-specific appropriate representation is used.  All text files
 (including config) are assumed to be encoded in UTF-8.
 
-17.2 Filesystems
+18.2 Filesystems
 ================
 
 NTFS, JFS, UDF, HFS+, exFAT, long filenames in FAT, Joliet part of
@@ -5851,7 +6481,7 @@ however means that in order to access file on HFS+ its name must be
 specified in normalisation form D. On normalized ZFS subvolumes
 filenames out of normalisation are inaccessible.
 
-17.3 Output terminal
+18.3 Output terminal
 ====================
 
 Firmware output console "console" on ARC and IEEE1275 are limited to
@@ -5890,7 +6520,7 @@ so called "annotation characters" If you can complete either of two
 lists or, better, propose a patch to improve rendering, please contact
 developer team.
 
-17.4 Input terminal
+18.4 Input terminal
 ===================
 
 Firmware console on BIOS, IEEE1275 and ARC doesn't allow you to enter
@@ -5903,20 +6533,20 @@ there is no keymap change hotkey.  In practice it makes difficult to
 enter any text using non-Latin alphabet.  Moreover all current input
 consumers are limited to ASCII.
 
-17.5 Gettext
+18.5 Gettext
 ============
 
 GRUB supports being translated.  For this you need to have language *.mo
 files in $prefix/locale, load gettext module and set "lang" variable.
 
-17.6 Regexp
+18.6 Regexp
 ===========
 
 Regexps work on unicode characters, however no attempt at checking
 cannonical equivalence has been made.  Moreover the classes like
 [:alpha:] match only ASCII subset.
 
-17.7 Other
+18.7 Other
 ==========
 
 Currently GRUB always uses YEAR-MONTH-DAY HOUR:MINUTE:SECOND [WEEKDAY]
@@ -5941,7 +6571,7 @@ environment variables and commands are listed in the same order.
 
 File: grub.info,  Node: Security,  Next: Platform limitations,  Prev: Internationalisation,  Up: Top
 
-18 Security
+19 Security
 ***********
 
 * Menu:
@@ -5956,7 +6586,7 @@ File: grub.info,  Node: Security,  Next: Platform limitations,  Prev: Internatio
 
 File: grub.info,  Node: Authentication and authorisation,  Next: Using digital signatures,  Up: Security
 
-18.1 Authentication and authorisation in GRUB
+19.1 Authentication and authorisation in GRUB
 =============================================
 
 By default, the boot loader interface is accessible to anyone with
@@ -6027,7 +6657,7 @@ adding 'set superusers=' and 'password' or 'password_pbkdf2' commands.
 
 File: grub.info,  Node: Using digital signatures,  Next: UEFI secure boot and shim,  Prev: Authentication and authorisation,  Up: Security
 
-18.2 Using digital signatures in GRUB
+19.2 Using digital signatures in GRUB
 =====================================
 
 GRUB's 'core.img' can optionally provide enforcement that all files
@@ -6102,7 +6732,7 @@ boot chain.
 
 File: grub.info,  Node: UEFI secure boot and shim,  Next: Secure Boot Advanced Targeting,  Prev: Using digital signatures,  Up: Security
 
-18.3 UEFI secure boot and shim support
+19.3 UEFI secure boot and shim support
 ======================================
 
 The GRUB, except the 'chainloader' command, works with the UEFI secure
@@ -6124,7 +6754,7 @@ are enforced by the GRUB Lockdown mechanism (*note Lockdown::).
 
 File: grub.info,  Node: Secure Boot Advanced Targeting,  Next: Measured Boot,  Prev: UEFI secure boot and shim,  Up: Security
 
-18.4 Embedded information for generation number based revocation
+19.4 Embedded information for generation number based revocation
 ================================================================
 
 The Secure Boot Advanced Targeting (SBAT) is a mechanism to allow the
@@ -6145,7 +6775,7 @@ stored anywhere on the file system.
 
 File: grub.info,  Node: Measured Boot,  Next: Lockdown,  Prev: Secure Boot Advanced Targeting,  Up: Security
 
-18.5 Measuring boot components
+19.5 Measuring boot components
 ==============================
 
 If the tpm module is loaded and the platform has a Trusted Platform
@@ -6178,12 +6808,13 @@ that the tpm module be built into 'core.img' in order to avoid a
 potential gap in measurement between 'core.img' being loaded and the tpm
 module being loaded.
 
-   Measured boot is currently only supported on EFI platforms.
+   Measured boot is currently only supported on EFI and IBM IEEE1275
+PowerPC platforms.
 
 
 File: grub.info,  Node: Lockdown,  Prev: Measured Boot,  Up: Security
 
-18.6 Lockdown when booting on a secure setup
+19.6 Lockdown when booting on a secure setup
 ============================================
 
 The GRUB can be locked down when booted on a secure boot environment,
@@ -6197,7 +6828,7 @@ Otherwise it does not exit.
 
 File: grub.info,  Node: Platform limitations,  Next: Platform-specific operations,  Prev: Security,  Up: Top
 
-19 Platform limitations
+20 Platform limitations
 ***********************
 
 GRUB2 is designed to be portable and is actually ported across
@@ -6357,7 +6988,7 @@ bootlocation   no             file           no
 
 File: grub.info,  Node: Platform-specific operations,  Next: Supported kernels,  Prev: Platform limitations,  Up: Top
 
-20 Outline
+21 Outline
 **********
 
 Some platforms have features which allows to implement some commands
@@ -6393,7 +7024,7 @@ useless or not implementable on others.
 
 File: grub.info,  Node: Supported kernels,  Next: Troubleshooting,  Prev: Platform-specific operations,  Up: Top
 
-21 Supported boot targets
+22 Supported boot targets
 *************************
 
 X86 support is summarised in the following table.  "Yes" means that the
@@ -6510,7 +7141,7 @@ Appleloader                          no (2)
    PowerPC, IA64 and Sparc64 ports support only Linux.  MIPS port
 supports Linux and multiboot2.
 
-21.1 Boot tests
+22.1 Boot tests
 ===============
 
 As you have seen in previous chapter the support matrix is pretty big
@@ -6546,9 +7177,9 @@ linux.i386                    32-bit Linux
 linux.x86_64                  64-bit Linux
 
 
-File: grub.info,  Node: Troubleshooting,  Next: Invoking grub-install,  Prev: Supported kernels,  Up: Top
+File: grub.info,  Node: Troubleshooting,  Next: User-space utilities,  Prev: Supported kernels,  Up: Top
 
-22 Error messages produced by GRUB
+23 Error messages produced by GRUB
 **********************************
 
 * Menu:
@@ -6559,7 +7190,7 @@ File: grub.info,  Node: Troubleshooting,  Next: Invoking grub-install,  Prev: Su
 
 File: grub.info,  Node: GRUB only offers a rescue shell,  Next: Firmware stalls instead of booting GRUB,  Up: Troubleshooting
 
-22.1 GRUB only offers a rescue shell
+23.1 GRUB only offers a rescue shell
 ====================================
 
 GRUB's normal start-up procedure involves setting the 'prefix'
@@ -6620,7 +7251,7 @@ grub-install::).  When doing this, there are a few things to remember:
 
 File: grub.info,  Node: Firmware stalls instead of booting GRUB,  Prev: GRUB only offers a rescue shell,  Up: Troubleshooting
 
-22.2 Firmware stalls instead of booting GRUB
+23.2 Firmware stalls instead of booting GRUB
 ============================================
 
 The EFI implementation of some older MacBook laptops stalls when it gets
@@ -6631,10 +7262,28 @@ a partition table entry which claims partition start at block 0.  This
 change will not hamper bootability on other machines.
 
 
-File: grub.info,  Node: Invoking grub-install,  Next: Invoking grub-mkconfig,  Prev: Troubleshooting,  Up: Top
+File: grub.info,  Node: User-space utilities,  Next: Obtaining and Building GRUB,  Prev: Troubleshooting,  Up: Top
 
-23 Invoking grub-install
-************************
+24 User-space utilities
+***********************
+
+* Menu:
+
+* Invoking grub-install::       How to use the GRUB installer
+* Invoking grub-mkconfig::      Generate a GRUB configuration file
+* Invoking grub-mkpasswd-pbkdf2::
+                                Generate GRUB password hashes
+* Invoking grub-mkrelpath::     Make system path relative to its root
+* Invoking grub-mkrescue::      Make a GRUB rescue image
+* Invoking grub-mount::         Mount a file system using GRUB
+* Invoking grub-probe::         Probe device information for GRUB
+* Invoking grub-script-check::  Check GRUB script file for syntax errors
+
+
+File: grub.info,  Node: Invoking grub-install,  Next: Invoking grub-mkconfig,  Up: User-space utilities
+
+24.1 Invoking grub-install
+==========================
 
 The program 'grub-install' generates a GRUB core image using
 'grub-mkimage' and installs it on your system.  You must specify the
@@ -6690,10 +7339,10 @@ name.
      codes with this option.
 
 
-File: grub.info,  Node: Invoking grub-mkconfig,  Next: Invoking grub-mkpasswd-pbkdf2,  Prev: Invoking grub-install,  Up: Top
+File: grub.info,  Node: Invoking grub-mkconfig,  Next: Invoking grub-mkpasswd-pbkdf2,  Prev: Invoking grub-install,  Up: User-space utilities
 
-24 Invoking grub-mkconfig
-*************************
+24.2 Invoking grub-mkconfig
+===========================
 
 The program 'grub-mkconfig' generates a configuration file for GRUB
 (*note Simple configuration::).
@@ -6712,843 +7361,4 @@ The program 'grub-mkconfig' generates a configuration file for GRUB
 '--output=FILE'
      Send the generated configuration file to FILE.  The default is to
      send it to standard output.
-
-
-File: grub.info,  Node: Invoking grub-mkpasswd-pbkdf2,  Next: Invoking grub-mkrelpath,  Prev: Invoking grub-mkconfig,  Up: Top
-
-25 Invoking grub-mkpasswd-pbkdf2
-********************************
-
-The program 'grub-mkpasswd-pbkdf2' generates password hashes for GRUB
-(*note Security::).
-
-     grub-mkpasswd-pbkdf2
-
-   'grub-mkpasswd-pbkdf2' accepts the following options:
-
-'-c NUMBER'
-'--iteration-count=NUMBER'
-     Number of iterations of the underlying pseudo-random function.
-     Defaults to 10000.
-
-'-l NUMBER'
-'--buflen=NUMBER'
-     Length of the generated hash.  Defaults to 64.
-
-'-s NUMBER'
-'--salt=NUMBER'
-     Length of the salt.  Defaults to 64.
-
-
-File: grub.info,  Node: Invoking grub-mkrelpath,  Next: Invoking grub-mkrescue,  Prev: Invoking grub-mkpasswd-pbkdf2,  Up: Top
-
-26 Invoking grub-mkrelpath
-**************************
-
-The program 'grub-mkrelpath' makes a file system path relative to the
-root of its containing file system.  For instance, if '/usr' is a mount
-point, then:
-
-     $ grub-mkrelpath /usr/share/grub/unicode.pf2
-     '/share/grub/unicode.pf2'
-
-   This is mainly used internally by other GRUB utilities such as
-'grub-mkconfig' (*note Invoking grub-mkconfig::), but may occasionally
-also be useful for debugging.
-
-   'grub-mkrelpath' accepts the following options:
-
-'--help'
-     Print a summary of the command-line options and exit.
-
-'--version'
-     Print the version number of GRUB and exit.
-
-
-File: grub.info,  Node: Invoking grub-mkrescue,  Next: Invoking grub-mount,  Prev: Invoking grub-mkrelpath,  Up: Top
-
-27 Invoking grub-mkrescue
-*************************
-
-The program 'grub-mkrescue' generates a bootable GRUB rescue image
-(*note Making a GRUB bootable CD-ROM::).
-
-     grub-mkrescue -o grub.iso
-
-   All arguments not explicitly listed as 'grub-mkrescue' options are
-passed on directly to 'xorriso' in 'mkisofs' emulation mode.  Options
-passed to 'xorriso' will normally be interpreted as 'mkisofs' options;
-if the option '--' is used, then anything after that will be interpreted
-as native 'xorriso' options.
-
-   Non-option arguments specify additional source directories.  This is
-commonly used to add extra files to the image:
-
-     mkdir -p disk/boot/grub
-     (add extra files to 'disk/boot/grub')
-     grub-mkrescue -o grub.iso disk
-
-   'grub-mkrescue' accepts the following options:
-
-'--help'
-     Print a summary of the command-line options and exit.
-
-'--version'
-     Print the version number of GRUB and exit.
-
-'-o FILE'
-'--output=FILE'
-     Save output in FILE.  This "option" is required.
-
-'--modules=MODULES'
-     Pre-load the named GRUB modules in the image.  Multiple entries in
-     MODULES should be separated by whitespace (so you will probably
-     need to quote this for your shell).
-
-'--rom-directory=DIR'
-     If generating images for the QEMU or Coreboot platforms, copy the
-     resulting 'qemu.img' or 'coreboot.elf' files respectively to the
-     DIR directory as well as including them in the image.
-
-'--xorriso=FILE'
-     Use FILE as the 'xorriso' program, rather than the built-in
-     default.
-
-'--grub-mkimage=FILE'
-     Use FILE as the 'grub-mkimage' program, rather than the built-in
-     default.
-
-
-File: grub.info,  Node: Invoking grub-mount,  Next: Invoking grub-probe,  Prev: Invoking grub-mkrescue,  Up: Top
-
-28 Invoking grub-mount
-**********************
-
-The program 'grub-mount' performs a read-only mount of any file system
-or file system image that GRUB understands, using GRUB's file system
-drivers via FUSE. (It is only available if FUSE development files were
-present when GRUB was built.)  This has a number of uses:
-
-   * It provides a convenient way to check how GRUB will view a file
-     system at boot time.  You can use normal command-line tools to
-     compare that view with that of your operating system, making it
-     easy to find bugs.
-
-   * It offers true read-only mounts.  Linux does not have these for
-     journalling file systems, because it will always attempt to replay
-     the journal at mount time; while you can temporarily mark the block
-     device read-only to avoid this, that causes the mount to fail.
-     Since GRUB intentionally contains no code for writing to file
-     systems, it can easily provide a guaranteed read-only mount
-     mechanism.
-
-   * It allows you to examine any file system that GRUB understands
-     without needing to load additional modules into your running
-     kernel, which may be useful in constrained environments such as
-     installers.
-
-   * Since it can examine file system images (contained in regular
-     files) just as easily as file systems on block devices, you can use
-     it to inspect any file system image that GRUB understands with only
-     enough privileges to use FUSE, even if nobody has yet written a
-     FUSE module specifically for that file system type.
-
-   Using 'grub-mount' is normally as simple as:
-
-     grub-mount /dev/sda1 /mnt
-
-   'grub-mount' must be given one or more images and a mount point as
-non-option arguments (if it is given more than one image, it will treat
-them as a RAID set), and also accepts the following options:
-
-'--help'
-     Print a summary of the command-line options and exit.
-
-'--version'
-     Print the version number of GRUB and exit.
-
-'-C'
-'--crypto'
-     Mount encrypted devices, prompting for a passphrase if necessary.
-
-'-d STRING'
-'--debug=STRING'
-     Show debugging output for conditions matching STRING.
-
-'-K prompt|FILE'
-'--zfs-key=prompt|FILE'
-     Load a ZFS encryption key.  If you use 'prompt' as the argument,
-     'grub-mount' will read a passphrase from the terminal; otherwise,
-     it will read key material from the specified file.
-
-'-r DEVICE'
-'--root=DEVICE'
-     Set the GRUB root device to DEVICE.  You do not normally need to
-     set this; 'grub-mount' will automatically set the root device to
-     the root of the supplied file system.
-
-     If DEVICE is just a number, then it will be treated as a partition
-     number within the supplied image.  This means that, if you have an
-     image of an entire disk in 'disk.img', then you can use this
-     command to mount its second partition:
-
-          grub-mount -r 2 disk.img mount-point
-
-'-v'
-'--verbose'
-     Print verbose messages.
-
-
-File: grub.info,  Node: Invoking grub-probe,  Next: Invoking grub-script-check,  Prev: Invoking grub-mount,  Up: Top
-
-29 Invoking grub-probe
-**********************
-
-The program 'grub-probe' probes device information for a given path or
-device.
-
-     grub-probe --target=fs /boot/grub
-     grub-probe --target=drive --device /dev/sda1
-
-   'grub-probe' must be given a path or device as a non-option argument,
-and also accepts the following options:
-
-'--help'
-     Print a summary of the command-line options and exit.
-
-'--version'
-     Print the version number of GRUB and exit.
-
-'-d'
-'--device'
-     If this option is given, then the non-option argument is a system
-     device name (such as '/dev/sda1'), and 'grub-probe' will print
-     information about that device.  If it is not given, then the
-     non-option argument is a filesystem path (such as '/boot/grub'),
-     and 'grub-probe' will print information about the device containing
-     that part of the filesystem.
-
-'-m FILE'
-'--device-map=FILE'
-     Use FILE as the device map (*note Device map::) rather than the
-     default, usually '/boot/grub/device.map'.
-
-'-t TARGET'
-'--target=TARGET'
-     Print information about the given path or device as defined by
-     TARGET.  The available targets and their meanings are:
-
-     'fs'
-          GRUB filesystem module.
-     'fs_uuid'
-          Filesystem Universally Unique Identifier (UUID).
-     'fs_label'
-          Filesystem label.
-     'drive'
-          GRUB device name.
-     'device'
-          System device name.
-     'partmap'
-          GRUB partition map module.
-     'abstraction'
-          GRUB abstraction module (e.g.  'lvm').
-     'cryptodisk_uuid'
-          Crypto device UUID.
-     'msdos_parttype'
-          MBR partition type code (two hexadecimal digits).
-     'hints_string'
-          A string of platform search hints suitable for passing to the
-          'search' command (*note search::).
-     'bios_hints'
-          Search hints for the PC BIOS platform.
-     'ieee1275_hints'
-          Search hints for the IEEE1275 platform.
-     'baremetal_hints'
-          Search hints for platforms where disks are addressed directly
-          rather than via firmware.
-     'efi_hints'
-          Search hints for the EFI platform.
-     'arc_hints'
-          Search hints for the ARC platform.
-     'compatibility_hint'
-          A guess at a reasonable GRUB drive name for this device, which
-          may be used as a fallback if the 'search' command fails.
-     'disk'
-          System device name for the whole disk.
-
-'-v'
-'--verbose'
-     Print verbose messages.
-
-
-File: grub.info,  Node: Invoking grub-script-check,  Next: Obtaining and Building GRUB,  Prev: Invoking grub-probe,  Up: Top
-
-30 Invoking grub-script-check
-*****************************
-
-The program 'grub-script-check' takes a GRUB script file (*note
-Shell-like scripting::) and checks it for syntax errors, similar to
-commands such as 'sh -n'.  It may take a PATH as a non-option argument;
-if none is supplied, it will read from standard input.
-
-     grub-script-check /boot/grub/grub.cfg
-
-   'grub-script-check' accepts the following options:
-
-'--help'
-     Print a summary of the command-line options and exit.
-
-'--version'
-     Print the version number of GRUB and exit.
-
-'-v'
-'--verbose'
-     Print each line of input after reading it.
-
-
-File: grub.info,  Node: Obtaining and Building GRUB,  Next: Reporting bugs,  Prev: Invoking grub-script-check,  Up: Top
-
-Appendix A How to obtain and build GRUB
-***************************************
-
-     *Caution:* GRUB requires binutils-2.9.1.0.23 or later because the
-     GNU assembler has been changed so that it can produce real 16bits
-     machine code between 2.9.1 and 2.9.1.0.x.  See
-     <http://sources.redhat.com/binutils/>, to obtain information on how
-     to get the latest version.
-
-   GRUB is available from the GNU alpha archive site
-<ftp://ftp.gnu.org/gnu/grub> or any of its mirrors.  The file will be
-named grub-version.tar.gz.  The current version is 2.06, so the file you
-should grab is:
-
-   <ftp://ftp.gnu.org/gnu/grub/grub-2.06.tar.gz>
-
-   To unbundle GRUB use the instruction:
-
-     zcat grub-2.06.tar.gz | tar xvf -
-
-   which will create a directory called 'grub-2.06' with all the
-sources.  You can look at the file 'INSTALL' for detailed instructions
-on how to build and install GRUB, but you should be able to just do:
-
-     cd grub-2.06
-     ./configure
-     make install
-
-   Also, the latest version is available using Git.  See
-<http://www.gnu.org/software/grub/grub-download.html> for more
-information.
-
-
-File: grub.info,  Node: Reporting bugs,  Next: Future,  Prev: Obtaining and Building GRUB,  Up: Top
-
-Appendix B Reporting bugs
-*************************
-
-These are the guideline for how to report bugs.  Take a look at this
-list below before you submit bugs:
-
-  1. Before getting unsettled, read this manual through and through.
-     Also, see the GNU GRUB FAQ
-     (http://www.gnu.org/software/grub/grub-faq.html).
-
-  2. Always mention the information on your GRUB. The version number and
-     the configuration are quite important.  If you build it yourself,
-     write the options specified to the configure script and your
-     operating system, including the versions of gcc and binutils.
-
-  3. If you have trouble with the installation, inform us of how you
-     installed GRUB. Don't omit error messages, if any.  Just 'GRUB
-     hangs up when it boots' is not enough.
-
-     The information on your hardware is also essential.  These are
-     especially important: the geometries and the partition tables of
-     your hard disk drives and your BIOS.
-
-  4. If GRUB cannot boot your operating system, write down _everything_
-     you see on the screen.  Don't paraphrase them, like 'The foo OS
-     crashes with GRUB, even though it can boot with the bar boot loader
-     just fine'.  Mention the commands you executed, the messages
-     printed by them, and information on your operating system including
-     the version number.
-
-  5. Explain what you wanted to do.  It is very useful to know your
-     purpose and your wish, and how GRUB didn't satisfy you.
-
-  6. If you can investigate the problem yourself, please do.  That will
-     give you and us much more information on the problem.  Attaching a
-     patch is even better.
-
-     When you attach a patch, make the patch in unified diff format, and
-     write ChangeLog entries.  But, even when you make a patch, don't
-     forget to explain the problem, so that we can understand what your
-     patch is for.
-
-  7. Write down anything that you think might be related.  Please
-     understand that we often need to reproduce the same problem you
-     encountered in our environment.  So your information should be
-     sufficient for us to do the same thing--Don't forget that we cannot
-     see your computer directly.  If you are not sure whether to state a
-     fact or leave it out, state it!  Reporting too many things is much
-     better than omitting something important.
-
-   If you follow the guideline above, submit a report to the Bug
-Tracking System (http://savannah.gnu.org/bugs/?group=grub).
-Alternatively, you can submit a report via electronic mail to
-<bug-grub@gnu.org>, but we strongly recommend that you use the Bug
-Tracking System, because e-mail can be passed over easily.
-
-   Once we get your report, we will try to fix the bugs.
-
-
-File: grub.info,  Node: Future,  Next: Copying This Manual,  Prev: Reporting bugs,  Up: Top
-
-Appendix C Where GRUB will go
-*****************************
-
-GRUB 2 is now quite stable and used in many production systems.  We are
-currently working towards a 2.0 release.
-
-   If you are interested in the development of GRUB 2, take a look at
-the homepage (http://www.gnu.org/software/grub/grub.html).
-
-
-File: grub.info,  Node: Copying This Manual,  Next: Index,  Prev: Future,  Up: Top
-
-Appendix D Copying This Manual
-******************************
-
-* Menu:
-
-* GNU Free Documentation License::  License for copying this manual.
-
-
-File: grub.info,  Node: GNU Free Documentation License,  Up: Copying This Manual
-
-D.1 GNU Free Documentation License
-==================================
-
-                      Version 1.2, November 2002
-
-     Copyright (C) 2000,2001,2002 Free Software Foundation, Inc.
-     51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA
-
-     Everyone is permitted to copy and distribute verbatim copies
-     of this license document, but changing it is not allowed.
-
-  0. PREAMBLE
-
-     The purpose of this License is to make a manual, textbook, or other
-     functional and useful document "free" in the sense of freedom: to
-     assure everyone the effective freedom to copy and redistribute it,
-     with or without modifying it, either commercially or
-     noncommercially.  Secondarily, this License preserves for the
-     author and publisher a way to get credit for their work, while not
-     being considered responsible for modifications made by others.
-
-     This License is a kind of "copyleft", which means that derivative
-     works of the document must themselves be free in the same sense.
-     It complements the GNU General Public License, which is a copyleft
-     license designed for free software.
-
-     We have designed this License in order to use it for manuals for
-     free software, because free software needs free documentation: a
-     free program should come with manuals providing the same freedoms
-     that the software does.  But this License is not limited to
-     software manuals; it can be used for any textual work, regardless
-     of subject matter or whether it is published as a printed book.  We
-     recommend this License principally for works whose purpose is
-     instruction or reference.
-
-  1. APPLICABILITY AND DEFINITIONS
-
-     This License applies to any manual or other work, in any medium,
-     that contains a notice placed by the copyright holder saying it can
-     be distributed under the terms of this License.  Such a notice
-     grants a world-wide, royalty-free license, unlimited in duration,
-     to use that work under the conditions stated herein.  The
-     "Document", below, refers to any such manual or work.  Any member
-     of the public is a licensee, and is addressed as "you".  You accept
-     the license if you copy, modify or distribute the work in a way
-     requiring permission under copyright law.
-
-     A "Modified Version" of the Document means any work containing the
-     Document or a portion of it, either copied verbatim, or with
-     modifications and/or translated into another language.
-
-     A "Secondary Section" is a named appendix or a front-matter section
-     of the Document that deals exclusively with the relationship of the
-     publishers or authors of the Document to the Document's overall
-     subject (or to related matters) and contains nothing that could
-     fall directly within that overall subject.  (Thus, if the Document
-     is in part a textbook of mathematics, a Secondary Section may not
-     explain any mathematics.)  The relationship could be a matter of
-     historical connection with the subject or with related matters, or
-     of legal, commercial, philosophical, ethical or political position
-     regarding them.
-
-     The "Invariant Sections" are certain Secondary Sections whose
-     titles are designated, as being those of Invariant Sections, in the
-     notice that says that the Document is released under this License.
-     If a section does not fit the above definition of Secondary then it
-     is not allowed to be designated as Invariant.  The Document may
-     contain zero Invariant Sections.  If the Document does not identify
-     any Invariant Sections then there are none.
-
-     The "Cover Texts" are certain short passages of text that are
-     listed, as Front-Cover Texts or Back-Cover Texts, in the notice
-     that says that the Document is released under this License.  A
-     Front-Cover Text may be at most 5 words, and a Back-Cover Text may
-     be at most 25 words.
-
-     A "Transparent" copy of the Document means a machine-readable copy,
-     represented in a format whose specification is available to the
-     general public, that is suitable for revising the document
-     straightforwardly with generic text editors or (for images composed
-     of pixels) generic paint programs or (for drawings) some widely
-     available drawing editor, and that is suitable for input to text
-     formatters or for automatic translation to a variety of formats
-     suitable for input to text formatters.  A copy made in an otherwise
-     Transparent file format whose markup, or absence of markup, has
-     been arranged to thwart or discourage subsequent modification by
-     readers is not Transparent.  An image format is not Transparent if
-     used for any substantial amount of text.  A copy that is not
-     "Transparent" is called "Opaque".
-
-     Examples of suitable formats for Transparent copies include plain
-     ASCII without markup, Texinfo input format, LaTeX input format,
-     SGML or XML using a publicly available DTD, and standard-conforming
-     simple HTML, PostScript or PDF designed for human modification.
-     Examples of transparent image formats include PNG, XCF and JPG.
-     Opaque formats include proprietary formats that can be read and
-     edited only by proprietary word processors, SGML or XML for which
-     the DTD and/or processing tools are not generally available, and
-     the machine-generated HTML, PostScript or PDF produced by some word
-     processors for output purposes only.
-
-     The "Title Page" means, for a printed book, the title page itself,
-     plus such following pages as are needed to hold, legibly, the
-     material this License requires to appear in the title page.  For
-     works in formats which do not have any title page as such, "Title
-     Page" means the text near the most prominent appearance of the
-     work's title, preceding the beginning of the body of the text.
-
-     A section "Entitled XYZ" means a named subunit of the Document
-     whose title either is precisely XYZ or contains XYZ in parentheses
-     following text that translates XYZ in another language.  (Here XYZ
-     stands for a specific section name mentioned below, such as
-     "Acknowledgements", "Dedications", "Endorsements", or "History".)
-     To "Preserve the Title" of such a section when you modify the
-     Document means that it remains a section "Entitled XYZ" according
-     to this definition.
-
-     The Document may include Warranty Disclaimers next to the notice
-     which states that this License applies to the Document.  These
-     Warranty Disclaimers are considered to be included by reference in
-     this License, but only as regards disclaiming warranties: any other
-     implication that these Warranty Disclaimers may have is void and
-     has no effect on the meaning of this License.
-
-  2. VERBATIM COPYING
-
-     You may copy and distribute the Document in any medium, either
-     commercially or noncommercially, provided that this License, the
-     copyright notices, and the license notice saying this License
-     applies to the Document are reproduced in all copies, and that you
-     add no other conditions whatsoever to those of this License.  You
-     may not use technical measures to obstruct or control the reading
-     or further copying of the copies you make or distribute.  However,
-     you may accept compensation in exchange for copies.  If you
-     distribute a large enough number of copies you must also follow the
-     conditions in section 3.
-
-     You may also lend copies, under the same conditions stated above,
-     and you may publicly display copies.
-
-  3. COPYING IN QUANTITY
-
-     If you publish printed copies (or copies in media that commonly
-     have printed covers) of the Document, numbering more than 100, and
-     the Document's license notice requires Cover Texts, you must
-     enclose the copies in covers that carry, clearly and legibly, all
-     these Cover Texts: Front-Cover Texts on the front cover, and
-     Back-Cover Texts on the back cover.  Both covers must also clearly
-     and legibly identify you as the publisher of these copies.  The
-     front cover must present the full title with all words of the title
-     equally prominent and visible.  You may add other material on the
-     covers in addition.  Copying with changes limited to the covers, as
-     long as they preserve the title of the Document and satisfy these
-     conditions, can be treated as verbatim copying in other respects.
-
-     If the required texts for either cover are too voluminous to fit
-     legibly, you should put the first ones listed (as many as fit
-     reasonably) on the actual cover, and continue the rest onto
-     adjacent pages.
-
-     If you publish or distribute Opaque copies of the Document
-     numbering more than 100, you must either include a machine-readable
-     Transparent copy along with each Opaque copy, or state in or with
-     each Opaque copy a computer-network location from which the general
-     network-using public has access to download using public-standard
-     network protocols a complete Transparent copy of the Document, free
-     of added material.  If you use the latter option, you must take
-     reasonably prudent steps, when you begin distribution of Opaque
-     copies in quantity, to ensure that this Transparent copy will
-     remain thus accessible at the stated location until at least one
-     year after the last time you distribute an Opaque copy (directly or
-     through your agents or retailers) of that edition to the public.
-
-     It is requested, but not required, that you contact the authors of
-     the Document well before redistributing any large number of copies,
-     to give them a chance to provide you with an updated version of the
-     Document.
-
-  4. MODIFICATIONS
-
-     You may copy and distribute a Modified Version of the Document
-     under the conditions of sections 2 and 3 above, provided that you
-     release the Modified Version under precisely this License, with the
-     Modified Version filling the role of the Document, thus licensing
-     distribution and modification of the Modified Version to whoever
-     possesses a copy of it.  In addition, you must do these things in
-     the Modified Version:
-
-       A. Use in the Title Page (and on the covers, if any) a title
-          distinct from that of the Document, and from those of previous
-          versions (which should, if there were any, be listed in the
-          History section of the Document).  You may use the same title
-          as a previous version if the original publisher of that
-          version gives permission.
-
-       B. List on the Title Page, as authors, one or more persons or
-          entities responsible for authorship of the modifications in
-          the Modified Version, together with at least five of the
-          principal authors of the Document (all of its principal
-          authors, if it has fewer than five), unless they release you
-          from this requirement.
-
-       C. State on the Title page the name of the publisher of the
-          Modified Version, as the publisher.
-
-       D. Preserve all the copyright notices of the Document.
-
-       E. Add an appropriate copyright notice for your modifications
-          adjacent to the other copyright notices.
-
-       F. Include, immediately after the copyright notices, a license
-          notice giving the public permission to use the Modified
-          Version under the terms of this License, in the form shown in
-          the Addendum below.
-
-       G. Preserve in that license notice the full lists of Invariant
-          Sections and required Cover Texts given in the Document's
-          license notice.
-
-       H. Include an unaltered copy of this License.
-
-       I. Preserve the section Entitled "History", Preserve its Title,
-          and add to it an item stating at least the title, year, new
-          authors, and publisher of the Modified Version as given on the
-          Title Page.  If there is no section Entitled "History" in the
-          Document, create one stating the title, year, authors, and
-          publisher of the Document as given on its Title Page, then add
-          an item describing the Modified Version as stated in the
-          previous sentence.
-
-       J. Preserve the network location, if any, given in the Document
-          for public access to a Transparent copy of the Document, and
-          likewise the network locations given in the Document for
-          previous versions it was based on.  These may be placed in the
-          "History" section.  You may omit a network location for a work
-          that was published at least four years before the Document
-          itself, or if the original publisher of the version it refers
-          to gives permission.
-
-       K. For any section Entitled "Acknowledgements" or "Dedications",
-          Preserve the Title of the section, and preserve in the section
-          all the substance and tone of each of the contributor
-          acknowledgements and/or dedications given therein.
-
-       L. Preserve all the Invariant Sections of the Document, unaltered
-          in their text and in their titles.  Section numbers or the
-          equivalent are not considered part of the section titles.
-
-       M. Delete any section Entitled "Endorsements".  Such a section
-          may not be included in the Modified Version.
-
-       N. Do not retitle any existing section to be Entitled
-          "Endorsements" or to conflict in title with any Invariant
-          Section.
-
-       O. Preserve any Warranty Disclaimers.
-
-     If the Modified Version includes new front-matter sections or
-     appendices that qualify as Secondary Sections and contain no
-     material copied from the Document, you may at your option designate
-     some or all of these sections as invariant.  To do this, add their
-     titles to the list of Invariant Sections in the Modified Version's
-     license notice.  These titles must be distinct from any other
-     section titles.
-
-     You may add a section Entitled "Endorsements", provided it contains
-     nothing but endorsements of your Modified Version by various
-     parties--for example, statements of peer review or that the text
-     has been approved by an organization as the authoritative
-     definition of a standard.
-
-     You may add a passage of up to five words as a Front-Cover Text,
-     and a passage of up to 25 words as a Back-Cover Text, to the end of
-     the list of Cover Texts in the Modified Version.  Only one passage
-     of Front-Cover Text and one of Back-Cover Text may be added by (or
-     through arrangements made by) any one entity.  If the Document
-     already includes a cover text for the same cover, previously added
-     by you or by arrangement made by the same entity you are acting on
-     behalf of, you may not add another; but you may replace the old
-     one, on explicit permission from the previous publisher that added
-     the old one.
-
-     The author(s) and publisher(s) of the Document do not by this
-     License give permission to use their names for publicity for or to
-     assert or imply endorsement of any Modified Version.
-
-  5. COMBINING DOCUMENTS
-
-     You may combine the Document with other documents released under
-     this License, under the terms defined in section 4 above for
-     modified versions, provided that you include in the combination all
-     of the Invariant Sections of all of the original documents,
-     unmodified, and list them all as Invariant Sections of your
-     combined work in its license notice, and that you preserve all
-     their Warranty Disclaimers.
-
-     The combined work need only contain one copy of this License, and
-     multiple identical Invariant Sections may be replaced with a single
-     copy.  If there are multiple Invariant Sections with the same name
-     but different contents, make the title of each such section unique
-     by adding at the end of it, in parentheses, the name of the
-     original author or publisher of that section if known, or else a
-     unique number.  Make the same adjustment to the section titles in
-     the list of Invariant Sections in the license notice of the
-     combined work.
-
-     In the combination, you must combine any sections Entitled
-     "History" in the various original documents, forming one section
-     Entitled "History"; likewise combine any sections Entitled
-     "Acknowledgements", and any sections Entitled "Dedications".  You
-     must delete all sections Entitled "Endorsements."
-
-  6. COLLECTIONS OF DOCUMENTS
-
-     You may make a collection consisting of the Document and other
-     documents released under this License, and replace the individual
-     copies of this License in the various documents with a single copy
-     that is included in the collection, provided that you follow the
-     rules of this License for verbatim copying of each of the documents
-     in all other respects.
-
-     You may extract a single document from such a collection, and
-     distribute it individually under this License, provided you insert
-     a copy of this License into the extracted document, and follow this
-     License in all other respects regarding verbatim copying of that
-     document.
-
-  7. AGGREGATION WITH INDEPENDENT WORKS
-
-     A compilation of the Document or its derivatives with other
-     separate and independent documents or works, in or on a volume of a
-     storage or distribution medium, is called an "aggregate" if the
-     copyright resulting from the compilation is not used to limit the
-     legal rights of the compilation's users beyond what the individual
-     works permit.  When the Document is included in an aggregate, this
-     License does not apply to the other works in the aggregate which
-     are not themselves derivative works of the Document.
-
-     If the Cover Text requirement of section 3 is applicable to these
-     copies of the Document, then if the Document is less than one half
-     of the entire aggregate, the Document's Cover Texts may be placed
-     on covers that bracket the Document within the aggregate, or the
-     electronic equivalent of covers if the Document is in electronic
-     form.  Otherwise they must appear on printed covers that bracket
-     the whole aggregate.
-
-  8. TRANSLATION
-
-     Translation is considered a kind of modification, so you may
-     distribute translations of the Document under the terms of section
-     4.  Replacing Invariant Sections with translations requires special
-     permission from their copyright holders, but you may include
-     translations of some or all Invariant Sections in addition to the
-     original versions of these Invariant Sections.  You may include a
-     translation of this License, and all the license notices in the
-     Document, and any Warranty Disclaimers, provided that you also
-     include the original English version of this License and the
-     original versions of those notices and disclaimers.  In case of a
-     disagreement between the translation and the original version of
-     this License or a notice or disclaimer, the original version will
-     prevail.
-
-     If a section in the Document is Entitled "Acknowledgements",
-     "Dedications", or "History", the requirement (section 4) to
-     Preserve its Title (section 1) will typically require changing the
-     actual title.
-
-  9. TERMINATION
-
-     You may not copy, modify, sublicense, or distribute the Document
-     except as expressly provided for under this License.  Any other
-     attempt to copy, modify, sublicense or distribute the Document is
-     void, and will automatically terminate your rights under this
-     License.  However, parties who have received copies, or rights,
-     from you under this License will not have their licenses terminated
-     so long as such parties remain in full compliance.
-
-  10. FUTURE REVISIONS OF THIS LICENSE
-
-     The Free Software Foundation may publish new, revised versions of
-     the GNU Free Documentation License from time to time.  Such new
-     versions will be similar in spirit to the present version, but may
-     differ in detail to address new problems or concerns.  See
-     <http://www.gnu.org/copyleft/>.
-
-     Each version of the License is given a distinguishing version
-     number.  If the Document specifies that a particular numbered
-     version of this License "or any later version" applies to it, you
-     have the option of following the terms and conditions either of
-     that specified version or of any later version that has been
-     published (not as a draft) by the Free Software Foundation.  If the
-     Document does not specify a version number of this License, you may
-     choose any version ever published (not as a draft) by the Free
-     Software Foundation.
-
-D.1.1 ADDENDUM: How to use this License for your documents
-----------------------------------------------------------
-
-To use this License in a document you have written, include a copy of
-the License in the document and put the following copyright and license
-notices just after the title page:
-
-       Copyright (C)  YEAR  YOUR NAME.
-       Permission is granted to copy, distribute and/or modify this document
-       under the terms of the GNU Free Documentation License, Version 1.2
-       or any later version published by the Free Software Foundation;
-       with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
-       Texts.  A copy of the license is included in the section entitled ``GNU
-       Free Documentation License''.
-
-   If you have Invariant Sections, Front-Cover Texts and Back-Cover
-Texts, replace the "with...Texts."  line with this:
-
-         with the Invariant Sections being LIST THEIR TITLES, with
-         the Front-Cover Texts being LIST, and with the Back-Cover Texts
-         being LIST.
-
-   If you have Invariant Sections without Cover Texts, or some other
-combination of the three, merge those two alternatives to suit the
-situation.
-
-   If your document contains nontrivial examples of program code, we
-recommend releasing these examples in parallel under your choice of free
-software license, such as the GNU General Public License, to permit
-their use in free software.
 

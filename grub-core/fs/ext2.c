@@ -103,6 +103,8 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #define EXT4_FEATURE_INCOMPAT_64BIT		0x0080
 #define EXT4_FEATURE_INCOMPAT_MMP		0x0100
 #define EXT4_FEATURE_INCOMPAT_FLEX_BG		0x0200
+#define EXT4_FEATURE_INCOMPAT_CSUM_SEED		0x2000
+#define EXT4_FEATURE_INCOMPAT_LARGEDIR		0x4000 /* >2GB or 3 level htree */
 #define EXT4_FEATURE_INCOMPAT_ENCRYPT          0x10000
 
 /* The set of back-incompatible features this driver DOES support. Add (OR)
@@ -123,10 +125,22 @@ GRUB_MOD_LICENSE ("GPLv3+");
  * mmp:            Not really back-incompatible - was added as such to
  *                 avoid multiple read-write mounts. Safe to ignore for this
  *                 RO driver.
+ * checksum seed:  Not really back-incompatible - was added to allow tools
+ *                 such as tune2fs to change the UUID on a mounted metadata
+ *                 checksummed filesystem. Safe to ignore for now since the
+ *                 driver doesn't support checksum verification. However, it
+ *                 has to be removed from this list if the support is added later.
+ * large_dir:      Not back-incompatible given that the GRUB ext2 driver does
+ *                 not implement EXT2_FEATURE_COMPAT_DIR_INDEX. If the GRUB
+ *                 eventually supports the htree feature (aka dir_index)
+ *                 it should support 3 level htrees and then move
+ *                 EXT4_FEATURE_INCOMPAT_LARGEDIR to
+ *                 EXT2_DRIVER_SUPPORTED_INCOMPAT.
  */
 #define EXT2_DRIVER_IGNORED_INCOMPAT ( EXT3_FEATURE_INCOMPAT_RECOVER \
-				     | EXT4_FEATURE_INCOMPAT_MMP)
-
+				     | EXT4_FEATURE_INCOMPAT_MMP \
+				     | EXT4_FEATURE_INCOMPAT_CSUM_SEED \
+				     | EXT4_FEATURE_INCOMPAT_LARGEDIR)
 
 #define EXT3_JOURNAL_MAGIC_NUMBER	0xc03b3998U
 
@@ -407,13 +421,15 @@ grub_ext2_blockgroup (struct grub_ext2_data *data, grub_uint64_t group,
 			 sizeof (struct grub_ext2_block_group), blkgrp);
 }
 
-static struct grub_ext4_extent_header *
+static grub_err_t
 grub_ext4_find_leaf (struct grub_ext2_data *data,
                      struct grub_ext4_extent_header *ext_block,
-                     grub_uint32_t fileblock)
+                     grub_uint32_t fileblock,
+                     struct grub_ext4_extent_header **leaf)
 {
   struct grub_ext4_extent_idx *index;
   void *buf = NULL;
+  *leaf = NULL;
 
   while (1)
     {
@@ -426,7 +442,10 @@ grub_ext4_find_leaf (struct grub_ext2_data *data,
 	goto fail;
 
       if (ext_block->depth == 0)
-        return ext_block;
+        {
+          *leaf = ext_block;
+          return GRUB_ERR_NONE;
+        }
 
       for (i = 0; i < grub_le_to_cpu16 (ext_block->entries); i++)
         {
@@ -435,7 +454,10 @@ grub_ext4_find_leaf (struct grub_ext2_data *data,
         }
 
       if (--i < 0)
-	goto fail;
+        {
+          grub_free (buf);
+          return GRUB_ERR_NONE;
+        }
 
       block = grub_le_to_cpu16 (index[i].leaf_hi);
       block = (block << 32) | grub_le_to_cpu32 (index[i].leaf);
@@ -452,7 +474,7 @@ grub_ext4_find_leaf (struct grub_ext2_data *data,
     }
  fail:
   grub_free (buf);
-  return 0;
+  return GRUB_ERR_BAD_FS;
 }
 
 static grub_disk_addr_t
@@ -474,12 +496,16 @@ grub_ext2_read_block (grub_fshelp_node_t node, grub_disk_addr_t fileblock)
       int i;
       grub_disk_addr_t ret;
 
-      leaf = grub_ext4_find_leaf (data, (struct grub_ext4_extent_header *) inode->blocks.dir_blocks, fileblock);
-      if (! leaf)
+      if (grub_ext4_find_leaf (data, (struct grub_ext4_extent_header *) inode->blocks.dir_blocks,
+			       fileblock, &leaf) != GRUB_ERR_NONE)
         {
           grub_error (GRUB_ERR_BAD_FS, "invalid extent");
           return -1;
         }
+
+      if (leaf == NULL)
+        /* Leaf for the given block is absent (i.e. sparse) */
+        return 0;
 
       ext = (struct grub_ext4_extent *) (leaf + 1);
       for (i = 0; i < grub_le_to_cpu16 (leaf->entries); i++)

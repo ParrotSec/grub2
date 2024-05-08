@@ -31,6 +31,7 @@
 #include <grub/misc.h>
 #include <grub/i18n.h>
 #include <grub/list.h>
+#include <grub/osdep/major.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -82,9 +83,7 @@ grub_util_get_fd_size_os (grub_util_fd_t fd, const char *name, unsigned *log_sec
 
   if (sector_size & (sector_size - 1) || !sector_size)
     return -1;
-  for (log_sector_size = 0;
-       (1 << log_sector_size) < sector_size;
-       log_sector_size++);
+  log_sector_size = grub_log2ull (sector_size);
 
   if (log_secsize)
     *log_secsize = log_sector_size;
@@ -98,54 +97,13 @@ grub_util_get_fd_size_os (grub_util_fd_t fd, const char *name, unsigned *log_sec
 static char *
 sysfs_partition_path (const char *dev, const char *entry)
 {
-  const char *argv[7];
-  int fd;
-  pid_t pid;
-  FILE *udevadm;
-  char *buf = NULL;
-  size_t len = 0;
-  char *path = NULL;
+  struct stat st;
 
-  argv[0] = "udevadm";
-  argv[1] = "info";
-  argv[2] = "--query";
-  argv[3] = "path";
-  argv[4] = "--name";
-  argv[5] = dev;
-  argv[6] = NULL;
+  if (stat (dev, &st) == 0 && S_ISBLK (st.st_mode))
+    return xasprintf ("/sys/dev/block/%u:%u/%s",
+		      major (st.st_rdev), minor (st.st_rdev), entry);
 
-  pid = grub_util_exec_pipe (argv, &fd);
-
-  if (!pid)
-    return NULL;
-
-  /* Parent.  Read udevadm's output.  */
-  udevadm = fdopen (fd, "r");
-  if (!udevadm)
-    {
-      grub_util_warn (_("Unable to open stream from %s: %s"),
-		      "udevadm", strerror (errno));
-      close (fd);
-      goto out;
-    }
-
-  if (getline (&buf, &len, udevadm) > 0)
-    {
-      char *newline;
-
-      newline = strchr (buf, '\n');
-      if (newline)
-	*newline = '\0';
-      path = xasprintf ("/sys%s/%s", buf, entry);
-    }
-
-out:
-  if (udevadm)
-    fclose (udevadm);
-  waitpid (pid, NULL, 0);
-  free (buf);
-
-  return path;
+  return NULL;
 }
 
 static int
@@ -240,7 +198,8 @@ have_devfs (void)
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
 
 static int
-grub_hostdisk_linux_find_partition (char *dev, grub_disk_addr_t sector)
+grub_hostdisk_linux_find_partition (const grub_disk_t disk, char *dev,
+                                    grub_disk_addr_t sector)
 {
   size_t len = strlen (dev);
   const char *format;
@@ -305,7 +264,7 @@ grub_hostdisk_linux_find_partition (char *dev, grub_disk_addr_t sector)
       if (fstat (fd, &st) < 0
 	  || !grub_util_device_is_mapped_stat (&st)
 	  || !grub_util_get_dm_node_linear_info (st.st_rdev, 0, 0, &start))
-	start = grub_util_find_partition_start_os (real_dev);
+	start = grub_disk_to_native_sector (disk, grub_util_find_partition_start_os (real_dev));
       /* We don't care about errors here.  */
       grub_errno = GRUB_ERR_NONE;
 
@@ -386,7 +345,7 @@ grub_util_fd_open_device (const grub_disk_t disk, grub_disk_addr_t sector, int f
 	&& strncmp (dev, "/dev/", 5) == 0)
       {
 	if (sector >= part_start)
-	  is_partition = grub_hostdisk_linux_find_partition (dev, part_start);
+	  is_partition = grub_hostdisk_linux_find_partition (disk, dev, part_start);
 	else
 	  *max = part_start - sector;
       }

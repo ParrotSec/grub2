@@ -225,7 +225,8 @@ grub_dl_load_segments (grub_dl_t mod, const Elf_Ehdr *e)
   unsigned i;
   const Elf_Shdr *s;
   grub_size_t tsize = 0, talign = 1;
-#if !defined (__i386__) && !defined (__x86_64__) && !defined(__riscv)
+#if !defined (__i386__) && !defined (__x86_64__) && !defined(__riscv) && \
+  !defined (__loongarch__)
   grub_size_t tramp;
   grub_size_t got;
   grub_err_t err;
@@ -241,7 +242,8 @@ grub_dl_load_segments (grub_dl_t mod, const Elf_Ehdr *e)
 	talign = s->sh_addralign;
     }
 
-#if !defined (__i386__) && !defined (__x86_64__) && !defined(__riscv)
+#if !defined (__i386__) && !defined (__x86_64__) && !defined(__riscv) && \
+  !defined (__loongarch__)
   err = grub_arch_dl_get_tramp_got_size (e, &tramp, &got);
   if (err)
     return err;
@@ -304,7 +306,8 @@ grub_dl_load_segments (grub_dl_t mod, const Elf_Ehdr *e)
 	  mod->segment = seg;
 	}
     }
-#if !defined (__i386__) && !defined (__x86_64__) && !defined(__riscv)
+#if !defined (__i386__) && !defined (__x86_64__) && !defined(__riscv) && \
+  !defined (__loongarch__)
   ptr = (char *) ALIGN_UP ((grub_addr_t) ptr, GRUB_ARCH_DL_TRAMP_ALIGN);
   mod->tramp = ptr;
   mod->trampptr = ptr;
@@ -457,14 +460,22 @@ grub_dl_find_section (Elf_Ehdr *e, const char *name)
    Be sure to understand your license obligations.
 */
 static grub_err_t
-grub_dl_check_license (Elf_Ehdr *e)
+grub_dl_check_license (grub_dl_t mod, Elf_Ehdr *e)
 {
   Elf_Shdr *s = grub_dl_find_section (e, ".module_license");
-  if (s && (grub_strcmp ((char *) e + s->sh_offset, "LICENSE=GPLv3") == 0
-	    || grub_strcmp ((char *) e + s->sh_offset, "LICENSE=GPLv3+") == 0
-	    || grub_strcmp ((char *) e + s->sh_offset, "LICENSE=GPLv2+") == 0))
+
+  if (s == NULL)
+    return grub_error (GRUB_ERR_BAD_MODULE,
+		       "no license section in module %.63s", mod->name);
+
+  if (grub_strcmp ((char *) e + s->sh_offset, "LICENSE=GPLv3") == 0
+      || grub_strcmp ((char *) e + s->sh_offset, "LICENSE=GPLv3+") == 0
+      || grub_strcmp ((char *) e + s->sh_offset, "LICENSE=GPLv2+") == 0)
     return GRUB_ERR_NONE;
-  return grub_error (GRUB_ERR_BAD_MODULE, "incompatible license");
+
+  return grub_error (GRUB_ERR_BAD_MODULE,
+		     "incompatible license in module %.63s: %.63s", mod->name,
+		     (char *) e + s->sh_offset);
 }
 
 static grub_err_t
@@ -475,7 +486,7 @@ grub_dl_resolve_name (grub_dl_t mod, Elf_Ehdr *e)
   s = grub_dl_find_section (e, ".modname");
   if (!s)
     return grub_error (GRUB_ERR_BAD_MODULE, "no module name found");
-  
+
   mod->name = grub_strdup ((char *) e + s->sh_offset);
   if (! mod->name)
     return grub_errno;
@@ -641,8 +652,8 @@ grub_dl_load_core_noinit (void *addr, grub_size_t size)
      constitutes linking) and GRUB core being licensed under GPLv3+.
      Be sure to understand your license obligations.
   */
-  if (grub_dl_check_license (e)
-      || grub_dl_resolve_name (mod, e)
+  if (grub_dl_resolve_name (mod, e)
+      || grub_dl_check_license (mod, e)
       || grub_dl_resolve_dependencies (mod, e)
       || grub_dl_load_segments (mod, e)
       || grub_dl_resolve_symbols (mod, e)
@@ -802,24 +813,4 @@ grub_dl_unload (grub_dl_t mod)
 #endif
   grub_free (mod);
   return 1;
-}
-
-/* Unload unneeded modules.  */
-void
-grub_dl_unload_unneeded (void)
-{
-  /* Because grub_dl_remove modifies the list of modules, this
-     implementation is tricky.  */
-  grub_dl_t p = grub_dl_head;
-
-  while (p)
-    {
-      if (grub_dl_unload (p))
-	{
-	  p = grub_dl_head;
-	  continue;
-	}
-
-      p = p->next;
-    }
 }

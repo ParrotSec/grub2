@@ -32,27 +32,28 @@ GRUB_PLATFORMS = [ "emu", "i386_pc", "i386_efi", "i386_qemu", "i386_coreboot",
                    "mips_loongson", "sparc64_ieee1275",
                    "powerpc_ieee1275", "mips_arc", "ia64_efi",
                    "mips_qemu_mips", "arm_uboot", "arm_efi", "arm64_efi",
-                   "arm_coreboot", "riscv32_efi", "riscv64_efi" ]
+                   "arm_coreboot", "loongarch64_efi", "riscv32_efi", "riscv64_efi" ]
 
 GROUPS = {}
 
 GROUPS["common"]   = GRUB_PLATFORMS[:]
 
 # Groups based on CPU
-GROUPS["i386"]     = [ "i386_pc", "i386_efi", "i386_qemu", "i386_coreboot", "i386_multiboot", "i386_ieee1275" ]
-GROUPS["x86_64"]   = [ "x86_64_efi" ]
-GROUPS["x86"]      = GROUPS["i386"] + GROUPS["x86_64"]
-GROUPS["mips"]     = [ "mips_loongson", "mips_qemu_mips", "mips_arc" ]
-GROUPS["sparc64"]  = [ "sparc64_ieee1275" ]
-GROUPS["powerpc"]  = [ "powerpc_ieee1275" ]
-GROUPS["arm"]      = [ "arm_uboot", "arm_efi", "arm_coreboot" ]
-GROUPS["arm64"]    = [ "arm64_efi" ]
-GROUPS["riscv32"]  = [ "riscv32_efi" ]
-GROUPS["riscv64"]  = [ "riscv64_efi" ]
+GROUPS["i386"]        = [ "i386_pc", "i386_efi", "i386_qemu", "i386_coreboot", "i386_multiboot", "i386_ieee1275" ]
+GROUPS["x86_64"]      = [ "x86_64_efi" ]
+GROUPS["x86"]         = GROUPS["i386"] + GROUPS["x86_64"]
+GROUPS["mips"]        = [ "mips_loongson", "mips_qemu_mips", "mips_arc" ]
+GROUPS["sparc64"]     = [ "sparc64_ieee1275" ]
+GROUPS["powerpc"]     = [ "powerpc_ieee1275" ]
+GROUPS["arm"]         = [ "arm_uboot", "arm_efi", "arm_coreboot" ]
+GROUPS["arm64"]       = [ "arm64_efi" ]
+GROUPS["loongarch64"] = [ "loongarch64_efi" ]
+GROUPS["riscv32"]     = [ "riscv32_efi" ]
+GROUPS["riscv64"]     = [ "riscv64_efi" ]
 
 # Groups based on firmware
 GROUPS["efi"]  = [ "i386_efi", "x86_64_efi", "ia64_efi", "arm_efi", "arm64_efi",
-		   "riscv32_efi", "riscv64_efi" ]
+		   "loongarch64_efi", "riscv32_efi", "riscv64_efi" ]
 GROUPS["ieee1275"]   = [ "i386_ieee1275", "sparc64_ieee1275", "powerpc_ieee1275" ]
 GROUPS["uboot"] = [ "arm_uboot" ]
 GROUPS["xen"]  = [ "i386_xen", "x86_64_xen" ]
@@ -79,7 +80,7 @@ GROUPS["terminfomodule"]   = GRUB_PLATFORMS[:];
 for i in GROUPS["terminfoinkernel"]: GROUPS["terminfomodule"].remove(i)
 
 # Flattened Device Trees (FDT)
-GROUPS["fdt"] = [ "arm64_efi", "arm_uboot", "arm_efi", "riscv32_efi", "riscv64_efi" ]
+GROUPS["fdt"] = [ "arm64_efi", "arm_uboot", "arm_efi", "loongarch64_efi", "riscv32_efi", "riscv64_efi" ]
 
 # Needs software helpers for division
 # Must match GRUB_DIVISION_IN_SOFTWARE in misc.h
@@ -568,6 +569,7 @@ def foreach_platform_value(defn, platform, suffix, closure):
     for group in RMAP[platform]:
         for value in defn.find_all(group + suffix):
             r.append(closure(value))
+    r.sort()
     return ''.join(r)
 
 def platform_conditional(platform, closure):
@@ -700,7 +702,7 @@ def module(defn, platform):
     output("""
 """ + name + """.marker: $(""" + cname(defn) + """_SOURCES) $(nodist_""" + cname(defn) + """_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(""" + cname(defn) + """_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 """)
 
 def kernel(defn, platform):
@@ -766,7 +768,7 @@ def image(defn, platform):
 if test x$(TARGET_APPLE_LINKER) = x1; then \
   $(MACHO2IMG) $< $@; \
 else \
-  $(TARGET_OBJCOPY) $(""" + cname(defn) + """_OBJCOPYFLAGS) --strip-unneeded -R .note -R .comment -R .note.gnu.build-id -R .MIPS.abiflags -R .reginfo -R .rel.dyn -R .note.gnu.gold-version -R .note.gnu.property -R .ARM.exidx $< $@; \
+  $(TARGET_OBJCOPY) $(""" + cname(defn) + """_OBJCOPYFLAGS) --strip-unneeded -R .note -R .comment -R .note.gnu.build-id -R .MIPS.abiflags -R .reginfo -R .rel.dyn -R .note.gnu.gold-version -R .note.gnu.property -R .ARM.exidx -R .interp $< $@; \
 fi
 """)
 
@@ -817,8 +819,7 @@ def program(defn, platform, test=False):
     set_canonical_name_suffix("")
 
     if 'testcase' in defn:
-        gvar_add("check_PROGRAMS", name)
-        gvar_add("TESTS", name)
+        gvar_add("check_PROGRAMS_" + defn['testcase'], name)
     else:
         var_add(installdir(defn) + "_PROGRAMS", name)
         if 'mansection' in defn:
@@ -859,8 +860,7 @@ def script(defn, platform):
     name = defn['name']
 
     if 'testcase' in defn:
-        gvar_add("check_SCRIPTS", name)
-        gvar_add ("TESTS", name)
+        gvar_add("check_SCRIPTS_" + defn['testcase'], name)
     else:
         var_add(installdir(defn) + "_SCRIPTS", name)
         if 'mansection' in defn:

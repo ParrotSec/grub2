@@ -49,6 +49,9 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #define GRUB_ISO9660_VOLDESC_PART	3
 #define GRUB_ISO9660_VOLDESC_END	255
 
+#define GRUB_ISO9660_SUSP_HEADER_SZ	4
+#define GRUB_ISO9660_MAX_CE_HOPS	100000
+
 /* The head of a volume descriptor.  */
 struct grub_iso9660_voldesc
 {
@@ -181,7 +184,7 @@ static grub_err_t
 iso9660_to_unixtime (const struct grub_iso9660_date *i, grub_int64_t *nix)
 {
   struct grub_datetime datetime;
-  
+
   if (! i->year[0] && ! i->year[1]
       && ! i->year[2] && ! i->year[3]
       && ! i->month[0] && ! i->month[1]
@@ -198,7 +201,7 @@ iso9660_to_unixtime (const struct grub_iso9660_date *i, grub_int64_t *nix)
   datetime.hour = (i->hour[0] - '0') * 10 + (i->hour[1] - '0');
   datetime.minute = (i->minute[0] - '0') * 10 + (i->minute[1] - '0');
   datetime.second = (i->second[0] - '0') * 10 + (i->second[1] - '0');
-  
+
   if (!grub_datetime2unixtime (&datetime, nix))
     return grub_error (GRUB_ERR_BAD_NUMBER, "incorrect date");
   *nix -= i->offset * 60 * 15;
@@ -216,7 +219,7 @@ iso9660_to_unixtime2 (const struct grub_iso9660_date2 *i, grub_int64_t *nix)
   datetime.hour = i->hour;
   datetime.minute = i->minute;
   datetime.second = i->second;
-  
+
   if (!grub_datetime2unixtime (&datetime, nix))
     return 0;
   *nix -= i->offset * 60 * 15;
@@ -268,9 +271,16 @@ grub_iso9660_susp_iterate (grub_fshelp_node_t node, grub_off_t off,
   char *sua;
   struct grub_iso9660_susp_entry *entry;
   grub_err_t err;
+  int ce_counter = 0;
+  grub_ssize_t ce_sua_size = 0;
+  grub_off_t ce_off;
+  grub_disk_addr_t ce_block;
 
   if (sua_size <= 0)
     return GRUB_ERR_NONE;
+
+  if (sua_size < GRUB_ISO9660_SUSP_HEADER_SZ)
+    return grub_error (GRUB_ERR_BAD_FS, "invalid susp entry size");
 
   sua = grub_malloc (sua_size);
   if (!sua)
@@ -279,12 +289,20 @@ grub_iso9660_susp_iterate (grub_fshelp_node_t node, grub_off_t off,
   /* Load a part of the System Usage Area.  */
   err = read_node (node, off, sua_size, sua);
   if (err)
-    return err;
-
-  for (entry = (struct grub_iso9660_susp_entry *) sua; (char *) entry < (char *) sua + sua_size - 1 && entry->len > 0;
-       entry = (struct grub_iso9660_susp_entry *)
-	 ((char *) entry + entry->len))
     {
+      grub_free (sua);
+      return err;
+    }
+
+  entry = (struct grub_iso9660_susp_entry *) sua;
+
+ next_susp_area:
+  while (entry->len > 0)
+    {
+      /* Ensure the entry is within System Use Area. */
+      if ((char *) entry + entry->len > (sua + sua_size))
+        break;
+
       /* The last entry.  */
       if (grub_strncmp ((char *) entry->sig, "ST", 2) == 0)
 	break;
@@ -293,32 +311,62 @@ grub_iso9660_susp_iterate (grub_fshelp_node_t node, grub_off_t off,
       if (grub_strncmp ((char *) entry->sig, "CE", 2) == 0)
 	{
 	  struct grub_iso9660_susp_ce *ce;
-	  grub_disk_addr_t ce_block;
 
+	  if (ce_sua_size > 0)
+	    {
+	      grub_free (sua);
+	      return grub_error (GRUB_ERR_BAD_FS,
+				 "more than one CE entry in SUSP area");
+	    }
+
+	  /* Buffer CE parameters for use after the end of this loop. */
 	  ce = (struct grub_iso9660_susp_ce *) entry;
-	  sua_size = grub_le_to_cpu32 (ce->len);
-	  off = grub_le_to_cpu32 (ce->off);
+	  ce_sua_size = grub_le_to_cpu32 (ce->len);
+	  ce_off = grub_le_to_cpu32 (ce->off);
 	  ce_block = grub_le_to_cpu32 (ce->blk) << GRUB_ISO9660_LOG2_BLKSZ;
-
-	  grub_free (sua);
-	  sua = grub_malloc (sua_size);
-	  if (!sua)
-	    return grub_errno;
-
-	  /* Load a part of the System Usage Area.  */
-	  err = grub_disk_read (node->data->disk, ce_block, off,
-				sua_size, sua);
-	  if (err)
-	    return err;
-
-	  entry = (struct grub_iso9660_susp_entry *) sua;
 	}
-
-      if (hook (entry, hook_arg))
+      else if (hook (entry, hook_arg))
 	{
 	  grub_free (sua);
 	  return 0;
 	}
+
+      entry = (struct grub_iso9660_susp_entry *) ((char *) entry + entry->len);
+
+      if (((sua + sua_size) - (char *) entry) < GRUB_ISO9660_SUSP_HEADER_SZ)
+        break;
+    }
+
+  if (ce_sua_size > 0)
+    {
+      /* Load the next System Use Area by buffered CE entry parameters. */
+      if (++ce_counter > GRUB_ISO9660_MAX_CE_HOPS)
+	{
+	  grub_free (sua);
+	  return grub_error (GRUB_ERR_BAD_FS, "suspecting endless CE loop");
+	}
+      if (ce_sua_size < GRUB_ISO9660_SUSP_HEADER_SZ)
+	{
+	  grub_free (sua);
+	  return grub_error (GRUB_ERR_BAD_FS, "invalid continuation area in CE entry");
+	}
+
+      grub_free (sua);
+      sua = grub_malloc (ce_sua_size);
+      if (!sua)
+	return grub_errno;
+
+      err = grub_disk_read (node->data->disk, ce_block, ce_off, ce_sua_size, sua);
+      if (err)
+	{
+	  grub_free (sua);
+	  return err;
+	}
+      entry = (struct grub_iso9660_susp_entry *) sua;
+      sua_size = ce_sua_size;
+      ce_sua_size = 0;
+
+      goto next_susp_area;
     }
 
   grub_free (sua);
@@ -385,6 +433,9 @@ set_rockridge (struct grub_iso9660_data *data)
   if (!sua_size)
     return GRUB_ERR_NONE;
 
+  if (sua_size < GRUB_ISO9660_SUSP_HEADER_SZ)
+    return grub_error (GRUB_ERR_BAD_FS, "invalid rock ridge entry size");
+
   sua = grub_malloc (sua_size);
   if (! sua)
     return grub_errno;
@@ -411,8 +462,17 @@ set_rockridge (struct grub_iso9660_data *data)
       rootnode.have_symlink = 0;
       rootnode.dirents[0] = data->voldesc.rootdir;
 
-      /* The 2nd data byte stored how many bytes are skipped every time
-	 to get to the SUA (System Usage Area).  */
+      /* The size of SP (version 1) is fixed to 7. */
+      if (sua_size < 7 || entry->len < 7)
+	{
+	  grub_free (sua);
+	  return grub_error (GRUB_ERR_BAD_FS, "corrupted rock ridge entry");
+	}
+
+      /*
+       * The 2nd data byte stored how many bytes are skipped every time
+       * to get to the SUA (System Usage Area).
+       */
       data->susp_skip = entry->data[2];
       entry = (struct grub_iso9660_susp_entry *) ((char *) entry + entry->len);
 
@@ -499,7 +559,7 @@ grub_iso9660_mount (grub_disk_t disk)
 static char *
 grub_iso9660_read_symlink (grub_fshelp_node_t node)
 {
-  return node->have_symlink 
+  return node->have_symlink
     ? grub_strdup (node->symlink
 		   + (node->have_dirents) * sizeof (node->dirents[0])
 		   - sizeof (node->dirents)) : grub_strdup ("");
@@ -549,7 +609,7 @@ add_part (struct iterate_dir_ctx *ctx,
   ctx->symlink = new;
 
   grub_memcpy (ctx->symlink + size, part, len2);
-  ctx->symlink[size + len2] = 0;  
+  ctx->symlink[size + len2] = 0;
 }
 
 static grub_err_t
@@ -627,10 +687,23 @@ susp_iterate_dir (struct grub_iso9660_susp_entry *entry,
   else if (grub_strncmp ("SL", (char *) entry->sig, 2) == 0)
     {
       unsigned int pos = 1;
+      unsigned int csize;
 
-      /* The symlink is not stored as a POSIX symlink, translate it.  */
-      while (pos + sizeof (*entry) < entry->len)
+      /* The symlink is not stored as a POSIX symlink, translate it. */
+      while ((pos + GRUB_ISO9660_SUSP_HEADER_SZ + 1) < entry->len)
 	{
+	  /*
+	   * entry->len is GRUB_ISO9660_SUSP_HEADER_SZ + 1 (the FLAGS) +
+	   * length of the "Component Area". The length of a component
+	   * record is 2 (pos and pos + 1) plus the "Component Content",
+	   * of which starts at pos + 2. entry->data[pos] is the
+	   * "Component Flags"; entry->data[pos + 1] is the length
+	   * of the component.
+	   */
+          csize = entry->data[pos + 1] + 2;
+          if (GRUB_ISO9660_SUSP_HEADER_SZ + 1 + csize > entry->len)
+            break;
+
 	  /* The current position is the `Component Flag'.  */
 	  switch (entry->data[pos] & 30)
 	    {
@@ -795,6 +868,16 @@ grub_iso9660_iterate_dir (grub_fshelp_node_t dir,
 	while (dirent.flags & FLAG_MORE_EXTENTS)
 	  {
 	    offset += dirent.len;
+
+	    /* offset should within the dir's len. */
+	    if (offset > len)
+	      {
+		if (ctx.filename_alloc)
+		  grub_free (ctx.filename);
+		grub_free (node);
+		return 0;
+	      }
+
 	    if (read_node (dir, offset, sizeof (dirent), (char *) &dirent))
 	      {
 		if (ctx.filename_alloc)
@@ -802,6 +885,18 @@ grub_iso9660_iterate_dir (grub_fshelp_node_t dir,
 		grub_free (node);
 		return 0;
 	      }
+
+	    /*
+	     * It is either the end of block or zero-padded sector,
+	     * skip to the next block.
+	     */
+	    if (!dirent.len)
+	      {
+		offset = (offset / GRUB_ISO9660_BLKSZ + 1) * GRUB_ISO9660_BLKSZ;
+		dirent.flags |= FLAG_MORE_EXTENTS;
+		continue;
+	      }
+
 	    if (node->have_dirents >= node->alloc_dirents)
 	      {
 		struct grub_fshelp_node *new_node;
@@ -1106,7 +1201,7 @@ grub_iso9660_uuid (grub_device_t device, char **uuid)
 }
 
 /* Get writing time of filesystem. */
-static grub_err_t 
+static grub_err_t
 grub_iso9660_mtime (grub_device_t device, grub_int64_t *timebuf)
 {
   struct grub_iso9660_data *data;

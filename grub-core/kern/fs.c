@@ -75,6 +75,8 @@ grub_fs_probe (grub_device_t device)
 	    return p;
 
 	  grub_error_push ();
+	  /* The grub_error_push() does not touch grub_errmsg. */
+	  grub_dprintf ("fs", _("error: %s.\n"), grub_errmsg);
 	  grub_dprintf ("fs", "%s detection failed.\n", p->name);
 	  grub_error_pop ();
 
@@ -128,7 +130,7 @@ grub_fs_probe (grub_device_t device)
 struct grub_fs_block
 {
   grub_disk_addr_t offset;
-  unsigned long length;
+  grub_disk_addr_t length;
 };
 
 static grub_err_t
@@ -173,7 +175,11 @@ grub_fs_blocklist_open (grub_file_t file, const char *name)
 	}
 
       p++;
-      blocks[i].length = grub_strtoul (p, &p, 0);
+      if (*p == '\0' || *p == ',')
+        blocks[i].length = max_sectors - blocks[i].offset;
+      else
+        blocks[i].length = grub_strtoul (p, &p, 0);
+
       if (grub_errno != GRUB_ERR_NONE
 	  || blocks[i].length == 0
 	  || (*p && *p != ',' && ! grub_isspace (*p)))

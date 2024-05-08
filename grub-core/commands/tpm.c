@@ -42,7 +42,13 @@ grub_tpm_verify_init (grub_file_t io,
 static grub_err_t
 grub_tpm_verify_write (void *context, void *buf, grub_size_t size)
 {
-  return grub_tpm_measure (buf, size, GRUB_BINARY_PCR, context);
+  grub_err_t status = grub_tpm_measure (buf, size, GRUB_BINARY_PCR, context);
+
+  if (status == GRUB_ERR_NONE)
+    return GRUB_ERR_NONE;
+
+  grub_dprintf ("tpm", "Measuring buffer failed: %d\n", status);
+  return grub_is_tpm_fail_fatal () ? status : GRUB_ERR_NONE;
 }
 
 static grub_err_t
@@ -74,7 +80,11 @@ grub_tpm_verify_string (char *str, enum grub_verify_string_type type)
     grub_tpm_measure ((unsigned char *) str, grub_strlen (str),
 		      GRUB_STRING_PCR, description);
   grub_free (description);
-  return status;
+  if (status == GRUB_ERR_NONE)
+    return GRUB_ERR_NONE;
+
+  grub_dprintf ("tpm", "Measuring string %s failed: %d\n", str, status);
+  return grub_is_tpm_fail_fatal () ? status : GRUB_ERR_NONE;
 }
 
 struct grub_file_verifier grub_tpm_verifier = {
@@ -86,10 +96,20 @@ struct grub_file_verifier grub_tpm_verifier = {
 
 GRUB_MOD_INIT (tpm)
 {
+  /*
+   * Even though this now calls ibmvtpm's grub_tpm_present() from GRUB_MOD_INIT(),
+   * it does seem to call it late enough in the initialization sequence so
+   * that whatever discovered "device nodes" before this GRUB_MOD_INIT() is
+   * called, enables the ibmvtpm driver to see the device nodes.
+   */
+  if (!grub_tpm_present())
+    return;
   grub_verifier_register (&grub_tpm_verifier);
 }
 
 GRUB_MOD_FINI (tpm)
 {
+  if (!grub_tpm_present())
+    return;
   grub_verifier_unregister (&grub_tpm_verifier);
 }

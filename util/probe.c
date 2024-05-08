@@ -36,8 +36,6 @@
 #include <grub/i18n.h>
 #include <grub/emu/misc.h>
 #include <grub/util/ofpath.h>
-#include <grub/crypto.h>
-#include <grub/cryptodisk.h>
 
 #include <string.h>
 
@@ -169,4 +167,4 @@ grub_util_fprint_full_disk_name (FILE *f,
   else
     fprintf (f, "%s", dname);
   free (dname);
-} 
+}

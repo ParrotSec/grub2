@@ -26,6 +26,7 @@
 #include <grub/command.h>
 #include <grub/cache.h>
 #include <grub/cpu/linux.h>
+#include <grub/efi/efi.h>
 #include <grub/lib/cmdline.h>
 #include <grub/linux.h>
 #include <grub/verify.h>
@@ -304,7 +305,7 @@ linux_boot (void)
 static grub_err_t
 linux_load (const char *filename, grub_file_t file)
 {
-  struct linux_arm_kernel_header *lh;
+  struct linux_arch_kernel_header *lh;
   int size;
 
   size = grub_file_size (file);
@@ -422,7 +423,7 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
   grub_dprintf ("loader", "Loading initrd to 0x%08x\n",
 		(grub_addr_t) initrd_start);
 
-  if (grub_initrd_load (&initrd_ctx, argv, (void *) initrd_start))
+  if (grub_initrd_load (&initrd_ctx, (void *) initrd_start))
     goto fail;
 
   initrd_end = initrd_start + size;
@@ -452,7 +453,7 @@ load_dtb (grub_file_t dtb, int size)
 
   grub_fdt_set_totalsize (new_fdt, size);
   current_fdt = new_fdt;
-  /* 
+  /*
    * We've successfully loaded an FDT, so any machine type passed
    * from firmware is now obsolete.
    */

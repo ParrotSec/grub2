@@ -20,6 +20,9 @@ endif
 if COND_powerpc_ieee1275
   CFLAGS_PLATFORM += -mcpu=powerpc
 endif
+if COND_HAVE_PCI
+  CFLAGS_PLATFORM += -DGRUB_HAS_PCI
+endif
 
 # Other options
 
@@ -39,9 +42,16 @@ LDFLAGS_KERNEL = $(LDFLAGS_PLATFORM) -nostdlib $(TARGET_LDFLAGS_OLDMAGIC)
 CPPFLAGS_KERNEL = $(CPPFLAGS_CPU) $(CPPFLAGS_PLATFORM) -DGRUB_KERNEL=1
 CCASFLAGS_KERNEL = $(CCASFLAGS_CPU) $(CCASFLAGS_PLATFORM)
 STRIPFLAGS_KERNEL = -R .rel.dyn -R .reginfo -R .note -R .comment -R .drectve -R .note.gnu.gold-version -R .MIPS.abiflags -R .ARM.exidx
+if !COND_emu
+if COND_HAVE_ASM_USCORE
+  LDFLAGS_KERNEL += -Wl,--defsym=_malloc=_grub_malloc -Wl,--defsym=_free=_grub_free
+else
+  LDFLAGS_KERNEL += -Wl,--defsym=malloc=grub_malloc -Wl,--defsym=free=grub_free
+endif
+endif
 
 CFLAGS_MODULE = $(CFLAGS_PLATFORM) -ffreestanding
-LDFLAGS_MODULE = $(LDFLAGS_PLATFORM) -nostdlib $(TARGET_LDFLAGS_OLDMAGIC) -Wl,-r,-d
+LDFLAGS_MODULE = $(LDFLAGS_PLATFORM) -nostdlib $(TARGET_LDFLAGS_OLDMAGIC) -Wl,-r
 CPPFLAGS_MODULE = $(CPPFLAGS_CPU) $(CPPFLAGS_PLATFORM)
 CCASFLAGS_MODULE = $(CCASFLAGS_CPU) $(CCASFLAGS_PLATFORM)
 
@@ -65,7 +75,7 @@ grubconfdir = $(sysconfdir)/grub.d
 platformdir = $(pkglibdir)/$(target_cpu)-$(platform)
 starfielddir = $(pkgdatadir)/themes/starfield
 
-CFLAGS_GNULIB = -Wno-undef -Wno-sign-compare -Wno-unused -Wno-unused-parameter -Wno-redundant-decls -Wno-unreachable-code -Wno-conversion
+CFLAGS_GNULIB = -Wno-undef -Wno-sign-compare -Wno-unused -Wno-unused-parameter -Wno-redundant-decls -Wno-unreachable-code -Wno-conversion -Wno-error=attributes
 CPPFLAGS_GNULIB = -I$(top_builddir)/grub-core/lib/gnulib -I$(top_srcdir)/grub-core/lib/gnulib
 
 CFLAGS_POSIX = -fno-builtin
@@ -102,26 +112,27 @@ MODULE_FILES =
 MARKER_FILES =
 KERNEL_HEADER_FILES =
 
+bin_SCRIPTS =
+bin_PROGRAMS =
+check_SCRIPTS_native =
+check_SCRIPTS_nonnative =
+check_PROGRAMS_native =
+check_PROGRAMS_nonnative =
+dist_grubconf_DATA =
+dist_noinst_DATA =
+grubconf_SCRIPTS =
 man_MANS =
 noinst_DATA =
-pkgdata_DATA =
-bin_SCRIPTS =
-sbin_SCRIPTS =
-bin_PROGRAMS =
-platform_DATA =
-sbin_PROGRAMS =
-check_SCRIPTS =
-dist_grubconf_DATA =
-check_PROGRAMS =
 noinst_SCRIPTS =
 noinst_PROGRAMS =
-grubconf_SCRIPTS =
 noinst_LIBRARIES =
-dist_noinst_DATA =
+pkgdata_DATA =
+platform_DATA =
 platform_SCRIPTS =
 platform_PROGRAMS =
+sbin_SCRIPTS =
+sbin_PROGRAMS =
 
-TESTS =
 EXTRA_DIST =
 CLEANFILES =
 BUILT_SOURCES =

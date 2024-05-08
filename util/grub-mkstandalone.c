@@ -30,6 +30,9 @@
 #pragma GCC diagnostic error "-Wmissing-prototypes"
 #pragma GCC diagnostic error "-Wmissing-declarations"
 
+/* use 2015-01-01T00:00:00+0000 as a stock timestamp */
+#define STABLE_EMBEDDING_TIMESTAMP 1420070400
+
 static char *output_image;
 static char **files;
 static int nfiles;
@@ -112,7 +115,7 @@ argp_parser (int key, char *arg, struct argp_state *state)
 
 struct argp argp = {
   options, argp_parser, N_("[OPTION] SOURCE..."),
-  N_("Generate a standalone image (containing all modules) in the selected format")"\v"N_("Graft point syntax (E.g. /boot/grub/grub.cfg=./grub.cfg) is accepted"), 
+  N_("Generate a standalone image (containing all modules) in the selected format")"\v"N_("Graft point syntax (E.g. /boot/grub/grub.cfg=./grub.cfg) is accepted"),
   NULL, help_filter, NULL
 };
 
@@ -184,15 +187,12 @@ add_tar_file (const char *from,
   struct head hd;
   grub_util_fd_t in;
   ssize_t r;
-  grub_uint32_t mtime = 0;
   grub_uint32_t size;
 
   COMPILE_TIME_ASSERT (sizeof (hd) == 512);
 
   if (grub_util_is_special_file (from))
     return;
-
-  mtime = grub_util_get_mtime (from);
 
   optr = tcn = xmalloc (strlen (to) + 1);
   for (iptr = to; *iptr == '/'; iptr++);
@@ -205,22 +205,43 @@ add_tar_file (const char *from,
     {
       grub_util_fd_dir_t d;
       grub_util_fd_dirent_t de;
+      char **from_files;
+      grub_size_t alloc = 8, used = 0;
+      grub_size_t i;
 
       d = grub_util_fd_opendir (from);
 
+      from_files = xmalloc (alloc * sizeof (*from_files));
       while ((de = grub_util_fd_readdir (d)))
 	{
-	  char *fp, *tfp;
 	  if (strcmp (de->d_name, ".") == 0)
 	    continue;
 	  if (strcmp (de->d_name, "..") == 0)
 	    continue;
-	  fp = grub_util_path_concat (2, from, de->d_name);
-	  tfp = xasprintf ("%s/%s", to, de->d_name);
-	  add_tar_file (fp, tfp);
-	  free (fp);
+	  if (alloc <= used)
+	    {
+	      alloc <<= 1;
+	      from_files = xrealloc (from_files, alloc * sizeof (*from_files));
+	    }
+	  from_files[used++] = xstrdup (de->d_name);
 	}
+
+      qsort (from_files, used, sizeof (*from_files), grub_qsort_strcmp);
+
+      for (i = 0; i < used; i++)
+	{
+	  char *fp, *tfp;
+
+	  fp = grub_util_path_concat (2, from, from_files[i]);
+	  tfp = xasprintf ("%s/%s", to, from_files[i]);
+	  add_tar_file (fp, tfp);
+	  free (tfp);
+	  free (fp);
+	  free (from_files[i]);
+	}
+
       grub_util_fd_closedir (d);
+      free (from_files);
       free (tcn);
       return;
     }
@@ -234,7 +255,7 @@ add_tar_file (const char *from,
       memcpy (hd.gid, "0001750", 7);
 
       set_tar_value (hd.size, optr - tcn, 12);
-      set_tar_value (hd.mtime, mtime, 12);
+      set_tar_value (hd.mtime, STABLE_EMBEDDING_TIMESTAMP, 12);
       hd.typeflag = 'L';
       memcpy (hd.magic, MAGIC, sizeof (hd.magic));
       memcpy (hd.uname, "grub", 4);
@@ -264,7 +285,7 @@ add_tar_file (const char *from,
   memcpy (hd.gid, "0001750", 7);
 
   set_tar_value (hd.size, size, 12);
-  set_tar_value (hd.mtime, mtime, 12);
+  set_tar_value (hd.mtime, STABLE_EMBEDDING_TIMESTAMP, 12);
   hd.typeflag = '0';
   memcpy (hd.magic, MAGIC, sizeof (hd.magic));
   memcpy (hd.uname, "grub", 4);
@@ -273,7 +294,7 @@ add_tar_file (const char *from,
   compute_checksum (&hd);
 
   fwrite (&hd, 1, sizeof (hd), memdisk);
- 
+
   while (1)
     {
       r = grub_util_fd_read (in, grub_install_copy_buffer, GRUB_INSTALL_COPY_BUFFER_SIZE);

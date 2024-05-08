@@ -16,8 +16,8 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
 #include <config-util.h>
+#include <config.h>
 
 #include <time.h>
 #include <stdio.h>
@@ -107,6 +107,7 @@ static struct argp_option options[] = {
    N_("use GRUB files in the directory DIR [default=%s]"), 0},
   {"verbose",     'v', 0,      0, N_("print verbose messages."), 0},
   {"hold",     'H', N_("SECS"),      OPTION_ARG_OPTIONAL, N_("wait until a debugger will attach"), 0},
+  {"kexec",       'X', 0,      0, N_("use kexec to boot Linux kernels via systemctl (pass twice to enable dangerous fallback to non-systemctl)."), 0},
   { 0, 0, 0, 0, 0, 0 }
 };
 
@@ -164,6 +165,9 @@ argp_parser (int key, char *arg, struct argp_state *state)
     case 'v':
       verbosity++;
       break;
+    case 'X':
+      grub_util_set_kexecute ();
+      break;
 
     case ARGP_KEY_ARG:
       {
@@ -194,7 +198,7 @@ int
 main (int argc, char *argv[])
 {
   struct arguments arguments =
-    { 
+    {
       .dev_map = DEFAULT_DEVICE_MAP,
       .hold = 0,
       .mem_disk = 0,

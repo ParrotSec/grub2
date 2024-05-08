@@ -39,6 +39,7 @@
 #include <grub/emu/misc.h>
 
 int verbosity;
+int kexecute;
 
 void
 grub_util_warn (const char *fmt, ...)
@@ -82,7 +83,7 @@ grub_util_error (const char *fmt, ...)
   vfprintf (stderr, fmt, ap);
   va_end (ap);
   fprintf (stderr, ".\n");
-  exit (1);
+  grub_exit ();
 }
 
 void *
@@ -135,16 +136,16 @@ xstrdup (const char *str)
 #if !defined (GRUB_MKFONT) && !defined (GRUB_BUILD)
 char *
 xasprintf (const char *fmt, ...)
-{ 
+{
   va_list ap;
   char *result;
-  
+
   va_start (ap, fmt);
   result = grub_xvasprintf (fmt, ap);
   va_end (ap);
   if (!result)
     grub_util_error ("%s", _("out of memory"));
-  
+
   return result;
 }
 #endif
@@ -153,6 +154,9 @@ xasprintf (const char *fmt, ...)
 void
 grub_exit (void)
 {
+#if defined (GRUB_KERNEL)
+  grub_reboot ();
+#endif
   exit (1);
 }
 #endif
@@ -180,7 +184,7 @@ grub_util_get_image_size (const char *path)
     grub_util_error (_("cannot open `%s': %s"), path, strerror (errno));
 
   fseeko (f, 0, SEEK_END);
-  
+
   sz = ftello (f);
   if (sz < 0)
     grub_util_error (_("cannot open `%s': %s"), path, strerror (errno));
@@ -213,4 +217,16 @@ grub_util_load_image (const char *path, char *buf)
 		     strerror (errno));
 
   fclose (fp);
+}
+
+void
+grub_util_set_kexecute (void)
+{
+  kexecute++;
+}
+
+int
+grub_util_get_kexecute (void)
+{
+  return kexecute;
 }

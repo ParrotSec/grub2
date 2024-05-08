@@ -217,7 +217,7 @@ dev_iterate (struct grub_ieee1275_devalias *alias)
   return 0;
 }
 
-static const char *
+static struct grub_serial_port *
 add_port (struct ofserial_hash_ent *ent)
 {
   struct grub_serial_port *port;
@@ -226,6 +226,10 @@ add_port (struct ofserial_hash_ent *ent)
 
   if (!ent->shortest)
     return NULL;
+
+  FOR_SERIAL_PORTS (port)
+    if (port->elem == ent)
+      return port;
 
   port = grub_zalloc (sizeof (*port));
   if (!port)
@@ -245,10 +249,10 @@ add_port (struct ofserial_hash_ent *ent)
 
   grub_serial_register (port);
 
-  return port->name;
+  return port;
 }
 
-const char *
+struct grub_serial_port *
 grub_ofserial_add_port (const char *path)
 {
   struct ofserial_hash_ent *ent;
@@ -276,7 +280,7 @@ grub_ofserial_init (void)
     dev_iterate_real (&alias, 1);
 
   grub_ieee1275_devices_iterate (dev_iterate);
-  
+
   for (i = 0; i < ARRAY_SIZE (ofserial_hash); i++)
     {
       struct ofserial_hash_ent *ent;

@@ -23,6 +23,7 @@
 #include <grub/mm.h>
 #include <grub/misc.h>
 #include <grub/bufio.h>
+#include <grub/safemath.h>
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
@@ -109,9 +110,17 @@ static grub_uint8_t
 grub_jpeg_get_byte (struct grub_jpeg_data *data)
 {
   grub_uint8_t r;
+  grub_ssize_t bytes_read;
 
   r = 0;
-  grub_file_read (data->file, &r, 1);
+  bytes_read = grub_file_read (data->file, &r, 1);
+
+  if (bytes_read != 1)
+    {
+      grub_error (GRUB_ERR_BAD_FILE_TYPE,
+		  "jpeg: unexpected end of data");
+      return 0;
+    }
 
   return r;
 }
@@ -120,9 +129,17 @@ static grub_uint16_t
 grub_jpeg_get_word (struct grub_jpeg_data *data)
 {
   grub_uint16_t r;
+  grub_ssize_t bytes_read;
 
   r = 0;
-  grub_file_read (data->file, &r, sizeof (grub_uint16_t));
+  bytes_read = grub_file_read (data->file, &r, sizeof (grub_uint16_t));
+
+  if (bytes_read != sizeof (grub_uint16_t))
+    {
+      grub_error (GRUB_ERR_BAD_FILE_TYPE,
+		  "jpeg: unexpected end of data");
+      return 0;
+    }
 
   return grub_be_to_cpu16 (r);
 }
@@ -135,12 +152,22 @@ grub_jpeg_get_bit (struct grub_jpeg_data *data)
   if (data->bit_mask == 0)
     {
       data->bit_save = grub_jpeg_get_byte (data);
+      if (grub_errno != GRUB_ERR_NONE) {
+	grub_error (GRUB_ERR_BAD_FILE_TYPE,
+		    "jpeg: file read error");
+	return 0;
+      }
       if (data->bit_save == JPEG_ESC_CHAR)
 	{
 	  if (grub_jpeg_get_byte (data) != 0)
 	    {
 	      grub_error (GRUB_ERR_BAD_FILE_TYPE,
 			  "jpeg: invalid 0xFF in data stream");
+	      return 0;
+	    }
+	  if (grub_errno != GRUB_ERR_NONE)
+	    {
+	      grub_error (GRUB_ERR_BAD_FILE_TYPE, "jpeg: file read error");
 	      return 0;
 	    }
 	}
@@ -161,7 +188,7 @@ grub_jpeg_get_number (struct grub_jpeg_data *data, int num)
     return 0;
 
   msb = value = grub_jpeg_get_bit (data);
-  for (i = 1; i < num; i++)
+  for (i = 1; i < num && grub_errno == GRUB_ERR_NONE; i++)
     value = (value << 1) + (grub_jpeg_get_bit (data) != 0);
   if (!msb)
     value += 1 - (1 << num);
@@ -199,9 +226,17 @@ grub_jpeg_decode_huff_table (struct grub_jpeg_data *data)
   next_marker = data->file->offset;
   next_marker += grub_jpeg_get_word (data);
 
+  if (next_marker > data->file->size)
+    {
+      return grub_error (GRUB_ERR_BAD_FILE_TYPE,
+			 "jpeg: invalid huffman table");
+    }
+
   while (data->file->offset + sizeof (count) + 1 <= next_marker)
     {
       id = grub_jpeg_get_byte (data);
+      if (grub_errno != GRUB_ERR_NONE)
+	return grub_errno;
       ac = (id >> 4) & 1;
       id &= 0xF;
       if (id > 1)
@@ -217,6 +252,9 @@ grub_jpeg_decode_huff_table (struct grub_jpeg_data *data)
 	n += count[i];
 
       id += ac * 2;
+      if (data->huff_value[id] != NULL)
+	return grub_error (GRUB_ERR_BAD_FILE_TYPE,
+			   "jpeg: attempt to reallocate huffman table");
       data->huff_value[id] = grub_malloc (n);
       if (grub_errno)
 	return grub_errno;
@@ -252,6 +290,8 @@ grub_jpeg_decode_quan_table (struct grub_jpeg_data *data)
 
   next_marker = data->file->offset;
   next_marker += grub_jpeg_get_word (data);
+  if (grub_errno != GRUB_ERR_NONE)
+    return grub_errno;
 
   if (next_marker > data->file->size)
     {
@@ -263,6 +303,8 @@ grub_jpeg_decode_quan_table (struct grub_jpeg_data *data)
 	 <= next_marker)
     {
       id = grub_jpeg_get_byte (data);
+      if (grub_errno != GRUB_ERR_NONE)
+        return grub_errno;
       if (id >= 0x10)		/* Upper 4-bit is precision.  */
 	return grub_error (GRUB_ERR_BAD_FILE_TYPE,
 			   "jpeg: only 8-bit precision is supported");
@@ -294,6 +336,9 @@ grub_jpeg_decode_sof (struct grub_jpeg_data *data)
   next_marker = data->file->offset;
   next_marker += grub_jpeg_get_word (data);
 
+  if (grub_errno != GRUB_ERR_NONE)
+    return grub_errno;
+
   if (grub_jpeg_get_byte (data) != 8)
     return grub_error (GRUB_ERR_BAD_FILE_TYPE,
 		       "jpeg: only 8-bit precision is supported");
@@ -301,7 +346,11 @@ grub_jpeg_decode_sof (struct grub_jpeg_data *data)
   data->image_height = grub_jpeg_get_word (data);
   data->image_width = grub_jpeg_get_word (data);
 
-  if ((!data->image_height) || (!data->image_width))
+  grub_dprintf ("jpeg", "image height: %d\n", data->image_height);
+  grub_dprintf ("jpeg", "image width: %d\n", data->image_width);
+
+  if ((!data->image_height) || (!data->image_width) ||
+      (data->image_height > IMAGE_HW_MAX_PX) || (data->image_width > IMAGE_HW_MAX_PX))
     return grub_error (GRUB_ERR_BAD_FILE_TYPE, "jpeg: invalid image size");
 
   cc = grub_jpeg_get_byte (data);
@@ -319,6 +368,8 @@ grub_jpeg_decode_sof (struct grub_jpeg_data *data)
 	return grub_error (GRUB_ERR_BAD_FILE_TYPE, "jpeg: invalid index");
 
       ss = grub_jpeg_get_byte (data);	/* Sampling factor.  */
+      if (grub_errno != GRUB_ERR_NONE)
+	return grub_errno;
       if (!id)
 	{
 	  grub_uint8_t vs, hs;
@@ -498,7 +549,7 @@ grub_jpeg_idct_transform (jpeg_data_unit_t du)
     }
 }
 
-static void
+static grub_err_t
 grub_jpeg_decode_du (struct grub_jpeg_data *data, int id, jpeg_data_unit_t du)
 {
   int h1, h2, qt;
@@ -512,6 +563,9 @@ grub_jpeg_decode_du (struct grub_jpeg_data *data, int id, jpeg_data_unit_t du)
 
   data->dc_value[id] +=
     grub_jpeg_get_number (data, grub_jpeg_get_huff_code (data, h1));
+
+  if (grub_errno != GRUB_ERR_NONE)
+    return grub_errno;
 
   du[0] = data->dc_value[id] * (int) data->quan_table[qt][0];
   pos = 1;
@@ -527,11 +581,13 @@ grub_jpeg_decode_du (struct grub_jpeg_data *data, int id, jpeg_data_unit_t du)
       num >>= 4;
       pos += num;
 
+      if (grub_errno != GRUB_ERR_NONE)
+        return grub_errno;
+
       if (pos >= ARRAY_SIZE (jpeg_zigzag_order))
 	{
-	  grub_error (GRUB_ERR_BAD_FILE_TYPE,
-		      "jpeg: invalid position in zigzag order!?");
-	  return;
+	  return grub_error (GRUB_ERR_BAD_FILE_TYPE,
+			     "jpeg: invalid position in zigzag order!?");
 	}
 
       du[jpeg_zigzag_order[pos]] = val * (int) data->quan_table[qt][pos];
@@ -539,6 +595,7 @@ grub_jpeg_decode_du (struct grub_jpeg_data *data, int id, jpeg_data_unit_t du)
     }
 
   grub_jpeg_idct_transform (du);
+  return GRUB_ERR_NONE;
 }
 
 static void
@@ -597,7 +654,8 @@ grub_jpeg_decode_sos (struct grub_jpeg_data *data)
   data_offset += grub_jpeg_get_word (data);
 
   cc = grub_jpeg_get_byte (data);
-
+  if (grub_errno != GRUB_ERR_NONE)
+    return grub_errno;
   if (cc != 3 && cc != 1)
     return grub_error (GRUB_ERR_BAD_FILE_TYPE,
 		       "jpeg: component count must be 1 or 3");
@@ -610,7 +668,8 @@ grub_jpeg_decode_sos (struct grub_jpeg_data *data)
       id = grub_jpeg_get_byte (data) - 1;
       if ((id < 0) || (id >= 3))
 	return grub_error (GRUB_ERR_BAD_FILE_TYPE, "jpeg: invalid index");
-
+      if (grub_errno != GRUB_ERR_NONE)
+	return grub_errno;
       ht = grub_jpeg_get_byte (data);
       data->comp_index[id][1] = (ht >> 4);
       data->comp_index[id][2] = (ht & 0xF) + 2;
@@ -618,13 +677,19 @@ grub_jpeg_decode_sos (struct grub_jpeg_data *data)
       if ((data->comp_index[id][1] < 0) || (data->comp_index[id][1] > 3) ||
 	  (data->comp_index[id][2] < 0) || (data->comp_index[id][2] > 3))
 	return grub_error (GRUB_ERR_BAD_FILE_TYPE, "jpeg: invalid hufftable index");
+      if (grub_errno != GRUB_ERR_NONE)
+	return grub_errno;
     }
 
   grub_jpeg_get_byte (data);	/* Skip 3 unused bytes.  */
   grub_jpeg_get_word (data);
-
+  if (grub_errno != GRUB_ERR_NONE)
+    return grub_errno;
   if (data->file->offset != data_offset)
     return grub_error (GRUB_ERR_BAD_FILE_TYPE, "jpeg: extra byte in sos");
+
+  if (*data->bitmap)
+    return grub_error (GRUB_ERR_BAD_FILE_TYPE, "jpeg: too many start of scan blocks");
 
   if (grub_video_bitmap_create (data->bitmap, data->image_width,
 				data->image_height,
@@ -639,7 +704,9 @@ static grub_err_t
 grub_jpeg_decode_data (struct grub_jpeg_data *data)
 {
   unsigned c1, vb, hb, nr1, nc1;
+  unsigned stride_a, stride_b, stride;
   int rst = data->dri;
+  grub_err_t err = GRUB_ERR_NONE;
 
   vb = 8 << data->log_vs;
   hb = 8 << data->log_hs;
@@ -647,11 +714,17 @@ grub_jpeg_decode_data (struct grub_jpeg_data *data)
   nc1 = (data->image_width + hb - 1)  >> (3 + data->log_hs);
 
   if (data->bitmap_ptr == NULL)
-    return grub_error(GRUB_ERR_BAD_FILE_TYPE,
-		      "jpeg: attempted to decode data before start of stream");
+    return grub_error (GRUB_ERR_BAD_FILE_TYPE,
+		       "jpeg: attempted to decode data before start of stream");
+
+  if (grub_mul(vb, data->image_width, &stride_a) ||
+      grub_mul(hb, nc1, &stride_b) ||
+      grub_sub(stride_a, stride_b, &stride))
+    return grub_error (GRUB_ERR_BAD_FILE_TYPE,
+		       "jpeg: cannot decode image with these dimensions");
 
   for (; data->r1 < nr1 && (!data->dri || rst);
-       data->r1++, data->bitmap_ptr += (vb * data->image_width - hb * nc1) * 3)
+       data->r1++, data->bitmap_ptr += stride * 3)
     for (c1 = 0;  c1 < nc1 && (!data->dri || rst);
 	c1++, rst--, data->bitmap_ptr += hb * 3)
       {
@@ -660,16 +733,21 @@ grub_jpeg_decode_data (struct grub_jpeg_data *data)
 
 	for (r2 = 0; r2 < (1U << data->log_vs); r2++)
 	  for (c2 = 0; c2 < (1U << data->log_hs); c2++)
-	    grub_jpeg_decode_du (data, 0, data->ydu[r2 * 2 + c2]);
+            {
+              err = grub_jpeg_decode_du (data, 0, data->ydu[r2 * 2 + c2]);
+              if (err != GRUB_ERR_NONE)
+                return err;
+            }
 
 	if (data->color_components >= 3)
 	  {
-	    grub_jpeg_decode_du (data, 1, data->cbdu);
-	    grub_jpeg_decode_du (data, 2, data->crdu);
+	    err = grub_jpeg_decode_du (data, 1, data->cbdu);
+	    if (err != GRUB_ERR_NONE)
+	      return err;
+	    err = grub_jpeg_decode_du (data, 2, data->crdu);
+	    if (err != GRUB_ERR_NONE)
+	      return err;
 	  }
-
-	if (grub_errno)
-	  return grub_errno;
 
 	nr2 = (data->r1 == nr1 - 1) ? (data->image_height - data->r1 * vb) : vb;
 	nc2 = (c1 == nc1 - 1) ? (data->image_width - c1 * hb) : hb;

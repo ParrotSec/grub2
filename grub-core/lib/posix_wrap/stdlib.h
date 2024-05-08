@@ -23,7 +23,7 @@
 #include <grub/misc.h>
 #include <grub/safemath.h>
 
-static inline void 
+static inline void
 free (void *ptr)
 {
   grub_free (ptr);
@@ -56,6 +56,12 @@ static inline int
 abs (int c)
 {
   return (c >= 0) ? c : -c;
+}
+
+static inline void __attribute__ ((noreturn))
+abort (void)
+{
+  grub_abort ();
 }
 
 #endif

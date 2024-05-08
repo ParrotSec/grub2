@@ -37,7 +37,7 @@ struct grub_efidisk_data
 };
 
 /* GUID.  */
-static grub_efi_guid_t block_io_guid = GRUB_EFI_BLOCK_IO_GUID;
+static grub_guid_t block_io_guid = GRUB_EFI_BLOCK_IO_GUID;
 
 static struct grub_efidisk_data *fd_devices;
 static struct grub_efidisk_data *hd_devices;
@@ -319,7 +319,7 @@ name_devices (struct grub_efidisk_data *devices)
 	  == GRUB_EFI_VENDOR_MEDIA_DEVICE_PATH_SUBTYPE)
 	{
 	  grub_efi_vendor_device_path_t *vendor = (grub_efi_vendor_device_path_t *) dp;
-	  const struct grub_efi_guid apple = GRUB_EFI_VENDOR_APPLE_GUID;
+	  static const grub_guid_t apple = GRUB_EFI_VENDOR_APPLE_GUID;
 
 	  if (vendor->header.length == sizeof (*vendor)
 	      && grub_memcmp (&vendor->vendor_guid, &apple,
@@ -335,7 +335,7 @@ name_devices (struct grub_efidisk_data *devices)
 	{
 	  grub_efi_acpi_device_path_t *acpi
 	    = (grub_efi_acpi_device_path_t *) dp;
-	  /* Floppy EISA ID.  */ 
+	  /* Floppy EISA ID.  */
 	  if (acpi->hid == 0x60441d0 || acpi->hid == 0x70041d0
 	      || acpi->hid == 0x70141d1)
 	    is_floppy = 1;
@@ -523,9 +523,7 @@ grub_efidisk_open (const char *name, struct grub_disk *disk)
   if (m->block_size & (m->block_size - 1) || !m->block_size)
     return grub_error (GRUB_ERR_IO, "invalid sector size %d",
 		       m->block_size);
-  for (disk->log_sector_size = 0;
-       (1U << disk->log_sector_size) < m->block_size;
-       disk->log_sector_size++);
+  disk->log_sector_size = grub_log2ull (m->block_size);
   disk->data = d;
 
   grub_dprintf ("efidisk", "opening %s succeeded\n", name);
@@ -553,8 +551,19 @@ grub_efidisk_readwrite (struct grub_disk *disk, grub_disk_addr_t sector,
   d = disk->data;
   bio = d->block_io;
 
-  /* Set alignment to 1 if 0 specified */
-  io_align = bio->media->io_align ? bio->media->io_align : 1;
+  /*
+   * If IoAlign is > 1, it should represent the required alignment. However,
+   * some UEFI implementations seem to report IoAlign=2 but require 2^IoAlign.
+   * Some implementation seem to require alignment despite not reporting any
+   * specific requirements.
+   *
+   * Make sure to use buffers which are at least aligned to block size.
+   */
+  if (bio->media->io_align < bio->media->block_size)
+    io_align = bio->media->block_size;
+  else
+    io_align = bio->media->io_align;
+
   num_bytes = size << disk->log_sector_size;
 
   if ((grub_addr_t) buf & (io_align - 1))
@@ -570,9 +579,10 @@ grub_efidisk_readwrite (struct grub_disk *disk, grub_disk_addr_t sector,
       aligned_buf = buf;
     }
 
-  status =  efi_call_5 ((wr ? bio->write_blocks : bio->read_blocks), bio,
-			bio->media->media_id, (grub_efi_uint64_t) sector,
-			(grub_efi_uintn_t) num_bytes, aligned_buf);
+  status =  (wr ? bio->write_blocks : bio->read_blocks) (bio, bio->media->media_id,
+							 (grub_efi_uint64_t) sector,
+							 (grub_efi_uintn_t) num_bytes,
+							 aligned_buf);
 
   if ((grub_addr_t) buf & (io_align - 1))
     {
@@ -707,7 +717,7 @@ grub_efidisk_get_device_handle (grub_disk_t disk)
 		 == GRUB_EFI_MEDIA_DEVICE_PATH_TYPE)
 		&& (GRUB_EFI_DEVICE_PATH_SUBTYPE (c->last_device_path)
 		    == GRUB_EFI_HARD_DRIVE_DEVICE_PATH_SUBTYPE)
-		&& (grub_partition_get_start (disk->partition) 
+		&& (grub_partition_get_start (disk->partition)
 		    == (hd->partition_start << (disk->log_sector_size
 						- GRUB_DISK_SECTOR_BITS)))
 		&& (grub_partition_get_len (disk->partition)

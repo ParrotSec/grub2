@@ -167,7 +167,7 @@ print_completion (const char *item, grub_completion_type_t type, int count)
   if (count == 0)
     {
       /* If this is the first time, print a label.  */
-      
+
       grub_puts ("");
       switch (type)
 	{
@@ -219,6 +219,8 @@ cl_set_pos (struct cmdline_term *cl_term, grub_size_t lpos)
   cl_term->pos.x = (cl_term->prompt_len + lpos) % cl_term->width;
   cl_term->pos.y = cl_term->ystart
     + (cl_term->prompt_len + lpos) / cl_term->width;
+  if (cl_term->pos.y >= cl_term->height)
+    cl_term->pos.y = cl_term->height - 1;
   grub_term_gotoxy (cl_term->term, cl_term->pos);
 }
 
@@ -248,7 +250,10 @@ cl_print (struct cmdline_term *cl_term, grub_uint32_t c,
 	{
 	  cl_term->pos.x = 0;
 	  if (cl_term->pos.y >= (unsigned) (cl_term->height - 1))
-	    cl_term->ystart--;
+	    {
+	      if (cl_term->ystart > 0)
+		cl_term->ystart--;
+	    }
 	  else
 	    cl_term->pos.y++;
 	  grub_putcode ('\n', cl_term->term);

@@ -153,6 +153,7 @@ endif
 if COND_i386_ieee1275
 KERNEL_HEADER_FILES += $(top_builddir)/include/grub/machine/kernel.h
 KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/ieee1275/ieee1275.h
+KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/ieee1275/alloc.h
 KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/terminfo.h
 KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/extcmd.h
 KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/lib/arg.h
@@ -240,6 +241,7 @@ endif
 
 if COND_powerpc_ieee1275
 KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/ieee1275/ieee1275.h
+KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/ieee1275/alloc.h
 KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/terminfo.h
 KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/extcmd.h
 KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/lib/arg.h
@@ -288,6 +290,12 @@ KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/efi/disk.h
 KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/acpi.h
 endif
 
+if COND_loongarch64_efi
+KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/efi/efi.h
+KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/efi/disk.h
+KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/acpi.h
+endif
+
 if COND_riscv32_efi
 KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/efi/efi.h
 KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/efi/disk.h
@@ -307,7 +315,11 @@ KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/emu/net.h
 KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/emu/hostdisk.h
 KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/emu/hostfile.h
 KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/extcmd.h
+KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/emu/exec.h
 if COND_GRUB_EMU_SDL
+KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/sdl.h
+endif
+if COND_GRUB_EMU_SDL2
 KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/sdl.h
 endif
 if COND_GRUB_EMU_PCI
@@ -442,8 +454,8 @@ crypto.lst: $(srcdir)/lib/libgcrypt-grub/cipher/crypto.lst
 platform_DATA += crypto.lst
 CLEANFILES += crypto.lst
 
-syminfo.lst: gensyminfo.sh kernel_syms.lst $(MODULE_FILES)
-	cat kernel_syms.lst > $@.new
+syminfo.lst: gensyminfo.sh kernel_syms.lst $(top_srcdir)/grub-core/extra_deps.lst $(MODULE_FILES)
+	cat kernel_syms.lst $(top_srcdir)/grub-core/extra_deps.lst > $@.new
 	for m in $(MODULE_FILES); do \
 	  sh $< $$m >> $@.new || exit 1; \
 	done

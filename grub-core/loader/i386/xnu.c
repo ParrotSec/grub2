@@ -48,7 +48,7 @@ grub_uint32_t grub_xnu_entry_point, grub_xnu_arg1, grub_xnu_stack;
 /* Aliases set for some tables. */
 struct tbl_alias
 {
-  grub_efi_guid_t guid;
+  grub_guid_t guid;
   const char *name;
 };
 
@@ -694,7 +694,7 @@ grub_cpu_xnu_fill_devicetree (grub_uint64_t *fsbfreq_out)
     {
       void *ptr;
       struct grub_xnu_devtree_key *curkey;
-      grub_efi_packed_guid_t guid;
+      grub_packed_guid_t guid;
       char guidbuf[64];
 
       /* Retrieve current key. */
@@ -726,13 +726,8 @@ grub_cpu_xnu_fill_devicetree (grub_uint64_t *fsbfreq_out)
 #endif
 
       /* The name of key for new table. */
-      grub_snprintf (guidbuf, sizeof (guidbuf), "%08x-%04x-%04x-%02x%02x-",
-		     guid.data1, guid.data2, guid.data3, guid.data4[0],
-		     guid.data4[1]);
-      for (j = 2; j < 8; j++)
-	grub_snprintf (guidbuf + grub_strlen (guidbuf),
-		       sizeof (guidbuf) - grub_strlen (guidbuf),
-		       "%02x", guid.data4[j]);
+      grub_snprintf (guidbuf, sizeof (guidbuf), "%pG", &guid);
+
       /* For some reason GUID has to be in uppercase. */
       for (j = 0; guidbuf[j] ; j++)
 	if (guidbuf[j] >= 'a' && guidbuf[j] <= 'f')
@@ -805,14 +800,14 @@ grub_cpu_xnu_fill_devicetree (grub_uint64_t *fsbfreq_out)
 grub_err_t
 grub_xnu_boot_resume (void)
 {
-  struct grub_relocator32_state state;
+  struct grub_relocator32_state state = {0};
 
   state.esp = grub_xnu_stack;
   state.ebp = grub_xnu_stack;
   state.eip = grub_xnu_entry_point;
   state.eax = grub_xnu_arg1;
 
-  return grub_relocator32_boot (grub_xnu_relocator, state, 0); 
+  return grub_relocator32_boot (grub_xnu_relocator, state, 0);
 }
 
 /* Setup video for xnu. */
@@ -912,7 +907,7 @@ grub_xnu_set_video (struct grub_xnu_boot_params_common *params)
   params->lfb_line_len = mode_info.pitch;
 
   params->lfb_base = (grub_addr_t) framebuffer;
-  params->lfb_mode = bitmap ? GRUB_XNU_VIDEO_SPLASH 
+  params->lfb_mode = bitmap ? GRUB_XNU_VIDEO_SPLASH
     : GRUB_XNU_VIDEO_TEXT_IN_VIDEO;
 
   return GRUB_ERR_NONE;
@@ -960,7 +955,7 @@ grub_xnu_boot (void)
   grub_addr_t devtree_target;
   grub_size_t devtreelen;
   int i;
-  struct grub_relocator32_state state;
+  struct grub_relocator32_state state = {0};
   grub_uint64_t fsbfreq = 100000000;
   int v2 = (grub_xnu_darwin_version >= 11);
   grub_uint32_t efi_system_table = 0;
@@ -1069,7 +1064,7 @@ grub_xnu_boot (void)
   if (v2)
     bootparams->v2.efi_system_table = (grub_addr_t) grub_autoefi_system_table;
   else
-    bootparams->v1.efi_system_table = (grub_addr_t) grub_autoefi_system_table;  
+    bootparams->v1.efi_system_table = (grub_addr_t) grub_autoefi_system_table;
 
   firstruntimepage = (((grub_addr_t) grub_xnu_heap_target_start
 		       + grub_xnu_heap_size + GRUB_XNU_PAGESIZE - 1)

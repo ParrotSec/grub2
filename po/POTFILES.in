@@ -23,6 +23,7 @@
 ./grub-core/commands/acpi.c
 ./grub-core/commands/acpihalt.c
 ./grub-core/commands/arc/lsdev.c
+./grub-core/commands/bli.c
 ./grub-core/commands/blocklist.c
 ./grub-core/commands/boot.c
 ./grub-core/commands/boottime.c
@@ -33,6 +34,7 @@
 ./grub-core/commands/date.c
 ./grub-core/commands/echo.c
 ./grub-core/commands/efi/efifwsetup.c
+./grub-core/commands/efi/efitextmode.c
 ./grub-core/commands/efi/fixvideo.c
 ./grub-core/commands/efi/loadbios.c
 ./grub-core/commands/efi/lsefi.c
@@ -66,6 +68,7 @@
 ./grub-core/commands/i386/pc/smbios.c
 ./grub-core/commands/i386/rdmsr.c
 ./grub-core/commands/i386/wrmsr.c
+./grub-core/commands/ieee1275/ibmvtpm.c
 ./grub-core/commands/ieee1275/suspend.c
 ./grub-core/commands/iorw.c
 ./grub-core/commands/keylayouts.c
@@ -78,6 +81,7 @@
 ./grub-core/commands/lspci.c
 ./grub-core/commands/macbless.c
 ./grub-core/commands/memrw.c
+./grub-core/commands/memtools.c
 ./grub-core/commands/menuentry.c
 ./grub-core/commands/minicmd.c
 ./grub-core/commands/mips/loongson/lsspd.c
@@ -138,6 +142,7 @@
 ./grub-core/disk/mdraid_linux_be.c
 ./grub-core/disk/memdisk.c
 ./grub-core/disk/pata.c
+./grub-core/disk/plainmount.c
 ./grub-core/disk/raid5_recover.c
 ./grub-core/disk/raid6_recover.c
 ./grub-core/disk/scsi.c
@@ -265,6 +270,7 @@
 ./grub-core/kern/disk_common.c
 ./grub-core/kern/dl.c
 ./grub-core/kern/efi/acpi.c
+./grub-core/kern/efi/debug.c
 ./grub-core/kern/efi/efi.c
 ./grub-core/kern/efi/fdt.c
 ./grub-core/kern/efi/init.c
@@ -315,6 +321,10 @@
 ./grub-core/kern/ieee1275/openfw.c
 ./grub-core/kern/list.c
 ./grub-core/kern/lockdown.c
+./grub-core/kern/loongarch64/cache.c
+./grub-core/kern/loongarch64/dl.c
+./grub-core/kern/loongarch64/dl_helper.c
+./grub-core/kern/loongarch64/efi/init.c
 ./grub-core/kern/main.c
 ./grub-core/kern/mips/arc/init.c
 ./grub-core/kern/mips/dl.c
@@ -554,11 +564,12 @@
 ./grub-core/lib/zstd/zstd_internal.h
 ./grub-core/loader/aout.c
 ./grub-core/loader/arm/linux.c
-./grub-core/loader/arm64/linux.c
 ./grub-core/loader/arm64/xen_boot.c
 ./grub-core/loader/efi/appleloader.c
 ./grub-core/loader/efi/chainloader.c
 ./grub-core/loader/efi/fdt.c
+./grub-core/loader/efi/linux.c
+./grub-core/loader/emu/linux.c
 ./grub-core/loader/i386/bsd.c
 ./grub-core/loader/i386/bsd32.c
 ./grub-core/loader/i386/bsd64.c
@@ -592,7 +603,6 @@
 ./grub-core/loader/multiboot_elfxx.c
 ./grub-core/loader/multiboot_mbi2.c
 ./grub-core/loader/powerpc/ieee1275/linux.c
-./grub-core/loader/riscv/linux.c
 ./grub-core/loader/sparc64/ieee1275/linux.c
 ./grub-core/loader/xnu.c
 ./grub-core/loader/xnu_resume.c
@@ -749,7 +759,9 @@
 ./grub-core/term/ieee1275/escc.c
 ./grub-core/term/ieee1275/serial.c
 ./grub-core/term/morse.c
+./grub-core/term/ns8250-spcr.c
 ./grub-core/term/ns8250.c
+./grub-core/term/pci/serial.c
 ./grub-core/term/ps2.c
 ./grub-core/term/serial.c
 ./grub-core/term/spkmodem.c
@@ -828,7 +840,6 @@
 ./include/grub/arm/types.h
 ./include/grub/arm/uboot/kernel.h
 ./include/grub/arm64/efi/memory.h
-./include/grub/arm64/linux.h
 ./include/grub/arm64/reloc.h
 ./include/grub/arm64/setjmp.h
 ./include/grub/arm64/time.h
@@ -867,8 +878,10 @@
 ./include/grub/dl.h
 ./include/grub/dma.h
 ./include/grub/efi/api.h
+./include/grub/efi/cc.h
 ./include/grub/efi/console.h
 ./include/grub/efi/console_control.h
+./include/grub/efi/debug.h
 ./include/grub/efi/disk.h
 ./include/grub/efi/edid.h
 ./include/grub/efi/efi.h
@@ -1010,6 +1023,7 @@
 ./include/grub/ia64/time.h
 ./include/grub/ia64/types.h
 ./include/grub/icon_manager.h
+./include/grub/ieee1275/alloc.h
 ./include/grub/ieee1275/console.h
 ./include/grub/ieee1275/ieee1275.h
 ./include/grub/ieee1275/obdisk.h
@@ -1032,6 +1046,11 @@
 ./include/grub/list.h
 ./include/grub/loader.h
 ./include/grub/lockdown.h
+./include/grub/loongarch64/efi/memory.h
+./include/grub/loongarch64/reloc.h
+./include/grub/loongarch64/setjmp.h
+./include/grub/loongarch64/time.h
+./include/grub/loongarch64/types.h
 ./include/grub/lvm.h
 ./include/grub/macho.h
 ./include/grub/machoload.h
@@ -1094,6 +1113,7 @@
 ./include/grub/osdep/hostfile_aros.h
 ./include/grub/osdep/hostfile_unix.h
 ./include/grub/osdep/hostfile_windows.h
+./include/grub/osdep/major.h
 ./include/grub/parser.h
 ./include/grub/partition.h
 ./include/grub/parttool.h
@@ -1116,12 +1136,10 @@
 ./include/grub/relocator.h
 ./include/grub/relocator_private.h
 ./include/grub/riscv32/efi/memory.h
-./include/grub/riscv32/linux.h
 ./include/grub/riscv32/setjmp.h
 ./include/grub/riscv32/time.h
 ./include/grub/riscv32/types.h
 ./include/grub/riscv64/efi/memory.h
-./include/grub/riscv64/linux.h
 ./include/grub/riscv64/setjmp.h
 ./include/grub/riscv64/time.h
 ./include/grub/riscv64/types.h

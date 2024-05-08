@@ -60,7 +60,7 @@ struct grub_disk_memberlist;
 #endif
 
 typedef enum
-  { 
+  {
     GRUB_DISK_PULL_NONE,
     GRUB_DISK_PULL_REMOVABLE,
     GRUB_DISK_PULL_RESCAN,
@@ -110,9 +110,9 @@ extern grub_disk_dev_t EXPORT_VAR (grub_disk_dev_list);
 
 struct grub_partition;
 
-typedef void (*grub_disk_read_hook_t) (grub_disk_addr_t sector,
-				       unsigned offset, unsigned length,
-				       void *data);
+typedef grub_err_t (*grub_disk_read_hook_t) (grub_disk_addr_t sector,
+					     unsigned offset, unsigned length,
+					     char *buf, void *data);
 
 /* Disk.  */
 struct grub_disk
@@ -172,6 +172,17 @@ typedef struct grub_disk_memberlist *grub_disk_memberlist_t;
 /* The maximum number of disk caches.  */
 #define GRUB_DISK_CACHE_NUM	1021
 
+/*
+ * The maximum number of disks in an mdraid device.
+ *
+ * GET_DISK_INFO nr_disks (total count) does not map to disk.number,
+ * which is an internal kernel index. Instead, do what mdadm does
+ * and keep scanning until we find enough valid disks. The limit is
+ * copied from there, which notes that it is sufficiently high given
+ * that the on-disk metadata for v1.x can only support 1920.
+ */
+#define GRUB_MDRAID_MAX_DISKS	4096
+
 /* The size of a disk cache in 512B units. Must be at least as big as the
    largest supported sector size, currently 16K.  */
 #define GRUB_DISK_CACHE_BITS	6
@@ -179,8 +190,13 @@ typedef struct grub_disk_memberlist *grub_disk_memberlist_t;
 
 #define GRUB_DISK_MAX_MAX_AGGLOMERATE ((1 << (30 - GRUB_DISK_CACHE_BITS - GRUB_DISK_SECTOR_BITS)) - 1)
 
+/* Maximum number of sectors to read in LBA mode at once. */
+#define GRUB_DISK_MAX_LBA_SECTORS 63
+
 /* Return value of grub_disk_native_sectors() in case disk size is unknown. */
 #define GRUB_DISK_SIZE_UNKNOWN	 0xffffffffffffffffULL
+
+#define GRUB_DISK_KiB_TO_SECTORS(x) ((x) << (10 - GRUB_DISK_SECTOR_BITS))
 
 /* Convert sector number from one sector size to another. */
 static inline grub_disk_addr_t
@@ -204,6 +220,13 @@ static inline grub_disk_addr_t
 grub_disk_from_native_sector (grub_disk_t disk, grub_disk_addr_t sector)
 {
   return sector << (disk->log_sector_size - GRUB_DISK_SECTOR_BITS);
+}
+
+/* Convert from GRUB native disk sized sector to disk sized sector. */
+static inline grub_disk_addr_t
+grub_disk_to_native_sector (grub_disk_t disk, grub_disk_addr_t sector)
+{
+  return sector >> (disk->log_sector_size - GRUB_DISK_SECTOR_BITS);
 }
 
 /* This is called from the memory manager.  */

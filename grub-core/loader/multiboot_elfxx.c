@@ -17,19 +17,29 @@
  */
 
 #if defined(MULTIBOOT_LOAD_ELF32)
-# define XX		32
-# define E_MACHINE	MULTIBOOT_ELF32_MACHINE
-# define ELFCLASSXX	ELFCLASS32
-# define Elf_Ehdr	Elf32_Ehdr
-# define Elf_Phdr	Elf32_Phdr
-# define Elf_Shdr	Elf32_Shdr
+# define XX			32
+# define E_MACHINE		MULTIBOOT_ELF32_MACHINE
+# define ELFCLASSXX		ELFCLASS32
+# define Elf_Ehdr		Elf32_Ehdr
+# define Elf_Phdr		Elf32_Phdr
+# define Elf_Shdr		Elf32_Shdr
+# define Elf_Word		Elf32_Word
+# define Elf_Shnum		Elf32_Shnum
+# define grub_multiboot_elf_get_shnum		grub_elf32_get_shnum
+# define grub_multiboot_elf_get_shstrndx	grub_elf32_get_shstrndx
+# define grub_multiboot_elf_get_phnum		grub_elf32_get_phnum
 #elif defined(MULTIBOOT_LOAD_ELF64)
-# define XX		64
-# define E_MACHINE	MULTIBOOT_ELF64_MACHINE
-# define ELFCLASSXX	ELFCLASS64
-# define Elf_Ehdr	Elf64_Ehdr
-# define Elf_Phdr	Elf64_Phdr
-# define Elf_Shdr	Elf64_Shdr
+# define XX			64
+# define E_MACHINE		MULTIBOOT_ELF64_MACHINE
+# define ELFCLASSXX		ELFCLASS64
+# define Elf_Ehdr		Elf64_Ehdr
+# define Elf_Phdr		Elf64_Phdr
+# define Elf_Shdr		Elf64_Shdr
+# define Elf_Word		Elf64_Word
+# define Elf_Shnum		Elf64_Shnum
+# define grub_multiboot_elf_get_shnum		grub_elf64_get_shnum
+# define grub_multiboot_elf_get_shstrndx	grub_elf64_get_shstrndx
+# define grub_multiboot_elf_get_phnum		grub_elf64_get_phnum
 #else
 #error "I'm confused"
 #endif
@@ -57,8 +67,11 @@ CONCAT(grub_multiboot_load_elf, XX) (mbi_load_data_t *mld)
   char *phdr_base;
   grub_err_t err;
   grub_relocator_chunk_t ch;
-  grub_uint32_t load_offset = 0, load_size;
-  int i;
+  grub_uint32_t load_offset = 0, load_size = 0;
+  Elf_Shnum shnum;
+  Elf_Word shstrndx, phnum;
+  grub_off_t phlimit;
+  unsigned int i;
   void *source = NULL;
 
   if (ehdr->e_ident[EI_MAG0] != ELFMAG0
@@ -75,8 +88,21 @@ CONCAT(grub_multiboot_load_elf, XX) (mbi_load_data_t *mld)
   if (ehdr->e_type != ET_EXEC && ehdr->e_type != ET_DYN)
     return grub_error (GRUB_ERR_UNKNOWN_OS, N_("this ELF file is not of the right type"));
 
+  err = grub_multiboot_elf_get_shnum (ehdr, &shnum);
+  if (err != GRUB_ERR_NONE)
+    return err;
+
+  err = grub_multiboot_elf_get_shstrndx (ehdr, &shstrndx);
+  if (err != GRUB_ERR_NONE)
+    return err;
+
+  err = grub_multiboot_elf_get_phnum (ehdr, &phnum);
+  if (err != GRUB_ERR_NONE)
+    return err;
+
   /* FIXME: Should we support program headers at strange locations?  */
-  if (ehdr->e_phoff + (grub_uint32_t) ehdr->e_phnum * ehdr->e_phentsize > MULTIBOOT_SEARCH)
+  phlimit = grub_min (MULTIBOOT_SEARCH, grub_file_size (mld->file));
+  if ((grub_off_t) ehdr->e_phoff + phnum * ehdr->e_phentsize > phlimit)
     return grub_error (GRUB_ERR_BAD_OS, "program header at a too high offset");
 
   phdr_base = (char *) mld->buffer + ehdr->e_phoff;
@@ -85,7 +111,7 @@ CONCAT(grub_multiboot_load_elf, XX) (mbi_load_data_t *mld)
   mld->link_base_addr = ~0;
 
   /* Calculate lowest and highest load address.  */
-  for (i = 0; i < ehdr->e_phnum; i++)
+  for (i = 0; i < phnum; i++)
     if (phdr(i)->p_type == PT_LOAD)
       {
 	mld->link_base_addr = grub_min (mld->link_base_addr, phdr(i)->p_paddr);
@@ -114,7 +140,7 @@ CONCAT(grub_multiboot_load_elf, XX) (mbi_load_data_t *mld)
 						   load_size, mld->align ? mld->align : 1,
 						   mld->preference, mld->avoid_efi_boot_services);
 
-      if (err)
+      if (err != GRUB_ERR_NONE)
         {
           grub_dprintf ("multiboot_loader", "Cannot allocate memory for OS image\n");
           return err;
@@ -131,7 +157,7 @@ CONCAT(grub_multiboot_load_elf, XX) (mbi_load_data_t *mld)
 		mld->link_base_addr, mld->load_base_addr);
 
   /* Load every loadable segment in memory.  */
-  for (i = 0; i < ehdr->e_phnum; i++)
+  for (i = 0; i < phnum; i++)
     {
       if (phdr(i)->p_type == PT_LOAD)
         {
@@ -146,10 +172,11 @@ CONCAT(grub_multiboot_load_elf, XX) (mbi_load_data_t *mld)
 	    }
 	  else
 	    {
+	      load_size = phdr(i)->p_memsz;
 	      err = grub_relocator_alloc_chunk_addr (GRUB_MULTIBOOT (relocator), &ch,
-	                                             phdr(i)->p_paddr, phdr(i)->p_memsz);
+	                                             phdr(i)->p_paddr, load_size);
 
-	      if (err)
+	      if (err != GRUB_ERR_NONE)
 		{
 		  grub_dprintf ("multiboot_loader", "Cannot allocate memory for OS image\n");
 		  return err;
@@ -175,12 +202,18 @@ CONCAT(grub_multiboot_load_elf, XX) (mbi_load_data_t *mld)
 	    }
 
           if (phdr(i)->p_filesz < phdr(i)->p_memsz)
-            grub_memset ((grub_uint8_t *) source + load_offset + phdr(i)->p_filesz, 0,
-			 phdr(i)->p_memsz - phdr(i)->p_filesz);
+	    {
+	      /* Need to insure that the memory being set isn't larger than the allocated memory. */
+	      if (load_offset + phdr(i)->p_memsz - phdr(i)->p_filesz > load_size)
+		return grub_error (GRUB_ERR_OUT_OF_RANGE, N_("memory being set is larger than allocated memory"));
+
+              grub_memset ((grub_uint8_t *) source + load_offset + phdr(i)->p_filesz, 0,
+			   phdr(i)->p_memsz - phdr(i)->p_filesz);
+	    }
         }
     }
 
-  for (i = 0; i < ehdr->e_phnum; i++)
+  for (i = 0; i < phnum; i++)
     if (phdr(i)->p_vaddr <= ehdr->e_entry
 	&& phdr(i)->p_vaddr + phdr(i)->p_memsz > ehdr->e_entry)
       {
@@ -202,41 +235,41 @@ CONCAT(grub_multiboot_load_elf, XX) (mbi_load_data_t *mld)
 	break;
       }
 
-  if (i == ehdr->e_phnum)
+  if (i == phnum)
     return grub_error (GRUB_ERR_BAD_OS, "entry point isn't in a segment");
 
 #if defined (__i386__) || defined (__x86_64__)
-  
+
 #elif defined (__mips)
   GRUB_MULTIBOOT (payload_eip) |= 0x80000000;
 #else
 #error Please complete this
 #endif
 
-  if (ehdr->e_shnum)
+  if (shnum)
     {
       grub_uint8_t *shdr, *shdrptr;
 
-      shdr = grub_calloc (ehdr->e_shnum, ehdr->e_shentsize);
+      if ((grub_off_t) ehdr->e_shoff + shnum * ehdr->e_shentsize > grub_file_size (mld->file))
+	return grub_error (GRUB_ERR_OUT_OF_RANGE, N_("ELF section header region is larger than the file size"));
+
+      shdr = grub_calloc (shnum, ehdr->e_shentsize);
       if (!shdr)
 	return grub_errno;
-      
-      if (grub_file_seek (mld->file, ehdr->e_shoff) == (grub_off_t) -1)
-	{
-	  grub_free (shdr);
-	  return grub_errno;
-	}
 
-      if (grub_file_read (mld->file, shdr, (grub_uint32_t) ehdr->e_shnum * ehdr->e_shentsize)
-              != (grub_ssize_t) ehdr->e_shnum * ehdr->e_shentsize)
+      if (grub_file_seek (mld->file, ehdr->e_shoff) == (grub_off_t) -1)
+	goto fail;
+
+      if (grub_file_read (mld->file, shdr, shnum * ehdr->e_shentsize)
+              != (grub_ssize_t) shnum * ehdr->e_shentsize)
 	{
 	  if (!grub_errno)
 	    grub_error (GRUB_ERR_FILE_READ_ERROR, N_("premature end of file %s"),
 			mld->filename);
-	  return grub_errno;
+	  goto fail;
 	}
-      
-      for (shdrptr = shdr, i = 0; i < ehdr->e_shnum;
+
+      for (shdrptr = shdr, i = 0; i < shnum;
 	   shdrptr += ehdr->e_shentsize, i++)
 	{
 	  Elf_Shdr *sh = (Elf_Shdr *) shdrptr;
@@ -244,13 +277,16 @@ CONCAT(grub_multiboot_load_elf, XX) (mbi_load_data_t *mld)
 	  grub_addr_t target;
 
 	  if (mld->mbi_ver >= 2 && (sh->sh_type == SHT_REL || sh->sh_type == SHT_RELA))
-	    return grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET, "ELF files with relocs are not supported yet");
+	    {
+	      grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET, "ELF files with relocs are not supported yet");
+	      goto fail;
+	    }
 
 	  /* This section is a loaded section,
 	     so we don't care.  */
 	  if (sh->sh_addr != 0)
 	    continue;
-		      
+
 	  /* This section is empty, so we don't care.  */
 	  if (sh->sh_size == 0)
 	    continue;
@@ -260,16 +296,17 @@ CONCAT(grub_multiboot_load_elf, XX) (mbi_load_data_t *mld)
 						  sh->sh_size, sh->sh_addralign,
 						  GRUB_RELOCATOR_PREFERENCE_NONE,
 						  mld->avoid_efi_boot_services);
-	  if (err)
+	  if (err != GRUB_ERR_NONE)
 	    {
 	      grub_dprintf ("multiboot_loader", "Error loading shdr %d\n", i);
-	      return err;
+	      grub_errno = err;
+	      goto fail;
 	    }
 	  src = get_virtual_current_address (ch);
 	  target = get_physical_target_address (ch);
 
 	  if (grub_file_seek (mld->file, sh->sh_offset) == (grub_off_t) -1)
-	    return grub_errno;
+	    goto fail;
 
           if (grub_file_read (mld->file, src, sh->sh_size)
               != (grub_ssize_t) sh->sh_size)
@@ -277,12 +314,16 @@ CONCAT(grub_multiboot_load_elf, XX) (mbi_load_data_t *mld)
 	      if (!grub_errno)
 		grub_error (GRUB_ERR_FILE_READ_ERROR, N_("premature end of file %s"),
 			    mld->filename);
-	      return grub_errno;
+	      goto fail;
 	    }
 	  sh->sh_addr = target;
 	}
-      GRUB_MULTIBOOT (add_elfsyms) (ehdr->e_shnum, ehdr->e_shentsize,
-				    ehdr->e_shstrndx, shdr);
+      GRUB_MULTIBOOT (add_elfsyms) (shnum, ehdr->e_shentsize,
+				    shstrndx, shdr);
+      return GRUB_ERR_NONE;
+
+ fail:
+      grub_free (shdr);
     }
 
 #undef phdr
@@ -296,3 +337,8 @@ CONCAT(grub_multiboot_load_elf, XX) (mbi_load_data_t *mld)
 #undef Elf_Ehdr
 #undef Elf_Phdr
 #undef Elf_Shdr
+#undef Elf_Word
+#undef Elf_Shnum
+#undef grub_multiboot_elf_get_shnum
+#undef grub_multiboot_elf_get_shstrndx
+#undef grub_multiboot_elf_get_phnum

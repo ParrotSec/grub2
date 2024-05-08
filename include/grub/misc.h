@@ -232,7 +232,8 @@ grub_strncasecmp (const char *s1, const char *s2, grub_size_t n)
 
   while (*s1 && *s2 && --n)
     {
-      if (grub_tolower (*s1) != grub_tolower (*s2))
+      if (grub_tolower ((grub_uint8_t) *s1)
+	  != grub_tolower ((grub_uint8_t) *s2))
 	break;
 
       s1++;
@@ -241,6 +242,36 @@ grub_strncasecmp (const char *s1, const char *s2, grub_size_t n)
 
   return (int) grub_tolower ((grub_uint8_t) *s1)
     - (int) grub_tolower ((grub_uint8_t) *s2);
+}
+
+/*
+ * Do a case insensitive compare of two UUID strings by ignoring all dashes.
+ * Note that the parameter n, is the number of significant characters to
+ * compare, where significant characters are any except the dash.
+ */
+static inline int
+grub_uuidcasecmp (const char *uuid1, const char *uuid2, grub_size_t n)
+{
+  if (n == 0)
+    return 0;
+
+  while (*uuid1 && *uuid2 && --n)
+    {
+      /* Skip forward to non-dash on both UUIDs. */
+      while ('-' == *uuid1)
+        ++uuid1;
+
+      while ('-' == *uuid2)
+        ++uuid2;
+
+      if (grub_tolower ((grub_uint8_t) *uuid1) != grub_tolower ((grub_uint8_t) *uuid2))
+	break;
+
+      uuid1++;
+      uuid2++;
+    }
+
+  return (int) grub_tolower ((grub_uint8_t) *uuid1) - (int) grub_tolower ((grub_uint8_t) *uuid2);
 }
 
 /*
@@ -304,8 +335,6 @@ char *EXPORT_FUNC(grub_strdup) (const char *s) WARN_UNUSED_RESULT;
 char *EXPORT_FUNC(grub_strndup) (const char *s, grub_size_t n) WARN_UNUSED_RESULT;
 void *EXPORT_FUNC(grub_memset) (void *s, int c, grub_size_t n);
 grub_size_t EXPORT_FUNC(grub_strlen) (const char *s) WARN_UNUSED_RESULT;
-int EXPORT_FUNC(grub_printf) (const char *fmt, ...) __attribute__ ((format (GNU_PRINTF, 1, 2)));
-int EXPORT_FUNC(grub_printf_) (const char *fmt, ...) __attribute__ ((format (GNU_PRINTF, 1, 2)));
 
 /* Replace all `ch' characters of `input' with `with' and copy the
    result into `output'; return EOS address of `output'. */
@@ -345,6 +374,8 @@ void EXPORT_FUNC(grub_real_dprintf) (const char *file,
                                      const int line,
                                      const char *condition,
                                      const char *fmt, ...) __attribute__ ((format (GNU_PRINTF, 4, 5)));
+int EXPORT_FUNC(grub_printf) (const char *fmt, ...) __attribute__ ((format (GNU_PRINTF, 1, 2)));
+int EXPORT_FUNC(grub_printf_) (const char *fmt, ...) __attribute__ ((format (GNU_PRINTF, 1, 2)));
 int EXPORT_FUNC(grub_vprintf) (const char *fmt, va_list args);
 int EXPORT_FUNC(grub_snprintf) (char *str, grub_size_t n, const char *fmt, ...)
      __attribute__ ((format (GNU_PRINTF, 3, 4)));
@@ -353,7 +384,9 @@ int EXPORT_FUNC(grub_vsnprintf) (char *str, grub_size_t n, const char *fmt,
 char *EXPORT_FUNC(grub_xasprintf) (const char *fmt, ...)
      __attribute__ ((format (GNU_PRINTF, 1, 2))) WARN_UNUSED_RESULT;
 char *EXPORT_FUNC(grub_xvasprintf) (const char *fmt, va_list args) WARN_UNUSED_RESULT;
+
 void EXPORT_FUNC(grub_exit) (void) __attribute__ ((noreturn));
+void EXPORT_FUNC(grub_abort) (void) __attribute__ ((noreturn));
 grub_uint64_t EXPORT_FUNC(grub_divmod64) (grub_uint64_t n,
 					  grub_uint64_t d,
 					  grub_uint64_t *r);
@@ -421,10 +454,6 @@ grub_abs (int x)
 void EXPORT_FUNC(grub_reboot) (void) __attribute__ ((noreturn));
 #else
 void grub_reboot (void) __attribute__ ((noreturn));
-#endif
-
-#if defined (__clang__) && !defined (GRUB_UTIL)
-void __attribute__ ((noreturn)) EXPORT_FUNC (abort) (void);
 #endif
 
 #ifdef GRUB_MACHINE_PCBIOS
@@ -499,5 +528,8 @@ void EXPORT_FUNC(grub_real_boot_time) (const char *file,
 #define grub_min(a, b) (((a) < (b)) ? (a) : (b))
 
 #define grub_log2ull(n) (GRUB_TYPE_BITS (grub_uint64_t) - __builtin_clzll (n) - 1)
+
+grub_ssize_t
+EXPORT_FUNC(grub_utf8_to_utf16_alloc) (const char *str8, grub_uint16_t **utf16_msg, grub_uint16_t **last_position);
 
 #endif /* ! GRUB_MISC_HEADER */
