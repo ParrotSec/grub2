@@ -140,7 +140,7 @@ scan_disk_partition_iter (grub_disk_t disk, grub_partition_t p, void *data)
 #endif
 
   disk->partition = p;
-  
+
   for (arr = array_list; arr != NULL; arr = arr->next)
     {
       struct grub_diskfilter_pv *m;
@@ -155,7 +155,7 @@ scan_disk_partition_iter (grub_disk_t disk, grub_partition_t p, void *data)
   for (diskfilter = grub_diskfilter_list; diskfilter; diskfilter = diskfilter->next)
     {
 #ifdef GRUB_UTIL
-      grub_util_info ("Scanning for %s devices on disk %s", 
+      grub_util_info ("Scanning for %s devices on disk %s",
 		      diskfilter->name, name);
 #endif
       id.uuid = 0;
@@ -300,6 +300,8 @@ grub_diskfilter_memberlist (grub_disk_t disk)
   grub_disk_dev_t p;
   struct grub_diskfilter_vg *vg;
   struct grub_diskfilter_lv *lv2 = NULL;
+  struct grub_diskfilter_segment *seg;
+  unsigned int i, j;
 
   if (!lv->vg->pvs)
     return NULL;
@@ -331,27 +333,52 @@ grub_diskfilter_memberlist (grub_disk_t disk)
 	    }
     }
 
-  for (pv = lv->vg->pvs; pv; pv = pv->next)
-    {
-      if (!pv->disk)
+  for (i = 0, seg = lv->segments; i < lv->segment_count; i++, seg++)
+    for (j = 0; j < seg->node_count; ++j)
+      if (seg->nodes[j].pv != NULL)
 	{
-	  /* TRANSLATORS: This message kicks in during the detection of
-	     which modules needs to be included in core image. This happens
-	     in the case of degraded RAID and means that autodetection may
-	     fail to include some of modules. It's an installation time
-	     message, not runtime message.  */
-	  grub_util_warn (_("Couldn't find physical volume `%s'."
-			    " Some modules may be missing from core image."),
-			  pv->name);
-	  continue;
+	  pv = seg->nodes[j].pv;
+
+	  if (pv->disk == NULL)
+	    {
+	      /*
+	       * TRANSLATORS: This message kicks in during the detection of
+	       * which modules needs to be included in core image. This happens
+	       * in the case of degraded RAID and means that autodetection may
+	       * fail to include some of modules. It's an installation time
+	       * message, not runtime message.
+	       */
+	      grub_util_warn (_("Couldn't find physical volume `%s'."
+				" Some modules may be missing from core image."),
+			      pv->name);
+	      continue;
+	    }
+
+	  for (tmp = list; tmp != NULL; tmp = tmp->next)
+	    if (!grub_strcmp (tmp->disk->name, pv->disk->name))
+	      break;
+	  if (tmp != NULL)
+	    continue;
+
+	  tmp = grub_malloc (sizeof (*tmp));
+	  if (tmp == NULL)
+	    goto fail;
+	  tmp->disk = pv->disk;
+	  tmp->next = list;
+	  list = tmp;
 	}
-      tmp = grub_malloc (sizeof (*tmp));
-      tmp->disk = pv->disk;
-      tmp->next = list;
-      list = tmp;
-    }
 
   return list;
+
+ fail:
+  while (list != NULL)
+    {
+      tmp = list;
+      list = list->next;
+      grub_free (tmp);
+    }
+
+  return NULL;
 }
 
 void
@@ -593,7 +620,7 @@ read_segment (struct grub_diskfilter_segment *seg, grub_disk_addr_t sector,
 	grub_disk_addr_t read_sector, far_ofs;
 	grub_uint64_t disknr, b, near, far, ofs;
 	unsigned int i, j;
-	    
+
 	read_sector = grub_divmod64 (sector, seg->stripe_size, &b);
 	far = ofs = near = 1;
 	far_ofs = 0;
@@ -612,17 +639,17 @@ read_segment (struct grub_diskfilter_segment *seg, grub_disk_addr_t sector,
 	    else
 	      far_ofs = grub_divmod64 (seg->raid_member_size,
 				       far * seg->stripe_size, 0);
-		
+
 	    far_ofs *= seg->stripe_size;
 	  }
 
-	read_sector = grub_divmod64 (read_sector * near, 
+	read_sector = grub_divmod64 (read_sector * near,
 				     seg->node_count,
 				     &disknr);
 
 	ofs *= seg->stripe_size;
 	read_sector *= ofs;
-	
+
 	while (1)
 	  {
 	    grub_size_t read_size;
@@ -677,7 +704,7 @@ read_segment (struct grub_diskfilter_segment *seg, grub_disk_addr_t sector,
 	    size -= read_size;
 	    if (! size)
 	      return GRUB_ERR_NONE;
-	    
+
 	    b = 0;
 	    disknr += (near - i);
 	    while (disknr >= seg->node_count)
@@ -693,7 +720,7 @@ read_segment (struct grub_diskfilter_segment *seg, grub_disk_addr_t sector,
     case GRUB_DISKFILTER_RAID6:
       {
 	grub_disk_addr_t read_sector;
-	grub_uint64_t b, p, n, disknr, e;
+	grub_uint64_t b, p, n, disknr;
 
 	/* n = 1 for level 4 and 5, 2 for level 6.  */
 	n = seg->type / 3;
@@ -738,12 +765,11 @@ read_segment (struct grub_diskfilter_segment *seg, grub_disk_addr_t sector,
 	  {
 	    grub_size_t read_size;
 	    int next_level;
-	    
+
 	    read_size = seg->stripe_size - b;
 	    if (read_size > size)
 	      read_size = size;
 
-	    e = 0;
 	    /* Reset read error.  */
 	    if (grub_errno == GRUB_ERR_READ_ERROR
 		|| grub_errno == GRUB_ERR_UNKNOWN_DEVICE)
@@ -757,7 +783,6 @@ read_segment (struct grub_diskfilter_segment *seg, grub_disk_addr_t sector,
 	    if ((err) && (err != GRUB_ERR_READ_ERROR
 			  && err != GRUB_ERR_UNKNOWN_DEVICE))
 	      return err;
-	    e++;
 
 	    if (err)
 	      {
@@ -843,7 +868,7 @@ read_segment (struct grub_diskfilter_segment *seg, grub_disk_addr_t sector,
 		  disknr = 0;
 	      }
 	  }
-      }   
+      }
       return GRUB_ERR_NONE;
     default:
       return grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET,
@@ -867,7 +892,7 @@ read_lv (struct grub_diskfilter_lv *lv, grub_disk_addr_t sector,
       grub_uint64_t to_read;
 
       extent = grub_divmod64 (sector, vg->extent_size, NULL);
-      
+
       /* Find the right segment.  */
       {
 	unsigned int i;
@@ -1019,6 +1044,13 @@ grub_diskfilter_make_raid (grub_size_t uuidlen, char *uuid, int nmemb,
   struct grub_diskfilter_pv *pv;
   grub_err_t err;
 
+  /* We choose not to support more than the specified number of disks. */
+  if (nmemb < 1 || nmemb > GRUB_MDRAID_MAX_DISKS)
+    {
+      grub_free (uuid);
+      return NULL;
+    }
+
   switch (level)
     {
     case 1:
@@ -1136,6 +1168,9 @@ grub_diskfilter_make_raid (grub_size_t uuidlen, char *uuid, int nmemb,
   array->lvs->segments->raid_member_size = disk_size;
   array->lvs->segments->nodes
     = grub_calloc (nmemb, sizeof (array->lvs->segments->nodes[0]));
+  if (array->lvs->segments->nodes == NULL)
+    goto fail;
+
   array->lvs->segments->stripe_size = stripe_size;
   for (i = 0; i < nmemb; i++)
     {
@@ -1203,8 +1238,8 @@ insert_array (grub_disk_t disk, const struct grub_diskfilter_pv_id *id,
 
   for (pv = array->pvs; pv; pv = pv->next)
     if (id->uuidlen == pv->id.uuidlen
-	&& id->uuidlen 
-	? (grub_memcmp (pv->id.uuid, id->uuid, id->uuidlen) == 0) 
+	&& id->uuidlen
+	? (grub_memcmp (pv->id.uuid, id->uuid, id->uuidlen) == 0)
 	: (pv->id.id == id->id))
       {
 	struct grub_diskfilter_lv *lv;

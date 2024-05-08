@@ -93,10 +93,9 @@ grub_video_ieee1275_init (void)
 
   grub_memset (&framebuffer, 0, sizeof(framebuffer));
 
-  if (! grub_ieee1275_test_flag (GRUB_IEEE1275_FLAG_CANNOT_SET_COLORS)
-      && !grub_ieee1275_get_integer_property (grub_ieee1275_chosen,
-					      "stdout", &stdout_ihandle,
-					      sizeof (stdout_ihandle), &actual)
+  if (!grub_ieee1275_get_integer_property (grub_ieee1275_chosen,
+					   "stdout", &stdout_ihandle,
+					   sizeof (stdout_ihandle), &actual)
       && actual == sizeof (stdout_ihandle))
     have_setcolors = 1;
 
@@ -234,7 +233,7 @@ grub_video_ieee1275_setup (unsigned int width, unsigned int height,
       /* TODO. */
       return grub_error (GRUB_ERR_IO, "can't set mode %dx%d", width, height);
     }
-  
+
   err = grub_video_ieee1275_fill_mode_info (dev, &framebuffer.mode_info);
   if (err)
     {
@@ -261,7 +260,7 @@ grub_video_ieee1275_setup (unsigned int width, unsigned int height,
 
   grub_video_ieee1275_set_palette (0, framebuffer.mode_info.number_of_colors,
 				   grub_video_fbstd_colors);
-    
+
   return err;
 }
 

@@ -102,6 +102,11 @@ static gf_single_t errvals[256];
 static gf_single_t eqstat[65536 + 256];
 #endif
 
+#if __GNUC__ == 12
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
+
 static gf_single_t
 gf_mul (gf_single_t a, gf_single_t b)
 {
@@ -265,7 +270,7 @@ rs_recover (gf_single_t *mm, grub_size_t s, grub_size_t rs)
       sigma[i] = 0;
 
     gauss_solve (eqstat, rs2, rs2, sigma);
-  } 
+  }
 
   for (i = 0; i < (int) (rs + s); i++)
     if (pol_evaluate (sigma, rs2 - 1, 255 - i) == gf_powx[i])
@@ -319,6 +324,10 @@ decode_block (gf_single_t *ptr, grub_size_t s,
     }
 }
 
+#if __GNUC__ == 12
+#pragma GCC diagnostic pop
+#endif
+
 #if !defined (STANDALONE)
 static void
 encode_block (gf_single_t *ptr, grub_size_t s,
@@ -338,7 +347,7 @@ encode_block (gf_single_t *ptr, grub_size_t s,
       for (j = 0; j < ds; j++)
 	m[j] = ptr[SECTOR_SIZE * j + i];
       rs_encode (m, ds, rr);
-      for (j = 0; j < rr; j++)      
+      for (j = 0; j < rr; j++)
 	rptr[SECTOR_SIZE * j + i] = m[j + ds];
       free (m);
     }
@@ -473,7 +482,7 @@ main (int argc, char **argv)
 
   buf = xmalloc (s + rs + SECTOR_SIZE);
   fread (buf, 1, s + rs, out);
-  fclose (out);  
+  fclose (out);
 #endif
 #if 1
   grub_memset (buf + 512 * 15, 0, 512);

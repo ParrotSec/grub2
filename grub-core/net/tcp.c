@@ -362,8 +362,13 @@ void
 grub_net_tcp_retransmit (void)
 {
   grub_net_tcp_socket_t sock;
-  grub_uint64_t ctime = grub_get_time_ms ();
-  grub_uint64_t limit_time = ctime - TCP_RETRANSMISSION_TIMEOUT;
+  grub_uint64_t ctime = 0, limit_time = 0;
+
+  if (tcp_sockets != NULL)
+    {
+      ctime = grub_get_time_ms ();
+      limit_time = ctime - TCP_RETRANSMISSION_TIMEOUT;
+    }
 
   FOR_TCP_SOCKETS (sock)
   {
@@ -376,7 +381,7 @@ grub_net_tcp_retransmit (void)
 
 	if (unack->last_try > limit_time)
 	  continue;
-	
+
 	if (unack->try_count > TCP_RETRANSMISSION_COUNT)
 	  {
 	    error (sock);
@@ -581,7 +586,7 @@ grub_net_tcp_open (char *server,
       grub_error (GRUB_ERR_BUG, "not an IP address");
       return NULL;
     }
- 
+
   err = grub_net_route_address (addr, &gateway, &inf);
   if (err)
     return NULL;
@@ -592,7 +597,7 @@ grub_net_tcp_open (char *server,
 
   socket = grub_zalloc (sizeof (*socket));
   if (socket == NULL)
-    return NULL; 
+    return NULL;
 
   socket->out_port = out_port;
   socket->inf = inf;
@@ -657,7 +662,7 @@ grub_net_tcp_open (char *server,
     {
       int j;
       nb->data = nbd;
-      err = grub_net_send_ip_packet (socket->inf, &(socket->out_nla), 
+      err = grub_net_send_ip_packet (socket->inf, &(socket->out_nla),
 				     &(socket->ll_target_addr), nb,
 				     GRUB_NET_IP_TCP);
       if (err)
@@ -667,7 +672,7 @@ grub_net_tcp_open (char *server,
 	  grub_netbuff_free (nb);
 	  return NULL;
 	}
-      for (j = 0; (j < TCP_SYN_RETRANSMISSION_TIMEOUT / 50 
+      for (j = 0; (j < TCP_SYN_RETRANSMISSION_TIMEOUT / 50
 		   && !socket->established); j++)
 	grub_net_poll_cards (50, &socket->established);
       if (socket->established)
@@ -956,7 +961,7 @@ grub_net_recv_tcp_packet (struct grub_net_buff *nb,
       if (sock->fin_hook && just_closed)
 	sock->fin_hook (sock, sock->hook_data);
     }
-	
+
     return GRUB_ERR_NONE;
   }
   if (grub_be_to_cpu16 (tcph->flags) & TCP_SYN)
@@ -971,7 +976,7 @@ grub_net_recv_tcp_packet (struct grub_net_buff *nb,
 	sock = grub_zalloc (sizeof (*sock));
 	if (sock == NULL)
 	  return grub_errno;
-	
+
 	sock->out_port = grub_be_to_cpu16 (tcph->src);
 	sock->in_port = grub_be_to_cpu16 (tcph->dst);
 	sock->inf = inf;

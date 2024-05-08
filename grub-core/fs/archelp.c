@@ -75,7 +75,7 @@ handle_symlink (struct grub_archelp_data *data,
       || !arcops->get_link_target)
     return GRUB_ERR_NONE;
   flen = grub_strlen (fn);
-  if (grub_memcmp (*name, fn, flen) != 0 
+  if (grub_memcmp (*name, fn, flen) != 0
       || ((*name)[flen] != 0 && (*name)[flen] != '/'))
     return GRUB_ERR_NONE;
   rest = *name + flen;
@@ -180,6 +180,14 @@ grub_archelp_dir (struct grub_archelp_data *data,
 	  if (p)
 	    *p = 0;
 
+	  if ((*n == 0) && ((mode & GRUB_ARCHELP_ATTR_TYPE)
+			    != GRUB_ARCHELP_ATTR_DIR))
+	    {
+	      grub_error (GRUB_ERR_BAD_FILE_TYPE, N_("not a directory"));
+	      grub_free (name);
+	      goto fail;
+	    }
+
 	  if (((!prev) || (grub_strcmp (prev, name) != 0)) && *n != 0)
 	    {
 	      struct grub_dirhook_info info;
@@ -251,7 +259,7 @@ grub_archelp_open (struct grub_archelp_data *data,
       grub_uint32_t mode;
       grub_int32_t mtime;
       int restart;
-      
+
       if (arcops->find_file (data, &fn, &mtime, &mode))
 	goto fail;
 

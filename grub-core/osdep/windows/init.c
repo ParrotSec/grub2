@@ -16,8 +16,8 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
 #include <config-util.h>
+#include <config.h>
 #include <grub/util/misc.h>
 #include <grub/osdep/hostfile.h>
 #include <grub/util/windows.h>
@@ -164,7 +164,7 @@ grub_util_host_init (int *argc __attribute__ ((unused)),
   *argv = xcalloc (*argc + 1, sizeof (argv[0]));
 
   for (i = 0; i < *argc; i++)
-    (*argv)[i] = grub_util_tchar_to_utf8 (targv[i]); 
+    (*argv)[i] = grub_util_tchar_to_utf8 (targv[i]);
   (*argv)[i] = NULL;
 #else
 #error "Unsupported TCHAR size"

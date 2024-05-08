@@ -11,6 +11,7 @@
 #include <grub/misc.h>
 #include <grub/i18n.h>
 #include <grub/list.h>
+#include <grub/osdep/major.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,12 +24,6 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <limits.h>
-
-#if defined(MAJOR_IN_MKDEV)
-#include <sys/mkdev.h>
-#elif defined(MAJOR_IN_SYSMACROS)
-#include <sys/sysmacros.h>
-#endif
 
 #ifdef HAVE_DEVICE_MAPPER
 # include <libdevmapper.h>
@@ -127,7 +122,7 @@ grub_util_get_dm_node_linear_info (dev_t dev,
       dmt = dm_task_create(DM_DEVICE_TABLE);
       if (!dmt)
 	break;
-      
+
       if (! (dm_task_set_major_minor (dmt, major, minor, 0)))
 	{
 	  dm_task_destroy (dmt);

@@ -1,0 +1,38 @@
+Description: Add custom boot options for Parrot OS
+ grub2 (2.12-1parrot1) lory; urgency=medium
+ .
+   * Import new Debian-backports release.
+   * Migrate parrot patches.
+   * Conflicts against signed packages (we don't have them).
+Author: Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>
+Last-Update: 2024-05-08
+
+--- grub2-2.12.orig/util/grub.d/10_linux.in
++++ grub2-2.12/util/grub.d/10_linux.in
+@@ -129,6 +129,12 @@ linux_entry ()
+       case $type in
+ 	  recovery)
+ 	      title="$(gettext_printf "%s, with Linux %s (%s)" "${os}" "${version}" "$(gettext "${GRUB_RECOVERY_TITLE}")")" ;;
++	  terminal)
++          title="$(gettext_printf "%s, with Linux %s (%s)" "${os}" "${version}" "$(gettext "Text-only mode / Recovery (boots into a system console)")")" ;;
++      nouveau-off)
++          title="$(gettext_printf "%s, with Linux %s (%s)" "${os}" "${version}" "$(gettext "Nouveau and Nvidia drivers OFF (fixes incompatible GPU)")")" ;;
++      acpi-off)
++          title="$(gettext_printf "%s, with Linux %s (%s)" "${os}" "${version}" "$(gettext "ACPI OFF and Nomodeset ON (fixes incompatible firmware)")")" ;;
+ 	  *)
+ 	      title="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")" ;;
+       esac
+@@ -383,6 +389,13 @@ for linux in ${reverse_sorted_list}; do
+   if [ "x$is_top_level" = xtrue ] && [ "x${GRUB_DISABLE_SUBMENU}" != xtrue ]; then
+     linux_entry "${OS}" "${version}" simple \
+     "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
++    
++    linux_entry "${OS}" "${version}" terminal \
++              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} $vt_handoff 3"
++    linux_entry "${OS}" "${version}" nouveau-off \
++              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} nouveau.modeset=0 nvidia.modeset=0"
++    linux_entry "${OS}" "${version}" acpi-off \
++              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} acpi=off nomodeset"
+ 
+     submenu_indentation="$grub_tab"
+     

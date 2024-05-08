@@ -1,19 +1,19 @@
 /* Word-wrapping and line-truncating streams.
-   Copyright (C) 1997-2019 Free Software Foundation, Inc.
+   Copyright (C) 1997-2022 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Written by Miles Bader <miles@gnu.ai.mit.edu>.
 
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
+   This file is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as
+   published by the Free Software Foundation, either version 3 of the
+   License, or (at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
+   This file is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+   GNU Lesser General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
+   You should have received a copy of the GNU Lesser General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* This package emulates glibc 'line_wrap_stream' semantics for systems that
@@ -27,18 +27,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-
-/* The __attribute__ feature is available in gcc versions 2.5 and later.
-   The __-protected variants of the attributes 'format' and 'printf' are
-   accepted by gcc versions 2.6.4 (effectively 2.7) and later.
-   We enable _GL_ATTRIBUTE_FORMAT only if these are supported too, because
-   gnulib and libintl do '#define printf __printf__' when they override
-   the 'printf' function.  */
-#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 7)
-# define _GL_ATTRIBUTE_FORMAT(spec) __attribute__ ((__format__ spec))
-#else
-# define _GL_ATTRIBUTE_FORMAT(spec) /* empty */
-#endif
 
 #if defined (__GNU_LIBRARY__) && defined (HAVE_LINEWRAP_H)
 /* line_wrap_stream is available, so use that.  */
@@ -107,6 +95,10 @@ struct argp_fmtstream
 
 typedef struct argp_fmtstream *argp_fmtstream_t;
 
+/* Flush __FS to its stream, and free it (but don't close the stream).  */
+extern void __argp_fmtstream_free (argp_fmtstream_t __fs);
+extern void argp_fmtstream_free (argp_fmtstream_t __fs);
+
 /* Return an argp_fmtstream that outputs to STREAM, and which prefixes lines
    written on it with LMARGIN spaces and limits them to RMARGIN columns
    total.  If WMARGIN >= 0, words that extend past RMARGIN are wrapped by
@@ -116,15 +108,13 @@ typedef struct argp_fmtstream *argp_fmtstream_t;
 extern argp_fmtstream_t __argp_make_fmtstream (FILE *__stream,
                                                size_t __lmargin,
                                                size_t __rmargin,
-                                               ssize_t __wmargin);
+                                               ssize_t __wmargin)
+  _GL_ATTRIBUTE_DEALLOC (__argp_fmtstream_free, 1);
 extern argp_fmtstream_t argp_make_fmtstream (FILE *__stream,
                                              size_t __lmargin,
                                              size_t __rmargin,
-                                             ssize_t __wmargin);
-
-/* Flush __FS to its stream, and free it (but don't close the stream).  */
-extern void __argp_fmtstream_free (argp_fmtstream_t __fs);
-extern void argp_fmtstream_free (argp_fmtstream_t __fs);
+                                             ssize_t __wmargin)
+  _GL_ATTRIBUTE_DEALLOC (argp_fmtstream_free, 1);
 
 extern ssize_t __argp_fmtstream_printf (argp_fmtstream_t __fs,
                                         const char *__fmt, ...)

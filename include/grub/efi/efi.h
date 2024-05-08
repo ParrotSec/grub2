@@ -23,18 +23,32 @@
 #include <grub/types.h>
 #include <grub/dl.h>
 #include <grub/efi/api.h>
+#include <grub/efi/pe32.h>
+
+#define GRUB_LINUX_ARM_MAGIC_SIGNATURE 0x016f2818
+
+struct linux_arch_kernel_header {
+  grub_uint32_t code0;
+  grub_uint32_t code1;
+  grub_uint64_t reserved[6];
+  grub_uint32_t magic;
+  grub_uint32_t hdr_offset; /* Offset of PE/COFF header. */
+  struct grub_pe_image_header pe_image_header;
+};
 
 /* Functions.  */
-void *EXPORT_FUNC(grub_efi_locate_protocol) (grub_efi_guid_t *protocol,
+void *EXPORT_FUNC(grub_efi_locate_protocol) (grub_guid_t *protocol,
 					     void *registration);
 grub_efi_handle_t *
 EXPORT_FUNC(grub_efi_locate_handle) (grub_efi_locate_search_type_t search_type,
-				     grub_efi_guid_t *protocol,
+				     grub_guid_t *protocol,
 				     void *search_key,
 				     grub_efi_uintn_t *num_handles);
 void *EXPORT_FUNC(grub_efi_open_protocol) (grub_efi_handle_t handle,
-					   grub_efi_guid_t *protocol,
+					   grub_guid_t *protocol,
 					   grub_efi_uint32_t attributes);
+grub_efi_status_t
+EXPORT_FUNC(grub_efi_close_protocol) (grub_efi_handle_t handle, grub_guid_t *protocol);
 int EXPORT_FUNC(grub_efi_set_text_mode) (int on);
 void EXPORT_FUNC(grub_efi_stall) (grub_efi_uintn_t microseconds);
 void *
@@ -75,37 +89,50 @@ grub_err_t EXPORT_FUNC (grub_efi_set_virtual_address_map) (grub_efi_uintn_t memo
 							   grub_efi_uint32_t descriptor_version,
 							   grub_efi_memory_descriptor_t *virtual_map);
 grub_efi_status_t EXPORT_FUNC (grub_efi_get_variable_with_attributes) (const char *variable,
-								       const grub_efi_guid_t *guid,
+								       const grub_guid_t *guid,
 								       grub_size_t *datasize_out,
 								       void **data_out,
 								       grub_efi_uint32_t *attributes);
 grub_efi_status_t EXPORT_FUNC (grub_efi_get_variable) (const char *variable,
-						       const grub_efi_guid_t *guid,
+						       const grub_guid_t *guid,
 						       grub_size_t *datasize_out,
 						       void **data_out);
 grub_err_t
+EXPORT_FUNC (grub_efi_set_variable_with_attributes) (const char *var,
+				     const grub_guid_t *guid,
+				     void *data,
+				     grub_size_t datasize,
+				     grub_efi_uint32_t attributes);
+grub_err_t
 EXPORT_FUNC (grub_efi_set_variable) (const char *var,
-				     const grub_efi_guid_t *guid,
+				     const grub_guid_t *guid,
 				     void *data,
 				     grub_size_t datasize);
+grub_err_t
+EXPORT_FUNC (grub_efi_set_variable_to_string) (const char *name, const grub_guid_t *guid,
+					       const char *value, grub_efi_uint32_t attributes);
 int
 EXPORT_FUNC (grub_efi_compare_device_paths) (const grub_efi_device_path_t *dp1,
 					     const grub_efi_device_path_t *dp2);
 
-extern void (*EXPORT_VAR(grub_efi_net_config)) (grub_efi_handle_t hnd, 
+extern void (*EXPORT_VAR(grub_efi_net_config)) (grub_efi_handle_t hnd,
 						char **device,
 						char **path);
 
-#if defined(__arm__) || defined(__aarch64__) || defined(__riscv)
+void *
+EXPORT_FUNC (grub_efi_find_configuration_table) (const grub_guid_t *target_guid);
+
+#if defined(__arm__) || defined(__aarch64__) || defined(__riscv) || defined(__loongarch__)
 void *EXPORT_FUNC(grub_efi_get_firmware_fdt)(void);
 grub_err_t EXPORT_FUNC(grub_efi_get_ram_base)(grub_addr_t *);
-#include <grub/cpu/linux.h>
-grub_err_t grub_arch_efi_linux_check_image(struct linux_arch_kernel_header *lh);
+#endif
+#include <grub/file.h>
+grub_err_t grub_arch_efi_linux_load_image_header(grub_file_t file,
+                                                struct linux_arch_kernel_header *lh);
 grub_err_t grub_arch_efi_linux_boot_image(grub_addr_t addr, grub_size_t size,
                                            char *args);
-#endif
 
-grub_addr_t grub_efi_modules_addr (void);
+grub_addr_t grub_efi_section_addr (const char *section);
 
 void grub_efi_mm_init (void);
 void grub_efi_mm_fini (void);

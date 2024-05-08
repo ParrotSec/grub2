@@ -225,6 +225,7 @@ export GRUB_DEFAULT \
   GRUB_DISTRIBUTOR \
   GRUB_CMDLINE_LINUX \
   GRUB_CMDLINE_LINUX_DEFAULT \
+  GRUB_CMDLINE_LINUX_RECOVERY \
   GRUB_CMDLINE_XEN \
   GRUB_CMDLINE_XEN_DEFAULT \
   GRUB_CMDLINE_LINUX_XEN_REPLACE \
@@ -232,6 +233,9 @@ export GRUB_DEFAULT \
   GRUB_CMDLINE_NETBSD \
   GRUB_CMDLINE_NETBSD_DEFAULT \
   GRUB_CMDLINE_GNUMACH \
+  GRUB_TOP_LEVEL \
+  GRUB_TOP_LEVEL_XEN \
+  GRUB_TOP_LEVEL_OS_PROBER \
   GRUB_EARLY_INITRD_LINUX_CUSTOM \
   GRUB_EARLY_INITRD_LINUX_STOCK \
   GRUB_TERMINAL_INPUT \
@@ -300,7 +304,10 @@ and /etc/grub.d/* files or please file a bug report with
     exit 1
   else
     # none of the children aborted with error, install the new grub.cfg
+    oldumask=$(umask)
+    umask 077
     cat ${grub_cfg}.new > ${grub_cfg}
+    umask $oldumask
     rm -f ${grub_cfg}.new
   fi
 fi

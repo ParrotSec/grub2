@@ -206,17 +206,17 @@ grub_normal_init_page (struct grub_term_output *term,
   char *msg_formatted;
   grub_uint32_t *unicode_msg;
   grub_uint32_t *last_position;
- 
+
   grub_term_cls (term);
 
   msg_formatted = grub_xasprintf (_("GNU GRUB  version %s"), PACKAGE_VERSION);
   if (!msg_formatted)
     return;
- 
+
   msg_len = grub_utf8_to_ucs4_alloc (msg_formatted,
   				     &unicode_msg, &last_position);
   grub_free (msg_formatted);
- 
+
   if (msg_len < 0)
     {
       return;
@@ -380,7 +380,8 @@ grub_normal_reader_init (int nested)
 
   msg_formatted = grub_xasprintf (_("Minimal BASH-like line editing is supported. For "
 				    "the first word, TAB lists possible command completions. Anywhere "
-				    "else TAB lists possible device or file completions. %s"),
+				    "else TAB lists possible device or file completions. To enable "
+				    "less(1)-like paging, \"set pager=1\". %s"),
 				  nested ? msg_esc : "");
   if (!msg_formatted)
     return grub_errno;
@@ -399,7 +400,7 @@ grub_normal_reader_init (int nested)
     grub_putcode ('\n', term);
   }
   grub_free (msg_formatted);
- 
+
   return 0;
 }
 
@@ -431,7 +432,7 @@ grub_normal_read_line_real (char **line, int cont, int nested)
 	  return grub_errno;
 	}
     }
- 
+
 }
 
 static grub_err_t

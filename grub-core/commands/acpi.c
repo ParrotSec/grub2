@@ -168,7 +168,7 @@ grub_acpi_create_ebda (void)
   struct grub_acpi_rsdp_v10 *v1;
   struct grub_acpi_rsdp_v20 *v2;
 
-  ebda = (grub_uint8_t *) (grub_addr_t) ((*((grub_uint16_t *)0x40e)) << 4);
+  ebda = (grub_uint8_t *) (grub_addr_t) ((*((grub_uint16_t *) grub_absolute_pointer (0x40e))) << 4);
   grub_dprintf ("acpi", "EBDA @%p\n", ebda);
   if (ebda)
     ebda_kb_len = *(grub_uint16_t *) ebda;
@@ -298,7 +298,7 @@ grub_acpi_create_ebda (void)
       *target = 0;
 
   grub_dprintf ("acpi", "Switching EBDA\n");
-  (*((grub_uint16_t *) 0x40e)) = ((grub_addr_t) targetebda) >> 4;
+  (*((grub_uint16_t *) grub_absolute_pointer (0x40e))) = ((grub_addr_t) targetebda) >> 4;
   grub_dprintf ("acpi", "EBDA switched\n");
 
   return GRUB_ERR_NONE;
@@ -490,12 +490,12 @@ grub_cmd_acpi (struct grub_extcmd_context *ctxt, int argc, char **args)
 
   if (rsdp)
     {
-      grub_uint32_t *entry_ptr;
+      grub_uint8_t *entry_ptr;
       char *exclude = 0;
       char *load_only = 0;
       char *ptr;
-      /* RSDT consists of header and an array of 32-bit pointers. */
-      struct grub_acpi_table_header *rsdt;
+      grub_size_t tbl_addr_size;
+      struct grub_acpi_table_header *table_head;
 
       exclude = state[0].set ? grub_strdup (state[0].arg) : 0;
       if (exclude)
@@ -514,17 +514,32 @@ grub_cmd_acpi (struct grub_extcmd_context *ctxt, int argc, char **args)
       /* Set revision variables to replicate the same version as host. */
       rev1 = ! rsdp->revision;
       rev2 = rsdp->revision;
-      rsdt = (struct grub_acpi_table_header *) (grub_addr_t) rsdp->rsdt_addr;
+      if (rev2 && ((struct grub_acpi_table_header *) (grub_addr_t) ((struct grub_acpi_rsdp_v20 *) rsdp)->xsdt_addr) != NULL)
+	{
+	  /* XSDT consists of header and an array of 64-bit pointers. */
+	  table_head = (struct grub_acpi_table_header *) (grub_addr_t) ((struct grub_acpi_rsdp_v20 *) rsdp)->xsdt_addr;
+	  tbl_addr_size = sizeof (((struct grub_acpi_rsdp_v20 *) rsdp)->xsdt_addr);
+	}
+      else
+	{
+	  /* RSDT consists of header and an array of 32-bit pointers. */
+	  table_head = (struct grub_acpi_table_header *) (grub_addr_t) rsdp->rsdt_addr;
+	  tbl_addr_size = sizeof (rsdp->rsdt_addr);
+	}
+
       /* Load host tables. */
-      for (entry_ptr = (grub_uint32_t *) (rsdt + 1);
-	   entry_ptr < (grub_uint32_t *) (((grub_uint8_t *) rsdt)
-					  + rsdt->length);
-	   entry_ptr++)
+      for (entry_ptr = (grub_uint8_t *) (table_head + 1);
+	   entry_ptr < (grub_uint8_t *) (((grub_uint8_t *) table_head) + table_head->length);
+	   entry_ptr += tbl_addr_size)
 	{
 	  char signature[5];
 	  struct efiemu_acpi_table *table;
-	  struct grub_acpi_table_header *curtable
-	    = (struct grub_acpi_table_header *) (grub_addr_t) *entry_ptr;
+	  struct grub_acpi_table_header *curtable;
+	  if (tbl_addr_size == sizeof (rsdp->rsdt_addr))
+	    curtable = (struct grub_acpi_table_header *) (grub_addr_t) *((grub_uint32_t *) entry_ptr);
+	  else
+	    curtable = (struct grub_acpi_table_header *) (grub_addr_t) *((grub_uint64_t *) entry_ptr);
+
 	  signature[4] = 0;
 	  for (i = 0; i < 4;i++)
 	    signature[i] = grub_tolower (curtable->signature[i]);
@@ -759,13 +774,13 @@ grub_cmd_acpi (struct grub_extcmd_context *ctxt, int argc, char **args)
 
 #ifdef GRUB_MACHINE_EFI
   {
-    struct grub_efi_guid acpi = GRUB_EFI_ACPI_TABLE_GUID;
-    struct grub_efi_guid acpi20 = GRUB_EFI_ACPI_20_TABLE_GUID;
+    static grub_guid_t acpi = GRUB_EFI_ACPI_TABLE_GUID;
+    static grub_guid_t acpi20 = GRUB_EFI_ACPI_20_TABLE_GUID;
 
-    efi_call_2 (grub_efi_system_table->boot_services->install_configuration_table,
-      &acpi20, grub_acpi_get_rsdpv2 ());
-    efi_call_2 (grub_efi_system_table->boot_services->install_configuration_table,
-      &acpi, grub_acpi_get_rsdpv1 ());
+    grub_efi_system_table->boot_services->install_configuration_table (&acpi20,
+								       grub_acpi_get_rsdpv2 ());
+    grub_efi_system_table->boot_services->install_configuration_table (&acpi,
+								       grub_acpi_get_rsdpv1 ());
   }
 #endif
 

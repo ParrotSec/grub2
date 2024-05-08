@@ -71,7 +71,7 @@ static int grub_biosdisk_get_num_floppies (void)
  *   non-zero, otherwise zero.
  */
 
-static int 
+static int
 grub_biosdisk_rw_int13_extensions (int ah, int drive, void *dap)
 {
   struct grub_bios_int_registers regs;
@@ -91,7 +91,7 @@ grub_biosdisk_rw_int13_extensions (int ah, int drive, void *dap)
  *   NSEC sectors from COFF/HOFF/SOFF into SEGMENT. If an error occurs,
  *   return non-zero, otherwise zero.
  */
-static int 
+static int
 grub_biosdisk_rw_standard (int ah, int drive, int coff, int hoff,
 			   int soff, int nsec, int segment)
 {
@@ -110,7 +110,7 @@ grub_biosdisk_rw_standard (int ah, int drive, int coff, int hoff,
       /* set bits 0-5 of %cl to sector */
       regs.ecx |= soff & 0x3f;
 
-      /* set %dh to head and %dl to drive */  
+      /* set %dh to head and %dl to drive */
       regs.edx = (drive & 0xff) | ((hoff << 8) & 0xff00);
       /* set %ah to AH */
       regs.eax = (ah << 8) & 0xff00;
@@ -153,7 +153,7 @@ grub_biosdisk_check_int13_extensions (int drive)
   regs.ebx = 0x55aa;
   regs.flags = GRUB_CPU_INT_FLAGS_DEFAULT;
   grub_bios_interrupt (0x13, &regs);
-  
+
   if (regs.flags & GRUB_CPU_INT_FLAGS_CARRY)
     return 0;
 
@@ -171,7 +171,7 @@ grub_biosdisk_check_int13_extensions (int drive)
  *   Return the geometry of DRIVE in CYLINDERS, HEADS and SECTORS. If an
  *   error occurs, then return non-zero, otherwise zero.
  */
-static int 
+static int
 grub_biosdisk_get_diskinfo_standard (int drive,
 				     unsigned long *cylinders,
 				     unsigned long *heads,
@@ -185,12 +185,12 @@ grub_biosdisk_get_diskinfo_standard (int drive,
   regs.flags = GRUB_CPU_INT_FLAGS_DEFAULT;
   grub_bios_interrupt (0x13, &regs);
 
-  /* Check if unsuccessful. Ignore return value if carry isn't set to 
+  /* Check if unsuccessful. Ignore return value if carry isn't set to
      workaround some buggy BIOSes. */
   if ((regs.flags & GRUB_CPU_INT_FLAGS_CARRY) && ((regs.eax & 0xff00) != 0))
     return (regs.eax & 0xff00) >> 8;
 
-  /* bogus BIOSes may not return an error number */  
+  /* bogus BIOSes may not return an error number */
   /* 0 sectors means no disk */
   if (!(regs.ecx & 0x3f))
     /* XXX 0x60 is one of the unused error numbers */
@@ -218,7 +218,7 @@ grub_biosdisk_get_diskinfo_real (int drive, void *drp, grub_uint16_t ax)
   regs.flags = GRUB_CPU_INT_FLAGS_DEFAULT;
   grub_bios_interrupt (0x13, &regs);
 
-  /* Check if unsuccessful. Ignore return value if carry isn't set to 
+  /* Check if unsuccessful. Ignore return value if carry isn't set to
      workaround some buggy BIOSes. */
   if ((regs.flags & GRUB_CPU_INT_FLAGS_CARRY) && ((regs.eax & 0xff00) != 0))
     return (regs.eax & 0xff00) >> 8;
@@ -367,7 +367,7 @@ grub_biosdisk_open (const char *name, grub_disk_t disk)
       if (version)
 	{
 	  struct grub_biosdisk_drp *drp
-	    = (struct grub_biosdisk_drp *) GRUB_MEMORY_MACHINE_SCRATCH_ADDR;
+	    = (struct grub_biosdisk_drp *) grub_absolute_pointer (GRUB_MEMORY_MACHINE_SCRATCH_ADDR);
 
 	  /* Clear out the DRP.  */
 	  grub_memset (drp, 0, sizeof (*drp));
@@ -388,11 +388,7 @@ grub_biosdisk_open (const char *name, grub_disk_t disk)
 		  && !(drp->bytes_per_sector & (drp->bytes_per_sector - 1))
 		  && drp->bytes_per_sector >= 512
 		  && drp->bytes_per_sector <= 16384)
-		{
-		  for (disk->log_sector_size = 0;
-		       (1 << disk->log_sector_size) < drp->bytes_per_sector;
-		       disk->log_sector_size++);
-		}
+		disk->log_sector_size = grub_log2ull (drp->bytes_per_sector);
 	    }
 	}
     }
@@ -475,7 +471,7 @@ grub_biosdisk_rw (int cmd, grub_disk_t disk,
       struct grub_biosdisk_dap *dap;
 
       dap = (struct grub_biosdisk_dap *) (GRUB_MEMORY_MACHINE_SCRATCH_ADDR
-					  + (data->sectors
+					  + (GRUB_DISK_MAX_LBA_SECTORS
 					     << disk->log_sector_size));
       dap->length = sizeof (*dap);
       dap->reserved = 0;
@@ -564,6 +560,9 @@ get_safe_sectors (grub_disk_t disk, grub_disk_addr_t sector)
   grub_uint64_t offset;
   struct grub_biosdisk_data *data = disk->data;
   grub_uint32_t sectors = data->sectors;
+
+  if (data->flags & GRUB_BIOSDISK_FLAG_LBA)
+    sectors = GRUB_DISK_MAX_LBA_SECTORS;
 
   /* OFFSET = SECTOR % SECTORS */
   grub_divmod64 (sector, sectors, &offset);
@@ -654,7 +653,7 @@ grub_disk_biosdisk_fini (void)
 GRUB_MOD_INIT(biosdisk)
 {
   struct grub_biosdisk_cdrp *cdrp
-    = (struct grub_biosdisk_cdrp *) GRUB_MEMORY_MACHINE_SCRATCH_ADDR;
+    = (struct grub_biosdisk_cdrp *) grub_absolute_pointer (GRUB_MEMORY_MACHINE_SCRATCH_ADDR);
   grub_uint8_t boot_drive;
 
   if (grub_disk_firmware_is_tainted)

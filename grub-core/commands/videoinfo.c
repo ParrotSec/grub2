@@ -29,7 +29,7 @@ GRUB_MOD_LICENSE ("GPLv3+");
 
 struct hook_ctx
 {
-  unsigned height, width, depth; 
+  unsigned height, width, depth;
   struct grub_video_mode_info *current_mode;
 };
 
@@ -190,6 +190,11 @@ grub_cmd_videoinfo (grub_command_t cmd __attribute__ ((unused)),
 	else
 	  /* Don't worry about errors.  */
 	  grub_errno = GRUB_ERR_NONE;
+      }
+    else if (id != GRUB_VIDEO_DRIVER_NONE)
+      {
+	grub_puts_ (N_("  A video driver is active, cannot initialize this driver until it is deactivated\n"));
+	continue;
       }
     else
       {

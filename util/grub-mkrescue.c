@@ -150,7 +150,7 @@ enum {
   SYS_AREA_ARCS
 } system_area = SYS_AREA_AUTO;
 
-static error_t 
+static error_t
 argp_parser (int key, char *arg, struct argp_state *state)
 {
   if (grub_install_parse (key, arg))
@@ -229,6 +229,7 @@ write_part (FILE *f, const char *srcdir)
   char *inname = grub_util_path_concat (2, srcdir, "partmap.lst");
   char buf[260];
   in = grub_util_fopen (inname, "rb");
+  free (inname);
   if (!in)
     return;
   while (fgets (buf, 256, in))
@@ -260,7 +261,26 @@ make_image_abs (enum grub_install_plat plat,
   load_cfg = grub_util_make_temporary_file ();
 
   load_cfg_f = grub_util_fopen (load_cfg, "wb");
-  fprintf (load_cfg_f, "search --fs-uuid --set=root %s\n", iso_uuid);
+  /*
+   * A UEFI bootable media should support file system transposition (e.g. extracting
+   * an ISO 9660 content to a FAT32 media that was formatted by the user). Therefore,
+   * for EFI platforms, we search for a specific UUID file rather than a partition UUID.
+   */
+  switch (plat)
+    {
+      case GRUB_INSTALL_PLATFORM_I386_EFI:
+      case GRUB_INSTALL_PLATFORM_X86_64_EFI:
+      case GRUB_INSTALL_PLATFORM_IA64_EFI:
+      case GRUB_INSTALL_PLATFORM_ARM_EFI:
+      case GRUB_INSTALL_PLATFORM_ARM64_EFI:
+      case GRUB_INSTALL_PLATFORM_RISCV32_EFI:
+      case GRUB_INSTALL_PLATFORM_RISCV64_EFI:
+	fprintf (load_cfg_f, "search --set=root --file /.disk/%s.uuid\n", iso_uuid);
+	break;
+      default:
+	fprintf (load_cfg_f, "search --set=root --fs-uuid %s\n", iso_uuid);
+	break;
+    }
   fprintf (load_cfg_f, "set prefix=(${root})/boot/grub\n");
 
   write_part (load_cfg_f, source_dirs[plat]);
@@ -494,7 +514,7 @@ main (int argc, char *argv[])
   xorriso_push ("-as");
   xorriso_push ("mkisofs");
   xorriso_push ("-graft-points");
-  
+
   iso9660_dir = grub_util_make_temporary_dir ();
   grub_util_info ("temporary iso9660 dir is `%s'", iso9660_dir);
   boot_grub = grub_util_path_concat (3, iso9660_dir, "boot", "grub");
@@ -541,6 +561,7 @@ main (int argc, char *argv[])
 	  || source_dirs[GRUB_INSTALL_PLATFORM_IA64_EFI]
 	  || source_dirs[GRUB_INSTALL_PLATFORM_ARM_EFI]
 	  || source_dirs[GRUB_INSTALL_PLATFORM_ARM64_EFI]
+	  || source_dirs[GRUB_INSTALL_PLATFORM_LOONGARCH64_EFI]
 	  || source_dirs[GRUB_INSTALL_PLATFORM_RISCV32_EFI]
 	  || source_dirs[GRUB_INSTALL_PLATFORM_RISCV64_EFI]
 	  || source_dirs[GRUB_INSTALL_PLATFORM_X86_64_EFI])
@@ -638,7 +659,7 @@ main (int argc, char *argv[])
 				 strerror (errno));
 	      fclose (bi);
 	      fwrite (buf, 1, 512, sa);
-	      
+
 	      grub_install_make_image_wrap_file (source_dirs[GRUB_INSTALL_PLATFORM_I386_PC],
 						 "/boot/grub", sa, sysarea_img,
 						 0, load_cfg,
@@ -647,7 +668,7 @@ main (int argc, char *argv[])
 	      fflush (sa);
 	      grub_util_fd_sync (fileno (sa));
 	      fclose (sa);
-	      
+
 	      if (sz > 32768)
 		{
 		  grub_util_warn ("%s", _("Your xorriso doesn't support `--grub2-boot-info'. Your core image is too big. Boot as disk is disabled. Please use xorriso 1.2.9 or later."));
@@ -741,18 +762,33 @@ main (int argc, char *argv[])
       || source_dirs[GRUB_INSTALL_PLATFORM_IA64_EFI]
       || source_dirs[GRUB_INSTALL_PLATFORM_ARM_EFI]
       || source_dirs[GRUB_INSTALL_PLATFORM_ARM64_EFI]
+      || source_dirs[GRUB_INSTALL_PLATFORM_LOONGARCH64_EFI]
       || source_dirs[GRUB_INSTALL_PLATFORM_RISCV32_EFI]
       || source_dirs[GRUB_INSTALL_PLATFORM_RISCV64_EFI])
     {
-      char *efidir = grub_util_make_temporary_dir ();
-      char *efidir_efi = grub_util_path_concat (2, efidir, "efi");
-      char *efidir_efi_boot = grub_util_path_concat (3, efidir, "efi", "boot");
+      FILE *f;
+      char *efidir_efi = grub_util_path_concat (2, iso9660_dir, "efi");
+      char *efidir_efi_boot = grub_util_path_concat (3, iso9660_dir, "efi", "boot");
       char *imgname, *img32, *img64, *img_mac = NULL;
-      char *efiimgfat;
+      char *efiimgfat, *iso_uuid_file, *diskdir, *diskdir_uuid;
       grub_install_mkdir_p (efidir_efi_boot);
 
       grub_install_push_module ("part_gpt");
       grub_install_push_module ("part_msdos");
+      grub_install_push_module ("fat");
+      /* Many modern UEFI systems also have native support for NTFS. */
+      grub_install_push_module ("ntfs");
+
+      /* Create a '.disk/<TIMEBASED_UUID>.uuid' file that can be used to locate the boot media. */
+      diskdir = grub_util_path_concat (2, iso9660_dir, ".disk");
+      grub_install_mkdir_p (diskdir);
+      iso_uuid_file = xasprintf ("%s.uuid", iso_uuid);
+      diskdir_uuid = grub_util_path_concat (2, diskdir, iso_uuid_file);
+      f = grub_util_fopen (diskdir_uuid, "wb");
+      fclose (f);
+      free (iso_uuid_file);
+      free (diskdir_uuid);
+      free (diskdir);
 
       imgname = grub_util_path_concat (2, efidir_efi_boot, "bootia64.efi");
       make_image_fwdisk_abs (GRUB_INSTALL_PLATFORM_IA64_EFI, "ia64-efi", imgname);
@@ -760,31 +796,34 @@ main (int argc, char *argv[])
 
       grub_install_push_module ("part_apple");
       img64 = grub_util_path_concat (2, efidir_efi_boot, "bootx64.efi");
-      make_image_fwdisk_abs (GRUB_INSTALL_PLATFORM_X86_64_EFI, "x86_64-efi", img64);
+      make_image_abs (GRUB_INSTALL_PLATFORM_X86_64_EFI, "x86_64-efi", img64);
       grub_install_pop_module ();
 
       grub_install_push_module ("part_apple");
       img32 = grub_util_path_concat (2, efidir_efi_boot, "bootia32.efi");
-      make_image_fwdisk_abs (GRUB_INSTALL_PLATFORM_I386_EFI, "i386-efi", img32);
+      make_image_abs (GRUB_INSTALL_PLATFORM_I386_EFI, "i386-efi", img32);
       grub_install_pop_module ();
 
       imgname = grub_util_path_concat (2, efidir_efi_boot, "bootarm.efi");
-      make_image_fwdisk_abs (GRUB_INSTALL_PLATFORM_ARM_EFI, "arm-efi", imgname);
+      make_image_abs (GRUB_INSTALL_PLATFORM_ARM_EFI, "arm-efi", imgname);
       free (imgname);
 
       imgname = grub_util_path_concat (2, efidir_efi_boot, "bootaa64.efi");
-      make_image_fwdisk_abs (GRUB_INSTALL_PLATFORM_ARM64_EFI, "arm64-efi",
+      make_image_abs (GRUB_INSTALL_PLATFORM_ARM64_EFI, "arm64-efi", imgname);
+      free (imgname);
+
+      imgname = grub_util_path_concat (2, efidir_efi_boot, "bootloongarch64.efi");
+      make_image_fwdisk_abs (GRUB_INSTALL_PLATFORM_LOONGARCH64_EFI,
+			     "loongarch64-efi",
 			     imgname);
       free (imgname);
 
       imgname = grub_util_path_concat (2, efidir_efi_boot, "bootriscv32.efi");
-      make_image_fwdisk_abs (GRUB_INSTALL_PLATFORM_RISCV32_EFI, "riscv32-efi",
-			     imgname);
+      make_image_abs (GRUB_INSTALL_PLATFORM_RISCV32_EFI, "riscv32-efi", imgname);
       free (imgname);
 
       imgname = grub_util_path_concat (2, efidir_efi_boot, "bootriscv64.efi");
-      make_image_fwdisk_abs (GRUB_INSTALL_PLATFORM_RISCV64_EFI, "riscv64-efi",
-			     imgname);
+      make_image_abs (GRUB_INSTALL_PLATFORM_RISCV64_EFI, "riscv64-efi", imgname);
       free (imgname);
 
       if (source_dirs[GRUB_INSTALL_PLATFORM_I386_EFI])
@@ -824,10 +863,11 @@ main (int argc, char *argv[])
       xorriso_push ("-efi-boot-part");
       xorriso_push ("--efi-boot-image");
 
-      grub_util_unlink_recursive (efidir);
+      /* Don't unlink the efidir_efi_boot directory so that we have a duplicate on the ISO 9660 file system. */
       free (efiimgfat);
       free (efidir_efi);
-      free (efidir);
+      grub_install_pop_module ();
+      grub_install_pop_module ();
       grub_install_pop_module ();
       grub_install_pop_module ();
     }

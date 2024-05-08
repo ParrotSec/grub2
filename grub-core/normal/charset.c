@@ -17,7 +17,7 @@
  */
 
 /*
-  Current problems with Unicode rendering: 
+  Current problems with Unicode rendering:
   - B and BN bidi type characters (ignored)
   - Mc type characters with combining class 0 (poorly combined)
   - Mn type characters with combining class 0 (poorly combined)
@@ -142,7 +142,7 @@ grub_get_num_of_utf8_bytes (const grub_uint32_t *src, grub_size_t size)
   while (remaining--)
     {
       grub_uint32_t code = *ptr++;
-      
+
       if (code <= 0x007F)
 	cnt++;
       else if (code <= 0x07FF)
@@ -205,7 +205,7 @@ grub_utf8_to_ucs4_alloc (const char *msg, grub_uint32_t **unicode_msg,
   grub_size_t msg_len = grub_strlen (msg);
 
   *unicode_msg = grub_calloc (msg_len, sizeof (grub_uint32_t));
- 
+
   if (!*unicode_msg)
     return -1;
 
@@ -395,6 +395,8 @@ grub_unicode_estimate_width (const struct grub_unicode_glyph *c)
 {
   if (grub_unicode_get_comb_type (c->base))
     return 0;
+  if (((unsigned long) (c->base >> 3)) >= ARRAY_SIZE (widthspec))
+    return 1;
   if (widthspec[c->base >> 3] & (1 << (c->base & 7)))
     return 2;
   else
@@ -408,11 +410,11 @@ is_type_after (enum grub_comb_type a, enum grub_comb_type b)
 {
   /* Shadda is numerically higher than most of Arabic diacritics but has
      to be rendered before them.  */
-  if (a == GRUB_UNICODE_COMB_ARABIC_SHADDA 
+  if (a == GRUB_UNICODE_COMB_ARABIC_SHADDA
       && b <= GRUB_UNICODE_COMB_ARABIC_KASRA
       && b >= GRUB_UNICODE_COMB_ARABIC_FATHATAN)
     return 0;
-  if (b == GRUB_UNICODE_COMB_ARABIC_SHADDA 
+  if (b == GRUB_UNICODE_COMB_ARABIC_SHADDA
       && a <= GRUB_UNICODE_COMB_ARABIC_KASRA
       && a >= GRUB_UNICODE_COMB_ARABIC_FATHATAN)
     return 1;
@@ -441,7 +443,7 @@ grub_unicode_aglomerate_comb (const grub_uint32_t *in, grub_size_t inlen,
 
   for (ptr = in; ptr < in + inlen; ptr++)
     {
-      /* Variation selectors >= 17 are outside of BMP and SMP. 
+      /* Variation selectors >= 17 are outside of BMP and SMP.
 	 Handle variation selectors first to avoid potentially costly lookups.
       */
       if (*ptr >= GRUB_UNICODE_VARIATION_SELECTOR_1
@@ -458,7 +460,7 @@ grub_unicode_aglomerate_comb (const grub_uint32_t *in, grub_size_t inlen,
 	    out->variant = *ptr - GRUB_UNICODE_VARIATION_SELECTOR_17 + 17;
 	  continue;
 	}
-	
+
       enum grub_comb_type comb_type;
       comb_type = grub_unicode_get_comb_type (*ptr);
       if (comb_type)
@@ -468,6 +470,9 @@ grub_unicode_aglomerate_comb (const grub_uint32_t *in, grub_size_t inlen,
 	  grub_size_t sz;
 
 	  if (!haveout)
+	    continue;
+
+	  if (out->ncomb == GRUB_UNICODE_NCOMB_MAX)
 	    continue;
 
 	  if (comb_type == GRUB_UNICODE_COMB_MC
@@ -598,7 +603,7 @@ bidi_line_wrap (struct grub_unicode_glyph *visual_out,
   for (k = 0; k <= visual_len; k++)
     {
       grub_ssize_t last_width = 0;
- 
+
       if (pos && k != visual_len)
 	{
 	  pos[visual[k].orig_pos].x = line_width;
@@ -624,9 +629,9 @@ bidi_line_wrap (struct grub_unicode_glyph *visual_out,
 	  last_space_width = line_width;
 	}
 
-      if (((grub_ssize_t) maxwidth > 0 
+      if (((grub_ssize_t) maxwidth > 0
 	   && line_width > (grub_ssize_t) maxwidth) || k == visual_len)
-	{	  
+	{
 	  unsigned min_odd_level = 0xffffffff;
 	  unsigned max_level = 0;
 	  unsigned kk = k;
@@ -660,7 +665,7 @@ bidi_line_wrap (struct grub_unicode_glyph *visual_out,
 	  }
 
 	  {
-	    unsigned j;	  
+	    unsigned j;
 	    /* FIXME: can be optimized.  */
 	    for (j = max_level; j > min_odd_level - 1; j--)
 	      {
@@ -677,7 +682,7 @@ bidi_line_wrap (struct grub_unicode_glyph *visual_out,
 		  }
 	      }
 	  }
-	  
+
 	  {
 	    unsigned i;
 	    for (i = line_start; i < kk; i++)
@@ -689,10 +694,10 @@ bidi_line_wrap (struct grub_unicode_glyph *visual_out,
 		  {
 		    int left, right;
 		    left = visual[i].attributes
-		      & (GRUB_UNICODE_GLYPH_ATTRIBUTE_LEFT_JOINED 
+		      & (GRUB_UNICODE_GLYPH_ATTRIBUTE_LEFT_JOINED
 			 | GRUB_UNICODE_GLYPH_ATTRIBUTE_LEFT_JOINED_EXPLICIT);
 		    right = visual[i].attributes
-		      & (GRUB_UNICODE_GLYPH_ATTRIBUTE_RIGHT_JOINED 
+		      & (GRUB_UNICODE_GLYPH_ATTRIBUTE_RIGHT_JOINED
 			 | GRUB_UNICODE_GLYPH_ATTRIBUTE_RIGHT_JOINED_EXPLICIT);
 		    visual[i].attributes &= ~GRUB_UNICODE_GLYPH_ATTRIBUTES_JOIN;
 		    left <<= GRUB_UNICODE_GLYPH_ATTRIBUTES_JOIN_LEFT_TO_RIGHT_SHIFT;
@@ -757,7 +762,7 @@ bidi_line_wrap (struct grub_unicode_glyph *visual_out,
 		    || join_type == GRUB_JOIN_TYPE_CAUSING)
 		  right_join = 1;
 	      }
-	  }		
+	  }
 
 	  grub_memcpy (outptr, &visual[line_start],
 		       (kk - line_start) * sizeof (visual[0]));
@@ -863,7 +868,7 @@ grub_bidi_line_logical_to_visual (const grub_uint32_t *logical,
     base_level = 1;
   else
     base_level = 0;
-  
+
   cur_level = base_level;
   cur_override = OVERRIDE_NEUTRAL;
   {
@@ -894,7 +899,7 @@ grub_bidi_line_logical_to_visual (const grub_uint32_t *logical,
 	      {
 		visual[visual_len - 1].attributes
 		  |= GRUB_UNICODE_GLYPH_ATTRIBUTE_RIGHT_JOINED_EXPLICIT;
-		visual[visual_len - 1].attributes 
+		visual[visual_len - 1].attributes
 		  &= ~GRUB_UNICODE_GLYPH_ATTRIBUTE_RIGHT_JOINED;
 	      }
 	    zwj_propagate_to_previous = 0;
@@ -907,7 +912,7 @@ grub_bidi_line_logical_to_visual (const grub_uint32_t *logical,
 	if (*lptr >= GRUB_UNICODE_TAG_START && *lptr <= GRUB_UNICODE_TAG_END)
 	  continue;
 
-	p = grub_unicode_aglomerate_comb (lptr, logical + logical_len - lptr, 
+	p = grub_unicode_aglomerate_comb (lptr, logical + logical_len - lptr,
 					  &visual[visual_len]);
 	visual[visual_len].orig_pos = lptr - logical;
 	type = get_bidi_type (visual[visual_len].base);
@@ -944,7 +949,7 @@ grub_bidi_line_logical_to_visual (const grub_uint32_t *logical,
 		    |= GRUB_UNICODE_GLYPH_ATTRIBUTE_LEFT_JOINED_EXPLICIT
 		    | GRUB_UNICODE_GLYPH_ATTRIBUTE_LEFT_JOINED;
 		}
-	      
+
 	      if (join_state == NOJOIN)
 		{
 		  visual[visual_len].attributes
@@ -958,7 +963,7 @@ grub_bidi_line_logical_to_visual (const grub_uint32_t *logical,
 
 	      visual[visual_len].bidi_level = cur_level;
 	      if (cur_override != OVERRIDE_NEUTRAL)
-		visual[visual_len].bidi_type = 
+		visual[visual_len].bidi_type =
 		  (cur_override == OVERRIDE_L) ? GRUB_BIDI_TYPE_L
 		  : GRUB_BIDI_TYPE_R;
 	      else
@@ -1009,7 +1014,7 @@ grub_bidi_line_logical_to_visual (const grub_uint32_t *logical,
 		  break;
 		case GRUB_BIDI_TYPE_ES:
 		  if (last_type == GRUB_BIDI_TYPE_EN
-		      && i + 1 < run_end 
+		      && i + 1 < run_end
 		      && visual[i + 1].bidi_type == GRUB_BIDI_TYPE_EN)
 		    visual[i].bidi_type = GRUB_BIDI_TYPE_EN;
 		  else
@@ -1037,19 +1042,19 @@ grub_bidi_line_logical_to_visual (const grub_uint32_t *logical,
 			   && visual[i].bidi_type == GRUB_BIDI_TYPE_ET; i++)
 		      visual[i].bidi_type = GRUB_BIDI_TYPE_ON;
 		    i--;
-		    break;		
+		    break;
 		  }
 		  break;
 		case GRUB_BIDI_TYPE_CS:
 		  if (last_type == GRUB_BIDI_TYPE_EN
-		      && i + 1 < run_end 
+		      && i + 1 < run_end
 		      && visual[i + 1].bidi_type == GRUB_BIDI_TYPE_EN)
 		    {
 		      visual[i].bidi_type = GRUB_BIDI_TYPE_EN;
 		      break;
 		    }
 		  if (last_type == GRUB_BIDI_TYPE_AN
-		      && i + 1 < run_end 
+		      && i + 1 < run_end
 		      && (visual[i + 1].bidi_type == GRUB_BIDI_TYPE_AN
 			  || (visual[i + 1].bidi_type == GRUB_BIDI_TYPE_EN
 			      && last_strong_type == GRUB_BIDI_TYPE_AL)))
@@ -1263,7 +1268,7 @@ grub_unicode_shape_code (grub_uint32_t in, grub_uint8_t attr)
 }
 
 const grub_uint32_t *
-grub_unicode_get_comb_start (const grub_uint32_t *str, 
+grub_unicode_get_comb_start (const grub_uint32_t *str,
 			     const grub_uint32_t *cur)
 {
   const grub_uint32_t *ptr;
@@ -1276,7 +1281,7 @@ grub_unicode_get_comb_start (const grub_uint32_t *str,
       if (*ptr >= GRUB_UNICODE_VARIATION_SELECTOR_17
 	  && *ptr <= GRUB_UNICODE_VARIATION_SELECTOR_256)
 	continue;
-	
+
       enum grub_comb_type comb_type;
       comb_type = grub_unicode_get_comb_type (*ptr);
       if (comb_type)
@@ -1287,7 +1292,7 @@ grub_unicode_get_comb_start (const grub_uint32_t *str,
 }
 
 const grub_uint32_t *
-grub_unicode_get_comb_end (const grub_uint32_t *end, 
+grub_unicode_get_comb_end (const grub_uint32_t *end,
 			   const grub_uint32_t *cur)
 {
   const grub_uint32_t *ptr;
@@ -1300,7 +1305,7 @@ grub_unicode_get_comb_end (const grub_uint32_t *end,
       if (*ptr >= GRUB_UNICODE_VARIATION_SELECTOR_17
 	  && *ptr <= GRUB_UNICODE_VARIATION_SELECTOR_256)
 	continue;
-	
+
       enum grub_comb_type comb_type;
       comb_type = grub_unicode_get_comb_type (*ptr);
       if (comb_type)

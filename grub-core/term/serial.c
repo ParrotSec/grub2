@@ -37,8 +37,6 @@
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
-#define FOR_SERIAL_PORTS(var) FOR_LIST_ELEMENTS((var), (grub_serial_ports))
-
 enum
   {
     OPTION_UNIT,
@@ -65,7 +63,7 @@ static const struct grub_arg_option options[] =
   {0, 0, 0, 0, 0, 0}
 };
 
-static struct grub_serial_port *grub_serial_ports;
+struct grub_serial_port *grub_serial_ports;
 
 struct grub_serial_output_state
 {
@@ -79,7 +77,7 @@ struct grub_serial_input_state
   struct grub_serial_port *port;
 };
 
-static void 
+static void
 serial_put (grub_term_output_t term, const int c)
 {
   struct grub_serial_output_state *data = term->data;
@@ -147,39 +145,95 @@ grub_serial_find (const char *name)
 {
   struct grub_serial_port *port;
 
+  /*
+   * First look for an exact match by name, this will take care of
+   * things like "com0" which have already been created and that
+   * this function cannot re-create.
+   */
   FOR_SERIAL_PORTS (port)
     if (grub_strcmp (port->name, name) == 0)
-      break;
+      return port;
 
 #if (defined(__mips__) || defined (__i386__) || defined (__x86_64__)) && !defined(GRUB_MACHINE_EMU) && !defined(GRUB_MACHINE_ARC)
-  if (!port && grub_memcmp (name, "port", sizeof ("port") - 1) == 0
+  if (grub_strncmp (name, "port", sizeof ("port") - 1) == 0
       && grub_isxdigit (name [sizeof ("port") - 1]))
     {
-      name = grub_serial_ns8250_add_port (grub_strtoul (&name[sizeof ("port") - 1],
-							0, 16));
-      if (!name)
-	return NULL;
-
-      FOR_SERIAL_PORTS (port)
-	if (grub_strcmp (port->name, name) == 0)
-	  break;
+      port = grub_serial_ns8250_add_port (grub_strtoul (&name[sizeof ("port") - 1],
+							0, 16), NULL);
+      if (port != NULL)
+        return port;
     }
+  if (grub_strncmp (name, "mmio,", sizeof ("mmio,") - 1) == 0
+      && grub_isxdigit (name [sizeof ("mmio,") - 1]))
+    {
+      const char *p1, *p = &name[sizeof ("mmio,") - 1];
+      grub_addr_t addr = grub_strtoul (p, &p1, 16);
+      unsigned int acc_size = 1;
+
+      /*
+       * If we reach here, we know there's a digit after "mmio,", so
+       * all we need to check is the validity of the character following
+       * the number, which should be a termination, or a dot followed by
+       * an access size.
+       */
+      if (p1[0] != '\0' && p1[0] != '.')
+        {
+          grub_error (GRUB_ERR_BAD_ARGUMENT, N_("incorrect MMIO address syntax"));
+          return NULL;
+        }
+      if (p1[0] == '.')
+        switch(p1[1])
+          {
+          case 'w':
+            acc_size = 2;
+            break;
+          case 'l':
+            acc_size = 3;
+            break;
+          case 'q':
+            acc_size = 4;
+            break;
+          case 'b':
+            acc_size = 1;
+            break;
+          default:
+            /*
+             * Should we abort for an unknown size? Let's just default
+             * to 1 byte, it would increase the chance that the user who
+             * did a typo can actually see the console.
+             */
+            grub_error (GRUB_ERR_BAD_ARGUMENT, N_("incorrect MMIO access size"));
+          }
+
+      port = grub_serial_ns8250_add_mmio (addr, acc_size, NULL);
+      if (port != NULL)
+        return port;
+    }
+
+#if (defined(__i386__) || defined(__x86_64__)) && !defined(GRUB_MACHINE_IEEE1275) && !defined(GRUB_MACHINE_QEMU)
+  if (grub_strcmp (name, "auto") == 0)
+    {
+      /* Look for an SPCR if any. If not, default to com0. */
+      port = grub_ns8250_spcr_init ();
+      if (port != NULL)
+        return port;
+      FOR_SERIAL_PORTS (port)
+        if (grub_strcmp (port->name, "com0") == 0)
+          return port;
+    }
+#endif
 #endif
 
 #ifdef GRUB_MACHINE_IEEE1275
-  if (!port && grub_memcmp (name, "ieee1275/", sizeof ("ieee1275/") - 1) == 0)
+  if (grub_strncmp (name, "ieee1275/", sizeof ("ieee1275/") - 1) == 0)
     {
-      name = grub_ofserial_add_port (&name[sizeof ("ieee1275/") - 1]);
-      if (!name)
-	return NULL;
-
-      FOR_SERIAL_PORTS (port)
-	if (grub_strcmp (port->name, name) == 0)
-	  break;
+      port = grub_ofserial_add_port (&name[sizeof ("ieee1275/") - 1]);
+      if (port != NULL)
+        return port;
     }
 #endif
 
-  return port;
+  return NULL;
 }
 
 static grub_err_t
@@ -201,8 +255,15 @@ grub_cmd_serial (grub_extcmd_context_t ctxt, int argc, char **args)
 
   if (state[OPTION_PORT].set)
     {
-      grub_snprintf (pname, sizeof (pname), "port%lx",
-		     grub_strtoul (state[1].arg, 0, 0));
+      if (grub_strncmp (state[OPTION_PORT].arg, "mmio,", sizeof ("mmio,") - 1) == 0 ||
+	  grub_strncmp (state[OPTION_PORT].arg, "pci,", sizeof ("pci,") - 1) == 0)
+	{
+	  grub_strncpy (pname, state[1].arg, sizeof (pname));
+	  pname[sizeof (pname) - 1] = '\0';
+	}
+      else
+	grub_snprintf (pname, sizeof (pname), "port%lx",
+		       grub_strtoul (state[1].arg, 0, 0));
       name = pname;
     }
 
@@ -210,11 +271,11 @@ grub_cmd_serial (grub_extcmd_context_t ctxt, int argc, char **args)
     name = args[0];
 
   if (!name)
-    name = "com0";
+    name = "auto";
 
   port = grub_serial_find (name);
   if (!port)
-    return grub_error (GRUB_ERR_BAD_ARGUMENT, 
+    return grub_error (GRUB_ERR_BAD_ARGUMENT,
 		       N_("serial port `%s' isn't found"),
 		       name);
 
@@ -400,7 +461,7 @@ grub_serial_unregister (struct grub_serial_port *port)
 {
   if (port->driver->fini)
     port->driver->fini (port);
-  
+
   if (port->term_in)
     grub_term_unregister_input (port->term_in);
   if (port->term_out)
@@ -447,6 +508,9 @@ GRUB_MOD_INIT(serial)
 #endif
 #ifdef GRUB_MACHINE_ARC
   grub_arcserial_init ();
+#endif
+#if defined(__i386__) || defined(__x86_64__)
+  grub_pciserial_init ();
 #endif
 }
 

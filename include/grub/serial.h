@@ -86,9 +86,22 @@ struct grub_serial_port
    */
   union
   {
+    struct
+    {
+      bool use_mmio;
+      union
+      {
 #if defined(__mips__) || defined (__i386__) || defined (__x86_64__)
-    grub_port_t port;
+        grub_port_t port;
 #endif
+        struct
+        {
+          grub_addr_t base;
+          /* Access size uses ACPI definition */
+          grub_uint8_t access_size;
+        } mmio;
+      };
+    };
     struct
     {
       grub_usb_device_t usbdev;
@@ -177,7 +190,12 @@ grub_serial_config_defaults (struct grub_serial_port *port)
 
 #if defined(__mips__) || defined (__i386__) || defined (__x86_64__)
 void grub_ns8250_init (void);
-char *grub_serial_ns8250_add_port (grub_port_t port);
+struct grub_serial_port *grub_ns8250_spcr_init (void);
+struct grub_serial_port *grub_serial_ns8250_add_port (grub_port_t port,
+						      struct grub_serial_config *config);
+struct grub_serial_port *grub_serial_ns8250_add_mmio (grub_addr_t addr,
+						      unsigned int acc_size,
+						      struct grub_serial_config *config);
 #endif
 #ifdef GRUB_MACHINE_IEEE1275
 void grub_ofserial_init (void);
@@ -189,8 +207,11 @@ grub_efiserial_init (void);
 #ifdef GRUB_MACHINE_ARC
 void
 grub_arcserial_init (void);
-const char *
-grub_arcserial_add_port (const char *path);
+struct grub_serial_port *grub_arcserial_add_port (const char *path);
+#endif
+
+#if defined(__i386__) || defined(__x86_64__)
+extern void grub_pciserial_init (void);
 #endif
 
 struct grub_serial_port *grub_serial_find (const char *name);
@@ -201,5 +222,8 @@ void EXPORT_FUNC(grub_serial_unregister_driver) (struct grub_serial_driver *driv
 extern void grub_serial_init (void);
 extern void grub_serial_fini (void);
 #endif
+
+extern struct grub_serial_port *grub_serial_ports;
+#define FOR_SERIAL_PORTS(var) FOR_LIST_ELEMENTS((var), (grub_serial_ports))
 
 #endif

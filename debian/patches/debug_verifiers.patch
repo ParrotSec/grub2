@@ -1,4 +1,3 @@
-From 55796e3e90a55d54aff94f2dfeb6e02055e08e30 Mon Sep 17 00:00:00 2001
 From: Steve McIntyre <93sam@debian.org>
 Date: Sat, 17 Apr 2021 22:05:47 +0100
 Subject: Add debug to display what's going on with verifiers
@@ -9,7 +8,7 @@ Patch-Name: debug_verifiers.patch
  1 file changed, 2 insertions(+)
 
 diff --git a/grub-core/kern/verifiers.c b/grub-core/kern/verifiers.c
-index 1245d0d9e..5242a723f 100644
+index 1245d0d..5242a72 100644
 --- a/grub-core/kern/verifiers.c
 +++ b/grub-core/kern/verifiers.c
 @@ -100,11 +100,13 @@ grub_verifiers_open (grub_file_t io, enum grub_file_type type)

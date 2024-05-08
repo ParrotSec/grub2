@@ -1,5 +1,5 @@
-#include <config.h>
 #include <config-util.h>
+#include <config.h>
 
 #include <sys/times.h>
 #include <unistd.h>
@@ -17,6 +17,6 @@ grub_util_get_cpu_time_ms (void)
 	sc_clk_tck = 1000;
     }
 
-  times (&tm); 
+  times (&tm);
   return (tm.tms_utime * 1000ULL) / sc_clk_tck;
 }

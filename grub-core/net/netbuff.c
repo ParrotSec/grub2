@@ -54,7 +54,7 @@ grub_err_t
 grub_netbuff_pull (struct grub_net_buff *nb, grub_size_t len)
 {
   nb->data += len;
-  if (nb->data > nb->end)
+  if (nb->data > nb->end || nb->data > nb->tail)
     return grub_error (GRUB_ERR_BUG,
 		       "pull out of the packet range.");
   return GRUB_ERR_NONE;
@@ -79,10 +79,23 @@ grub_netbuff_alloc (grub_size_t len)
 
   COMPILE_TIME_ASSERT (NETBUFF_ALIGN % sizeof (grub_properly_aligned_t) == 0);
 
+  /*
+   * The largest size of a TCP packet is 64 KiB, and everything else
+   * should be a lot smaller - most MTUs are 1500 or less. Cap data
+   * size at 64 KiB + a buffer.
+   */
+  if (len > 0xffffUL + 0x1000UL)
+    {
+      grub_error (GRUB_ERR_BUG,
+                  "attempted to allocate a packet that is too big");
+      return NULL;
+    }
+
   if (len < NETBUFFMINLEN)
     len = NETBUFFMINLEN;
 
   len = ALIGN_UP (len, NETBUFF_ALIGN);
+
 #ifdef GRUB_MACHINE_EMU
   data = grub_malloc (len + sizeof (*nb));
 #else

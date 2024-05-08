@@ -1,7 +1,7 @@
 This is grub-dev.info, produced by makeinfo version 6.3 from
 grub-dev.texi.
 
-This developer manual is for GNU GRUB (version 2.06, 10 May 2021).
+This developer manual is for GNU GRUB (version 2.12, 31 August 2023).
 
    Copyright (C) 1999,2000,2001,2002,2004,2005,2006,2008,2009,2010,2011
 Free Software Foundation, Inc.
@@ -25,9 +25,9 @@ This is the developer documentation of GNU GRUB, the GRand Unified
 Bootloader, a flexible and powerful boot loader program for a wide range
 of architectures.
 
-   This edition documents version 2.06.
+   This edition documents version 2.12.
 
-   This developer manual is for GNU GRUB (version 2.06, 10 May 2021).
+   This developer manual is for GNU GRUB (version 2.12, 31 August 2023).
 
    Copyright (C) 1999,2000,2001,2002,2004,2005,2006,2008,2009,2010,2011
 Free Software Foundation, Inc.
@@ -43,7 +43,9 @@ Free Software Foundation, Inc.
 * Coding style::
 * Finding your way around::
 * Contributing Changes::
+* Setting up and running test suite::
 * Updating External Code::
+* Debugging::
 * Porting::
 * Error Handling::
 * Stack and heap size::
@@ -62,7 +64,8 @@ File: grub-dev.info,  Node: Getting the source code,  Next: Coding style,  Prev:
 1 Getting the source code
 *************************
 
-GRUB is maintained using the <GIT revision control system>.  To fetch:
+GRUB is maintained using the GIT revision control system
+(https://git-scm.com/book/en/v2).  To fetch:
 
      git clone git://git.sv.gnu.org/grub.git
 
@@ -325,7 +328,7 @@ the following exceptions:
 they matter to you.
 
 
-File: grub-dev.info,  Node: Contributing Changes,  Next: Updating External Code,  Prev: Finding your way around,  Up: Top
+File: grub-dev.info,  Node: Contributing Changes,  Next: Setting up and running test suite,  Prev: Finding your way around,  Up: Top
 
 4 Contributing changes
 **********************
@@ -342,8 +345,8 @@ study this manual and try GRUB 2 out to see what you think is missing
 from there.
 
    Here are additional pointers:
-   * <https://savannah.gnu.org/task/?group=grub GRUB's Task Tracker>
-   * <https://savannah.gnu.org/bugs/?group=grub GRUB's Bug Tracker>
+   * GRUB's Task Tracker (https://savannah.gnu.org/task/?group=grub)
+   * GRUB's Bug Tracker (https://savannah.gnu.org/bugs/?group=grub)
 
    If you intended to make changes to GRUB Legacy (<=0.97) those are not
 accepted anymore.
@@ -479,10 +482,10 @@ File: grub-dev.info,  Node: When you are approved for write access to project's 
 4.3 When you are approved for write access to project's files
 =============================================================
 
-As you might know, GRUB is hosted on
-<https://savannah.gnu.org/projects/grub Savannah>, thus the membership
-is managed by Savannah.  This means that, if you want to be a member of
-this project:
+As you might know, GRUB is hosted on Savannah
+(https://savannah.gnu.org/projects/grub), thus the membership is managed
+by Savannah.  This means that, if you want to be a member of this
+project:
 
   1. You need to create your own account on Savannah.
   2. You can submit "Request for Inclusion" from "My Groups" on
@@ -505,9 +508,23 @@ communicate first (e.g.  sending a patch, asking a question, commenting
 on another message...).
 
 
-File: grub-dev.info,  Node: Updating External Code,  Next: Porting,  Prev: Contributing Changes,  Up: Top
+File: grub-dev.info,  Node: Setting up and running test suite,  Next: Updating External Code,  Prev: Contributing Changes,  Up: Top
 
-5 Updating external code
+5 Setting up and running test suite
+***********************************
+
+GRUB is basically a tiny operating system with read support for many
+file systems and which has been ported to a variety of architectures.
+As such, its test suite has quite a few dependencies required to fully
+run the suite.  These dependencies are currently documented in the
+INSTALL (https://git.savannah.gnu.org/cgit/grub.git/tree/INSTALL) file
+in the source repository.  Once installed, the test suite can be started
+by running the 'make check' command from the GRUB build directory.
+
+
+File: grub-dev.info,  Node: Updating External Code,  Next: Debugging,  Prev: Setting up and running test suite,  Up: Top
+
+6 Updating external code
 ************************
 
 GRUB includes some code from other projects, and it is sometimes
@@ -522,7 +539,7 @@ necessary to update it.
 
 File: grub-dev.info,  Node: Gnulib,  Next: jsmn,  Up: Updating External Code
 
-5.1 Gnulib
+6.1 Gnulib
 ==========
 
 Gnulib is a source code library that provides basic functionality to
@@ -580,7 +597,7 @@ running the './bootstrap' utility:
 
 File: grub-dev.info,  Node: jsmn,  Next: minilzo,  Prev: Gnulib,  Up: Updating External Code
 
-5.2 jsmn
+6.2 jsmn
 ========
 
 jsmn is a minimalistic JSON parser which is implemented in a single
@@ -594,7 +611,7 @@ commit to the target directory:
 
 File: grub-dev.info,  Node: minilzo,  Prev: jsmn,  Up: Updating External Code
 
-5.3 minilzo
+6.3 minilzo
 ===========
 
 miniLZO is a very lightweight subset of the LZO library intended for
@@ -604,17 +621,261 @@ the LZO source code and contains the most important LZO functions.
    To upgrade to a new version of the miniLZO library, download the
 release tarball and copy the files into the target directory:
 
-     curl -L -O http://www.oberhumer.com/opensource/lzo/download/minilzo-2.08.tar.gz
-     tar -zxf minilzo-2.08.tar.gz
-     rm minilzo-2.08/testmini.c
+     curl -L -O https://www.oberhumer.com/opensource/lzo/download/minilzo-2.10.tar.gz
+     tar -zxf minilzo-2.10.tar.gz
+     rm minilzo-2.10/testmini.c
      rm -r grub-core/lib/minilzo/*
-     cp minilzo-2.08/*.[hc] grub-core/lib/minilzo
-     rm -r minilzo-2.08*
+     cp minilzo-2.10/*.[hc] grub-core/lib/minilzo
+     rm -r minilzo-2.10*
 
 
-File: grub-dev.info,  Node: Porting,  Next: Error Handling,  Prev: Updating External Code,  Up: Top
+File: grub-dev.info,  Node: Debugging,  Next: Porting,  Prev: Updating External Code,  Up: Top
 
-6 Porting
+7 Debugging
+***********
+
+GRUB2 can be difficult to debug because it runs on the bare-metal and
+thus does not have the debugging facilities normally provided by an
+operating system.  This chapter aims to provide useful information on
+some ways to debug GRUB2 for some architectures.  It by no means intends
+to be exhaustive.  The focus will be one x86_64 and i386 architectures.
+Luckily for some issues virtual machines have made the ability to debug
+GRUB2 much easier, and this chapter will focus debugging via the QEMU
+virtual machine.  We will not be going over debugging of the userland
+tools (eg.  grub-install), there are many tutorials on debugging
+programs in userland.
+
+   You will need GDB and the QEMU binaries for your system, on Debian
+these can be installed with the 'gdb' and 'qemu-system-x86' packages.
+Also it is assumed that you have already successfully compiled GRUB2
+from source for the target specified in the section below and have some
+familiarity with GDB. When GRUB2 is built it will create many different
+binaries.  The ones of concern will be in the 'grub-core' directory of
+the GRUB2 build dir.  To aide in debugging we will want the debugging
+symbols generated during the build because these symbols are not kept in
+the binaries which get installed to the boot location.  The build
+process outputs two sets of binaries, one without symbols which gets
+executed at boot, and another set of ELF images with debugging symbols.
+The built images with debugging symbols will have a '.image' suffix, and
+the ones without a '.img' suffix.  Similarly, loadable modules with
+debugging symbols will have a '.module' suffix, and ones without a
+'.mod' suffix.  In the case of the kernel the binary with symbols is
+named 'kernel.exec'.
+
+   In the following sections, information will be provided on debugging
+on various targets using 'gdb' and the 'gdb_grub' GDB script.
+
+* Menu:
+
+* i386-pc::
+* x86_64-efi::
+
+
+File: grub-dev.info,  Node: i386-pc,  Next: x86_64-efi,  Up: Debugging
+
+7.1 i386-pc
+===========
+
+The i386-pc target is a good place to start when first debugging GRUB2
+because in some respects it's easier than EFI platforms.  The reason
+being that the initial load address is always known in advance.  To
+start debugging GRUB2 first QEMU must be started in GDB stub mode.  The
+following command is a simple illustration:
+
+     qemu-system-i386 -drive file=disk.img,format=raw \
+         -device virtio-scsi-pci,id=scsi0 -S -s
+
+   This will start a QEMU instance booting from 'disk.img'.  It will
+pause at start waiting for a GDB instance to attach to it.  You should
+change 'disk.img' to something more appropriate.  A block device can be
+used, but you may need to run QEMU as a privileged user.
+
+   To connect to this QEMU instance with GDB, the 'target remote' GDB
+command must be used.  We also need to load a binary image, preferably
+with symbols.  This can be done using the GDB command 'file
+kernel.exec', if GDB is started from the 'grub-core' directory in the
+GRUB2 build directory.  GRUB2 developers have made this more simple by
+including a GDB script which does much of the setup.  This file is at
+'grub-core/gdb_grub' in the build directory and is also installed via
+'make install'.  When using a pre-built GRUB, the distribution may have
+a package which installs this GDB script along with debug symbol
+binaries, such as Debian's 'grub-pc-dbg' package.  The GDB script is
+intended to be used like so, assuming that '/path/to/script' is the path
+to the directory containing the gdb_grub script and debug symbol files:
+
+     cd $(dirname /path/to/script/gdb_grub)
+     gdb -x gdb_grub
+
+   Once GDB has been started with the 'gdb_grub' script it will
+automatically connect to the QEMU instance.  You can then do things you
+normally would in GDB like set a break point on GRUB_MAIN.
+
+   Setting breakpoints in modules is trickier since they haven't been
+loaded yet and are loaded at addresses determined at runtime.  The
+module could be loaded to different addresses in different QEMU
+instances.  The debug symbols in the modules '.module' binary, thus are
+always wrong, and GDB needs to be told where to load the symbols to.
+But this must happen at runtime after GRUB2 has determined where the
+module will get loaded.  Luckily the 'gdb_grub' script takes care of
+this with the 'runtime_load_module' command, which configures GDB to
+watch for GRUB2 module loading and when it does add the module symbols
+with the appropriate offset.
+
+
+File: grub-dev.info,  Node: x86_64-efi,  Prev: i386-pc,  Up: Debugging
+
+7.2 x86_64-efi
+==============
+
+Using GDB to debug GRUB2 for the x86_64-efi target has some similarities
+with the i386-pc target.  Please read and familiarize yourself with the
+*note i386-pc:: section when reading this one.  Extra care must be used
+to run QEMU such that it boots a UEFI firmware.  This usually involves
+either using the '-bios' option with a UEFI firmware blob (eg.
+'OVMF.fd') or loading the firmware via pflash.  This document will not
+go further into how to do this as there are ample resource on the web.
+
+   Like all EFI implementations, on x86_64-efi the (U)EFI firmware that
+loads the GRUB2 EFI application determines at runtime where the
+application will be loaded.  This means that we do not know where to
+tell GDB to load the symbols for the GRUB2 core until the (U)EFI
+firmware determines it.  There are two good ways of figuring this out
+when running in QEMU: use a *note debug build of OVMF: OVMF debug log.
+and check the debug log, or have GRUB2 say where it is loaded.  Neither
+of these are ideal because they both generally give the information
+after GRUB2 is already running, which makes debugging early boot
+infeasible.  Technically, the first method does give the load address
+before GRUB2 is run, but without debugging the EFI firmware with
+symbols, the author currently does not know how to cause the OVMF
+firmware to pause at that point to use the load address before GRUB2 is
+run.
+
+   Even after getting the application load address, the loading of core
+symbols is complicated by the fact that the debugging symbols for the
+kernel are in an ELF binary named 'kernel.exec' while what is in memory
+are sections for the PE32+ EFI binary.  When 'grub-mkimage' creates the
+PE32+ binary it condenses several segments from the ELF kernel binary
+into one .data section in the PE32+ binary.  This must be taken into
+account to properly load the other non-text sections.  Otherwise, GDB
+will work as expected when breaking on functions, but, for instance,
+global variables will point to the wrong address in memory and thus give
+incorrect values (which can be difficult to debug).
+
+   Calculating the correct offsets for sections is taken care of
+automatically when loading the kernel symbols via the user-defined GDB
+command 'dynamic_load_kernel_exec_symbols', which takes one argument,
+the address where the text section is loaded as determined by one of the
+methods above.  Alternatively, the command 'dynamic_load_symbols' with
+the text section address as an agrument can be called to load the kernel
+symbols and set up loading the module symbols as they are loaded at
+runtime.
+
+   In the author's experience, when debugging with QEMU and OVMF, to
+have debugging symbols loaded at the start of GRUB2 execution the GRUB2
+EFI application must be run via QEMU at least once prior in order to get
+the load address.  Two methods for obtaining the load address are
+described in two subsections below.  Generally speaking, the load
+address does not change between QEMU runs.  There are exceptions to
+this, namely that different GRUB2 EFI applications can be run at
+different addresses.  Also, it has been observed that after running the
+EFI application for the first time, the second run will sometimes have a
+different load address, but subsequent runs of the same EFI application
+will have the same load address as the second run.  And it's a near
+certainty that if the GRUB EFI binary has changed, eg.  been recompiled,
+the load address will also be different.
+
+   This ability to predict what the load address will be allows one to
+assume the load address on subsequent runs and thus load the symbols
+before GRUB2 starts.  The following command illustrates this, assuming
+that QEMU is running and waiting for a debugger connection and the
+current working directory is where 'gdb_grub' resides:
+
+     gdb -x gdb_grub -ex 'dynamic_load_symbols ADDRESS OF .TEXT SECTION'
+
+   If you load the symbols in this manner and, after continuing
+execution, do not see output showing the module symbols loading, then it
+is very likely that the load address was incorrect.
+
+   Another thing to be aware of is how the loading of the GRUB image by
+the firmware affects previously set software breakpoints.  On x86
+platforms, software breakpoints are implemented by GDB by writing a
+special processor instruction at the location of the desired breakpoint.
+This special instruction when executed will stop the program execution
+and hand control to the debugger, GDB. GDB will first save the
+instruction bytes that are overwritten at the breakpoint and will put
+them back when the breakpoint is hit.  If GRUB is being run for the
+first time in QEMU, the firmware will be loading the GRUB image into
+memory where every byte is already set to 0.  This means that if a
+breakpoint is set before GRUB is loaded, GDB will save the 0-byte(s)
+where the the special instruction will go.  Then when the firmware loads
+the GRUB image and because it is unaware of the debugger, it will write
+the GRUB image to memory, overwriting anything that was there previously
+-- notably in this case the instruction that implements the software
+breakpoint.  This will be confusing for the person using GDB because GDB
+will show the breakpoint as set, but the brekapoint will never be hit.
+Furthermore, GDB then becomes confused, such that even deleting an
+recreating the breakpoint will not create usable breakpoints.  The
+'gdb_grub' script takes care of this by saving the breakpoints just
+before they are overwritten, and then restores them at the start of GRUB
+execution.  So breakpoints for GRUB can be set before GRUB is loaded,
+but be mindful of this effect if you are confused as to why breakpoints
+are not getting hit.
+
+   Also note, that hardware breakpoints do not suffer this problem.
+They are implemented by having the breakpoint address in special debug
+registers on the CPU. So they can always be set freely without regard to
+whether GRUB has been loaded or not.  The reason that hardware
+breakpoints aren't always used is because there are a limited number of
+them, usually around 4 on various CPUs, and specifically exactly 4 for
+x86 CPUs.  The 'gdb_grub' script goes out of its way to avoid using
+hardware breakpoints internally and uses them as briefly as possible
+when needed, thus allowing the user to have a maximal number at their
+disposal.
+
+* Menu:
+
+* OVMF debug log::
+* Using the gdbinfo command::
+
+
+File: grub-dev.info,  Node: OVMF debug log,  Next: Using the gdbinfo command,  Up: x86_64-efi
+
+7.2.1 OVMF debug log
+--------------------
+
+In order to get the GRUB2 load address from OVMF, first, a debug build
+of OVMF must be obtained (here is one
+(https://github.com/retrage/edk2-nightly/raw/master/bin/DEBUGX64_OVMF.fd)
+which is not officially recommended).  OVMF will output debug messages
+to a special serial device, which we must add to QEMU. The following
+QEMU command will run the debug OVMF and write the debug messages to a
+file named 'debug.log'.  It is assumed that 'disk.img' is a disk image
+or block device that is set up to boot GRUB2 EFI.
+
+     qemu-system-x86_64 -bios /path/to/debug/OVMF.fd \
+         -drive file=disk.img,format=raw \
+         -device virtio-scsi-pci,id=scsi0 \
+         -debugcon file:debug.log -global isa-debugcon.iobase=0x402
+
+   If GRUB2 was started by the (U)EFI firmware, then in the 'debug.log'
+file one of the last lines should be a log message like: 'Loading driver
+at 0x00006AEE000 EntryPoint=0x00006AEE756'.  This means that the GRUB2
+EFI application was loaded at '0x00006AEE000' and its .text section is
+at '0x00006AEE756'.
+
+
+File: grub-dev.info,  Node: Using the gdbinfo command,  Prev: OVMF debug log,  Up: x86_64-efi
+
+7.2.2 Using the gdbinfo command
+-------------------------------
+
+On EFI platforms the command 'gdbinfo' will output a string that is to
+be run in a GDB session running with the 'gdb_grub' GDB script.
+
+
+File: grub-dev.info,  Node: Porting,  Next: Error Handling,  Prev: Debugging,  Up: Top
+
+8 Porting
 *********
 
 GRUB2 is designed to be easily portable accross platforms.  But because
@@ -778,7 +1039,7 @@ void grub_arch_sync_caches (void *address, grub_size_t len) (cache.S).
 They won't be used for now.
 
    You will need to create directory include/$cpu/$platform and a file
-include/$cpu/types.h.  The later folowing this template:
+include/$cpu/types.h.  The latter following this template:
 
      #ifndef GRUB_TYPES_CPU_HEADER
      #define GRUB_TYPES_CPU_HEADER	1
@@ -820,7 +1081,7 @@ When done compile:
 
    To have the heap working you need to determine which regions are
 suitable for heap usage, allocate them from firmware and map (if
-applicable).  Then call grub_mm_init_region (vois *start, grub_size_t s)
+applicable).  Then call grub_mm_init_region (void *start, grub_size_t s)
 for every of this region.  As a shortcut for early port you can allocate
 right after _end or have a big static array for heap.  If you do you'll
 probably need to come back to this later.  As for output console you
@@ -909,7 +1170,7 @@ documentation.
 
 File: grub-dev.info,  Node: Error Handling,  Next: Stack and heap size,  Prev: Porting,  Up: Top
 
-7 Error Handling
+9 Error Handling
 ****************
 
 Error handling in GRUB 2 is based on exception handling model.  As C
@@ -1041,8 +1302,8 @@ to be drawn.
 
 File: grub-dev.info,  Node: Stack and heap size,  Next: BIOS port memory map,  Prev: Error Handling,  Up: Top
 
-8 Stack and heap size
-*********************
+10 Stack and heap size
+**********************
 
 On emu stack and heap are just normal host OS stack and heap.  Stack is
 typically 8 MiB although it's OS-dependent.
@@ -1051,20 +1312,24 @@ typically 8 MiB although it's OS-dependent.
 60KiB. All available space between 1MiB and 4GiB marks is part of heap.
 
    On *-xen stack is 4MiB. If compiled for x86-64 with GCC 4.4 or later
-adressable space is unlimited.  When compiled for x86-64 with older GCC
-version adressable space is limited to 2GiB. When compiling for i386
-adressable space is limited to 4GiB. All adressable pages except the
+addressable space is unlimited.  When compiled for x86-64 with older GCC
+version addressable space is limited to 2GiB. When compiling for i386
+addressable space is limited to 4GiB. All addressable pages except the
 ones for stack, GRUB binary, special pages and page table are in the
 heap.
 
    On *-efi GRUB uses same stack as EFI. If compiled for x86-64 with GCC
-4.4 or later adressable space is unlimited.  When compiled for x86-64
-with older GCC version adressable space is limited to 2GiB. For all
-other platforms adressable space is limited to 4GiB. GRUB allocates
+4.4 or later addressable space is unlimited.  When compiled for x86-64
+with older GCC version addressable space is limited to 2GiB. For all
+other platforms addressable space is limited to 4GiB. GRUB allocates
 pages from EFI for its heap, at most 1.6 GiB.
 
    On i386-ieee1275 and powerpc-ieee1275 GRUB uses same stack as
-IEEE1275.  It allocates at most 32MiB for its heap.
+IEEE1275.
+
+   On i386-ieee1275 and powerpc-ieee1275, GRUB will allocate 32MiB for
+its heap on startup.  It may allocate more at runtime, as long as at
+least 128MiB remain free in OpenFirmware.
 
    On sparc64-ieee1275 stack is 256KiB and heap is 2MiB.
 
@@ -1093,7 +1358,7 @@ i386-multiboot60 KiB           < 4 GiB
 i386-qemu   60 KiB             < 4 GiB
 *-efi       ?                  < 1.6 GiB
 i386-ieee1275?                 < 32 MiB
-powerpc-ieee1275?              < 32 MiB
+powerpc-ieee1275?              available memory - 128MiB
 sparc64-ieee1275256KiB         2 MiB
 arm-uboot   256KiB             2 MiB
 mips(el)-qemu_mips2MiB         253 MiB
@@ -1111,8 +1376,8 @@ i386-xen    4MiB               < 4GiB
 
 File: grub-dev.info,  Node: BIOS port memory map,  Next: Video Subsystem,  Prev: Stack and heap size,  Up: Top
 
-9 BIOS port memory map
-**********************
+11 BIOS port memory map
+***********************
 
 Start       End                Usage
 --------------------------------------------------------------------
@@ -1132,7 +1397,7 @@ Start       End                Usage
 
 File: grub-dev.info,  Node: Video Subsystem,  Next: PFF2 Font File Format,  Prev: BIOS port memory map,  Up: Top
 
-10 Video Subsystem
+12 Video Subsystem
 ******************
 
 This document contains specification for Video Subsystem for GRUB2.
@@ -1149,10 +1414,10 @@ driver manager works are not included here.
 
 File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: Video Subsystem
 
-10.1 Video API
+12.1 Video API
 ==============
 
-10.1.1 grub_video_setup
+12.1.1 grub_video_setup
 -----------------------
 
    * Prototype:
@@ -1182,7 +1447,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      set default VGA palette to screen if the video card allows the
      operation.
 
-10.1.2 grub_video_restore
+12.1.2 grub_video_restore
 -------------------------
 
    * Prototype:
@@ -1195,7 +1460,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      old state of video device.  This can be used to switch back to text
      mode.
 
-10.1.3 grub_video_get_info
+12.1.3 grub_video_get_info
 --------------------------
 
    * Prototype:
@@ -1249,7 +1514,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      error 'GRUB_ERR_BAD_DEVICE' is returned, otherwise 'mode_info' is
      filled with valid information and 'GRUB_ERR_NONE' is returned.
 
-10.1.4 grub_video_get_blit_format
+12.1.4 grub_video_get_blit_format
 ---------------------------------
 
    * Prototype:
@@ -1276,7 +1541,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      is no definition for the type.  For generic formats, use
      'grub_video_get_info' to query video color coding settings.
 
-10.1.5 grub_video_set_palette
+12.1.5 grub_video_set_palette
 -----------------------------
 
    * Prototype:
@@ -1301,7 +1566,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      both hardware color index and 'palette_data' index will be
      incremented until 'count' number of colors have been set.
 
-10.1.6 grub_video_get_palette
+12.1.6 grub_video_get_palette
 -----------------------------
 
    * Prototype:
@@ -1326,7 +1591,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      color index and 'palette_data' index will be incremented until
      'count' number of colors have been read.
 
-10.1.7 grub_video_set_area_status
+12.1.7 grub_video_set_area_status
 ---------------------------------
 
    * Prototype:
@@ -1349,7 +1614,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      everything inside the region leaving everything else intact.
      Should be used for redrawing of active elements.
 
-10.1.8 grub_video_get_area_status
+12.1.8 grub_video_get_area_status
 ---------------------------------
 
    * Prototype:
@@ -1358,7 +1623,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
 
    * Description: Used to query the area status.
 
-10.1.9 grub_video_set_viewport
+12.1.9 grub_video_set_viewport
 ------------------------------
 
    * Prototype:
@@ -1377,7 +1642,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      'grub_video_get_info' to query actual screen dimensions and provide
      that information to this function.
 
-10.1.10 grub_video_get_viewport
+12.1.10 grub_video_get_viewport
 -------------------------------
 
    * Prototype:
@@ -1389,7 +1654,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      Used to query current viewport dimensions.  Software developer can
      use this to choose best way to render contents of the viewport.
 
-10.1.11 grub_video_set_region
+12.1.11 grub_video_set_region
 -----------------------------
 
    * Prototype:
@@ -1406,7 +1671,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      possible region, width and height will be clamped to fit screen.
      Should be used for redrawing of active elements.
 
-10.1.12 grub_video_get_region
+12.1.12 grub_video_get_region
 -----------------------------
 
    * Prototype:
@@ -1417,7 +1682,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
 
      Used to query current region dimensions.
 
-10.1.13 grub_video_map_color
+12.1.13 grub_video_map_color
 ----------------------------
 
    * Prototype:
@@ -1432,7 +1697,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      'GRUB_COLOR_CONSOLE_BACKGROUND', 'GRUB_COLOR_CONSOLE_TEXT'.  The
      actual color defines are not specified at this point.
 
-10.1.14 grub_video_map_rgb
+12.1.14 grub_video_map_rgb
 --------------------------
 
    * Prototype:
@@ -1447,7 +1712,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      palette will be searched for specified color and then index is
      returned.
 
-10.1.15 grub_video_map_rgba
+12.1.15 grub_video_map_rgba
 ---------------------------
 
    * Prototype:
@@ -1462,7 +1727,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      palette will be searched for best matching color and its index is
      returned.
 
-10.1.16 grub_video_unmap_color
+12.1.16 grub_video_unmap_color
 ------------------------------
 
    * Prototype:
@@ -1477,7 +1742,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      information is not available in rendering target, it is assumed to
      be opaque (having value 255).
 
-10.1.17 grub_video_fill_rect
+12.1.17 grub_video_fill_rect
 ----------------------------
 
    * Prototype:
@@ -1496,7 +1761,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      'grub_video_map_rgb' or 'grub_video_map_rgba' to map requested
      color to 'color' parameter.
 
-10.1.18 grub_video_blit_glyph
+12.1.18 grub_video_blit_glyph
 -----------------------------
 
    * Prototype:
@@ -1513,7 +1778,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      out.  Software developer should use either 'grub_video_map_rgb' or
      'grub_video_map_rgba' to map requested color to 'color' parameter.
 
-10.1.19 grub_video_blit_bitmap
+12.1.19 grub_video_blit_bitmap
 ------------------------------
 
    * Prototype:
@@ -1546,7 +1811,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      Software developer should use 'grub_video_bitmap_create' or
      'grub_video_bitmap_load' to create or load bitmap data.
 
-10.1.20 grub_video_blit_render_target
+12.1.20 grub_video_blit_render_target
 -------------------------------------
 
    * Prototype:
@@ -1577,7 +1842,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      source pixel replace data in screen or blend with pixel alpha
      value.
 
-10.1.21 grub_video_scroll
+12.1.21 grub_video_scroll
 -------------------------
 
    * Prototype:
@@ -1590,7 +1855,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      filled with specified color.  This function is used when screen is
      scroller up in video terminal.
 
-10.1.22 grub_video_swap_buffers
+12.1.22 grub_video_swap_buffers
 -------------------------------
 
    * Prototype:
@@ -1603,7 +1868,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      backbuffer, in order to show values drawn to back buffer.  Video
      driver is free to choose how this operation is techincally done.
 
-10.1.23 grub_video_create_render_target
+12.1.23 grub_video_create_render_target
 ---------------------------------------
 
    * Prototype:
@@ -1622,7 +1887,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      modes, 'GRUB_VIDEO_MODE_TYPE_RGB' for direct RGB color modes and
      'GRUB_VIDEO_MODE_TYPE_ALPHA' for alpha component.
 
-10.1.24 grub_video_delete_render_target
+12.1.24 grub_video_delete_render_target
 ---------------------------------------
 
    * Prototype:
@@ -1635,7 +1900,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      contains 'NULL' pointer, nothing will be done.  If render target is
      correctly destroyed, GRUB_ERR_NONE is returned.
 
-10.1.25 grub_video_set_active_render_target
+12.1.25 grub_video_set_active_render_target
 -------------------------------------------
 
    * Prototype:
@@ -1655,7 +1920,7 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
      correclty switched GRUB_ERR_NONE is returned.  In no any event
      shall there be non drawable active render target.
 
-10.1.26 grub_video_get_active_render_target
+12.1.26 grub_video_get_active_render_target
 -------------------------------------------
 
    * Prototype:
@@ -1671,10 +1936,10 @@ File: grub-dev.info,  Node: Video API,  Next: Example usage of Video API,  Up: V
 
 File: grub-dev.info,  Node: Example usage of Video API,  Next: Bitmap API,  Prev: Video API,  Up: Video Subsystem
 
-10.2 Example usage of Video API
+12.2 Example usage of Video API
 ===============================
 
-10.2.1 Example of screen setup
+12.2.1 Example of screen setup
 ------------------------------
 
      grub_err_t rc;
@@ -1690,7 +1955,7 @@ File: grub-dev.info,  Node: Example usage of Video API,  Next: Bitmap API,  Prev
        }
      }
 
-10.2.2 Example of setting up console viewport
+12.2.2 Example of setting up console viewport
 ---------------------------------------------
 
      grub_uint32_t x, y, width, height;
@@ -1715,10 +1980,10 @@ File: grub-dev.info,  Node: Example usage of Video API,  Next: Bitmap API,  Prev
 
 File: grub-dev.info,  Node: Bitmap API,  Prev: Example usage of Video API,  Up: Video Subsystem
 
-10.3 Bitmap API
+12.3 Bitmap API
 ===============
 
-10.3.1 grub_video_bitmap_create
+12.3.1 grub_video_bitmap_create
 -------------------------------
 
    * Prototype:
@@ -1730,7 +1995,7 @@ File: grub-dev.info,  Node: Bitmap API,  Prev: Example usage of Video API,  Up: 
      Allocated bitmap data can then be modified freely and finally
      blitted with 'grub_video_blit_bitmap' to rendering target.
 
-10.3.2 grub_video_bitmap_destroy
+12.3.2 grub_video_bitmap_destroy
 --------------------------------
 
    * Prototype:
@@ -1742,7 +2007,7 @@ File: grub-dev.info,  Node: Bitmap API,  Prev: Example usage of Video API,  Up: 
      this command.  'bitmap' is previously allocated bitmap with
      'grub_video_bitmap_create' or loaded with 'grub_video_bitmap_load'.
 
-10.3.3 grub_video_bitmap_load
+12.3.3 grub_video_bitmap_load
 -----------------------------
 
    * Prototype:
@@ -1754,7 +2019,7 @@ File: grub-dev.info,  Node: Bitmap API,  Prev: Example usage of Video API,  Up: 
      loaders.  In case bitmap format is not recognized or supported
      error 'GRUB_ERR_BAD_FILE_TYPE' is returned.
 
-10.3.4 grub_video_bitmap_get_width
+12.3.4 grub_video_bitmap_get_width
 ----------------------------------
 
    * Prototype:
@@ -1764,7 +2029,7 @@ File: grub-dev.info,  Node: Bitmap API,  Prev: Example usage of Video API,  Up: 
 
      Returns bitmap width.
 
-10.3.5 grub_video_bitmap_get_height
+12.3.5 grub_video_bitmap_get_height
 -----------------------------------
 
    * Prototype:
@@ -1774,7 +2039,7 @@ File: grub-dev.info,  Node: Bitmap API,  Prev: Example usage of Video API,  Up: 
 
      Return bitmap height.
 
-10.3.6 grub_video_bitmap_get_mode_info
+12.3.6 grub_video_bitmap_get_mode_info
 --------------------------------------
 
    * Prototype:
@@ -1784,7 +2049,7 @@ File: grub-dev.info,  Node: Bitmap API,  Prev: Example usage of Video API,  Up: 
 
      Returns bitmap format details in form of 'grub_video_mode_info'.
 
-10.3.7 grub_video_bitmap_get_data
+12.3.7 grub_video_bitmap_get_data
 ---------------------------------
 
    * Prototype:
@@ -1799,7 +2064,7 @@ File: grub-dev.info,  Node: Bitmap API,  Prev: Example usage of Video API,  Up: 
 
 File: grub-dev.info,  Node: PFF2 Font File Format,  Next: Graphical Menu Software Design,  Prev: Video Subsystem,  Up: Top
 
-11 PFF2 Font File Format
+13 PFF2 Font File Format
 ************************
 
 * Menu:
@@ -1811,13 +2076,13 @@ File: grub-dev.info,  Node: PFF2 Font File Format,  Next: Graphical Menu Softwar
 
 File: grub-dev.info,  Node: Introduction,  Next: File Structure,  Up: PFF2 Font File Format
 
-11.1 Introduction
+13.1 Introduction
 =================
 
 The goal of this format is to provide a bitmap font format that is
 simple to use, compact, and cleanly supports Unicode.
 
-11.1.1 Goals of the GRUB Font Format
+13.1.1 Goals of the GRUB Font Format
 ------------------------------------
 
    * Simple to read and use.  Since GRUB will only be reading the font
@@ -1833,7 +2098,7 @@ simple to use, compact, and cleanly supports Unicode.
      encodings.  The font should always use Unicode character codes for
      simple internationalization.
 
-11.1.2 Why Another Font Format?
+13.1.2 Why Another Font Format?
 -------------------------------
 
 There are many existing bitmap font formats that GRUB could use.
@@ -1851,7 +2116,7 @@ suitable for use in GRUB at this time:
 
 File: grub-dev.info,  Node: File Structure,  Next: Font Metrics,  Prev: Introduction,  Up: PFF2 Font File Format
 
-11.2 File Structure
+13.2 File Structure
 ===================
 
 A file *section* consists of a 4-byte name, a 32-bit big-endian length
@@ -1860,7 +2125,7 @@ section-type-specific bytes.
 
    The standard file extension for PFF2 font files is '.pf2'.
 
-11.2.1 Section Types
+13.2.1 Section Types
 --------------------
 
 'FILE'
@@ -1977,7 +2242,7 @@ section-type-specific bytes.
 
 File: grub-dev.info,  Node: Font Metrics,  Prev: File Structure,  Up: PFF2 Font File Format
 
-11.3 Font Metrics
+13.3 Font Metrics
 =================
 
    * Ascent.  The distance from the baseline to the top of most
@@ -2006,7 +2271,7 @@ File: grub-dev.info,  Node: Font Metrics,  Prev: File Structure,  Up: PFF2 Font 
 
 File: grub-dev.info,  Node: Graphical Menu Software Design,  Next: Verifiers framework,  Prev: PFF2 Font File Format,  Up: Top
 
-12 Graphical Menu Software Design
+14 Graphical Menu Software Design
 *********************************
 
 * Menu:
@@ -2019,7 +2284,7 @@ File: grub-dev.info,  Node: Graphical Menu Software Design,  Next: Verifiers fra
 
 File: grub-dev.info,  Node: Introduction_2,  Next: Startup Sequence,  Up: Graphical Menu Software Design
 
-12.1 Introduction
+14.1 Introduction
 =================
 
 The 'gfxmenu' module provides a graphical menu interface for GRUB 2.  It
@@ -2036,7 +2301,7 @@ graphical menu would work on the new video driver as well.
 
 File: grub-dev.info,  Node: Startup Sequence,  Next: GUI Components,  Prev: Introduction_2,  Up: Graphical Menu Software Design
 
-12.2 Startup Sequence
+14.2 Startup Sequence
 =====================
 
    * grub_enter_normal_mode [normal/main.c]
@@ -2057,7 +2322,7 @@ File: grub-dev.info,  Node: Startup Sequence,  Next: GUI Components,  Prev: Intr
 
 File: grub-dev.info,  Node: GUI Components,  Next: Command Line Window,  Prev: Startup Sequence,  Up: Graphical Menu Software Design
 
-12.3 GUI Components
+14.3 GUI Components
 ===================
 
 The graphical menu implements a GUI component system that supports a
@@ -2103,7 +2368,7 @@ particularly useful:
 
    * 'grub_gui_find_by_id (root, id, callback, userdata)':
 
-     This function ecursively traverses the component tree rooted at
+     This function recursively traverses the component tree rooted at
      ROOT, and for every component that has an ID equal to ID, calls the
      function pointed to by CALLBACK with the matching component and the
      void pointer USERDATA as arguments.  The callback function can do
@@ -2120,7 +2385,7 @@ particularly useful:
 
 File: grub-dev.info,  Node: Command Line Window,  Prev: GUI Components,  Up: Graphical Menu Software Design
 
-12.4 Command Line Window
+14.4 Command Line Window
 ========================
 
 The terminal window used to provide command line access within the
@@ -2139,7 +2404,7 @@ some of the problems.
 
 File: grub-dev.info,  Node: Verifiers framework,  Next: Lockdown framework,  Prev: Graphical Menu Software Design,  Up: Top
 
-13 Verifiers framework
+15 Verifiers framework
 **********************
 
 To register your own verifier call 'grub_verifier_register' with a
@@ -2203,7 +2468,7 @@ verification.
 
 File: grub-dev.info,  Node: Lockdown framework,  Next: Copying This Manual,  Prev: Verifiers framework,  Up: Top
 
-14 Lockdown framework
+16 Lockdown framework
 *********************
 
 The GRUB can be locked down, which is a restricted mode where some
@@ -2679,46 +2944,52 @@ Index
 
 
 Tag Table:
-Node: Top636
-Node: Getting the source code1798
-Node: Coding style2759
-Node: Naming Conventions3168
-Node: Functions3453
-Node: Variables4327
-Node: Types5442
-Node: Macros6043
-Node: Comments6375
-Node: Multi-Line Comments6984
-Node: Finding your way around7909
-Node: Contributing Changes11225
-Node: Getting started12330
-Node: Typical Developer Experience16382
-Node: When you are approved for write access to project's files17424
-Node: Updating External Code18857
-Node: Gnulib19149
-Node: jsmn21142
-Node: minilzo21613
-Node: Porting22319
-Node: Error Handling34084
-Node: Stack and heap size39176
-Node: BIOS port memory map41809
-Node: Video Subsystem42658
-Node: Video API43132
-Node: Example usage of Video API63581
-Node: Bitmap API65161
-Node: PFF2 Font File Format67694
-Node: Introduction67934
-Node: File Structure69437
-Node: Font Metrics74355
-Node: Graphical Menu Software Design75503
-Node: Introduction_275795
-Node: Startup Sequence76529
-Node: GUI Components77380
-Node: Command Line Window79980
-Node: Verifiers framework80932
-Node: Lockdown framework83539
-Node: Copying This Manual84481
-Node: GNU Free Documentation License84725
-Node: Index107118
+Node: Top639
+Node: Getting the source code1856
+Node: Coding style2848
+Node: Naming Conventions3257
+Node: Functions3542
+Node: Variables4416
+Node: Types5531
+Node: Macros6132
+Node: Comments6464
+Node: Multi-Line Comments7073
+Node: Finding your way around7998
+Node: Contributing Changes11314
+Node: Getting started12430
+Node: Typical Developer Experience16482
+Node: When you are approved for write access to project's files17524
+Node: Setting up and running test suite18957
+Node: Updating External Code19654
+Node: Gnulib19961
+Node: jsmn21954
+Node: minilzo22425
+Node: Debugging23132
+Node: i386-pc25153
+Node: x86_64-efi27698
+Node: OVMF debug log34181
+Node: Using the gdbinfo command35356
+Node: Porting35654
+Node: Error Handling47408
+Node: Stack and heap size52500
+Node: BIOS port memory map55300
+Node: Video Subsystem56151
+Node: Video API56625
+Node: Example usage of Video API77074
+Node: Bitmap API78654
+Node: PFF2 Font File Format81187
+Node: Introduction81427
+Node: File Structure82930
+Node: Font Metrics87848
+Node: Graphical Menu Software Design88996
+Node: Introduction_289288
+Node: Startup Sequence90022
+Node: GUI Components90873
+Node: Command Line Window93474
+Node: Verifiers framework94426
+Node: Lockdown framework97033
+Node: Copying This Manual97975
+Node: GNU Free Documentation License98219
+Node: Index120612
 
 End Tag Table

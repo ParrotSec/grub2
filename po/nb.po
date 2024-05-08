@@ -2,44 +2,45 @@
 # Copyright (C) 2017 Free Software Foundation, Inc.
 # This file is distributed under the same license as the grub package.
 # Åka Sikrom <a4@hush.com>, 2017-2019.
+# Johnny A. Solbu <johnny@solbu.net>, 2022
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: grub-2.04-pre1\n"
+"Project-Id-Version: grub-2.06-pre2\n"
 "Report-Msgid-Bugs-To: bug-grub@gnu.org\n"
-"POT-Creation-Date: 2021-06-08 16:49+0200\n"
-"PO-Revision-Date: 2019-04-14 10:58+0200\n"
-"Last-Translator: Åka Sikrom <a4@hush.com>\n"
-"Language-Team: Norwegian Bokmaal <i18n-nb@lister.ping.uio.no>\n"
+"POT-Creation-Date: 2023-12-20 17:09+0100\n"
+"PO-Revision-Date: 2022-11-10 12:13+0100\n"
+"Last-Translator: Johnny A. Solbu <johnny@solbu.net>\n"
+"Language-Team: Norwegian Bokmaal <l10n-no@lister.huftis.org>\n"
 "Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.2.3\n"
 
 #: grub-core/bus/usb/serial/ftdi.c:145 grub-core/bus/usb/serial/pl2303.c:158
-#: grub-core/term/ieee1275/escc.c:169 grub-core/term/ns8250.c:202
+#: grub-core/term/ieee1275/escc.c:169 grub-core/term/ns8250.c:262
 msgid "unsupported serial port speed"
 msgstr "denne seriellport-hastigheten støttes ikke"
 
 #: grub-core/bus/usb/serial/ftdi.c:151 grub-core/bus/usb/serial/pl2303.c:164
 #: grub-core/term/efi/serial.c:116 grub-core/term/ieee1275/escc.c:175
-#: grub-core/term/ns8250.c:208 grub-core/term/serial.c:227
-#: grub-core/term/serial.c:243
+#: grub-core/term/ns8250.c:268 grub-core/term/serial.c:288
+#: grub-core/term/serial.c:304
 msgid "unsupported serial port parity"
 msgstr "denne seriellport-pariteten støttes ikke"
 
 #: grub-core/bus/usb/serial/ftdi.c:157 grub-core/bus/usb/serial/pl2303.c:170
 #: grub-core/term/efi/serial.c:122 grub-core/term/ieee1275/escc.c:181
-#: grub-core/term/ns8250.c:213 grub-core/term/serial.c:267
+#: grub-core/term/ns8250.c:273 grub-core/term/serial.c:328
 msgid "unsupported serial port stop bits number"
 msgstr "dette «stop bits»-tallet for seriellport støttes ikke"
 
 #: grub-core/bus/usb/serial/ftdi.c:161 grub-core/bus/usb/serial/pl2303.c:174
 #: grub-core/term/efi/serial.c:126 grub-core/term/ieee1275/escc.c:185
-#: grub-core/term/ns8250.c:217
+#: grub-core/term/ns8250.c:277
 msgid "unsupported serial port word length"
 msgstr "denne seriellport-ordlengden støttes ikke"
 
@@ -88,53 +89,52 @@ msgstr ""
 "Ikke oppdater EBDA. Dette kan løse hengeproblemer med enkelte BIOS-er, men "
 "medfører at operativsystemet ikke mottar RSDP fra GRUB."
 
-#: grub-core/commands/acpi.c:651 grub-core/commands/acpi.c:668
+#: grub-core/commands/acpi.c:666 grub-core/commands/acpi.c:683
 #: grub-core/commands/i386/pc/play.c:105 grub-core/commands/keylayouts.c:230
 #: grub-core/commands/keylayouts.c:245 grub-core/commands/keylayouts.c:263
 #: grub-core/efiemu/loadcore.c:350 grub-core/kern/elf.c:117
 #: grub-core/kern/elfXX.c:29 grub-core/kern/elfXX.c:156
-#: grub-core/kern/verifiers.c:156 grub-core/loader/arm/linux.c:319
-#: grub-core/loader/arm64/linux.c:330 grub-core/loader/arm64/xen_boot.c:356
-#: grub-core/loader/efi/chainloader.c:292
-#: grub-core/loader/efi/chainloader.c:313
-#: grub-core/loader/efi/chainloader.c:345 grub-core/loader/efi/fdt.c:142
-#: grub-core/loader/i386/bsd.c:1282 grub-core/loader/i386/bsd.c:2123
-#: grub-core/loader/i386/bsdXX.c:20 grub-core/loader/i386/bsdXX.c:36
-#: grub-core/loader/i386/bsdXX.c:63 grub-core/loader/i386/bsdXX.c:357
-#: grub-core/loader/i386/bsdXX.c:376 grub-core/loader/i386/bsdXX.c:519
-#: grub-core/loader/i386/bsdXX.c:535 grub-core/loader/i386/bsdXX.c:615
-#: grub-core/loader/i386/bsdXX.c:638
+#: grub-core/kern/verifiers.c:156 grub-core/loader/arm/linux.c:320
+#: grub-core/loader/arm64/xen_boot.c:342 grub-core/loader/efi/chainloader.c:283
+#: grub-core/loader/efi/chainloader.c:304
+#: grub-core/loader/efi/chainloader.c:336 grub-core/loader/efi/fdt.c:145
+#: grub-core/loader/efi/linux.c:530 grub-core/loader/i386/bsd.c:1282
+#: grub-core/loader/i386/bsd.c:2123 grub-core/loader/i386/bsdXX.c:20
+#: grub-core/loader/i386/bsdXX.c:39 grub-core/loader/i386/bsdXX.c:70
+#: grub-core/loader/i386/bsdXX.c:379 grub-core/loader/i386/bsdXX.c:398
+#: grub-core/loader/i386/bsdXX.c:545 grub-core/loader/i386/bsdXX.c:561
+#: grub-core/loader/i386/bsdXX.c:647 grub-core/loader/i386/bsdXX.c:670
 #: grub-core/loader/i386/coreboot/chainloader.c:112
 #: grub-core/loader/i386/coreboot/chainloader.c:148
 #: grub-core/loader/i386/coreboot/chainloader.c:170
-#: grub-core/loader/i386/linux.c:675 grub-core/loader/i386/linux.c:791
-#: grub-core/loader/i386/linux.c:1011 grub-core/loader/i386/multiboot_mbi.c:171
+#: grub-core/loader/i386/linux.c:687 grub-core/loader/i386/linux.c:803
+#: grub-core/loader/i386/linux.c:1023 grub-core/loader/i386/multiboot_mbi.c:171
 #: grub-core/loader/i386/pc/chainloader.c:202
 #: grub-core/loader/i386/pc/linux.c:150 grub-core/loader/i386/pc/linux.c:326
 #: grub-core/loader/i386/pc/linux.c:368 grub-core/loader/i386/pc/plan9.c:457
 #: grub-core/loader/i386/pc/plan9.c:550 grub-core/loader/i386/pc/plan9.c:566
-#: grub-core/loader/i386/xen.c:942 grub-core/loader/i386/xen_file.c:72
+#: grub-core/loader/i386/xen.c:941 grub-core/loader/i386/xen_file.c:72
 #: grub-core/loader/i386/xen_fileXX.c:43 grub-core/loader/i386/xen_fileXX.c:186
 #: grub-core/loader/i386/xen_fileXX.c:339 grub-core/loader/ia64/efi/linux.c:423
-#: grub-core/loader/ia64/efi/linux.c:471 grub-core/loader/linux.c:319
+#: grub-core/loader/ia64/efi/linux.c:471 grub-core/loader/linux.c:332
 #: grub-core/loader/macho.c:84 grub-core/loader/macho.c:109
 #: grub-core/loader/machoXX.c:33 grub-core/loader/machoXX.c:46
 #: grub-core/loader/machoXX.c:76 grub-core/loader/machoXX.c:116
 #: grub-core/loader/machoXX.c:131 grub-core/loader/machoXX.c:147
 #: grub-core/loader/machoXX.c:196 grub-core/loader/machoXX.c:317
-#: grub-core/loader/multiboot.c:434 grub-core/loader/multiboot_elfxx.c:171
-#: grub-core/loader/multiboot_elfxx.c:234
-#: grub-core/loader/multiboot_elfxx.c:278 grub-core/loader/multiboot_mbi2.c:135
+#: grub-core/loader/multiboot.c:434 grub-core/loader/multiboot_elfxx.c:198
+#: grub-core/loader/multiboot_elfxx.c:267
+#: grub-core/loader/multiboot_elfxx.c:315 grub-core/loader/multiboot_mbi2.c:135
 #: grub-core/loader/xnu.c:756 grub-core/loader/xnu.c:814
 #: grub-core/loader/xnu.c:835 grub-core/loader/xnu.c:890
 #: grub-core/loader/xnu.c:933 grub-core/loader/xnu.c:971
 #: grub-core/loader/xnu_resume.c:68 grub-core/loader/xnu_resume.c:153
-#: grub-core/loader/xnu_resume.c:165 util/grub-mkimagexx.c:2288
+#: grub-core/loader/xnu_resume.c:165 util/grub-mkimagexx.c:2417
 #, c-format
 msgid "premature end of file %s"
 msgstr "fila %s sluttet for tidlig"
 
-#: grub-core/commands/acpi.c:780
+#: grub-core/commands/acpi.c:795
 msgid ""
 "[-1|-2] [--exclude=TABLE1,TABLE2|--load-only=TABLE1,TABLE2] FILE1 [FILE2] "
 "[...]"
@@ -142,39 +142,41 @@ msgstr ""
 "[-1|-2] [--exclude=TABELL1,TABELL2|--load-only=TABELL1,TABELL2] FIL1 [FIL2] "
 "[…]"
 
-#: grub-core/commands/acpi.c:783
+#: grub-core/commands/acpi.c:798
 msgid "Load host ACPI tables and tables specified by arguments."
 msgstr "Last inn ACPI-vertstabeller og evt. argumenterte tabeller."
 
 #: grub-core/commands/acpihalt.c:368 grub-core/kern/err.c:110
+#: grub-core/kern/fs.c:79
 #, c-format
 msgid "error: %s.\n"
 msgstr "feil: %s.\n"
 
-#: grub-core/commands/acpihalt.c:368 grub-core/kern/efi/mm.c:144
-#: grub-core/kern/efi/mm.c:157 grub-core/kern/emu/misc.c:95
-#: grub-core/kern/emu/misc.c:107 grub-core/kern/emu/misc.c:117
-#: grub-core/kern/emu/misc.c:146 grub-core/kern/emu/mm.c:34
+#: grub-core/commands/acpihalt.c:368 grub-core/kern/efi/mm.c:143
+#: grub-core/kern/efi/mm.c:156 grub-core/kern/emu/misc.c:96
+#: grub-core/kern/emu/misc.c:108 grub-core/kern/emu/misc.c:118
+#: grub-core/kern/emu/misc.c:147 grub-core/kern/emu/mm.c:34
 #: grub-core/kern/emu/mm.c:44 grub-core/kern/emu/mm.c:73
-#: grub-core/kern/mm.c:376 grub-core/lib/relocator.c:1282
-#: grub-core/lib/relocator.c:1439 grub-core/lib/relocator.c:1538
-#: grub-core/loader/arm/linux.c:259 grub-core/loader/arm64/linux.c:265
-#: grub-core/loader/arm64/linux.c:321 grub-core/loader/arm64/linux.c:340
-#: grub-core/loader/arm64/xen_boot.c:344 grub-core/loader/arm64/xen_boot.c:367
-#: grub-core/loader/efi/chainloader.c:305 grub-core/osdep/unix/dl.c:48
-#: grub-core/osdep/windows/dl.c:46 grub-core/script/lexer.c:161
-#: grub-core/script/lexer.c:197
+#: grub-core/kern/mm.c:552 grub-core/lib/relocator.c:1286
+#: grub-core/lib/relocator.c:1443 grub-core/lib/relocator.c:1542
+#: grub-core/loader/arm/linux.c:260 grub-core/loader/arm64/xen_boot.c:330
+#: grub-core/loader/arm64/xen_boot.c:353 grub-core/loader/efi/chainloader.c:296
+#: grub-core/loader/efi/linux.c:411 grub-core/loader/efi/linux.c:433
+#: grub-core/loader/efi/linux.c:521 grub-core/loader/efi/linux.c:540
+#: grub-core/osdep/unix/dl.c:48 grub-core/osdep/windows/dl.c:46
+#: grub-core/script/lexer.c:161 grub-core/script/lexer.c:197
+#: grub-core/video/efi_gop.c:485
 msgid "out of memory"
 msgstr "minnet er oppbrukt"
 
-#: grub-core/commands/acpihalt.c:374 grub-core/disk/cryptodisk.c:766
-#: grub-core/disk/cryptodisk.c:810 grub-core/kern/emu/hostdisk.c:307
-#: grub-core/kern/emu/hostfs.c:149 grub-core/kern/emu/misc.c:212
+#: grub-core/commands/acpihalt.c:374 grub-core/disk/cryptodisk.c:806
+#: grub-core/disk/cryptodisk.c:850 grub-core/kern/emu/hostdisk.c:307
+#: grub-core/kern/emu/hostfs.c:149 grub-core/kern/emu/misc.c:216
 #: grub-core/osdep/linux/ofpath.c:195 grub-core/osdep/linux/ofpath.c:521
 #: grub-core/osdep/linux/ofpath.c:534 util/glue-efi.c:90 util/glue-efi.c:104
-#: util/grub-editenv.c:161 util/grub-fstest.c:577
-#: util/grub-install-common.c:1108 util/grub-mkrescue.c:637
-#: util/grub-mkrescue.c:891 util/grub-mount.c:506 util/grub-render-label.c:176
+#: util/grub-editenv.c:161 util/grub-fstest.c:583
+#: util/grub-install-common.c:1130 util/grub-mkrescue.c:658
+#: util/grub-mkrescue.c:931 util/grub-mount.c:526 util/grub-render-label.c:176
 #: util/misc.c:95 util/setup.c:817 util/setup.c:836
 #, c-format
 msgid "cannot read `%s': %s"
@@ -189,47 +191,78 @@ msgstr "ACPI-systemstans mislyktes"
 msgid "List devices."
 msgstr "Vis enheter."
 
-#: grub-core/commands/blocklist.c:122 grub-core/commands/cat.c:57
-#: grub-core/commands/configfile.c:35 grub-core/commands/efi/loadbios.c:168
+#: grub-core/commands/bli.c:49
+#, fuzzy, c-format
+msgid "cannot open device: %s"
+msgstr "klarte ikke å åpne «%s». %s"
+
+#: grub-core/commands/bli.c:54
+#, fuzzy, c-format
+msgid "cannot open disk: %s"
+msgstr "klarte ikke å åpne «%s». %s"
+
+#: grub-core/commands/bli.c:62
+#, c-format
+msgid "this is not a GPT partition table: %s"
+msgstr ""
+
+#: grub-core/commands/bli.c:69
+#, fuzzy, c-format
+msgid "read error: %s"
+msgstr "feil: %s.\n"
+
+#: grub-core/commands/bli.c:94 grub-core/commands/bli.c:98
+#, fuzzy
+msgid "unable to find boot device"
+msgstr "Velg rotenhet."
+
+#: grub-core/commands/bli.c:107
+#, fuzzy
+msgid "unable to determine partition UUID of boot device"
+msgstr "Bestem partisjons-UUID."
+
+#: grub-core/commands/blocklist.c:124 grub-core/commands/cat.c:57
+#: grub-core/commands/configfile.c:35 grub-core/commands/efi/loadbios.c:150
 #: grub-core/commands/file.c:160 grub-core/commands/hexdump.c:47
 #: grub-core/commands/legacycfg.c:228 grub-core/commands/legacycfg.c:334
 #: grub-core/commands/minicmd.c:44 grub-core/commands/syslinuxcfg.c:146
-#: grub-core/commands/testload.c:58 grub-core/commands/testspeed.c:52
-#: grub-core/disk/loopback.c:93 grub-core/efiemu/main.c:293
+#: grub-core/commands/testload.c:60 grub-core/commands/testspeed.c:52
+#: grub-core/disk/loopback.c:98 grub-core/efiemu/main.c:293
 #: grub-core/font/font_cmd.c:32 grub-core/kern/emu/hostdisk.c:519
-#: grub-core/loader/arm/linux.c:364 grub-core/loader/arm/linux.c:409
-#: grub-core/loader/arm/linux.c:472 grub-core/loader/arm64/linux.c:243
-#: grub-core/loader/arm64/linux.c:297 grub-core/loader/arm64/xen_boot.c:398
-#: grub-core/loader/arm64/xen_boot.c:411 grub-core/loader/arm64/xen_boot.c:462
-#: grub-core/loader/efi/chainloader.c:232 grub-core/loader/i386/bsd.c:1468
+#: grub-core/loader/arm/linux.c:365 grub-core/loader/arm/linux.c:410
+#: grub-core/loader/arm/linux.c:473 grub-core/loader/arm64/xen_boot.c:384
+#: grub-core/loader/arm64/xen_boot.c:397 grub-core/loader/arm64/xen_boot.c:448
+#: grub-core/loader/efi/chainloader.c:232 grub-core/loader/efi/linux.c:380
+#: grub-core/loader/efi/linux.c:483 grub-core/loader/emu/linux.c:119
+#: grub-core/loader/emu/linux.c:152 grub-core/loader/i386/bsd.c:1468
 #: grub-core/loader/i386/bsd.c:1813 grub-core/loader/i386/bsd.c:2091
 #: grub-core/loader/i386/coreboot/chainloader.c:438
-#: grub-core/loader/i386/linux.c:664 grub-core/loader/i386/linux.c:1047
+#: grub-core/loader/i386/linux.c:676 grub-core/loader/i386/linux.c:1059
 #: grub-core/loader/i386/pc/chainloader.c:290
 #: grub-core/loader/i386/pc/freedos.c:105 grub-core/loader/i386/pc/linux.c:139
 #: grub-core/loader/i386/pc/linux.c:406 grub-core/loader/i386/pc/ntldr.c:85
 #: grub-core/loader/i386/pc/plan9.c:409
 #: grub-core/loader/i386/pc/pxechainloader.c:94
 #: grub-core/loader/i386/pc/truecrypt.c:96 grub-core/loader/i386/xen.c:643
-#: grub-core/loader/i386/xen.c:776 grub-core/loader/i386/xen.c:852
-#: grub-core/loader/i386/xen.c:862 grub-core/loader/i386/xnu.c:487
+#: grub-core/loader/i386/xen.c:776 grub-core/loader/i386/xen.c:851
+#: grub-core/loader/i386/xen.c:861 grub-core/loader/i386/xnu.c:487
 #: grub-core/loader/ia64/efi/linux.c:459 grub-core/loader/ia64/efi/linux.c:539
 #: grub-core/loader/mips/linux.c:238 grub-core/loader/mips/linux.c:429
 #: grub-core/loader/multiboot.c:322 grub-core/loader/multiboot.c:374
 #: grub-core/loader/multiboot.c:384
-#: grub-core/loader/powerpc/ieee1275/linux.c:269
-#: grub-core/loader/powerpc/ieee1275/linux.c:341
+#: grub-core/loader/powerpc/ieee1275/linux.c:280
+#: grub-core/loader/powerpc/ieee1275/linux.c:352
 #: grub-core/loader/sparc64/ieee1275/linux.c:305
 #: grub-core/loader/sparc64/ieee1275/linux.c:381 grub-core/loader/xnu.c:370
 #: grub-core/loader/xnu.c:479 grub-core/loader/xnu.c:797
 #: grub-core/loader/xnu.c:911 grub-core/loader/xnu.c:1296
 #: grub-core/loader/xnu.c:1446 grub-core/loader/xnu.c:1472
-#: grub-core/video/readers/jpeg.c:838 grub-core/video/readers/png.c:1132
+#: grub-core/video/readers/jpeg.c:916 grub-core/video/readers/png.c:1118
 msgid "filename expected"
 msgstr "forventet et filnavn"
 
 #. TRANSLATORS: "embed" is a verb (command description).  "
-#: grub-core/commands/blocklist.c:154 grub-core/commands/cat.c:163
+#: grub-core/commands/blocklist.c:156 grub-core/commands/cat.c:163
 #: grub-core/commands/configfile.c:65 grub-core/commands/configfile.c:68
 #: grub-core/commands/configfile.c:74 grub-core/commands/configfile.c:80
 #: grub-core/commands/configfile.c:86 grub-core/commands/hashsum.c:34
@@ -238,7 +271,7 @@ msgstr "forventet et filnavn"
 #: grub-core/commands/macbless.c:222 grub-core/commands/minicmd.c:201
 #: grub-core/commands/syslinuxcfg.c:186 grub-core/commands/syslinuxcfg.c:194
 #: grub-core/commands/syslinuxcfg.c:200 grub-core/commands/syslinuxcfg.c:206
-#: grub-core/commands/testload.c:163 grub-core/efiemu/main.c:312
+#: grub-core/commands/testload.c:165 grub-core/efiemu/main.c:312
 #: grub-core/kern/emu/main.c:100 grub-core/kern/emu/main.c:103
 #: grub-core/loader/i386/bsd.c:2144 grub-core/loader/i386/bsd.c:2147
 #: grub-core/loader/i386/bsd.c:2150
@@ -246,13 +279,13 @@ msgstr "forventet et filnavn"
 #: grub-core/loader/ia64/efi/linux.c:594 include/grub/util/install.h:32
 #: include/grub/util/install.h:64 include/grub/util/install.h:66
 #: util/grub-glue-efi.c:52 util/grub-glue-efi.c:54 util/grub-glue-efi.c:56
-#: util/grub-install.c:254 util/grub-install.c:301 util/grub-mkfont.c:936
+#: util/grub-install.c:254 util/grub-install.c:301 util/grub-mkfont.c:982
 #: util/grub-mkimage.c:68 util/grub-mkimage.c:74 util/grub-mkimage.c:76
 #: util/grub-mkimage.c:78 util/grub-mkimage.c:81 util/grub-mkimage.c:84
 #: util/grub-mklayout.c:52 util/grub-mklayout.c:54 util/grub-mkrescue.c:97
 #: util/grub-mkrescue.c:101 util/grub-mkrescue.c:104 util/grub-mkrescue.c:105
-#: util/grub-mkrescue.c:106 util/grub-mkstandalone.c:47
-#: util/grub-mkstandalone.c:49 util/grub-probe.c:732
+#: util/grub-mkrescue.c:106 util/grub-mkstandalone.c:50
+#: util/grub-mkstandalone.c:52 util/grub-probe.c:732
 #: util/grub-render-label.c:59 util/grub-render-label.c:70
 #: util/grub-render-label.c:72 util/grub-setup.c:78 util/grub-setup.c:80
 #: util/grub-setup.c:84 util/grub-syslinux2cfg.c:74
@@ -261,19 +294,19 @@ msgstr "forventet et filnavn"
 msgid "FILE"
 msgstr "FIL"
 
-#: grub-core/commands/blocklist.c:154
+#: grub-core/commands/blocklist.c:156
 msgid "Print a block list."
 msgstr "Skriv ut en blokkliste."
 
-#: grub-core/commands/boot.c:147 grub-core/commands/legacycfg.c:552
-#: grub-core/commands/legacycfg.c:593 grub-core/loader/arm64/linux.c:250
+#: grub-core/commands/boot.c:197 grub-core/commands/legacycfg.c:552
+#: grub-core/commands/legacycfg.c:593 grub-core/loader/efi/linux.c:392
 #: grub-core/loader/i386/bsd.c:1805 grub-core/loader/i386/bsd.c:1906
 #: grub-core/loader/i386/bsd.c:2013 grub-core/loader/i386/bsd.c:2046
-#: grub-core/loader/i386/bsd.c:2095 grub-core/loader/i386/linux.c:1053
+#: grub-core/loader/i386/bsd.c:2095 grub-core/loader/i386/linux.c:1065
 #: grub-core/loader/i386/pc/linux.c:412 grub-core/loader/i386/xen.c:783
-#: grub-core/loader/i386/xen.c:867 grub-core/loader/ia64/efi/linux.c:545
+#: grub-core/loader/i386/xen.c:866 grub-core/loader/ia64/efi/linux.c:545
 #: grub-core/loader/mips/linux.c:432 grub-core/loader/multiboot.c:388
-#: grub-core/loader/powerpc/ieee1275/linux.c:347
+#: grub-core/loader/powerpc/ieee1275/linux.c:358
 #: grub-core/loader/sparc64/ieee1275/linux.c:387 grub-core/loader/xnu.c:591
 #: grub-core/loader/xnu.c:687 grub-core/loader/xnu.c:800
 #: grub-core/loader/xnu.c:914 grub-core/loader/xnu.c:1110
@@ -282,7 +315,7 @@ msgstr "Skriv ut en blokkliste."
 msgid "you need to load the kernel first"
 msgstr "du må laste inn kjernen først"
 
-#: grub-core/commands/boot.c:189
+#: grub-core/commands/boot.c:239
 msgid "Boot an operating system."
 msgstr "Start opp et operativsystem."
 
@@ -317,40 +350,44 @@ msgstr "Godta CR-/NL-linjeavslutninger i DOS-stil."
 msgid "Show the contents of a file."
 msgstr "Vis innholdet i en fil."
 
-#: grub-core/commands/cmp.c:43 grub-core/commands/i386/pc/drivemap.c:239
+#: grub-core/commands/cmp.c:34
+#, fuzzy
+msgid "Enable verbose output"
+msgstr "Slå av all oppstartsutskrift."
+
+#: grub-core/commands/cmp.c:51 grub-core/commands/i386/pc/drivemap.c:236
 #: grub-core/commands/i386/wrmsr.c:61 grub-core/commands/iorw.c:86
 #: grub-core/commands/memrw.c:85 grub-core/commands/password.c:75
 #: grub-core/commands/password_pbkdf2.c:94 grub-core/commands/pgp.c:826
 #: grub-core/commands/regexp.c:113 grub-core/mmap/mmap.c:520
-#: grub-core/net/dns.c:646
+#: grub-core/net/dns.c:635 grub-core/net/net.c:1198
 msgid "two arguments expected"
 msgstr "forventet to argumenter"
 
-#: grub-core/commands/cmp.c:45
+#: grub-core/commands/cmp.c:54
 #, c-format
 msgid "Compare file `%s' with `%s':\n"
 msgstr "Sammenlikning av fil «%s» og «%s»:\n"
 
-#: grub-core/commands/cmp.c:54
+#: grub-core/commands/cmp.c:62
 #, c-format
 msgid "Files differ in size: %llu [%s], %llu [%s]\n"
 msgstr "Filene har ulik størrelse: %llu (%s), og %llu (%s)\n"
 
-#: grub-core/commands/cmp.c:81
+#: grub-core/commands/cmp.c:90
 #, c-format
 msgid "Files differ at the offset %llu: 0x%x [%s], 0x%x [%s]\n"
 msgstr "Filene er ulike ved punktet %llu: 0x%x (%s), og 0x%x (%s)\n"
 
-#. TRANSLATORS: it's always exactly 2 files.
-#: grub-core/commands/cmp.c:93
+#: grub-core/commands/cmp.c:103
 msgid "The files are identical.\n"
 msgstr "Filene er identiske.\n"
 
-#: grub-core/commands/cmp.c:113
+#: grub-core/commands/cmp.c:124
 msgid "FILE1 FILE2"
 msgstr "FIL1 FIL2"
 
-#: grub-core/commands/cmp.c:113
+#: grub-core/commands/cmp.c:124
 msgid "Compare two files."
 msgstr "Sammenlikn to filer."
 
@@ -397,9 +434,79 @@ msgstr "[-e|-n] STRENG"
 msgid "Display a line of text."
 msgstr "Vis en tekstlinje."
 
-#: grub-core/commands/efi/efifwsetup.c:82
+#: grub-core/commands/efi/efifwsetup.c:48
+msgid "reboot to firmware setup is not supported by the current firmware"
+msgstr ""
+
+#: grub-core/commands/efi/efifwsetup.c:95
 msgid "Reboot into firmware setup menu."
 msgstr "Start på nytt og kjør fastvare-oppsettsmeny."
+
+#: grub-core/commands/efi/efitextmode.c:44
+msgid "device error: could not set requested mode"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:47
+msgid "invalid mode: number not valid"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:50
+#, fuzzy, c-format
+msgid "unexpected EFI error number: `%u'"
+msgstr "uforventet EFI-feil"
+
+#: grub-core/commands/efi/efitextmode.c:69
+msgid "no UEFI output console interface"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:72
+msgid "no mode struct for UEFI output console"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:75
+#, fuzzy
+msgid "at most two arguments expected"
+msgstr "forventet to argumenter"
+
+#: grub-core/commands/efi/efitextmode.c:79
+msgid "Available modes for console output device.\n"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:83
+msgid " [%"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:100
+#, c-format
+msgid "non-numeric or invalid mode `%s'"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:111
+#, c-format
+msgid "invalid mode: `%lu' is greater than maximum mode `%lu'"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:122
+#, c-format
+msgid "non-numeric or invalid columns number `%s'"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:128
+#, c-format
+msgid "non-numeric or invalid rows number `%s'"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:136
+msgid "no mode found with requested columns and rows"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:146
+msgid "[min | max | <mode_num> | <cols> <rows>]"
+msgstr ""
+
+#: grub-core/commands/efi/efitextmode.c:147
+msgid "Get or set EFI text mode."
+msgstr ""
 
 #: grub-core/commands/efi/fixvideo.c:107
 msgid "Fix video problem."
@@ -413,43 +520,52 @@ msgstr "ROM-bilde er tilstede."
 msgid "Can't enable ROM area."
 msgstr "Klarte ikke å aktivere ROM-område."
 
-#: grub-core/commands/efi/loadbios.c:209
+#: grub-core/commands/efi/loadbios.c:191
 msgid ""
 "Create BIOS-like structures for backward compatibility with existing OS."
 msgstr ""
 "Lag BIOS-lignende strukturer for bakover-kompatiblitet med eksisterende "
 "operativsystemer."
 
-#: grub-core/commands/efi/loadbios.c:214
+#: grub-core/commands/efi/loadbios.c:196
 msgid "BIOS_DUMP [INT10_DUMP]"
 msgstr "BIOS_DUMP [INT10_DUMP]"
 
-#: grub-core/commands/efi/loadbios.c:215
+#: grub-core/commands/efi/loadbios.c:197
 msgid "Load BIOS dump."
 msgstr "Last inn BIOS-dump."
 
-#: grub-core/commands/efi/tpm.c:140
-msgid "Command failed"
+#: grub-core/commands/efi/tpm.c:141
+#, fuzzy
+msgid "command failed"
 msgstr "Kommando mislyktes"
 
-#: grub-core/commands/efi/tpm.c:142
-msgid "Invalid parameter"
+#: grub-core/commands/efi/tpm.c:143
+#, fuzzy
+msgid "invalid parameter"
 msgstr "Ugyldig parameter"
 
-#: grub-core/commands/efi/tpm.c:144
-msgid "Output buffer too small"
+#: grub-core/commands/efi/tpm.c:145
+#, fuzzy
+msgid "output buffer too small"
 msgstr "Mellomlager for utdata er for lite"
 
-#: grub-core/commands/efi/tpm.c:146
+#: grub-core/commands/efi/tpm.c:147
 msgid "TPM unavailable"
 msgstr "TPM utilgjengelig"
 
-#: grub-core/commands/efi/tpm.c:148
-msgid "Unknown TPM error"
+#: grub-core/commands/efi/tpm.c:149
+#, fuzzy
+msgid "unknown TPM error"
 msgstr "Ukjent TMP-feil"
 
-#: grub-core/commands/efi/tpm.c:173 grub-core/commands/efi/tpm.c:207
+#: grub-core/commands/efi/tpm.c:174 grub-core/commands/efi/tpm.c:208
 msgid "cannot allocate TPM event buffer"
+msgstr "klarte ikke å tildele mellomlager for TPM-hendelser"
+
+#: grub-core/commands/efi/tpm.c:249
+#, fuzzy
+msgid "cannot allocate CC event buffer"
 msgstr "klarte ikke å tildele mellomlager for TPM-hendelser"
 
 #: grub-core/commands/eval.c:63
@@ -463,7 +579,7 @@ msgstr "Regn argumenter som GRUB-kommandoer"
 #: grub-core/commands/extcmd.c:120 grub-core/kern/command.c:88
 #, c-format
 msgid "%s: the command is not allowed when lockdown is enforced"
-msgstr ""
+msgstr "%s: kommandoen er ikke tillatt når nedlåsing håndheves"
 
 #: grub-core/commands/file.c:41
 msgid "Check if FILE can be booted as i386 PAE Xen unprivileged guest kernel"
@@ -597,7 +713,7 @@ msgstr "Sjekk om FIL er en BIOS-oppstartssektor"
 
 #. TRANSLATORS: it's a standalone boolean value,
 #. opposite of "true".
-#: grub-core/commands/file.c:677 grub-core/commands/i386/cmostest.c:63
+#: grub-core/commands/file.c:688 grub-core/commands/i386/cmostest.c:63
 #: grub-core/commands/i386/cpuid.c:71 grub-core/commands/keystatus.c:65
 #: grub-core/commands/keystatus.c:69 grub-core/commands/keystatus.c:78
 #: grub-core/commands/test.c:436 grub-core/commands/true.c:39
@@ -605,11 +721,11 @@ msgstr "Sjekk om FIL er en BIOS-oppstartssektor"
 msgid "false"
 msgstr "usant"
 
-#: grub-core/commands/file.c:686
+#: grub-core/commands/file.c:697
 msgid "OPTIONS FILE"
 msgstr "VALG FIL"
 
-#: grub-core/commands/file.c:687
+#: grub-core/commands/file.c:698
 msgid "Check if FILE is of specified type."
 msgstr "Sjekk om FIL er av valgt type."
 
@@ -666,7 +782,7 @@ msgstr "Grunnmappe for nøkkelsum-liste."
 
 #. TRANSLATORS: platform here isn't identifier. It can be translated.
 #: grub-core/commands/hashsum.c:35 grub-core/commands/ls.c:150
-#: grub-core/commands/macbless.c:226 grub-core/commands/syslinuxcfg.c:51
+#: grub-core/commands/macbless.c:225 grub-core/commands/syslinuxcfg.c:51
 #: grub-core/commands/syslinuxcfg.c:54 grub-core/kern/emu/main.c:106
 #: include/grub/util/install.h:50 include/grub/util/install.h:53
 #: include/grub/util/install.h:56 include/grub/util/install.h:59
@@ -785,13 +901,13 @@ msgstr "Ikke skriv ut meldinger."
 #: grub-core/commands/iorw.c:48 grub-core/commands/legacycfg.c:779
 #: grub-core/commands/legacycfg.c:831 grub-core/commands/macbless.c:190
 #: grub-core/commands/memrw.c:48 grub-core/commands/pgp.c:738
-#: grub-core/commands/pgp.c:792 grub-core/commands/search.c:304
-#: grub-core/commands/search_wrap.c:179 grub-core/commands/setpci.c:242
+#: grub-core/commands/pgp.c:792 grub-core/commands/search.c:324
+#: grub-core/commands/search_wrap.c:182 grub-core/commands/setpci.c:242
 #: grub-core/commands/sleep.c:71 grub-core/fs/zfs/zfsinfo.c:279
 #: grub-core/fs/zfs/zfsinfo.c:358 grub-core/gettext/gettext.c:492
-#: grub-core/kern/corecmd.c:65 grub-core/kern/corecmd.c:79
-#: grub-core/mmap/mmap.c:433 grub-core/net/dns.c:720 grub-core/net/dns.c:752
-#: grub-core/net/net.c:699 grub-core/net/net.c:1057
+#: grub-core/kern/corecmd.c:68 grub-core/kern/corecmd.c:82
+#: grub-core/mmap/mmap.c:433 grub-core/net/dns.c:711 grub-core/net/dns.c:743
+#: grub-core/net/net.c:709 grub-core/net/net.c:1081
 #: grub-core/normal/context.c:194 grub-core/script/execute.c:131
 #: grub-core/term/gfxterm_background.c:136
 msgid "one argument expected"
@@ -809,11 +925,11 @@ msgstr "Hent/velg ATA-diskparametre."
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: grub-core/commands/help.c:146
+#: grub-core/commands/help.c:148
 msgid "[PATTERN ...]"
 msgstr "[MØNSTER …]"
 
-#: grub-core/commands/help.c:147
+#: grub-core/commands/help.c:149
 msgid "Show a help message."
 msgstr "Vis en hjelpemelding."
 
@@ -882,34 +998,34 @@ msgstr "Vis informasjon om prosessoren."
 #. your language doesn't have an equivalent of "mapping" you can
 #. use the word like "rerouting".
 #.
-#: grub-core/commands/i386/pc/drivemap.c:43
+#: grub-core/commands/i386/pc/drivemap.c:40
 msgid "Show the current mappings."
 msgstr "Vis gjeldende koblinger."
 
-#: grub-core/commands/i386/pc/drivemap.c:44
+#: grub-core/commands/i386/pc/drivemap.c:41
 msgid "Reset all mappings to the default values."
 msgstr "Tilbakestill alle koblinger til standardverdier."
 
-#: grub-core/commands/i386/pc/drivemap.c:45
+#: grub-core/commands/i386/pc/drivemap.c:42
 msgid "Perform both direct and reverse mappings."
 msgstr "Lag både direkte og omvendte koblinger."
 
-#: grub-core/commands/i386/pc/drivemap.c:184
+#: grub-core/commands/i386/pc/drivemap.c:181
 msgid "No drives have been remapped"
 msgstr "Ingen lagringsenheter er omkoblet"
 
 #. TRANSLATORS:  This is the header of mapping list.
 #. On the left is how OS will see the disks and
 #. on the right current GRUB vision.
-#: grub-core/commands/i386/pc/drivemap.c:191
+#: grub-core/commands/i386/pc/drivemap.c:188
 msgid "OS disk #num ------> GRUB/BIOS device"
 msgstr "OS-disk #num ------> GRUB-/BIOS-enhet"
 
-#: grub-core/commands/i386/pc/drivemap.c:413
+#: grub-core/commands/i386/pc/drivemap.c:415
 msgid "-l | -r | [-s] grubdev osdisk."
 msgstr "-l | -r | [-s] grubdev osdisk."
 
-#: grub-core/commands/i386/pc/drivemap.c:414
+#: grub-core/commands/i386/pc/drivemap.c:416
 msgid "Manage the BIOS drive mappings."
 msgstr "Håndter koblinger av BIOS-lagringsenheten."
 
@@ -996,19 +1112,19 @@ msgid "Invalid tempo in %s"
 msgstr "Ugyldig tempo i %s"
 
 #: grub-core/commands/i386/pc/play.c:151 grub-core/commands/macbless.c:172
-#: grub-core/fs/archelp.c:260 grub-core/fs/bfs.c:621 grub-core/fs/bfs.c:704
-#: grub-core/fs/btrfs.c:1746 grub-core/fs/btrfs.c:1775
-#: grub-core/fs/btrfs.c:1819 grub-core/fs/btrfs.c:1902
-#: grub-core/fs/btrfs.c:1926 grub-core/fs/fshelp.c:257 grub-core/fs/jfs.c:707
-#: grub-core/fs/minix.c:428 grub-core/fs/ufs.c:544 grub-core/fs/zfs/zfs.c:2090
-#: grub-core/fs/zfs/zfs.c:2102 grub-core/fs/zfs/zfs.c:2308
-#: grub-core/net/http.c:120
+#: grub-core/fs/archelp.c:268 grub-core/fs/bfs.c:623 grub-core/fs/bfs.c:706
+#: grub-core/fs/btrfs.c:1857 grub-core/fs/btrfs.c:1886
+#: grub-core/fs/btrfs.c:1930 grub-core/fs/btrfs.c:2018
+#: grub-core/fs/btrfs.c:2042 grub-core/fs/fshelp.c:257 grub-core/fs/jfs.c:707
+#: grub-core/fs/minix.c:430 grub-core/fs/ufs.c:544 grub-core/fs/zfs/zfs.c:2093
+#: grub-core/fs/zfs/zfs.c:2105 grub-core/fs/zfs/zfs.c:2312
+#: grub-core/net/http.c:124
 #, c-format
 msgid "file `%s' not found"
 msgstr "fant ikke fila «%s»"
 
 #: grub-core/commands/i386/pc/play.c:162 grub-core/commands/i386/pc/play.c:171
-#: grub-core/kern/misc.c:437 grub-core/script/execute.c:138
+#: grub-core/kern/misc.c:493 grub-core/script/execute.c:138
 #: grub-core/script/execute.c:244
 msgid "unrecognized number"
 msgstr "ukjent tall"
@@ -1102,7 +1218,7 @@ msgstr "Etterlikn en knappetrykk-sekvens"
 #: grub-core/commands/i386/rdmsr.c:37 grub-core/commands/iorw.c:35
 #: grub-core/commands/memrw.c:34 grub-core/commands/setpci.c:73
 msgid "Save read value into variable VARNAME."
-msgstr "Lagre innlest verdi i variabelen VARNAVN"
+msgstr "Lagre innlest verdi i variabelen VARNAVN."
 
 #: grub-core/commands/i386/rdmsr.c:38 grub-core/commands/iorw.c:36
 #: grub-core/commands/memrw.c:35 grub-core/commands/probe.c:42
@@ -1118,7 +1234,7 @@ msgid "unsupported instruction"
 msgstr "instruksjonssett støttes ikke"
 
 #: grub-core/commands/i386/rdmsr.c:77 grub-core/commands/i386/wrmsr.c:70
-#: grub-core/commands/i386/wrmsr.c:78 grub-core/net/dns.c:734
+#: grub-core/commands/i386/wrmsr.c:78 grub-core/net/dns.c:725
 msgid "invalid argument"
 msgstr "ugyldig argument"
 
@@ -1129,7 +1245,7 @@ msgstr "ADR"
 
 #: grub-core/commands/i386/rdmsr.c:95
 msgid "Read a CPU model specific register."
-msgstr "Les register for en spesifikk CPU-modell"
+msgstr "Les register for en spesifikk CPU-modell."
 
 #: grub-core/commands/i386/wrmsr.c:87
 msgid "ADDR VALUE"
@@ -1137,7 +1253,7 @@ msgstr "ADR VERDI"
 
 #: grub-core/commands/i386/wrmsr.c:88
 msgid "Write a value to a CPU model specific register."
-msgstr "Skriv verdi register for en spesifikk CPU-modell"
+msgstr "Skriv verdi register for en spesifikk CPU-modell."
 
 #: grub-core/commands/ieee1275/suspend.c:34
 msgid "Run `go' to resume GRUB."
@@ -1187,8 +1303,8 @@ msgstr "Skriv 32-bit-VERDI til valgt PORT."
 
 #: grub-core/commands/keylayouts.c:215 grub-core/commands/loadenv.c:61
 #: grub-core/commands/nativedisk.c:189 grub-core/efiemu/main.c:235
-#: grub-core/font/font.c:432 grub-core/gfxmenu/gfxmenu.c:63
-#: grub-core/kern/device.c:42 grub-core/kern/dl.c:749
+#: grub-core/font/font.c:464 grub-core/gfxmenu/gfxmenu.c:63
+#: grub-core/kern/device.c:42 grub-core/kern/dl.c:760
 #, c-format
 msgid "variable `%s' isn't set"
 msgstr "variabelen «%s» har ingen verdi"
@@ -1219,7 +1335,7 @@ msgstr "Kontroller knappeendringsstatus."
 #: grub-core/commands/legacycfg.c:531 grub-core/commands/legacycfg.c:545
 #: grub-core/commands/legacycfg.c:565 grub-core/commands/legacycfg.c:578
 #: grub-core/commands/time.c:43 grub-core/script/function.c:119
-#: util/grub-file.c:100 util/grub-fstest.c:57 util/grub-mount.c:69
+#: util/grub-file.c:100 util/grub-fstest.c:57 util/grub-mount.c:68
 #, c-format
 msgid "can't find command `%s'"
 msgstr "fant ikke kommandoen «%s»"
@@ -1227,7 +1343,7 @@ msgstr "fant ikke kommandoen «%s»"
 #: grub-core/commands/legacycfg.c:832 grub-core/normal/auth.c:225
 #: util/grub-mkpasswd-pbkdf2.c:139
 msgid "Enter password: "
-msgstr "Skriv inn passord:"
+msgstr "Skriv inn passord: "
 
 #. TRANSLATORS: "legacy config" means
 #. "config as used by grub-legacy".
@@ -1291,27 +1407,27 @@ msgstr "Velg filnavn."
 msgid "Skip signature-checking of the environment file."
 msgstr "Hopp over signaturkontroll av miljøfila."
 
-#: grub-core/commands/loadenv.c:451
+#: grub-core/commands/loadenv.c:453
 msgid "[-f FILE] [-s|--skip-sig] [variable_name_to_whitelist] [...]"
 msgstr "[-f FIL] [-s|--skip-sig] [variabelnavn_som_skal_hvitelistes] […]"
 
-#: grub-core/commands/loadenv.c:452
+#: grub-core/commands/loadenv.c:454
 msgid "Load variables from environment block file."
 msgstr "Last inn variabler fra miljø-blokkfil."
 
-#: grub-core/commands/loadenv.c:455
+#: grub-core/commands/loadenv.c:457
 msgid "[-f FILE]"
 msgstr "[-f FIL]"
 
-#: grub-core/commands/loadenv.c:456
+#: grub-core/commands/loadenv.c:458
 msgid "List variables from environment block file."
 msgstr "Vis variabler fra miljø-blokkfil."
 
-#: grub-core/commands/loadenv.c:460
+#: grub-core/commands/loadenv.c:462
 msgid "[-f FILE] variable_name [...]"
 msgstr "[-f FIL] variabelnavn […]"
 
-#: grub-core/commands/loadenv.c:461
+#: grub-core/commands/loadenv.c:463
 msgid "Save variables to environment block file."
 msgstr "Lagre variabler i miljø-blokkfil."
 
@@ -1409,12 +1525,12 @@ msgstr "Vis minnekart fra fastvare."
 msgid "List PCI devices."
 msgstr "Vis PCI-enheter."
 
-#: grub-core/commands/macbless.c:224
+#: grub-core/commands/macbless.c:223
 msgid "Bless FILE of HFS or HFS+ partition for intel macs."
 msgstr ""
 "Marker FIL av HFS- eller HFS+-partisjon for bruk med intel-basert mac-maskin."
 
-#: grub-core/commands/macbless.c:228
+#: grub-core/commands/macbless.c:226
 msgid "Bless DIR of HFS or HFS+ partition for PPC macs."
 msgstr ""
 "Marker FIL av HFS- eller HFS+-partisjon for bruk med PPC-basert mac-maskin."
@@ -1443,15 +1559,28 @@ msgstr "Skriv 16-bit-VERDI til ADR."
 msgid "Write 32-bit VALUE to ADDR."
 msgstr "Skriv 32-bit-VERDI til ADR."
 
+#: grub-core/commands/memtools.c:140
+msgid "List free and allocated memory blocks."
+msgstr ""
+
+#: grub-core/commands/memtools.c:142
+#, fuzzy
+msgid "List free memory blocks."
+msgstr "Vis enheter eller files."
+
+#: grub-core/commands/memtools.c:144
+msgid "Stress test large allocations."
+msgstr ""
+
 #: grub-core/commands/menuentry.c:31
 msgid "Menu entry type."
 msgstr "Type menyoppføring."
 
 #: grub-core/commands/menuentry.c:31 grub-core/commands/menuentry.c:38
 #: grub-core/commands/menuentry.c:39 grub-core/gettext/gettext.c:520
-#: util/grub-fstest.c:520 util/grub-install.c:291 util/grub-install.c:304
+#: util/grub-fstest.c:526 util/grub-install.c:291 util/grub-install.c:304
 #: util/grub-mknetdir.c:51 util/grub-mkrescue.c:109 util/grub-mkrescue.c:110
-#: util/grub-mount.c:453 util/grub-render-label.c:65
+#: util/grub-mount.c:473 util/grub-render-label.c:65
 msgid "STRING"
 msgstr "STRENG"
 
@@ -1522,7 +1651,7 @@ msgstr "ADR [STØRR]"
 msgid "Show memory contents."
 msgstr "Vis innhold i minnet."
 
-#: grub-core/commands/minicmd.c:210 grub-core/kern/corecmd.c:188
+#: grub-core/commands/minicmd.c:210 grub-core/kern/corecmd.c:191
 #: util/grub-install.c:275
 msgid "MODULE"
 msgstr "MODUL"
@@ -1593,8 +1722,8 @@ msgstr "Minnetype: Ukjent."
 msgid "Print Memory information."
 msgstr "Skriv ut informasjon om minnet."
 
-#: grub-core/commands/nativedisk.c:118 grub-core/commands/probe.c:171
-#: grub-core/commands/probe.c:177 util/grub-probe.c:450
+#: grub-core/commands/nativedisk.c:118 grub-core/commands/probe.c:180
+#: grub-core/commands/probe.c:192 util/grub-probe.c:450
 #, c-format
 msgid "%s does not support UUIDs"
 msgstr "%s støtter ikke UUID-er"
@@ -1666,7 +1795,7 @@ msgstr "BRUKER PBKDF2-PASSORD"
 
 #: grub-core/commands/password_pbkdf2.c:203
 msgid "Set user password (PBKDF2). "
-msgstr "Velg passord for en bruker (PBKDF2)."
+msgstr "Velg passord for en bruker (PBKDF2). "
 
 #: grub-core/commands/pcidump.c:39 grub-core/commands/setpci.c:69
 msgid "Select device by vendor and device IDs."
@@ -1686,7 +1815,7 @@ msgstr "[buss]:[kortplass][.funk]"
 
 #: grub-core/commands/pcidump.c:109 grub-core/commands/pcidump.c:137
 #: grub-core/commands/setpci.c:183 grub-core/commands/setpci.c:213
-#: grub-core/fs/zfs/zfs.c:3822 grub-core/kern/emu/hostdisk.c:458
+#: grub-core/fs/zfs/zfs.c:3835 grub-core/kern/emu/hostdisk.c:458
 #: grub-core/kern/emu/hostdisk.c:473 grub-core/kern/file.c:44
 #, c-format
 msgid "missing `%c' symbol"
@@ -1722,13 +1851,12 @@ msgid "bad signature"
 msgstr "ubrukelig signatur"
 
 #: grub-core/commands/pgp.c:637
-#, fuzzy
 msgid "public key %08"
-msgstr "fant ikke offentlig nøkkel %08x"
+msgstr "offentlig nøkkel %08"
 
-#: grub-core/commands/pgp.c:651 grub-core/disk/diskfilter.c:772
-#: grub-core/disk/diskfilter.c:782 grub-core/fs/ntfs.c:404
-#: grub-core/fs/zfs/zfs.c:1940 grub-core/normal/menu.c:427
+#: grub-core/commands/pgp.c:651 grub-core/disk/diskfilter.c:797
+#: grub-core/disk/diskfilter.c:807 grub-core/fs/ntfs.c:449
+#: grub-core/fs/zfs/zfs.c:1943 grub-core/normal/menu.c:427
 #, c-format
 msgid "module `%s' isn't loaded"
 msgstr "modulen «%s» er ikke lastet inn"
@@ -1794,30 +1922,34 @@ msgid "Determine filesystem label."
 msgstr "Vis filsystem-etikett."
 
 #: grub-core/commands/probe.c:50
-#, fuzzy
 msgid "Determine partition UUID."
-msgstr "Vis partisjonskart-type."
+msgstr "Bestem partisjons-UUID."
 
-#: grub-core/commands/probe.c:192 grub-core/commands/probe.c:199
+#: grub-core/commands/probe.c:210 grub-core/commands/probe.c:223
 #: util/grub-probe.c:462
 #, c-format
 msgid "filesystem `%s' does not support labels"
 msgstr "filsystemet «%s» støtter ikke etiketter"
 
-#: grub-core/commands/probe.c:218 grub-core/fs/zfs/zfsinfo.c:430
+#: grub-core/commands/probe.c:243 grub-core/fs/zfs/zfsinfo.c:430
 #: grub-core/loader/i386/bsd.c:170 util/grub-setup.c:223
 msgid "DEVICE"
 msgstr "ENHET"
 
-#: grub-core/commands/probe.c:219
+#: grub-core/commands/probe.c:244
 msgid "Retrieve device info."
 msgstr "Hent enhetsinfo."
 
-#: grub-core/commands/read.c:85
-msgid "[ENVVAR]"
+#: grub-core/commands/read.c:33
+msgid "Do not echo input"
+msgstr ""
+
+#: grub-core/commands/read.c:96
+#, fuzzy
+msgid "[-s] [ENVVAR]"
 msgstr "[MILJØVAR]"
 
-#: grub-core/commands/read.c:86
+#: grub-core/commands/read.c:97
 msgid "Set variable with user input."
 msgstr "Gi verdi til en variabel med inndata fra bruker."
 
@@ -1829,7 +1961,7 @@ msgstr "Start maskinen på nytt."
 #. groups with parentheses. These groups are
 #. then numbered and you can save some of
 #. them in variables. In other programs
-#. those components aree often referenced with
+#. those components are often referenced with
 #. back slash, e.g. \1. Compare
 #. sed -e 's,\([a-z][a-z]*\),lowercase=\1,g'
 #. The whole matching component is saved in VARNAME, not its number.
@@ -1853,7 +1985,7 @@ msgstr "REG_UTTR STRENG"
 msgid "Test if REGEXP matches STRING."
 msgstr "Sjekk om REG_UTTR samsvarer med STRENG."
 
-#: grub-core/commands/search.c:324
+#: grub-core/commands/search.c:344
 msgid "NAME [VARIABLE] [HINTS]"
 msgstr "NAVN [VARIABEL] [HINT]"
 
@@ -1901,20 +2033,24 @@ msgstr "Bruk første funnede enhet som verdi for en variabel."
 msgid "Do not probe any floppy drive."
 msgstr "Ikke søk gjennom diskettstasjoner."
 
-#: grub-core/commands/search_wrap.c:44
+#: grub-core/commands/search_wrap.c:43
+msgid "Only probe EFI disks."
+msgstr ""
+
+#: grub-core/commands/search_wrap.c:45
 msgid ""
 "First try the device HINT. If HINT ends in comma, also try subpartitions"
 msgstr ""
 "Prøv enheten HINT først. Prøv også underpartisjoner hvis HINT slutter på "
 "komma"
 
-#: grub-core/commands/search_wrap.c:45 grub-core/commands/search_wrap.c:49
-#: grub-core/commands/search_wrap.c:53 grub-core/commands/search_wrap.c:57
-#: grub-core/commands/search_wrap.c:61 grub-core/commands/search_wrap.c:65
+#: grub-core/commands/search_wrap.c:46 grub-core/commands/search_wrap.c:50
+#: grub-core/commands/search_wrap.c:54 grub-core/commands/search_wrap.c:58
+#: grub-core/commands/search_wrap.c:62 grub-core/commands/search_wrap.c:66
 msgid "HINT"
 msgstr "HINT"
 
-#: grub-core/commands/search_wrap.c:47
+#: grub-core/commands/search_wrap.c:48
 msgid ""
 "First try the device HINT if currently running on IEEE1275. If HINT ends in "
 "comma, also try subpartitions"
@@ -1922,7 +2058,7 @@ msgstr ""
 "Prøv enheten HINT først hvis systemet kjører på IEEE1275. Prøv også "
 "underpartisjoner hvis HINT slutter på komma"
 
-#: grub-core/commands/search_wrap.c:51
+#: grub-core/commands/search_wrap.c:52
 msgid ""
 "First try the device HINT if currently running on BIOS. If HINT ends in "
 "comma, also try subpartitions"
@@ -1930,7 +2066,7 @@ msgstr ""
 "Prøv enheten HINT først hvis systemet kjører på BIOS. Prøv også "
 "underpartisjoner hvis HINT slutter på komma"
 
-#: grub-core/commands/search_wrap.c:55
+#: grub-core/commands/search_wrap.c:56
 msgid ""
 "First try the device HINT if direct hardware access is supported. If HINT "
 "ends in comma, also try subpartitions"
@@ -1938,7 +2074,7 @@ msgstr ""
 "Prøv enheten HINT først hvis direkte maskinvaretilgang støttes. Prøv også "
 "underpartisjoner hvis HINT slutter på komma"
 
-#: grub-core/commands/search_wrap.c:59
+#: grub-core/commands/search_wrap.c:60
 msgid ""
 "First try the device HINT if currently running on EFI. If HINT ends in "
 "comma, also try subpartitions"
@@ -1946,7 +2082,7 @@ msgstr ""
 "Prøv enheten HINT først hvis systemet kjører på EFI. Prøv også "
 "underpartisjoner hvis HINT slutter på komma"
 
-#: grub-core/commands/search_wrap.c:63
+#: grub-core/commands/search_wrap.c:64
 msgid ""
 "First try the device HINT if currently running on ARC. If HINT ends in "
 "comma, also try subpartitions"
@@ -1954,11 +2090,11 @@ msgstr ""
 "Prøv enheten HINT først hvis systemet kjører på ARC. Prøv også "
 "underpartisjoner hvis HINT slutter på komma"
 
-#: grub-core/commands/search_wrap.c:207
+#: grub-core/commands/search_wrap.c:213
 msgid "[-f|-l|-u|-s|-n] [--hint HINT [--hint HINT] ...] NAME"
 msgstr "[-f|-l|-u|-s|-n] [--hint HINT [--hint HINT] …] NAVN"
 
-#: grub-core/commands/search_wrap.c:209
+#: grub-core/commands/search_wrap.c:215
 msgid ""
 "Search devices by file, filesystem label or filesystem UUID. If --set is "
 "specified, the first device found is set to a variable. If no variable name "
@@ -1973,11 +2109,11 @@ msgstr ""
 msgid "Register %x of %x:%02x.%x is %x\n"
 msgstr "Register %x av %x:%02x.%x er %x\n"
 
-#: grub-core/commands/setpci.c:332
+#: grub-core/commands/setpci.c:331
 msgid "[-s POSITION] [-d DEVICE] [-v VAR] REGISTER[=VALUE[:MASK]]"
 msgstr "[-s POSISJON] [-d ENHET] [-v VAR] REGISTER[=VERDI[:MASKE]]"
 
-#: grub-core/commands/setpci.c:334
+#: grub-core/commands/setpci.c:333
 msgid "Manipulate PCI devices."
 msgstr "Manipuler PCI-enheter."
 
@@ -1999,7 +2135,7 @@ msgstr "Vent i valgt antall sekunder."
 
 #: grub-core/commands/smbios.c:197
 msgid "Match structures with the given type."
-msgstr ""
+msgstr "Match strukturer med den gitte typen."
 
 #: grub-core/commands/smbios.c:198 grub-core/loader/i386/bsd.c:490
 #: grub-core/loader/i386/bsd.c:556
@@ -2008,115 +2144,112 @@ msgstr "type"
 
 #: grub-core/commands/smbios.c:199
 msgid "Match structures with the given handle."
-msgstr ""
+msgstr "Match strukturer med den gitte handle."
 
 #: grub-core/commands/smbios.c:200
 msgid "handle"
-msgstr ""
+msgstr "håndtak"
 
 #: grub-core/commands/smbios.c:201
 msgid "Select a structure when several match."
-msgstr ""
+msgstr "Velg en struktur når flere samsvarer."
 
 #: grub-core/commands/smbios.c:202
-#, fuzzy
 msgid "match"
-msgstr "Ingen treff"
+msgstr "treff"
 
 #: grub-core/commands/smbios.c:203
 msgid "Get the byte's value at the given offset."
-msgstr ""
+msgstr "Få bytens verdi ved den gitte forskyvningen."
 
 #: grub-core/commands/smbios.c:204 grub-core/commands/smbios.c:206
 #: grub-core/commands/smbios.c:208 grub-core/commands/smbios.c:210
 #: grub-core/commands/smbios.c:212 grub-core/commands/smbios.c:214
 msgid "offset"
-msgstr ""
+msgstr "forskyvning"
 
 #: grub-core/commands/smbios.c:205
 msgid "Get two bytes' value at the given offset."
-msgstr ""
+msgstr "Hent UUID-verdien ved den gitte forskyvningen."
 
 #: grub-core/commands/smbios.c:207
 msgid "Get four bytes' value at the given offset."
-msgstr ""
+msgstr "Hent fire bytes verdi ved den gitte forskyvningen."
 
 #: grub-core/commands/smbios.c:209
 msgid "Get eight bytes' value at the given offset."
-msgstr ""
+msgstr "Hent åtte bytes verdi ved den gitte forskyvningen."
 
 #: grub-core/commands/smbios.c:211
 msgid "Get the string specified at the given offset."
-msgstr ""
+msgstr "Hent strengen spesifisert ved den gitte forskyvningen."
 
 #: grub-core/commands/smbios.c:213
 msgid "Get the UUID's value at the given offset."
-msgstr ""
+msgstr "Hent UUID-verdien ved den gitte forskyvningen."
 
 #: grub-core/commands/smbios.c:215
-#, fuzzy
 msgid "Store the value in the given variable name."
-msgstr "Lagre innlest verdi i variabelen VARNAVN"
+msgstr "Lagre verdien i det gitte variabelnavnet."
 
 #: grub-core/commands/smbios.c:216 grub-core/commands/smbios.c:218
-#, fuzzy
 msgid "variable"
-msgstr "Velg («set») verdier for variabler."
+msgstr "variabel"
 
 #: grub-core/commands/smbios.c:217
 msgid "Filter the result like linux does."
-msgstr ""
+msgstr "Filtrer resultatet slik linux gjør."
 
 #: grub-core/commands/smbios.c:289
 msgid "the SMBIOS entry point structure was not found"
-msgstr ""
+msgstr "SMBIOS-inngangspunktstrukturen ble ikke funnet"
 
 #: grub-core/commands/smbios.c:297
 msgid "the type must be between 0 and 255"
-msgstr ""
+msgstr "typen må være mellom 0 og 255"
 
 #: grub-core/commands/smbios.c:305
 msgid "the handle must be between 0 and 65535"
-msgstr ""
+msgstr "håndtaket må være mellom 0 og 65535"
 
 #: grub-core/commands/smbios.c:313
 msgid "the match must be a positive integer"
-msgstr ""
+msgstr "treffet må være et positivt heltall"
 
 #: grub-core/commands/smbios.c:323
 msgid "only one --get option is usable at a time"
-msgstr ""
+msgstr "bare ett «--get»-alternativ kan brukes om gangen"
 
 #: grub-core/commands/smbios.c:330
 msgid "one of the --get options is required"
-msgstr ""
+msgstr "ett av «--get»-alternativene er påkrevd"
 
 #: grub-core/commands/smbios.c:336
 msgid "no structure matched the given options"
-msgstr ""
+msgstr "ingen struktur samsvarte med de gitte alternativene"
 
 #: grub-core/commands/smbios.c:342
 msgid "the given offset is outside the structure"
-msgstr ""
+msgstr "den gitte forskyvningen er utenfor strukturen"
 
 #: grub-core/commands/smbios.c:348
 msgid "the field ends outside the structure"
-msgstr ""
+msgstr "feltet ender utenfor strukturen"
 
 #: grub-core/commands/smbios.c:354
-#, fuzzy
 msgid "failed to retrieve the structure field"
-msgstr "klarte ikke å lese kjernebildets sektorer"
+msgstr "klarte ikke å hente strukturfeltet"
 
 #: grub-core/commands/smbios.c:389
 msgid ""
 "[-t type] [-h handle] [-m match] (-b|-w|-d|-q|-s|-u) offset [--set variable]"
 msgstr ""
+"[-t type] [-h håndtak] [-m match] (-b|-w|-d|-q|-s|-u) forskyvning [--set "
+"variabel]"
 
 #: grub-core/commands/smbios.c:392
-#, fuzzy
 msgid "Retrieve SMBIOS information."
-msgstr "Skriv ut informasjon om minnet."
+msgstr "Hent SMBIOS-informasjon."
 
 #: grub-core/commands/syslinuxcfg.c:50 util/grub-syslinux2cfg.c:66
 msgid "root directory of the syslinux disk [default=/]."
@@ -2207,7 +2340,7 @@ msgstr "Vurder et uttrykk."
 msgid "EXPRESSION"
 msgstr "UTTRYKK"
 
-#: grub-core/commands/testload.c:164
+#: grub-core/commands/testload.c:166
 msgid "Load the same file in multiple ways."
 msgstr "Last inn samme fil på flere måter."
 
@@ -2291,7 +2424,7 @@ msgstr "Test USB-støtte."
 
 #: grub-core/commands/videoinfo.c:61
 msgid "Text-only "
-msgstr "Bare tekst"
+msgstr "Bare tekst "
 
 #. TRANSLATORS: "Direct color" is a mode when the color components
 #. are written dirrectly into memory.
@@ -2304,11 +2437,11 @@ msgstr "Direktefarge, maske: %d/%d/%d/%d  pos.: %d/%d/%d/%d"
 #. in the palette. Synonyms include "packed pixel".
 #: grub-core/commands/videoinfo.c:78
 msgid "Paletted "
-msgstr "I palett"
+msgstr "I palett "
 
 #: grub-core/commands/videoinfo.c:80
 msgid "YUV "
-msgstr "YUV"
+msgstr "YUV "
 
 #. TRANSLATORS: "Planar" is the video memory where you have to write
 #. in several different banks "plans" to control the different color
@@ -2333,11 +2466,11 @@ msgstr "Non-chain 4 "
 
 #: grub-core/commands/videoinfo.c:95
 msgid "Monochrome "
-msgstr "Monokromatisk"
+msgstr "Monokromatisk "
 
 #: grub-core/commands/videoinfo.c:97
 msgid "Unknown video mode "
-msgstr "Ukjent videomodus"
+msgstr "Ukjent videomodus "
 
 #: grub-core/commands/videoinfo.c:111
 msgid "  EDID checksum invalid"
@@ -2381,18 +2514,24 @@ msgstr "Adapter «%s»:\n"
 msgid "  No info available"
 msgstr "  Ingen informasjon tilgjengelig om denne enheten"
 
-#: grub-core/commands/videoinfo.c:198
+#: grub-core/commands/videoinfo.c:196
+msgid ""
+"  A video driver is active, cannot initialize this driver until it is "
+"deactivated\n"
+msgstr ""
+
+#: grub-core/commands/videoinfo.c:203
 msgid "  Failed to initialize video adapter"
 msgstr "  Klarte ikke å starte opp videoadapter"
 
 #. TRANSLATORS: "x" has to be entered in,
 #. like an identifier, so please don't
 #. use better Unicode codepoints.
-#: grub-core/commands/videoinfo.c:239 grub-core/commands/videoinfo.c:248
+#: grub-core/commands/videoinfo.c:244 grub-core/commands/videoinfo.c:253
 msgid "[WxH[xD]]"
 msgstr "[WxH[xD]]"
 
-#: grub-core/commands/videoinfo.c:240 grub-core/commands/videoinfo.c:249
+#: grub-core/commands/videoinfo.c:245 grub-core/commands/videoinfo.c:254
 msgid ""
 "List available video modes. If resolution is given show only modes matching "
 "it."
@@ -2439,77 +2578,160 @@ msgstr ""
 "Gjør om 64-bit-UUID til et format som kan brukes med XNU. Resultatet skrives "
 "ut med små bokstaver - som med blkid - hvis «-l» er valgt."
 
-#: grub-core/disk/arc/arcdisk.c:248 grub-core/disk/efi/efidisk.c:603
-#: grub-core/disk/i386/pc/biosdisk.c:498 grub-core/disk/i386/pc/biosdisk.c:543
+#: grub-core/disk/arc/arcdisk.c:248 grub-core/disk/efi/efidisk.c:613
+#: grub-core/disk/i386/pc/biosdisk.c:494 grub-core/disk/i386/pc/biosdisk.c:539
 #: grub-core/disk/ieee1275/nand.c:198 grub-core/disk/ieee1275/obdisk.c:527
-#: grub-core/disk/ieee1275/ofdisk.c:586
+#: grub-core/disk/ieee1275/ofdisk.c:582
 #, c-format
 msgid "failure reading sector 0x%llx from `%s'"
 msgstr "det oppstod en feil ved lesing av sektor 0x%llx fra «%s»"
 
-#: grub-core/disk/arc/arcdisk.c:284 grub-core/disk/efi/efidisk.c:626
-#: grub-core/disk/i386/pc/biosdisk.c:548 grub-core/disk/ieee1275/ofdisk.c:606
+#: grub-core/disk/arc/arcdisk.c:284 grub-core/disk/efi/efidisk.c:636
+#: grub-core/disk/i386/pc/biosdisk.c:544 grub-core/disk/ieee1275/ofdisk.c:602
 #, c-format
 msgid "failure writing sector 0x%llx to `%s'"
 msgstr "det oppstod en feil ved skriving av sektor 0x%llx til «%s»"
 
-#: grub-core/disk/cryptodisk.c:40
+#: grub-core/disk/cryptodisk.c:52
 msgid "Mount by UUID."
 msgstr "Monter etter UUID."
 
 #. TRANSLATORS: It's still restricted to cryptodisks only.
-#: grub-core/disk/cryptodisk.c:42
+#: grub-core/disk/cryptodisk.c:54
 msgid "Mount all."
 msgstr "Monter alle."
 
-#: grub-core/disk/cryptodisk.c:43
+#: grub-core/disk/cryptodisk.c:55
 msgid "Mount all volumes with `boot' flag set."
 msgstr "Monter alle volum med «boot»-flagg."
 
+#: grub-core/disk/cryptodisk.c:56
+msgid "Password to open volumes."
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:57
+msgid "Key file"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:58
+msgid "Key file offset (bytes)"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:59
+msgid "Key file data size (bytes)"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:60
+msgid "Read header from file"
+msgstr ""
+
 #. TRANSLATORS: The first %s is the file being looked at, the second %s is
 #. the error message.
-#: grub-core/disk/cryptodisk.c:705 grub-core/kern/emu/hostdisk.c:152
+#: grub-core/disk/cryptodisk.c:730 grub-core/kern/emu/hostdisk.c:152
 #: grub-core/kern/emu/hostdisk.c:262 grub-core/kern/emu/hostdisk.c:434
-#: grub-core/kern/emu/misc.c:180 grub-core/kern/emu/misc.c:186
-#: grub-core/kern/emu/misc.c:208 grub-core/osdep/bsd/getroot.c:92
+#: grub-core/kern/emu/misc.c:184 grub-core/kern/emu/misc.c:190
+#: grub-core/kern/emu/misc.c:212 grub-core/osdep/bsd/getroot.c:92
 #: grub-core/osdep/bsd/getroot.c:168 grub-core/osdep/hurd/getroot.c:68
-#: grub-core/osdep/linux/blocklist.c:65 grub-core/osdep/linux/getroot.c:150
-#: grub-core/osdep/linux/hostdisk.c:194 grub-core/osdep/linux/hostdisk.c:424
+#: grub-core/osdep/linux/blocklist.c:65 grub-core/osdep/linux/getroot.c:147
+#: grub-core/osdep/linux/hostdisk.c:152 grub-core/osdep/linux/hostdisk.c:383
 #: grub-core/osdep/linux/ofpath.c:417 grub-core/osdep/linux/ofpath.c:422
 #: grub-core/osdep/linux/ofpath.c:517 grub-core/osdep/linux/ofpath.c:530
 #: grub-core/osdep/sun/getroot.c:110 grub-core/osdep/windows/blocklist.c:98
 #: grub-core/tests/video_checksum.c:279 util/editenv.c:54 util/glue-efi.c:125
 #: util/glue-efi.c:130 util/glue-efi.c:140 util/grub-editenv.c:139
 #: util/grub-editenv.c:198 util/grub-file.c:83 util/grub-fstest.c:128
-#: util/grub-fstest.c:568 util/grub-install-common.c:92
+#: util/grub-fstest.c:574 util/grub-install-common.c:92
 #: util/grub-install-common.c:94 util/grub-install-common.c:101
-#: util/grub-install-common.c:694 util/grub-menulst2cfg.c:53
+#: util/grub-install-common.c:712 util/grub-menulst2cfg.c:53
 #: util/grub-menulst2cfg.c:68 util/grub-mkimage.c:307 util/grub-mklayout.c:504
-#: util/grub-mklayout.c:516 util/grub-mknetdir.c:133 util/grub-mknetdir.c:151
-#: util/grub-mkrescue.c:630 util/grub-mkrescue.c:634 util/grub-mkrescue.c:882
-#: util/grub-mkrescue.c:886 util/grub-mkstandalone.c:253 util/grub-mount.c:498
+#: util/grub-mklayout.c:516 util/grub-mknetdir.c:134 util/grub-mknetdir.c:152
+#: util/grub-mkrescue.c:651 util/grub-mkrescue.c:655 util/grub-mkrescue.c:922
+#: util/grub-mkrescue.c:926 util/grub-mkstandalone.c:274 util/grub-mount.c:518
 #: util/grub-render-label.c:169 util/grub-script-check.c:175
 #: util/grub-syslinux2cfg.c:181 util/grub-syslinux2cfg.c:191
 #: util/grub-syslinux2cfg.c:212 util/grub-syslinux2cfg.c:228 util/misc.c:91
 #: util/render-label.c:76 util/render-label.c:163 util/render-label.c:174
-#: util/resolve.c:246 util/setup.c:786
+#: util/resolve.c:249 util/setup.c:786
 #, c-format
 msgid "cannot open `%s': %s"
 msgstr "klarte ikke å åpne «%s». %s"
 
-#: grub-core/disk/cryptodisk.c:762 grub-core/disk/cryptodisk.c:806
+#: grub-core/disk/cryptodisk.c:740
+#, c-format
+msgid "failed to query size of device `%s': %s"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:802 grub-core/disk/cryptodisk.c:846
 #: grub-core/kern/emu/hostdisk.c:270 grub-core/kern/emu/hostfs.c:142
-#: grub-core/osdep/linux/hostdisk.c:459 util/grub-editenv.c:144
-#: util/grub-editenv.c:155 util/grub-fstest.c:320 util/misc.c:111
+#: grub-core/osdep/linux/hostdisk.c:418 util/grub-editenv.c:144
+#: util/grub-editenv.c:155 util/grub-fstest.c:326 util/misc.c:111
 #, c-format
 msgid "cannot seek `%s': %s"
 msgstr "klarte ikke å søke etter «%s». %s"
 
-#: grub-core/disk/cryptodisk.c:1320
-msgid "SOURCE|-u UUID|-a|-b"
-msgstr "KILDE|-u UUID|-a|-b"
+#: grub-core/disk/cryptodisk.c:1039
+#, fuzzy
+msgid "header file not found"
+msgstr "fant ikke adressen"
 
-#: grub-core/disk/cryptodisk.c:1321
+#: grub-core/disk/cryptodisk.c:1049
+#, fuzzy
+msgid "header file too small"
+msgstr "«%s» er for liten"
+
+#: grub-core/disk/cryptodisk.c:1122
+#, c-format
+msgid "Enter passphrase for %s%s%s (%s): "
+msgstr "Skriv inn passordfrase for %s%s%s (%s): "
+
+#: grub-core/disk/cryptodisk.c:1124 grub-core/disk/plainmount.c:374
+msgid "UNKNOWN"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:1293
+#, c-format
+msgid "non-numeric or invalid keyfile offset `%s'"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:1304
+#, fuzzy, c-format
+msgid "non-numeric or invalid keyfile size `%s'"
+msgstr "«%s» er et ugyldig filnavn"
+
+#: grub-core/disk/cryptodisk.c:1308
+#, fuzzy
+msgid "key file size is 0"
+msgstr "Filstørrelse: %s\n"
+
+#: grub-core/disk/cryptodisk.c:1312
+#, c-format
+msgid "key file size exceeds maximum (%d)"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:1323
+msgid "Keyfile offset, %llu, is greater thankeyfile size, %"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:1334
+msgid "keyfile is too small: requested %llu bytes, but the file only has %"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:1351
+#, fuzzy
+msgid "failed to read key file"
+msgstr "klarte ikke å hente FDT"
+
+#: grub-core/disk/cryptodisk.c:1358
+msgid "cannot use UUID lookup with detached header"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:1591
+msgid ""
+"[ [-p password] | [-k keyfile [-O keyoffset] [-S keysize] ] ] [-H file] "
+"<SOURCE|-u UUID|-a|-b>"
+msgstr ""
+
+#: grub-core/disk/cryptodisk.c:1594
 msgid "Mount a crypto device."
 msgstr "Monter en kryptert enhet."
 
@@ -2518,7 +2740,13 @@ msgstr "Monter en kryptert enhet."
 #. in the case of degraded RAID and means that autodetection may
 #. fail to include some of modules. It's an installation time
 #. message, not runtime message.
-#: grub-core/disk/diskfilter.c:343 grub-core/disk/diskfilter.c:376
+#.
+#. TRANSLATORS: This message kicks in during the detection of
+#. which modules needs to be included in core image. This happens
+#. in the case of degraded RAID and means that autodetection may
+#. fail to include some of modules. It's an installation time
+#. message, not runtime message.
+#: grub-core/disk/diskfilter.c:351 grub-core/disk/diskfilter.c:403
 #, c-format
 msgid ""
 "Couldn't find physical volume `%s'. Some modules may be missing from core "
@@ -2527,12 +2755,12 @@ msgstr ""
 "Fant ikke det fysiske volumet «%s». Det er mulig at kjernebildet mangler "
 "enkelte moduler."
 
-#: grub-core/disk/diskfilter.c:480
+#: grub-core/disk/diskfilter.c:507
 #, c-format
 msgid "physical volume %s not found"
 msgstr "fant ikke fysisk volum %s"
 
-#: grub-core/disk/efi/efidisk.c:600 grub-core/disk/efi/efidisk.c:623
+#: grub-core/disk/efi/efidisk.c:610 grub-core/disk/efi/efidisk.c:633
 #, c-format
 msgid "no media in `%s'"
 msgstr "det er ingen medium i «%s»"
@@ -2545,43 +2773,37 @@ msgstr "Klarte ikke å laste inn sha256"
 msgid "Couldn't load sha512"
 msgstr "Klarte ikke å laste inn sha512"
 
-#: grub-core/disk/geli.c:216 grub-core/disk/geli.c:220
+#: grub-core/disk/geli.c:214 grub-core/disk/geli.c:218
 msgid "couldn't read ELI metadata"
 msgstr "klarte ikke å lese ELI-metadata"
 
-#: grub-core/disk/geli.c:231
+#: grub-core/disk/geli.c:229
 msgid "wrong ELI magic or version"
 msgstr "feil ELI-magi eller -versjon"
 
-#: grub-core/disk/geli.c:435 grub-core/disk/luks.c:172
+#: grub-core/disk/geli.c:435 grub-core/disk/luks.c:158
 msgid "Attempting to decrypt master key..."
 msgstr "Prøver å dekryptere hovednøkkel …"
 
-#: grub-core/disk/geli.c:441 grub-core/disk/luks.c:190
-#: grub-core/disk/luks2.c:587
-#, c-format
-msgid "Enter passphrase for %s%s%s (%s): "
-msgstr "Skriv inn passordfrase for %s%s%s (%s): "
-
 #. TRANSLATORS: It's a cryptographic key slot: one element of an array
 #. where each element is either empty or holds a key.
-#: grub-core/disk/geli.c:530 grub-core/disk/luks.c:295
+#: grub-core/disk/geli.c:519 grub-core/disk/luks.c:267
 #, c-format
 msgid "Slot %d opened\n"
 msgstr "Skuff %d er åpnet\n"
 
-#: grub-core/disk/i386/pc/biosdisk.c:470 grub-core/disk/i386/pc/biosdisk.c:524
-#: grub-core/disk/i386/pc/biosdisk.c:534 grub-core/kern/disk_common.c:48
+#: grub-core/disk/i386/pc/biosdisk.c:466 grub-core/disk/i386/pc/biosdisk.c:520
+#: grub-core/disk/i386/pc/biosdisk.c:530 grub-core/kern/disk_common.c:48
 #, c-format
 msgid "attempt to read or write outside of disk `%s'"
 msgstr "forsøk å lese eller skrive utenfor disken «%s»"
 
-#: grub-core/disk/i386/pc/biosdisk.c:491 grub-core/disk/i386/pc/biosdisk.c:611
-#: grub-core/disk/scsi.c:726
+#: grub-core/disk/i386/pc/biosdisk.c:487 grub-core/disk/i386/pc/biosdisk.c:610
+#: grub-core/disk/scsi.c:724
 msgid "cannot write to CD-ROM"
 msgstr "klarte ikke å skrive til CD-ROM"
 
-#: grub-core/disk/i386/pc/biosdisk.c:662
+#: grub-core/disk/i386/pc/biosdisk.c:661
 msgid ""
 "Native disk drivers are in use. Refusing to use firmware disk interface."
 msgstr ""
@@ -2593,13 +2815,13 @@ msgstr ""
 #. usable for bootloaders (called generically
 #. "embedding zone") and this operation is
 #. called "embedding".
-#: grub-core/disk/ldm.c:1073
+#: grub-core/disk/ldm.c:1074
 msgid "your LDM Embedding Partition is too small; embedding won't be possible"
 msgstr "LDM-innebyggingspartisjonen er for liten. Innebygging kan ikke utføres"
 
 #. TRANSLATORS: it's a partition for embedding,
 #. not a partition embed into something.
-#: grub-core/disk/ldm.c:1091
+#: grub-core/disk/ldm.c:1092
 msgid "this LDM has no Embedding Partition; embedding won't be possible"
 msgstr ""
 "denne LDM-enheten har ingen innebyggingspartisjon. Innebygging kan ikke "
@@ -2611,53 +2833,256 @@ msgstr ""
 msgid "Delete the specified loopback drive."
 msgstr "Slett valgt filmonteringsenhet."
 
-#: grub-core/disk/loopback.c:229
-msgid "[-d] DEVICENAME FILE."
+#: grub-core/disk/loopback.c:46
+msgid "Transparently decompress backing file."
+msgstr ""
+
+#: grub-core/disk/loopback.c:233
+#, fuzzy
+msgid "[-d] [-D] DEVICENAME FILE."
 msgstr "[-d] ENHETSNAVN FIL."
 
 #. TRANSLATORS: The file itself is not destroyed
 #. or transformed into drive.
-#: grub-core/disk/loopback.c:232
+#: grub-core/disk/loopback.c:236
 msgid "Make a virtual drive from a file."
 msgstr "Lag en virtuell enhet av en fil."
+
+#: grub-core/disk/luks2.c:388
+msgid "could not unescape Base64 string"
+msgstr ""
+
+#: grub-core/disk/luks2.c:393
+msgid "could not decode Base64 string"
+msgstr ""
 
 #. TRANSLATORS: It's a cryptographic key slot: one element of an array
 #. where each element is either empty or holds a key.
 #.
-#: grub-core/disk/luks2.c:741
-#, fuzzy, c-format
+#: grub-core/disk/luks2.c:754
+#, c-format
 msgid "Slot \"%s\" opened\n"
-msgstr "Skuff %d er åpnet\n"
+msgstr "Kortplass «%s» åpnet\n"
+
+#. TRANSLATORS: It's still restricted to this module only.
+#: grub-core/disk/plainmount.c:49
+#, fuzzy
+msgid "Password hash"
+msgstr "Lag PBKDF2-nøkkelsum av passord."
+
+#: grub-core/disk/plainmount.c:50
+msgid "Password cipher"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:51
+msgid "Key size (in bits)"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:52
+#, fuzzy
+msgid "Device sector size"
+msgstr " - Sektorstørrelse %uB"
+
+#: grub-core/disk/plainmount.c:53
+msgid "Password (key)"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:54
+msgid "Keyfile path"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:55
+#, fuzzy
+msgid "Keyfile offset"
+msgstr "forskyvning"
+
+#: grub-core/disk/plainmount.c:56
+#, fuzzy
+msgid "Set device UUID"
+msgstr "Velg rotenhet."
+
+#: grub-core/disk/plainmount.c:69
+#, fuzzy
+msgid "cannot set specified key"
+msgstr "ingen tjener er valgt"
+
+#: grub-core/disk/plainmount.c:102
+#, fuzzy, c-format
+msgid "cannot determine disk %s size"
+msgstr "klarte ikke å finne ut hva slags filsystem som ligger på %s"
+
+#: grub-core/disk/plainmount.c:112
+#, fuzzy, c-format
+msgid "cannot set specified sector size on disk %s"
+msgstr "kan ikke finne filplassering «%s». %s"
+
+#: grub-core/disk/plainmount.c:188
+#, fuzzy, c-format
+msgid "cannot open keyfile %s"
+msgstr "klarte ikke å åpne OS-fila «%s»: %s"
+
+#: grub-core/disk/plainmount.c:193
+#, fuzzy
+msgid "cannot seek keyfile at offset %"
+msgstr "sammenlikningsfeil ved posisjon %llu"
+
+#: grub-core/disk/plainmount.c:197
+msgid "Specified key size (%"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:203
+msgid "error reading key file"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:222
+msgid "device name required"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:235
+#, fuzzy, c-format
+msgid "couldn't load hash %s"
+msgstr "Klarte ikke å laste inn sha256"
+
+#: grub-core/disk/plainmount.c:240
+msgid "hash length %"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:248
+msgid "invalid cipher mode, must be of format cipher-mode"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:254
+msgid "password exceeds maximium size"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:260
+msgid "specified UUID exceeds maximum size"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:262
+msgid "specified UUID too short"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:271
+#, fuzzy
+msgid "unrecognized keyfile offset"
+msgstr "Ukjent pool-status"
+
+#: grub-core/disk/plainmount.c:278
+#, fuzzy
+msgid "unrecognized sector size"
+msgstr "ukjent tall"
+
+#: grub-core/disk/plainmount.c:284
+#, fuzzy
+msgid "unrecognized key size"
+msgstr "ukjent tall"
+
+#: grub-core/disk/plainmount.c:287
+#, c-format
+msgid "key size is not multiple of %d bits"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:291
+#, fuzzy
+msgid "key size %"
+msgstr "Filstørrelse: %s\n"
+
+#: grub-core/disk/plainmount.c:298
+#, c-format
+msgid "sector size -S must be at least %d"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:302
+#, fuzzy
+msgid "sector size -S %"
+msgstr " - Sektorstørrelse %uB"
+
+#: grub-core/disk/plainmount.c:341
+#, fuzzy, c-format
+msgid "invalid cipher %s"
+msgstr "%s er et gyldig parameter"
+
+#: grub-core/disk/plainmount.c:343
+#, fuzzy, c-format
+msgid "invalid mode %s"
+msgstr "«%s» er en ugyldig modinfo-fil"
+
+#: grub-core/disk/plainmount.c:345
+#, fuzzy, c-format
+msgid "invalid cipher %s or mode %s"
+msgstr "ugyldig linjeformat: %s"
+
+#: grub-core/disk/plainmount.c:364
+#, fuzzy, c-format
+msgid "cannot open disk %s"
+msgstr "klarte ikke å åpne «%s». %s"
+
+#: grub-core/disk/plainmount.c:372
+#, fuzzy, c-format
+msgid "Enter passphrase for %s%s%s: "
+msgstr "Skriv inn passordfrase for %s%s%s (%s): "
+
+#: grub-core/disk/plainmount.c:379
+#, fuzzy
+msgid "error reading password"
+msgstr "klarte ikke å lese passord"
+
+#: grub-core/disk/plainmount.c:391
+msgid "warning: hash is ignored if keyfile is specified\n"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:395
+msgid ""
+"warning: password specified with -p option is ignored if keyfile is "
+"provided\n"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:400
+msgid "warning: keyfile offset option -O specified without keyfile option -d\n"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:448
+msgid ""
+"-c cipher -s key-size [-h hash] [-S sector-size] [-o offset] [-p password] [-"
+"u uuid]  [[-d keyfile] [-O keyfile offset]] <SOURCE>"
+msgstr ""
+
+#: grub-core/disk/plainmount.c:451
+msgid "Open partition encrypted in plain mode."
+msgstr ""
 
 #: grub-core/efiemu/i386/loadcore32.c:111 grub-core/kern/arm/dl.c:256
 #: grub-core/kern/i386/dl.c:75 grub-core/kern/mips/dl.c:258
-#: grub-core/kern/powerpc/dl.c:163 util/grub-mkimagexx.c:756
-#: util/grub-mkimagexx.c:881 util/grub-mkimagexx.c:945
-#: util/grub-mkimagexx.c:1026 util/grub-mkimagexx.c:1120
-#: util/grub-mkimagexx.c:1222 util/grub-mkimagexx.c:1413
-#: util/grub-mkimagexx.c:1628 util/grub-mkimagexx.c:1665
-#: util/grub-mkimagexx.c:1697 util/grub-mkimagexx.c:1767
-#: util/grub-mkimagexx.c:1797
+#: grub-core/kern/powerpc/dl.c:163 util/grub-mkimagexx.c:757
+#: util/grub-mkimagexx.c:884 util/grub-mkimagexx.c:948
+#: util/grub-mkimagexx.c:1029 util/grub-mkimagexx.c:1123
+#: util/grub-mkimagexx.c:1188 util/grub-mkimagexx.c:1290
+#: util/grub-mkimagexx.c:1482 util/grub-mkimagexx.c:1697
+#: util/grub-mkimagexx.c:1735 util/grub-mkimagexx.c:1793
+#: util/grub-mkimagexx.c:1825 util/grub-mkimagexx.c:1896
+#: util/grub-mkimagexx.c:1926
 #, c-format
 msgid "relocation 0x%x is not implemented yet"
 msgstr "flytting av 0x%x er ikke implementert ennå"
 
 #: grub-core/efiemu/i386/loadcore64.c:130 grub-core/kern/arm64/dl.c:192
-#: grub-core/kern/ia64/dl.c:145 grub-core/kern/riscv/dl.c:339
-#: grub-core/kern/sparc64/dl.c:185 grub-core/kern/x86_64/dl.c:115
-#, fuzzy, c-format
+#: grub-core/kern/ia64/dl.c:145 grub-core/kern/loongarch64/dl.c:144
+#: grub-core/kern/riscv/dl.c:340 grub-core/kern/sparc64/dl.c:185
+#: grub-core/kern/x86_64/dl.c:115
+#, c-format
 msgid "relocation 0x%s is not implemented yet"
-msgstr "flytting av 0x%x er ikke implementert ennå"
+msgstr "flytting av 0x%s er ikke implementert ennå"
 
 #: grub-core/efiemu/loadcore.c:200 grub-core/efiemu/loadcore.c:237
-#: grub-core/loader/i386/bsdXX.c:317 util/grub-mkimagexx.c:2358
+#: grub-core/loader/i386/bsdXX.c:339 util/grub-mkimagexx.c:2487
 msgid "no symbol table"
 msgstr "ingen symboltabell"
 
-#: grub-core/efiemu/loadcore.c:346 grub-core/kern/dl.c:618
+#: grub-core/efiemu/loadcore.c:346 grub-core/kern/dl.c:629
 #: grub-core/loader/ia64/efi/linux.c:345 grub-core/loader/mips/linux.c:248
-#: grub-core/loader/multiboot_elfxx.c:76
-#: grub-core/loader/powerpc/ieee1275/linux.c:280
+#: grub-core/loader/multiboot_elfxx.c:89
+#: grub-core/loader/powerpc/ieee1275/linux.c:291
 #: grub-core/loader/sparc64/ieee1275/linux.c:320
 msgid "this ELF file is not of the right type"
 msgstr "denne ELF-fila er av feil type"
@@ -2674,7 +3099,7 @@ msgstr "Ferdigstill innlasting av EFI-emulator."
 msgid "Unload EFI emulator."
 msgstr "Slå av EFI-emulator."
 
-#: grub-core/efiemu/symbols.c:92 grub-core/kern/dl.c:376
+#: grub-core/efiemu/symbols.c:92 grub-core/kern/dl.c:379
 #, c-format
 msgid "symbol `%s' not found"
 msgstr "fant ikke symbolet «%s»"
@@ -2695,63 +3120,64 @@ msgstr "Velg én eller flere skrifttype-filer som skal lastes inn."
 msgid "List the loaded fonts."
 msgstr "Vis en liste over skrifttyper som er i bruk."
 
-#: grub-core/fs/archelp.c:216 grub-core/fs/archelp.c:278
-#: grub-core/fs/btrfs.c:1835 grub-core/fs/fshelp.c:227 grub-core/fs/jfs.c:747
+#: grub-core/fs/archelp.c:186 grub-core/fs/btrfs.c:1829
+#: grub-core/fs/btrfs.c:2094 grub-core/fs/fshelp.c:189
+#: grub-core/fs/fshelp.c:309 grub-core/fs/jfs.c:442 grub-core/fs/minix.c:418
+#: grub-core/fs/minix.c:580 grub-core/fs/reiserfs.c:732 grub-core/fs/ufs.c:531
+#: grub-core/fs/ufs.c:671 grub-core/fs/zfs/zfs.c:2848
+#: grub-core/fs/zfs/zfs.c:4305
+msgid "not a directory"
+msgstr "ikke en mappe"
+
+#: grub-core/fs/archelp.c:224 grub-core/fs/archelp.c:286
+#: grub-core/fs/btrfs.c:1946 grub-core/fs/fshelp.c:227 grub-core/fs/jfs.c:747
 #: grub-core/fs/minix.c:371 grub-core/fs/ufs.c:454
 msgid "too deep nesting of symlinks"
 msgstr "det er for mange nivåer av symbolske metalenker"
 
 #: grub-core/fs/bfs.c:228 grub-core/fs/fshelp.c:380 grub-core/fs/minix.c:272
-#: grub-core/kern/file.c:156
+#: grub-core/kern/file.c:161
 msgid "attempt to read past the end of file"
 msgstr "prøv å lese forbi slutten av fila"
 
-#: grub-core/fs/btrfs.c:1718 grub-core/fs/btrfs.c:1977
-#: grub-core/fs/fshelp.c:189 grub-core/fs/fshelp.c:309 grub-core/fs/jfs.c:442
-#: grub-core/fs/minix.c:416 grub-core/fs/minix.c:578
-#: grub-core/fs/reiserfs.c:732 grub-core/fs/ufs.c:531 grub-core/fs/ufs.c:671
-#: grub-core/fs/zfs/zfs.c:2842 grub-core/fs/zfs/zfs.c:4275
-msgid "not a directory"
-msgstr "ikke en mappe"
-
-#: grub-core/fs/btrfs.c:2083 grub-core/fs/fshelp.c:307 grub-core/fs/jfs.c:846
-#: grub-core/fs/zfs/zfs.c:3829
+#: grub-core/fs/btrfs.c:2225 grub-core/fs/fshelp.c:307 grub-core/fs/jfs.c:846
+#: grub-core/fs/zfs/zfs.c:3842
 msgid "not a regular file"
 msgstr "ikke en vanlig fil"
 
-#: grub-core/fs/btrfs.c:2177 grub-core/fs/zfs/zfs.c:4361
+#: grub-core/fs/btrfs.c:2375 grub-core/fs/zfs/zfs.c:4391
 #: grub-core/partmap/msdos.c:404
 msgid "your core.img is unusually large.  It won't fit in the embedding area"
 msgstr ""
 "core.img-fila di er unormalt stor. Den kan ikke legges i innebyggingsområdet"
 
-#: grub-core/fs/ext2.c:724 grub-core/fs/squash4.c:467
-#: grub-core/kern/buffer.c:108 grub-core/kern/misc.c:364
-#: grub-core/kern/misc.c:422 grub-core/kern/mm.c:392 grub-core/lib/arg.c:224
+#: grub-core/fs/ext2.c:750 grub-core/fs/squash4.c:467
+#: grub-core/kern/buffer.c:111 grub-core/kern/misc.c:420
+#: grub-core/kern/misc.c:478 grub-core/kern/mm.c:568 grub-core/lib/arg.c:224
 #: grub-core/lib/arg.c:471 grub-core/loader/i386/pc/linux.c:225
-#: grub-core/loader/linux.c:139 grub-core/loader/linux.c:248
+#: grub-core/loader/linux.c:152 grub-core/loader/linux.c:261
 #: grub-core/script/lexer.c:179 grub-core/video/bitmap.c:145
-#: grub-core/video/readers/png.c:307 grub-core/video/readers/png.c:312
-#: include/grub/buffer.h:79 include/grub/buffer.h:117 include/grub/misc.h:287
-#: include/grub/misc.h:296
+#: grub-core/video/readers/png.c:327 grub-core/video/readers/png.c:332
+#: include/grub/buffer.h:79 include/grub/buffer.h:117 include/grub/misc.h:318
+#: include/grub/misc.h:327
 msgid "overflow is detected"
 msgstr "oppdaget overbelastning"
 
-#: grub-core/fs/fshelp.c:281 grub-core/fs/minix.c:646 grub-core/fs/ufs.c:661
-#: grub-core/fs/ufs.c:757 grub-core/kern/fs.c:170 grub-core/kern/fs.c:182
+#: grub-core/fs/fshelp.c:281 grub-core/fs/minix.c:648 grub-core/fs/ufs.c:661
+#: grub-core/fs/ufs.c:757 grub-core/kern/fs.c:172 grub-core/kern/fs.c:188
 #, c-format
 msgid "invalid file name `%s'"
 msgstr "«%s» er et ugyldig filnavn"
 
 #: grub-core/fs/fshelp.c:373
 msgid "blocksize too large"
-msgstr ""
+msgstr "blokkstørrelse er for stor"
 
-#: grub-core/fs/zfs/zfs.c:457
+#: grub-core/fs/zfs/zfs.c:459
 msgid "checksum verification failed"
 msgstr "bekreftelse av kontrollsum mislyktes"
 
-#: grub-core/fs/zfs/zfs.c:1472
+#: grub-core/fs/zfs/zfs.c:1474
 msgid "couldn't find a necessary member device of multi-device filesystem"
 msgstr "fant ikke et nødvendig medlem av tverrenhet-filsystem"
 
@@ -2775,9 +3201,9 @@ msgstr "Forvent heksadesimal inndata."
 msgid "Assume input is passphrase."
 msgstr "Forvent at inndata er en passordfrase."
 
-#: grub-core/fs/zfs/zfscrypt.c:442 util/grub-fstest.c:553 util/grub-mount.c:483
+#: grub-core/fs/zfs/zfscrypt.c:442 util/grub-fstest.c:559 util/grub-mount.c:503
 msgid "Enter ZFS password: "
-msgstr "Skriv inn ZFS-passord:"
+msgstr "Skriv inn ZFS-passord: "
 
 #: grub-core/fs/zfs/zfscrypt.c:481
 msgid "[-h|-p|-r] [FILE]"
@@ -2959,7 +3385,7 @@ msgstr "Intet virtuelt enhetstre tilgjengelig"
 
 #: grub-core/fs/zfs/zfsinfo.c:431
 msgid "Print ZFS info about DEVICE."
-msgstr "Skriv ut ZFS-info om valgt ENHET"
+msgstr "Skriv ut ZFS-info om valgt ENHET."
 
 #: grub-core/fs/zfs/zfsinfo.c:433
 msgid "FILESYSTEM [VARIABLE]"
@@ -3063,13 +3489,13 @@ msgstr "Hei, verden"
 msgid "Say `Hello World'."
 msgstr "Si «Hei, verden»."
 
-#: grub-core/io/gzio.c:409 grub-core/kern/file.c:210
+#: grub-core/io/gzio.c:409 grub-core/kern/file.c:215
 msgid "attempt to seek outside of the file"
 msgstr "prøv å søke utenfor fila"
 
 #. TRANSLATORS: It's about given file having some strange format, not
 #. complete lack of gzip support.
-#: grub-core/io/gzio.c:1264 grub-core/io/gzio.c:1273 grub-core/io/gzio.c:1280
+#: grub-core/io/gzio.c:1265 grub-core/io/gzio.c:1274 grub-core/io/gzio.c:1281
 msgid "unsupported gzip format"
 msgstr "gzip-formatet støttes ikke"
 
@@ -3083,55 +3509,54 @@ msgstr "xz-fil er ødelagt, eller blokkvalgene støttes ikke"
 
 #: grub-core/kern/arm/dl.c:277 grub-core/kern/arm64/dl.c:44
 #: grub-core/kern/i386/dl.c:36 grub-core/kern/ia64/dl.c:41
-#: grub-core/kern/mips/dl.c:48 grub-core/kern/powerpc/dl.c:36
-#: grub-core/kern/riscv/dl.c:47 grub-core/kern/sparc64/dl.c:36
-#: grub-core/kern/x86_64/dl.c:36 grub-core/loader/i386/bsd.c:1451
-#: grub-core/loader/i386/bsdXX.c:49 grub-core/loader/ia64/efi/linux.c:341
-#: grub-core/loader/mips/linux.c:298 grub-core/loader/multiboot.c:232
-#: grub-core/loader/multiboot_elfxx.c:73
-#: grub-core/loader/powerpc/ieee1275/linux.c:294
+#: grub-core/kern/loongarch64/dl.c:37 grub-core/kern/mips/dl.c:48
+#: grub-core/kern/powerpc/dl.c:36 grub-core/kern/riscv/dl.c:47
+#: grub-core/kern/sparc64/dl.c:36 grub-core/kern/x86_64/dl.c:36
+#: grub-core/loader/i386/bsd.c:1451 grub-core/loader/i386/bsdXX.c:52
+#: grub-core/loader/ia64/efi/linux.c:341 grub-core/loader/mips/linux.c:298
+#: grub-core/loader/multiboot.c:232 grub-core/loader/multiboot_elfxx.c:86
+#: grub-core/loader/powerpc/ieee1275/linux.c:305
 #: grub-core/loader/sparc64/ieee1275/linux.c:331
 msgid "invalid arch-dependent ELF magic"
 msgstr "ugyldig arkitektur-avhengig ELF-magi"
 
-#: grub-core/kern/buffer.c:71
-#, fuzzy
+#: grub-core/kern/buffer.c:74
 msgid "requested buffer size is too large"
-msgstr "«%s» er for stor"
+msgstr "den forespurte bufferstørrelsen er for stor"
 
-#: grub-core/kern/buffer.c:112
+#: grub-core/kern/buffer.c:115
 msgid "new read is position beyond the end of the written data"
-msgstr ""
+msgstr "ny lesing er posisjon utenfor slutten av de skrevne dataene"
 
-#: grub-core/kern/corecmd.c:178
+#: grub-core/kern/corecmd.c:181
 msgid "[ENVVAR=VALUE]"
 msgstr "[ENVVAR=VERDI]"
 
-#: grub-core/kern/corecmd.c:179
+#: grub-core/kern/corecmd.c:182
 msgid "Set an environment variable."
-msgstr "Gi verdi til en miljøvariabel"
+msgstr "Gi verdi til en miljøvariabel."
 
-#: grub-core/kern/corecmd.c:183
+#: grub-core/kern/corecmd.c:186
 msgid "ENVVAR"
 msgstr "ENVVAR"
 
-#: grub-core/kern/corecmd.c:184
+#: grub-core/kern/corecmd.c:187
 msgid "Remove an environment variable."
 msgstr "Fjern en miljøvariabel."
 
-#: grub-core/kern/corecmd.c:186
+#: grub-core/kern/corecmd.c:189
 msgid "[ARG]"
 msgstr "[ARG]"
 
-#: grub-core/kern/corecmd.c:186
+#: grub-core/kern/corecmd.c:189
 msgid "List devices or files."
 msgstr "Vis enheter eller files."
 
-#: grub-core/kern/corecmd.c:188
+#: grub-core/kern/corecmd.c:191
 msgid "Insert a module."
 msgstr "Sett inn en modul."
 
-#: grub-core/kern/disk.c:236 grub-core/net/net.c:1395
+#: grub-core/kern/disk.c:236 grub-core/net/net.c:1522
 #, c-format
 msgid "disk `%s' not found"
 msgstr "fant ikke disken «%s»"
@@ -3141,23 +3566,81 @@ msgid "attempt to read or write outside of partition"
 msgstr "prøv å lese eller skrive utenfor partisjonen"
 
 #: grub-core/kern/dl.c:212 grub-core/kern/elf.c:61 grub-core/kern/elf.c:79
-#: grub-core/loader/i386/bsdXX.c:46 grub-core/loader/ia64/efi/linux.c:335
-#: grub-core/loader/multiboot_elfxx.c:69
+#: grub-core/loader/i386/bsdXX.c:49 grub-core/loader/ia64/efi/linux.c:335
+#: grub-core/loader/multiboot_elfxx.c:82
 msgid "invalid arch-independent ELF magic"
 msgstr "ugyldig arkitektur-uavhengig ELF-magi"
 
-#: grub-core/kern/efi/mm.c:136
+#: grub-core/kern/efi/debug.c:37
+msgid "Print infomation useful for GDB debugging"
+msgstr ""
+
+#: grub-core/kern/efi/mm.c:135
 #, c-format
 msgid "invalid memory address (0x%s > 0x%s)"
+msgstr "ugyldig minneaddresse (0x%s > 0x%s)"
+
+#: grub-core/kern/efi/sb.c:179
+msgid "prohibited by secure boot policy"
 msgstr ""
 
-#: grub-core/kern/efi/sb.c:147
+#: grub-core/kern/efi/sb.c:189
 msgid "shim_lock protocol not found"
-msgstr ""
+msgstr "shim_lock-protokollen ble ikke funnet"
 
-#: grub-core/kern/efi/sb.c:150
+#: grub-core/kern/efi/sb.c:192
 msgid "bad shim signature"
 msgstr "ugyldig shim-signatur"
+
+#: grub-core/kern/elfXX.c:215
+msgid "NULL pointer passed for shnum"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:221 grub-core/kern/elfXX.c:255
+#: grub-core/kern/elfXX.c:288
+msgid "NULL pointer passed for elf header"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:227 grub-core/kern/elfXX.c:261
+#: grub-core/kern/elfXX.c:294
+msgid "invalid section header table offset in e_shoff"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:232
+msgid "invalid number of section header table entries in sh_size: %"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:237
+msgid "invalid number of section header table entries in e_shnum: %"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:249
+msgid "NULL pointer passed for shstrndx"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:266
+#, c-format
+msgid "invalid section header table index in sh_link: %d"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:271
+#, c-format
+msgid "invalid section header table index in e_shstrndx: %d"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:282
+msgid "NULL pointer passed for phnum"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:299
+#, c-format
+msgid "invalid number of program header table entries in sh_info: %d"
+msgstr ""
+
+#: grub-core/kern/elfXX.c:304
+#, c-format
+msgid "invalid number of program header table entries in e_phnum: %d"
+msgstr ""
 
 #. TRANSLATORS: it refers to the lack of free slots.
 #: grub-core/kern/emu/hostdisk.c:208 grub-core/kern/emu/hostdisk.c:466
@@ -3165,7 +3648,7 @@ msgid "device count exceeds limit"
 msgstr "det finnes flere enheter enn grensa tillater"
 
 #: grub-core/kern/emu/hostdisk.c:342 util/editenv.c:66 util/grub-editenv.c:203
-#: util/grub-fstest.c:191 util/grub-mkfont.c:796 util/misc.c:114
+#: util/grub-fstest.c:191 util/grub-mkfont.c:841 util/misc.c:114
 #: util/misc.c:129 util/setup.c:791
 #, c-format
 msgid "cannot write to `%s': %s"
@@ -3208,12 +3691,12 @@ msgstr ""
 msgid "can't open `%s': %s"
 msgstr "klarte ikke å åpne «%s». %s"
 
-#: grub-core/kern/emu/main.c:99 util/grub-fstest.c:516 util/grub-mount.c:452
+#: grub-core/kern/emu/main.c:99 util/grub-fstest.c:522 util/grub-mount.c:472
 msgid "DEVICE_NAME"
 msgstr "DEVICE_NAME"
 
 #: grub-core/kern/emu/main.c:99 grub-core/loader/i386/bsd.c:137
-#: grub-core/loader/i386/bsd.c:170 util/grub-fstest.c:516 util/grub-mount.c:452
+#: grub-core/loader/i386/bsd.c:170 util/grub-fstest.c:522 util/grub-mount.c:472
 msgid "Set root device."
 msgstr "Velg rotenhet."
 
@@ -3234,13 +3717,12 @@ msgid "use GRUB files in the directory DIR [default=%s]"
 msgstr "bruk GRUB-filer i mappa DIR [standard=%s]"
 
 #: grub-core/kern/emu/main.c:108 include/grub/util/install.h:71
-#: util/grub-editenv.c:58 util/grub-fstest.c:525 util/grub-glue-efi.c:58
-#: util/grub-macbless.c:104 util/grub-mkfont.c:962 util/grub-mkimage.c:86
-#: util/grub-mklayout.c:56 util/grub-mount.c:458 util/grub-probe.c:735
-#: util/grub-render-label.c:74 util/grub-script-check.c:52 util/grub-setup.c:90
-#: util/grub-syslinux2cfg.c:78
+#: util/grub-editenv.c:58 util/grub-fstest.c:531 util/grub-glue-efi.c:58
+#: util/grub-macbless.c:104 util/grub-mkfont.c:1008 util/grub-mkimage.c:86
+#: util/grub-mklayout.c:56 util/grub-mount.c:478 util/grub-render-label.c:74
+#: util/grub-script-check.c:52 util/grub-setup.c:90 util/grub-syslinux2cfg.c:78
 msgid "print verbose messages."
-msgstr "skriv ut detaljerte meldinger"
+msgstr "skriv ut detaljerte meldinger."
 
 #: grub-core/kern/emu/main.c:109
 msgid "SECS"
@@ -3250,57 +3732,77 @@ msgstr "SECS"
 msgid "wait until a debugger will attach"
 msgstr "vent på en feilsøker"
 
-#: grub-core/kern/emu/main.c:171 util/grub-macbless.c:143
-#: util/grub-mkrelpath.c:61 util/grub-probe.c:874 util/grub-script-check.c:75
+#: grub-core/kern/emu/main.c:110
+msgid ""
+"use kexec to boot Linux kernels via systemctl (pass twice to enable "
+"dangerous fallback to non-systemctl)."
+msgstr ""
+
+#: grub-core/kern/emu/main.c:175 util/grub-macbless.c:143
+#: util/grub-mkrelpath.c:61 util/grub-probe.c:875 util/grub-script-check.c:75
 #: util/grub-setup.c:203
 #, c-format
 msgid "Unknown extra argument `%s'."
 msgstr "«%s» er et ukjent ekstraargument."
 
-#: grub-core/kern/emu/main.c:185
+#: grub-core/kern/emu/main.c:189
 msgid "GRUB emulator."
 msgstr "GRUB-emulator."
 
-#: grub-core/kern/emu/main.c:213 util/grub-editenv.c:268
-#: util/grub-glue-efi.c:110 util/grub-macbless.c:173 util/grub-mkfont.c:1177
+#: grub-core/kern/emu/main.c:217 util/grub-editenv.c:268
+#: util/grub-glue-efi.c:110 util/grub-macbless.c:173 util/grub-mkfont.c:1223
 #: util/grub-mkimage.c:281 util/grub-mklayout.c:494
 #: util/grub-mkpasswd-pbkdf2.c:132 util/grub-mkrelpath.c:96
-#: util/grub-probe.c:863 util/grub-render-label.c:152
+#: util/grub-probe.c:864 util/grub-render-label.c:152
 #: util/grub-script-check.c:160 util/grub-setup.c:262
 #: util/grub-syslinux2cfg.c:163
 msgid "Error in parsing command line arguments\n"
 msgstr "Feil ved tolking av kommandolinje-argumenter\n"
 
 #. TRANSLATORS: In this case GRUB tells user what he has to do.
-#: grub-core/kern/emu/main.c:248
+#: grub-core/kern/emu/main.c:252
 #, c-format
 msgid "Run `gdb %s %d', and set ARGS.HOLD to zero.\n"
 msgstr "Kjør «gdb %s %d» og velg null for «ARGS.HOLD».\n"
 
-#: grub-core/kern/emu/misc.c:48
+#: grub-core/kern/emu/misc.c:49
 #, c-format
 msgid "%s: warning:"
 msgstr "%s: advarsel:"
 
-#: grub-core/kern/emu/misc.c:64
+#: grub-core/kern/emu/misc.c:65
 #, c-format
 msgid "%s: info:"
 msgstr "%s: info:"
 
-#: grub-core/kern/emu/misc.c:79 util/grub-fstest.c:567 util/grub-fstest.c:576
-#: util/grub-mount.c:497 util/grub-mount.c:505
+#: grub-core/kern/emu/misc.c:80 util/grub-fstest.c:573 util/grub-fstest.c:582
+#: util/grub-mount.c:517 util/grub-mount.c:525
 #, c-format
 msgid "%s: error:"
 msgstr "%s: feil:"
 
-#: grub-core/kern/emu/misc.c:188
+#: grub-core/kern/emu/misc.c:192
 #, c-format
 msgid "file `%s' is too big"
 msgstr "fila «%s» er for stor"
 
-#: grub-core/kern/fs.c:120
+#: grub-core/kern/fs.c:122
 msgid "unknown filesystem"
 msgstr "ukjent filsystem"
+
+#: grub-core/kern/ieee1275/init.c:259
+#, c-format
+msgid "Error: ibm,kernel-dump has an unexpected format version '%u'\n"
+msgstr ""
+
+#: grub-core/kern/ieee1275/init.c:266
+#, c-format
+msgid "Error: Too many kernel dump sections: %d\n"
+msgstr ""
+
+#: grub-core/kern/ieee1275/init.c:279
+msgid "Error: 'kds' address beyond last available section\n"
+msgstr ""
 
 #: grub-core/kern/mips/arc/init.c:273 grub-core/kern/mips/loongson/init.c:301
 msgid "Shutdown failed"
@@ -3310,12 +3812,16 @@ msgstr "Klarte ikke å skru av maskinen"
 msgid "Exit failed"
 msgstr "Klarte ikke å avslutte"
 
+#: grub-core/kern/misc.c:1342
+msgid "string too long"
+msgstr ""
+
 #: grub-core/kern/partition.c:51 grub-core/partmap/bsdlabel.c:108
 #, c-format
 msgid "Discarding improperly nested partition (%s,%s,%s%d)"
 msgstr "Avviser feilplassert partisjon (%s,%s,%s%d)"
 
-#: grub-core/kern/rescue_parser.c:73 util/grub-editenv.c:298
+#: grub-core/kern/rescue_parser.c:79 util/grub-editenv.c:298
 #, c-format
 msgid "Unknown command `%s'.\n"
 msgstr "«%s» er en ukjent kommando.\n"
@@ -3361,35 +3867,57 @@ msgstr "Skriv ut tilbakesporing."
 
 #: grub-core/lib/datetime.c:27
 msgid "Sunday"
-msgstr "søndag"
+msgstr "Søndag"
 
 #: grub-core/lib/datetime.c:28
 msgid "Monday"
-msgstr "mandag"
+msgstr "Mandag"
 
 #: grub-core/lib/datetime.c:29
 msgid "Tuesday"
-msgstr "tirsdag"
+msgstr "Tirsdag"
 
 #: grub-core/lib/datetime.c:30
 msgid "Wednesday"
-msgstr "onsdag"
+msgstr "Onsdag"
 
 #: grub-core/lib/datetime.c:31
 msgid "Thursday"
-msgstr "torsdag"
+msgstr "Torsdag"
 
 #: grub-core/lib/datetime.c:32
 msgid "Friday"
-msgstr "fredag"
+msgstr "Fredag"
 
 #: grub-core/lib/datetime.c:33
 msgid "Saturday"
-msgstr "lørdag"
+msgstr "Lørdag"
 
 #: grub-core/lib/i386/halt.c:77
 msgid "GRUB doesn't know how to halt this machine yet!"
 msgstr "GRUB vet ikke hvordan den skal stanse denne maskinen ennå!"
+
+#: grub-core/lib/json/json.c:274
+msgid "output parameters are not set"
+msgstr ""
+
+#: grub-core/lib/json/json.c:287
+msgid "expected escaped character"
+msgstr ""
+
+#: grub-core/lib/json/json.c:333
+msgid "unicode sequence too short"
+msgstr ""
+
+#: grub-core/lib/json/json.c:350
+#, c-format
+msgid "unicode sequence with invalid character '%c'"
+msgstr ""
+
+#: grub-core/lib/json/json.c:366
+#, fuzzy, c-format
+msgid "unrecognized escaped character '%c'"
+msgstr "«%s» er et ukjent nettverksgrensesnitt"
 
 #: grub-core/lib/legacy_parse.c:75
 msgid "Default server is ${net_default_server}"
@@ -3414,63 +3942,55 @@ msgstr "[LENGDE]"
 msgid "Hexdump random data."
 msgstr "Vilkårlige data fra heks-utskrift."
 
-#: grub-core/loader/arm/linux.c:242
+#: grub-core/loader/arm/linux.c:243
 msgid "device tree must be supplied (see `devicetree' command)"
 msgstr "enhetstre må legges ved (se kommandoen «devicetree»)"
 
-#: grub-core/loader/arm/linux.c:334
+#: grub-core/loader/arm/linux.c:335
 msgid "invalid zImage"
 msgstr "ugyldig zImage"
 
-#: grub-core/loader/arm/linux.c:450 grub-core/loader/efi/fdt.c:148
+#: grub-core/loader/arm/linux.c:451 grub-core/loader/efi/fdt.c:151
 msgid "invalid device tree"
 msgstr "ugyldig device tree"
 
-#: grub-core/loader/arm/linux.c:493 grub-core/loader/arm64/linux.c:383
-#: grub-core/loader/i386/linux.c:1131 grub-core/loader/i386/pc/linux.c:483
-#: grub-core/loader/i386/xen.c:970 grub-core/loader/i386/xen.c:972
-#: grub-core/loader/ia64/efi/linux.c:591 grub-core/loader/mips/linux.c:498
-#: grub-core/loader/powerpc/ieee1275/linux.c:383
-#: grub-core/loader/riscv/linux.c:50
+#: grub-core/loader/arm/linux.c:494 grub-core/loader/efi/linux.c:583
+#: grub-core/loader/emu/linux.c:172 grub-core/loader/i386/linux.c:1157
+#: grub-core/loader/i386/pc/linux.c:483 grub-core/loader/i386/xen.c:969
+#: grub-core/loader/i386/xen.c:971 grub-core/loader/ia64/efi/linux.c:591
+#: grub-core/loader/mips/linux.c:498
+#: grub-core/loader/powerpc/ieee1275/linux.c:406
 #: grub-core/loader/sparc64/ieee1275/linux.c:511
 msgid "Load Linux."
 msgstr "Last inn Linux."
 
-#: grub-core/loader/arm/linux.c:495 grub-core/loader/arm64/linux.c:385
-#: grub-core/loader/i386/linux.c:1133 grub-core/loader/i386/pc/linux.c:486
-#: grub-core/loader/i386/xen.c:974 grub-core/loader/ia64/efi/linux.c:594
-#: grub-core/loader/mips/linux.c:500
-#: grub-core/loader/powerpc/ieee1275/linux.c:385
-#: grub-core/loader/riscv/linux.c:52
+#: grub-core/loader/arm/linux.c:496 grub-core/loader/efi/linux.c:585
+#: grub-core/loader/emu/linux.c:174 grub-core/loader/i386/linux.c:1159
+#: grub-core/loader/i386/pc/linux.c:486 grub-core/loader/i386/xen.c:973
+#: grub-core/loader/ia64/efi/linux.c:594 grub-core/loader/mips/linux.c:500
+#: grub-core/loader/powerpc/ieee1275/linux.c:408
 #: grub-core/loader/sparc64/ieee1275/linux.c:513
 msgid "Load initrd."
 msgstr "Last inn initrd."
 
 #. TRANSLATORS: DTB stands for device tree blob.
-#: grub-core/loader/arm/linux.c:498 grub-core/loader/efi/fdt.c:173
+#: grub-core/loader/arm/linux.c:499 grub-core/loader/efi/fdt.c:176
 msgid "Load DTB file."
 msgstr "Last inn DTB-fil."
 
-#: grub-core/loader/arm64/linux.c:59
-msgid ""
-"plain image kernel not supported - rebuild with CONFIG_(U)EFI_STUB enabled"
-msgstr ""
-"renbilde-kjerne støttes ikke. Bygg kjernen på nytt og slå på valget "
-"«CONFIG_(U)EFI_STUB»"
-
-#: grub-core/loader/arm64/xen_boot.c:156
+#: grub-core/loader/arm64/xen_boot.c:142
 msgid "failed to get FDT"
 msgstr "klarte ikke å hente FDT"
 
-#: grub-core/loader/arm64/xen_boot.c:418
+#: grub-core/loader/arm64/xen_boot.c:404
 msgid "you need to load the Xen Hypervisor first"
 msgstr "du må laste inn xen-hypervisor først"
 
-#: grub-core/loader/arm64/xen_boot.c:516
+#: grub-core/loader/arm64/xen_boot.c:500
 msgid "Load a xen hypervisor."
 msgstr "Last inn xen-hypervisor."
 
-#: grub-core/loader/arm64/xen_boot.c:519
+#: grub-core/loader/arm64/xen_boot.c:503
 msgid "Load a xen module."
 msgstr "Last inn xen-modul."
 
@@ -3490,6 +4010,46 @@ msgstr "Start opp BIOS-basert system."
 msgid "Load another boot loader."
 msgstr "Last inn en annen oppstartslaster."
 
+#: grub-core/loader/efi/linux.c:100
+msgid ""
+"plain image kernel not supported - rebuild with CONFIG_(U)EFI_STUB enabled"
+msgstr ""
+"renbilde-kjerne støttes ikke. Bygg kjernen på nytt og slå på valget "
+"«CONFIG_(U)EFI_STUB»"
+
+#: grub-core/loader/efi/linux.c:416
+#, fuzzy
+msgid "failed to install protocols"
+msgstr "ikke installer oppstartssektor"
+
+#: grub-core/loader/emu/linux.c:65
+msgid "error trying to perform kexec load operation"
+msgstr ""
+
+#: grub-core/loader/emu/linux.c:71
+msgid "use '"
+msgstr ""
+
+#: grub-core/loader/emu/linux.c:82
+#, c-format
+msgid "error trying to perform 'systemctl kexec': %d"
+msgstr ""
+
+#: grub-core/loader/emu/linux.c:93
+#, c-format
+msgid "error trying to directly perform 'kexec -ex': %d"
+msgstr ""
+
+#: grub-core/loader/emu/linux.c:123
+#, fuzzy, c-format
+msgid "cannot find kernel file %s"
+msgstr "fant ikke regionen «%s»"
+
+#: grub-core/loader/emu/linux.c:156
+#, fuzzy, c-format
+msgid "Cannot find initrd file %s"
+msgstr "fant ikke regionen «%s»"
+
 #: grub-core/loader/i386/bsd.c:104
 msgid "Display output on all consoles."
 msgstr "Vis utdata på alle skjermer."
@@ -3497,7 +4057,7 @@ msgstr "Vis utdata på alle skjermer."
 #: grub-core/loader/i386/bsd.c:105 grub-core/loader/i386/bsd.c:139
 #: grub-core/loader/i386/bsd.c:172
 msgid "Use serial console."
-msgstr "Bruk seriellkonsoll"
+msgstr "Bruk seriellkonsoll."
 
 #: grub-core/loader/i386/bsd.c:106 grub-core/loader/i386/bsd.c:132
 #: grub-core/loader/i386/bsd.c:160
@@ -3597,7 +4157,7 @@ msgid "size"
 msgstr "størrelse"
 
 #: grub-core/loader/i386/bsd.c:1153 grub-core/loader/i386/linux.c:467
-#: grub-core/loader/i386/xnu.c:1030
+#: grub-core/loader/i386/xnu.c:1025
 msgid "Booting in blind mode"
 msgstr "Starter opp i blindemodus"
 
@@ -3647,19 +4207,19 @@ msgstr "Last inn kOpenBSD-ramdisk."
 msgid "Load another coreboot payload"
 msgstr "Last inn en annen coreboot-«payload»"
 
-#: grub-core/loader/i386/linux.c:882
+#: grub-core/loader/i386/linux.c:894
 msgid "Legacy `ask' parameter no longer supported."
 msgstr "«ask» er et utgått parameter, og støttes ikke."
 
-#: grub-core/loader/i386/linux.c:898 grub-core/loader/i386/linux.c:908
-#: grub-core/loader/i386/linux.c:938
+#: grub-core/loader/i386/linux.c:910 grub-core/loader/i386/linux.c:920
+#: grub-core/loader/i386/linux.c:950
 #, c-format
 msgid "%s is deprecated. Use set gfxpayload=%s before linux command instead.\n"
 msgstr "%s er utgått. Bruk heller «set gfxpayload=%s» før Linux-kommandoen.\n"
 
 #. TRANSLATORS: "x" has to be entered in, like an identifier,
 #. so please don't use better Unicode codepoints.
-#: grub-core/loader/i386/linux.c:921
+#: grub-core/loader/i386/linux.c:933
 #, c-format
 msgid ""
 "%s is deprecated. VGA mode %d isn't recognized. Use set "
@@ -3667,6 +4227,10 @@ msgid ""
 msgstr ""
 "%s er utgått. VGA-modus %d gjenkjennes ikke. Bruk heller «set "
 "gfxpayload=BREDDExHØYDE[xDYBDE] før Linux-kommandoen.\n"
+
+#: grub-core/loader/i386/linux.c:1104
+msgid "the size of initrd is bigger than addr_max"
+msgstr ""
 
 #: grub-core/loader/i386/pc/chainloader.c:302
 msgid "[--force|--bpb] FILE"
@@ -3715,22 +4279,22 @@ msgstr "Last inn et PXE-bilde."
 msgid "Load Truecrypt ISO."
 msgstr "Last inn Truecrypt-ISO."
 
-#: grub-core/loader/i386/xen.c:789 grub-core/loader/i386/xen.c:873
+#: grub-core/loader/i386/xen.c:789 grub-core/loader/i386/xen.c:872
 msgid "initrd already loaded"
 msgstr "initrd er allerede lastet inn"
 
-#: grub-core/loader/i386/xen.c:976
+#: grub-core/loader/i386/xen.c:975
 msgid "Load module."
 msgstr "Last inn modul."
 
-#: grub-core/loader/i386/xnu.c:1003
+#: grub-core/loader/i386/xnu.c:998
 msgid "Press any key to launch xnu"
 msgstr "Trykk på en knapp for å starte xnu"
 
 #. TRANSLATORS: `device-properties'
 #. is a variable name,
 #. not a program.
-#: grub-core/loader/i386/xnu.c:1159
+#: grub-core/loader/i386/xnu.c:1154
 msgid "Load `device-properties' dump."
 msgstr "Last inn «device-properties»-dump."
 
@@ -3779,14 +4343,17 @@ msgstr "Last inn en multiboot-kjerne."
 msgid "Load a multiboot module."
 msgstr "Last inn en multiboot-modul."
 
-#: grub-core/loader/riscv/linux.c:30 grub-core/loader/riscv/linux.c:40
-msgid "Linux not supported yet"
-msgstr "Linux støttes ikke enda"
+#: grub-core/loader/multiboot_elfxx.c:208
+msgid "memory being set is larger than allocated memory"
+msgstr ""
+
+#: grub-core/loader/multiboot_elfxx.c:254
+msgid "ELF section header region is larger than the file size"
+msgstr ""
 
 #: grub-core/loader/xnu.c:674
-#, fuzzy
 msgid "missing p-list filename"
-msgstr "Inndatafil mangler\n"
+msgstr "mangler filnavn for p-list"
 
 #: grub-core/loader/xnu.c:1435 grub-core/term/gfxterm_background.c:45
 msgid "Background image mode."
@@ -3866,158 +4433,161 @@ msgstr "FRA[K|M|G] TIL[K|M|G]"
 msgid "Remove any memory regions in specified range."
 msgstr "Fjern minneregioner innenfor valgt område."
 
-#: grub-core/net/bootp.c:689
+#: grub-core/net/bootp.c:692
 msgid "four arguments expected"
 msgstr "forventer fire argumenter"
 
-#: grub-core/net/bootp.c:697 grub-core/net/net.c:1160
+#: grub-core/net/bootp.c:700 grub-core/net/net.c:1184
 #, c-format
 msgid "unrecognised network interface `%s'"
 msgstr "«%s» er et ukjent nettverksgrensesnitt"
 
-#: grub-core/net/bootp.c:700
+#: grub-core/net/bootp.c:703
 msgid "no DHCP info found"
 msgstr "fant ingen DHCP-info"
 
-#: grub-core/net/bootp.c:710
+#: grub-core/net/bootp.c:713
 msgid "no DHCP options found"
 msgstr "fant ingen DHCP-valg"
 
-#: grub-core/net/bootp.c:718
+#: grub-core/net/bootp.c:721
 msgid "invalid DHCP option code"
 msgstr "ugyldig DHCP-valgkode"
 
-#: grub-core/net/bootp.c:722
+#: grub-core/net/bootp.c:725
 #, c-format
 msgid "no DHCP option %u found"
 msgstr "fant ikke DHCP-valg %u"
 
-#: grub-core/net/bootp.c:779
+#: grub-core/net/bootp.c:782
 #, c-format
 msgid "unrecognised DHCP option format specification `%s'"
 msgstr "«%s» er en ukjent formatspesifikasjon av DHCP-valg"
 
-#: grub-core/net/bootp.c:803
+#: grub-core/net/bootp.c:806
 msgid "no network card found"
 msgstr "fant ingen nettverkskort"
 
-#: grub-core/net/bootp.c:895 grub-core/net/net.c:394
+#: grub-core/net/bootp.c:898 grub-core/net/net.c:395
 #, c-format
 msgid "couldn't autoconfigure %s"
 msgstr "klarte ikke å sette opp %s automatisk"
 
-#: grub-core/net/bootp.c:909 grub-core/net/bootp.c:912
+#: grub-core/net/bootp.c:912 grub-core/net/bootp.c:915
 msgid "[CARD]"
 msgstr "[KORT]"
 
-#: grub-core/net/bootp.c:910
+#: grub-core/net/bootp.c:913
 msgid "perform a bootp autoconfiguration"
 msgstr "lag et automatisk bootp-oppsett"
 
-#: grub-core/net/bootp.c:913
+#: grub-core/net/bootp.c:916
 msgid "perform a DHCP autoconfiguration"
 msgstr "utfør automatisk DHCP-oppsett"
 
-#: grub-core/net/bootp.c:915
+#: grub-core/net/bootp.c:918
 msgid "VAR INTERFACE NUMBER DESCRIPTION"
 msgstr "VAR GRENSESNITT NUMMER BESKR"
 
-#: grub-core/net/bootp.c:916
+#: grub-core/net/bootp.c:919
 msgid ""
 "retrieve DHCP option and save it into VAR. If VAR is - then print the value."
 msgstr ""
 "hent et DHCP-valg og lagre det i valgt VARiabel. Hvis VAR er «-», skrives "
 "verdien ut."
 
-#: grub-core/net/dns.c:466
+#: grub-core/net/dns.c:455
 msgid "no DNS servers configured"
 msgstr "ingen DNS-tjener er satt opp"
 
-#: grub-core/net/dns.c:529
+#: grub-core/net/dns.c:518
 msgid "domain name component is too long"
 msgstr "domenenavn-komponenten er for lang"
 
-#: grub-core/net/dns.c:625 grub-core/net/dns.c:673
+#: grub-core/net/dns.c:614 grub-core/net/dns.c:664
 msgid "no DNS record found"
 msgstr "fant ingen DNS-oppføring"
 
-#: grub-core/net/dns.c:633
+#: grub-core/net/dns.c:622
 msgid "no DNS reply received"
 msgstr "fikk ingen DNS-svar"
 
-#: grub-core/net/dns.c:689
+#: grub-core/net/dns.c:680
 msgid "only ipv4"
 msgstr "kun ipv4"
 
-#: grub-core/net/dns.c:693
+#: grub-core/net/dns.c:684
 msgid "only ipv6"
 msgstr "kun ipv6"
 
-#: grub-core/net/dns.c:697
+#: grub-core/net/dns.c:688
 msgid "prefer ipv4"
 msgstr "foretrekk ipv4"
 
-#: grub-core/net/dns.c:701
+#: grub-core/net/dns.c:692
 msgid "prefer ipv6"
 msgstr "foretrekk ipv6"
 
-#: grub-core/net/dns.c:766
+#: grub-core/net/dns.c:760
 msgid "ADDRESS DNSSERVER"
 msgstr "ADRESSE DNSTJENER"
 
-#: grub-core/net/dns.c:767
+#: grub-core/net/dns.c:761
 msgid "Perform a DNS lookup"
 msgstr "Gjør oppslag i DNS"
 
-#: grub-core/net/dns.c:769 grub-core/net/dns.c:772
+#: grub-core/net/dns.c:763 grub-core/net/dns.c:766
 msgid "DNSSERVER"
 msgstr "DNSTJENER"
 
-#: grub-core/net/dns.c:770
+#: grub-core/net/dns.c:764
 msgid "Add a DNS server"
 msgstr "Legg til en DNS-tjener"
 
-#: grub-core/net/dns.c:773
+#: grub-core/net/dns.c:767
 msgid "Remove a DNS server"
 msgstr "Fjern en DNS-tjener"
 
-#: grub-core/net/dns.c:775
+#: grub-core/net/dns.c:769
 msgid "List DNS servers"
 msgstr "Vis DNS-tjenere"
 
-#: grub-core/net/drivers/efi/efinet.c:49 grub-core/net/drivers/efi/efinet.c:65
-#: grub-core/net/drivers/efi/efinet.c:77 grub-core/net/drivers/emu/emunet.c:62
+#: grub-core/net/drivers/efi/efinet.c:44
+msgid "network protocol not available, can't send packet"
+msgstr ""
+
+#: grub-core/net/drivers/efi/efinet.c:52 grub-core/net/drivers/efi/efinet.c:68
+#: grub-core/net/drivers/efi/efinet.c:80 grub-core/net/drivers/emu/emunet.c:62
 #: grub-core/net/drivers/i386/pc/pxe.c:273
 #: grub-core/net/drivers/ieee1275/ofnet.c:75
 #: grub-core/net/drivers/uboot/ubootnet.c:62
 msgid "couldn't send network packet"
 msgstr "klarte ikke å sende nettverkspakke"
 
-#: grub-core/net/drivers/ieee1275/ofnet.c:326
-#: grub-core/net/drivers/ieee1275/ofnet.c:359
-msgid "interpret is not supported"
-msgstr "«interpret» støttes ikke"
-
-#: grub-core/net/drivers/ieee1275/ofnet.c:336
+#: grub-core/net/drivers/ieee1275/ofnet.c:329
 msgid "alloc-mem failed"
 msgstr "«alloc-mem» mislyktes"
 
-#: grub-core/net/drivers/ieee1275/ofnet.c:370
+#: grub-core/net/drivers/ieee1275/ofnet.c:357
 msgid "free-mem failed"
 msgstr "«free-mem» mislyktes"
 
-#: grub-core/net/http.c:105
+#: grub-core/net/http.c:71
+msgid "invalid HTTP header - LF without CR"
+msgstr ""
+
+#: grub-core/net/http.c:109
 msgid "unsupported HTTP response"
 msgstr "HTTP-responsen støttes ikke"
 
 #. TRANSLATORS: GRUB HTTP code is pretty young. So even perfectly
 #. valid answers like 403 will trigger this very generic message.
-#: grub-core/net/http.c:126
+#: grub-core/net/http.c:130
 #, c-format
 msgid "unsupported HTTP error %d: %s"
-msgstr "Feil ved ustøttet HTTP-kode %d: %s"
+msgstr "feil ved ustøttet HTTP-kode %d: %s"
 
-#: grub-core/net/http.c:429 grub-core/net/tftp.c:396
+#: grub-core/net/http.c:442 grub-core/net/tftp.c:400
 #, c-format
 msgid "time out opening `%s'"
 msgstr "tidsavbrudd ved åpning av «%s»"
@@ -4026,134 +4596,166 @@ msgstr "tidsavbrudd ved åpning av «%s»"
 msgid "timeout: could not resolve hardware address"
 msgstr "tidsavbrudd: klarte ikke å gjøre oppslag på maskinvareadresse"
 
-#: grub-core/net/net.c:553
+#: grub-core/net/net.c:563
 #, c-format
 msgid "unresolvable address %s"
 msgstr "adressen %s er ubrukelig"
 
-#: grub-core/net/net.c:599
+#: grub-core/net/net.c:609
 #, c-format
 msgid "unrecognised network address `%s'"
 msgstr "«%s» er en ukjent nettverksadresse"
 
-#: grub-core/net/net.c:666
+#: grub-core/net/net.c:676
 msgid "destination unreachable"
 msgstr "målet ble ikke nådd"
 
 #. TRANSLATORS: route loop is a condition when e.g.
 #. to contact server A you need to go through B
 #. and to contact B you need to go through A.
-#: grub-core/net/net.c:689
+#: grub-core/net/net.c:699
 msgid "route loop detected"
 msgstr "oppdaget ruteløkke"
 
-#: grub-core/net/net.c:705
+#: grub-core/net/net.c:715
 msgid "address not found"
 msgstr "fant ikke adressen"
 
-#: grub-core/net/net.c:709
+#: grub-core/net/net.c:719
 msgid "you can't delete this address"
 msgstr "du kan ikke slette denne adressen"
 
-#: grub-core/net/net.c:781 grub-core/net/net.c:797
+#: grub-core/net/net.c:791 grub-core/net/net.c:821
 #, c-format
 msgid "Unsupported hw address type %d\n"
 msgstr "Maskinvareadresse-typen %d støttes ikke\n"
 
-#: grub-core/net/net.c:818
+#: grub-core/net/net.c:842
 #, c-format
 msgid "Unsupported address type %d\n"
 msgstr "Adressetypen %d støttes ikke\n"
 
-#: grub-core/net/net.c:1022 grub-core/net/net.c:1136
+#: grub-core/net/net.c:1046 grub-core/net/net.c:1160
 msgid "three arguments expected"
 msgstr "forventet tre argumenter"
 
-#: grub-core/net/net.c:1028
+#: grub-core/net/net.c:1052
 msgid "card not found"
 msgstr "fant ikke kortet"
 
+#: grub-core/net/net.c:1205
+#, c-format
+msgid "non-numeric or invalid number `%s'"
+msgstr ""
+
+#: grub-core/net/net.c:1209
+#, c-format
+msgid "vlan id `%s' not in the valid range of 0-4094"
+msgstr ""
+
+#: grub-core/net/net.c:1222
+#, fuzzy
+msgid "network interface not found"
+msgstr "fant ingen nettverkskort"
+
 #. TRANSLATORS: it refers to the network address.
-#: grub-core/net/net.c:1172
+#: grub-core/net/net.c:1232
 msgid "temporary"
 msgstr "midlertidig"
 
-#: grub-core/net/net.c:1195
+#: grub-core/net/net.c:1255
 #, c-format
 msgid "Unknown address type %d\n"
 msgstr "%d er en ukjent adressetype\n"
 
-#: grub-core/net/net.c:1303
+#: grub-core/net/net.c:1368
 msgid "no server is specified"
 msgstr "ingen tjener er valgt"
 
-#: grub-core/net/net.c:1642
+#: grub-core/net/net.c:1383
+msgid "mismatched [ in address"
+msgstr ""
+
+#: grub-core/net/net.c:1393 grub-core/net/net.c:1422
+msgid "bad port number"
+msgstr ""
+
+#: grub-core/net/net.c:1772
 #, c-format
 msgid "timeout reading `%s'"
 msgstr "tidsavbrudd ved lesing av «%s»"
 
 #. TRANSLATORS: HWADDRESS stands for
 #. "hardware address".
-#: grub-core/net/net.c:1899
+#: grub-core/net/net.c:2035
 msgid "SHORTNAME CARD ADDRESS [HWADDRESS]"
 msgstr "HURTIGNAVN KORT ADRESSE [MASKINVAREADRESSE]"
 
-#: grub-core/net/net.c:1900
+#: grub-core/net/net.c:2036
 msgid "Add a network address."
-msgstr "Legg til en nettverksadresse"
+msgstr "Legg til en nettverksadresse."
 
-#: grub-core/net/net.c:1903
+#: grub-core/net/net.c:2039
 msgid "[CARD [HWADDRESS]]"
 msgstr "[KORT [MASKINVAREADRESSE]]"
 
-#: grub-core/net/net.c:1904
+#: grub-core/net/net.c:2040
 msgid "Perform an IPV6 autoconfiguration"
 msgstr "Sett opp IPV6 automatisk"
 
-#: grub-core/net/net.c:1907 grub-core/net/net.c:1914
+#: grub-core/net/net.c:2043 grub-core/net/net.c:2050
 msgid "SHORTNAME"
 msgstr "HURTIGNAVN"
 
-#: grub-core/net/net.c:1908
+#: grub-core/net/net.c:2044
 msgid "Delete a network address."
 msgstr "Slett en nettverksadresse."
 
 #. TRANSLATORS: "gw" is a keyword.
-#: grub-core/net/net.c:1911
+#: grub-core/net/net.c:2047
 msgid "SHORTNAME NET [INTERFACE| gw GATEWAY]"
 msgstr "HURTIGNAVN NETT [GRENSESNITT| gw PORTNER]"
 
-#: grub-core/net/net.c:1912
+#: grub-core/net/net.c:2048
 msgid "Add a network route."
 msgstr "Legg til en nettverksrute."
 
-#: grub-core/net/net.c:1915
+#: grub-core/net/net.c:2051
 msgid "Delete a network route."
 msgstr "Slett en nettverksrute."
 
-#: grub-core/net/net.c:1917
+#: grub-core/net/net.c:2053
+#, fuzzy
+msgid "SHORTNAME VLANID"
+msgstr "HURTIGNAVN"
+
+#: grub-core/net/net.c:2054
+msgid "Set an interface's vlan id."
+msgstr ""
+
+#: grub-core/net/net.c:2056
 msgid "list network routes"
 msgstr "vis ruter på nettverket"
 
-#: grub-core/net/net.c:1919
+#: grub-core/net/net.c:2058
 msgid "list network cards"
 msgstr "vis nettverkskort"
 
-#: grub-core/net/net.c:1921
+#: grub-core/net/net.c:2060
 msgid "list network addresses"
 msgstr "vis nettverksadresser"
 
-#: grub-core/net/tcp.c:681
+#: grub-core/net/tcp.c:686
 msgid "connection refused"
 msgstr "tilkobling ble nektet"
 
-#: grub-core/net/tcp.c:684
+#: grub-core/net/tcp.c:689
 msgid "connection timeout"
 msgstr "tidsavbrudd ved tilkobling"
 
 #: grub-core/normal/auth.c:220
 msgid "Enter username: "
-msgstr "Skriv inn brukernavn:"
+msgstr "Skriv inn brukernavn: "
 
 #: grub-core/normal/auth.c:269
 msgid "[USERLIST]"
@@ -4227,35 +4829,35 @@ msgid "ESC at any time exits."
 msgstr "Avslutt når som helst med ESC."
 
 #: grub-core/normal/main.c:381
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Minimal BASH-like line editing is supported. For the first word, TAB lists "
 "possible command completions. Anywhere else TAB lists possible device or "
-"file completions. %s"
+"file completions. To enable less(1)-like paging, \"set pager=1\". %s"
 msgstr ""
 "Du kan redigere linjer i BASH-stil. Første ord på hver linje kan "
 "autofullføres til kommandonavn med TAB. Andre ord kan TAB-es til å fullføre "
 "enhets- eller filnavn. %s"
 
 #. TRANSLATORS: it's command line prompt.
-#: grub-core/normal/main.c:413
+#: grub-core/normal/main.c:414
 msgid ">"
 msgstr ">"
 
 #. TRANSLATORS: it's command line prompt.
-#: grub-core/normal/main.c:416
+#: grub-core/normal/main.c:417
 msgid "grub>"
 msgstr "grub>"
 
-#: grub-core/normal/main.c:536
+#: grub-core/normal/main.c:537
 msgid "Clear the screen."
 msgstr "Tøm skjermen."
 
-#: grub-core/normal/main.c:545
+#: grub-core/normal/main.c:546
 msgid "Enter normal mode."
 msgstr "Bruk normalmodus."
 
-#: grub-core/normal/main.c:547
+#: grub-core/normal/main.c:548
 msgid "Exit from normal mode."
 msgstr "Avslutt normalmodus."
 
@@ -4263,17 +4865,17 @@ msgstr "Avslutt normalmodus."
 msgid "Press any key to continue..."
 msgstr "Trykk på en tast for å fortsette …"
 
-#: grub-core/normal/menu.c:814
+#: grub-core/normal/menu.c:824
 #, c-format
 msgid "Booting `%s'"
 msgstr "Starter opp «%s»"
 
-#: grub-core/normal/menu.c:826
+#: grub-core/normal/menu.c:837
 #, c-format
 msgid "Falling back to `%s'"
 msgstr "Kjører reserveoppføring «%s»"
 
-#: grub-core/normal/menu.c:842
+#: grub-core/normal/menu.c:853
 msgid "Failed to boot both default and fallback entries.\n"
 msgstr "Klarte hverken å starte opp standard- eller reserveoppføring.\n"
 
@@ -4440,7 +5042,7 @@ msgstr "--MER--"
 msgid "cannot open configuration file `%s': %s"
 msgstr "klarte ikke å åpne oppsettsfila «%s». %s"
 
-#: grub-core/osdep/aros/hostdisk.c:523
+#: grub-core/osdep/aros/hostdisk.c:521
 msgid "Success"
 msgstr "Vellykket"
 
@@ -4450,7 +5052,7 @@ msgid "no compression is available for your platform"
 msgstr "plattformen din støtter ingen kjente komprimeringsmetoder"
 
 #: grub-core/osdep/basic/no_platform.c:30
-#: grub-core/osdep/windows/platform.c:418
+#: grub-core/osdep/windows/platform.c:428
 msgid "no IEEE1275 routines are available for your platform"
 msgstr "plattformen din støtter ingen IEEE1275-rutiner"
 
@@ -4459,7 +5061,7 @@ msgid "no EFI routines are available for your platform"
 msgstr "plattformen din støtter ingen EFI-rutiner"
 
 #: grub-core/osdep/basic/no_platform.c:45
-#: grub-core/osdep/windows/platform.c:425
+#: grub-core/osdep/windows/platform.c:435
 msgid "no SGI routines are available for your platform"
 msgstr "plattformen din støtter ingen SGI-rutiner"
 
@@ -4471,15 +5073,76 @@ msgstr ""
 "operativsystemet ditt har, så langt GRUB vet, ingen tilgjengelig "
 "vilkårlighetsgenerator"
 
-#: grub-core/osdep/devmapper/getroot.c:81
+#: grub-core/osdep/devmapper/getroot.c:78
 msgid "Failed to create `device-mapper' tree"
 msgstr "Klarte ikke å lage «device-mapper»-tre"
 
-#: grub-core/osdep/devmapper/getroot.c:197
+#: grub-core/osdep/devmapper/getroot.c:196
 #: grub-core/osdep/freebsd/getroot.c:202
 #, c-format
 msgid "can't mount encrypted volume `%s': %s"
 msgstr "klarte ikke å montere det krypterte volumet «%s». %s"
+
+#: grub-core/osdep/devmapper/getroot.c:218
+#, fuzzy, c-format
+msgid "cannot open grub disk `%s'"
+msgstr "klarte ikke å åpne OS-fila «%s»: %s"
+
+#: grub-core/osdep/devmapper/getroot.c:221
+#, c-format
+msgid "cannot get cryptodisk from source disk `%s'"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:230
+#, c-format
+msgid "cannot get dm node name for grub dev `%s'"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:237
+msgid "can't create dm task DM_DEVICE_TABLE"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:239
+#, c-format
+msgid "can't set dm task name to `%s'"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:241
+#, fuzzy, c-format
+msgid "can't run dm task for `%s'"
+msgstr "fant ikke kommandoen «%s»"
+
+#: grub-core/osdep/devmapper/getroot.c:249
+#, c-format
+msgid "dm target of type `%s' is not `crypt'"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:261
+#, c-format
+msgid "can't get cipher from dm-crypt parameters `%s'"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:265
+msgid "could not strndup cipher of length `%"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:272
+#, c-format
+msgid "can't get cipher mode from dm-crypt parameters `%s'"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:276
+msgid "could not strndup cipher_mode of length `%"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:283
+#, c-format
+msgid "can't set cipher of cryptodisk `%s' to `%s' with mode `%s'"
+msgstr ""
+
+#: grub-core/osdep/devmapper/getroot.c:297
+msgid "can't lookup hash sha256 by name"
+msgstr ""
 
 #. TRANSLATORS: geom is the name of (k)FreeBSD device framework.
 #. Usually left untranslated.
@@ -4504,26 +5167,26 @@ msgstr "klarte ikke å hente geli-UUID"
 msgid "couldn't find geom `part' class"
 msgstr "fant ikke «part»-klasse i geom"
 
-#: grub-core/osdep/freebsd/hostdisk.c:72 grub-core/osdep/linux/hostdisk.c:93
+#: grub-core/osdep/freebsd/hostdisk.c:70 grub-core/osdep/linux/hostdisk.c:92
 msgid "unaligned device size"
 msgstr "uordnet enhetsstørrelse"
 
-#: grub-core/osdep/generic/blocklist.c:56
+#: grub-core/osdep/generic/blocklist.c:80
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB"
 msgstr "prøver å lese kjernebildet «%s» fra GRUB"
 
-#: grub-core/osdep/generic/blocklist.c:57
+#: grub-core/osdep/generic/blocklist.c:81
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB again"
 msgstr "prøver å lese kjernebildet «%s» fra GRUB igjen"
 
-#: grub-core/osdep/generic/blocklist.c:115
+#: grub-core/osdep/generic/blocklist.c:139
 #, c-format
 msgid "cannot read `%s' correctly"
 msgstr "klarte ikke å lese «%s» skikkelig"
 
-#: grub-core/osdep/generic/blocklist.c:126
+#: grub-core/osdep/generic/blocklist.c:150
 msgid "failed to read the sectors of the core image"
 msgstr "klarte ikke å lese kjernebildets sektorer"
 
@@ -4602,47 +5265,46 @@ msgstr "ugyldig null-blokkstørrelse"
 msgid "can't retrieve blocklists"
 msgstr "klarte ikke å hente blokklister"
 
-#: grub-core/osdep/linux/getroot.c:154
+#: grub-core/osdep/linux/getroot.c:151
 #, c-format
 msgid "ioctl RAID_VERSION error: %s"
 msgstr "ioctl RAID_VERSION-feil: %s"
 
-#: grub-core/osdep/linux/getroot.c:160 grub-core/osdep/linux/getroot.c:164
+#: grub-core/osdep/linux/getroot.c:157 grub-core/osdep/linux/getroot.c:161
 #, c-format
 msgid "unsupported RAID version: %d.%d"
-msgstr "RAID-versjon %d støttes ikke.%d"
+msgstr "ustøttet RAID-versjon: %d.%d"
 
-#: grub-core/osdep/linux/getroot.c:169
+#: grub-core/osdep/linux/getroot.c:166
 #, c-format
 msgid "ioctl GET_ARRAY_INFO error: %s"
 msgstr "ioctl GET_ARRAY_INFO-feil: %s"
 
-#: grub-core/osdep/linux/getroot.c:178
+#: grub-core/osdep/linux/getroot.c:176
 #, c-format
 msgid "ioctl GET_DISK_INFO error: %s"
 msgstr "ioctl GET_DISK_INFO-feil: %s"
 
-#: grub-core/osdep/linux/getroot.c:608 grub-core/osdep/linux/getroot.c:678
-#: grub-core/osdep/linux/hostdisk.c:126 grub-core/osdep/unix/getroot.c:253
-#: grub-core/osdep/unix/getroot.c:642 grub-core/osdep/unix/platform.c:92
-#: grub-core/osdep/unix/platform.c:100
+#: grub-core/osdep/linux/getroot.c:605 grub-core/osdep/linux/getroot.c:675
+#: grub-core/osdep/unix/getroot.c:249 grub-core/osdep/unix/getroot.c:638
+#: grub-core/osdep/unix/platform.c:92 grub-core/osdep/unix/platform.c:100
 #, c-format
 msgid "Unable to open stream from %s: %s"
 msgstr "Klarte ikke å åpne strøm fra %s. %s"
 
-#: grub-core/osdep/linux/getroot.c:1046
+#: grub-core/osdep/linux/getroot.c:1043
 #, c-format
 msgid "unknown kind of RAID device `%s'"
-msgstr "RAID-enheten «%s» er av ukjent type"
+msgstr "ukjent RAID-enhetstype «%s»"
 
 #: grub-core/osdep/linux/ofpath.c:181
 #, c-format
 msgid "`obppath' not found in parent dirs of `%s', no IEEE1275 name discovery"
 msgstr "Fant ikke «obppath» i foreldermapper av «%s». Ingen IEEE1275-navn"
 
-#: grub-core/osdep/linux/ofpath.c:222 grub-core/osdep/unix/getroot.c:505
-#: grub-core/osdep/unix/getroot.c:529 grub-core/osdep/unix/relpath.c:49
-#: util/grub-install.c:992 util/grub-install.c:1339 util/grub-probe.c:323
+#: grub-core/osdep/linux/ofpath.c:222 grub-core/osdep/unix/getroot.c:501
+#: grub-core/osdep/unix/getroot.c:525 grub-core/osdep/unix/relpath.c:49
+#: util/grub-install.c:1010 util/grub-install.c:1406 util/grub-probe.c:323
 #, c-format
 msgid "failed to get canonical path of `%s'"
 msgstr "fant ikke fullstendig sti til «%s»"
@@ -4668,19 +5330,19 @@ msgstr "Klarte ikke å kopiere: %s"
 msgid "Unable to create pipe: %s"
 msgstr "Klarte ikke å lage datarør: %s"
 
-#: grub-core/osdep/unix/getroot.c:370
+#: grub-core/osdep/unix/getroot.c:366
 msgid "cannot save the original directory"
 msgstr "klarte ikke å lagre opprinnelig mappe"
 
-#: grub-core/osdep/unix/getroot.c:423 grub-core/osdep/unix/getroot.c:480
-#: grub-core/osdep/unix/getroot.c:489
+#: grub-core/osdep/unix/getroot.c:419 grub-core/osdep/unix/getroot.c:476
+#: grub-core/osdep/unix/getroot.c:485
 msgid "cannot restore the original directory"
 msgstr "klarte ikke å gjenopprette opprinnelig mappe"
 
 #. TRANSLATORS: "stat" comes from the name of POSIX function.
-#: grub-core/osdep/unix/getroot.c:551 grub-core/osdep/unix/hostdisk.c:61
+#: grub-core/osdep/unix/getroot.c:547 grub-core/osdep/unix/hostdisk.c:61
 #: grub-core/osdep/unix/relpath.c:73 grub-core/osdep/unix/relpath.c:97
-#: util/getroot.c:160 util/getroot.c:162 util/grub-install.c:782
+#: util/getroot.c:160 util/getroot.c:162 util/grub-install.c:785
 #: util/grub-macbless.c:70
 #, c-format
 msgid "cannot stat `%s': %s"
@@ -4742,7 +5404,7 @@ msgstr "ingen «/» i fullstendig filnavn"
 msgid "cygwin_conv_path() failed"
 msgstr "cygwin_conv_path() mislyktes"
 
-#: grub-core/osdep/windows/hostdisk.c:501 util/grub-install.c:578
+#: grub-core/osdep/windows/hostdisk.c:499 util/grub-install.c:581
 msgid "couldn't retrieve random data"
 msgstr "klarte ikke å hente vilkårlighetsdata"
 
@@ -4891,9 +5553,9 @@ msgstr "klarte ikke å tildele kommando-mellomlager"
 
 #: grub-core/script/function.c:68
 msgid "attempt to redefine a function being executed"
-msgstr ""
+msgstr "forsøk å redefinere en funksjon som utføres"
 
-#: grub-core/script/lexer.c:149 util/grub-fstest.c:330
+#: grub-core/script/lexer.c:149 util/grub-fstest.c:336
 msgid "unexpected end of file"
 msgstr "uforventet slutt på fil"
 
@@ -4914,7 +5576,7 @@ msgstr "Fortsett løkker"
 #. arguments $0, $1, $2, ...
 #: grub-core/script/main.c:62
 msgid "Shift positional parameters."
-msgstr "Endre posisjonsparametre"
+msgstr "Endre posisjonsparametre."
 
 #: grub-core/script/main.c:64
 msgid "[VALUE]..."
@@ -4953,54 +5615,62 @@ msgstr "Velg bakgrunnsfarge for aktiv terminal."
 
 #: grub-core/term/i386/coreboot/cbmemc.c:139
 msgid "Show CBMEM console content."
-msgstr "Vis CBMEM-konsollinnhold"
+msgstr "Vis CBMEM-konsollinnhold."
 
-#: grub-core/term/serial.c:57
+#: grub-core/term/serial.c:55
 msgid "Set the serial unit."
 msgstr "Velg seriellenhet."
 
-#: grub-core/term/serial.c:58
+#: grub-core/term/serial.c:56
 msgid "Set the serial port address."
 msgstr "Velg seriellport-adresse."
 
-#: grub-core/term/serial.c:59
+#: grub-core/term/serial.c:57
 msgid "Set the serial port speed."
 msgstr "Velg seriellport-hastighet."
 
-#: grub-core/term/serial.c:60
+#: grub-core/term/serial.c:58
 msgid "Set the serial port word length."
 msgstr "Velg seriellport-ordlengde."
 
-#: grub-core/term/serial.c:61
+#: grub-core/term/serial.c:59
 msgid "Set the serial port parity."
 msgstr "Velg seriellport-paritet."
 
-#: grub-core/term/serial.c:62
+#: grub-core/term/serial.c:60
 msgid "Set the serial port stop bits."
 msgstr "Velg seriellport-stoppebiter."
 
-#: grub-core/term/serial.c:63
+#: grub-core/term/serial.c:61
 msgid "Set the base frequency."
 msgstr "Velg frekvens."
 
-#: grub-core/term/serial.c:64
+#: grub-core/term/serial.c:62
 msgid "Enable/disable RTS/CTS."
 msgstr "Slå på/av RTS/CTS."
 
-#: grub-core/term/serial.c:218
+#: grub-core/term/serial.c:181
+msgid "incorrect MMIO address syntax"
+msgstr ""
+
+#: grub-core/term/serial.c:205
+msgid "incorrect MMIO access size"
+msgstr ""
+
+#: grub-core/term/serial.c:279
 #, c-format
 msgid "serial port `%s' isn't found"
 msgstr "fant ikke seriellporten «%s»"
 
-#: grub-core/term/serial.c:254
+#: grub-core/term/serial.c:315
 msgid "unsupported serial port flow control"
 msgstr "seriellport-flytkontrollen støttes ikke"
 
-#: grub-core/term/serial.c:429
+#: grub-core/term/serial.c:490
 msgid "[OPTIONS...]"
 msgstr "[VALG …]"
 
-#: grub-core/term/serial.c:430
+#: grub-core/term/serial.c:491
 msgid "Configure serial port."
 msgstr "Sett opp seriellport."
 
@@ -5065,12 +5735,10 @@ msgid "terminal %s isn't found or it's not handled by terminfo"
 msgstr "terminal %s finnes ikke, eller håndteres ikke av terminfo"
 
 #: grub-core/term/terminfo.c:788
-#, fuzzy
 msgid "[[-a|-u|-v] [-g WxH] [TERM] [TYPE]]"
-msgstr "[[-a|-u|-v] [-g BxH] TERM [TYPE]]"
+msgstr "[[-a|-u|-v] [-g WxH] [TERM] [TYPE]]"
 
 #: grub-core/term/terminfo.c:789
-#, fuzzy
 msgid "Set terminfo type of TERM to TYPE.\n"
 msgstr "Velg terminfo-type for TERM med TYPE.\n"
 
@@ -5102,9 +5770,8 @@ msgid "no suitable video mode found"
 msgstr "fant ingen passende videomodus"
 
 #: include/grub/buffer.h:123
-#, fuzzy
 msgid "peek out of range"
-msgstr "velg skriftrekkevidde"
+msgstr "peek utenfor rekkevidde"
 
 #: include/grub/crypto.h:402
 msgid "access denied"
@@ -5184,13 +5851,13 @@ msgstr "bruk valgt FIL som offentlig nøkkel for signaturkontroll"
 
 #: include/grub/util/install.h:67 util/grub-mkimage.c:84
 msgid "SBAT metadata"
-msgstr ""
+msgstr "SBAT metadata"
 
 #: include/grub/util/install.h:69 util/grub-mkimage.c:85
 msgid "disable shim_lock verifier"
-msgstr ""
+msgstr "deaktiver shim_lock-verifikator"
 
-#: util/editenv.c:71 util/grub-editenv.c:207 util/grub-install-common.c:700
+#: util/editenv.c:71 util/grub-editenv.c:207 util/grub-install-common.c:718
 #: util/grub-mkimage.c:331 util/setup.c:794
 #, c-format
 msgid "cannot sync `%s': %s"
@@ -5203,15 +5870,15 @@ msgstr "klarte ikke å gi fila %s det nye navnet %s"
 
 #: util/editenv.c:94 util/editenv.c:131
 #, fuzzy, c-format
-msgid "cannot rename the file %s to %s: %m"
-msgstr "klarte ikke å gi fila %s det nye navnet %s"
+msgid "cannot rename the file %s to %s: %s"
+msgstr "klarte ikke å gi fila %s det nye navnet %s: %m"
 
 #: util/getroot.c:402
 #, c-format
 msgid "disk does not exist, so falling back to partition device %s"
 msgstr "disken finnes ikke, så partisjonsenheten %s brukes som reserve"
 
-#: util/grub-editenv.c:45 util/grub-fstest.c:506
+#: util/grub-editenv.c:45 util/grub-fstest.c:512
 msgid "Commands:"
 msgstr "Kommandoer:"
 
@@ -5271,9 +5938,9 @@ msgstr ""
 "vil slette hele miljøblokka."
 
 #: util/grub-editenv.c:149
-#, fuzzy, c-format
+#, c-format
 msgid "cannot get file location `%s': %s"
-msgstr "klarte ikke å skrive til «%s». %s"
+msgstr "kan ikke finne filplassering «%s». %s"
 
 #: util/grub-editenv.c:168
 msgid "invalid environment block"
@@ -5318,159 +5985,159 @@ msgstr "klarte ikke å skrive til standard utkanal: %s"
 msgid "compare fail at offset %llu"
 msgstr "sammenlikningsfeil ved posisjon %llu"
 
-#: util/grub-fstest.c:280 util/grub-fstest.c:314
+#: util/grub-fstest.c:280 util/grub-fstest.c:320
 #, c-format
 msgid "OS file %s open error: %s"
 msgstr "Feil ved åpning av OS-fila %s: %s"
 
-#: util/grub-fstest.c:402 util/grub-mount.c:392
+#: util/grub-fstest.c:408 util/grub-mount.c:412
 #, c-format
 msgid "`loopback' command fails: %s"
 msgstr "«loopback»-kommando mislyktes: %s"
 
-#: util/grub-fstest.c:413 util/grub-mount.c:402
+#: util/grub-fstest.c:419 util/grub-mount.c:422
 #, c-format
 msgid "`cryptomount' command fails: %s"
 msgstr "«cryptomount»-kommando mislyktes: %s"
 
-#: util/grub-fstest.c:474 util/grub-fstest.c:478
+#: util/grub-fstest.c:480 util/grub-fstest.c:484
 msgid "couldn't retrieve UUID"
 msgstr "klarte ikke å hente UUID"
 
-#: util/grub-fstest.c:507
+#: util/grub-fstest.c:513
 msgid "ls PATH"
 msgstr "ls STI"
 
-#: util/grub-fstest.c:507
+#: util/grub-fstest.c:513
 msgid "List files in PATH."
 msgstr "Vis filer på valgt STI."
 
-#: util/grub-fstest.c:508
+#: util/grub-fstest.c:514
 msgid "cp FILE LOCAL"
 msgstr "cp FIL LOKAL"
 
-#: util/grub-fstest.c:508
+#: util/grub-fstest.c:514
 msgid "Copy FILE to local file LOCAL."
 msgstr "Kopier FIL til valgt LOKAL fil."
 
-#: util/grub-fstest.c:509
+#: util/grub-fstest.c:515
 msgid "cat FILE"
 msgstr "cat FIL"
 
-#: util/grub-fstest.c:509
+#: util/grub-fstest.c:515
 msgid "Copy FILE to standard output."
 msgstr "Kopier valgt FIL til standardutdata."
 
-#: util/grub-fstest.c:510
+#: util/grub-fstest.c:516
 msgid "cmp FILE LOCAL"
 msgstr "cmp FIL LOKAL"
 
-#: util/grub-fstest.c:510
+#: util/grub-fstest.c:516
 msgid "Compare FILE with local file LOCAL."
 msgstr "Sammenlikn FIL med valgt LOKAL fil."
 
-#: util/grub-fstest.c:511
+#: util/grub-fstest.c:517
 msgid "hex FILE"
 msgstr "hex FIL"
 
-#: util/grub-fstest.c:511
+#: util/grub-fstest.c:517
 msgid "Show contents of FILE in hex."
 msgstr "Vis innhold i valgt FIL i heksadesimal form."
 
-#: util/grub-fstest.c:512
+#: util/grub-fstest.c:518
 msgid "crc FILE"
 msgstr "crc FIL"
 
-#: util/grub-fstest.c:512
+#: util/grub-fstest.c:518
 msgid "Get crc32 checksum of FILE."
 msgstr "Beregn crc32-kontrollsum av valgt FIL."
 
-#: util/grub-fstest.c:513
+#: util/grub-fstest.c:519
 msgid "blocklist FILE"
 msgstr "blocklist FIL"
 
-#: util/grub-fstest.c:513
+#: util/grub-fstest.c:519
 msgid "Display blocklist of FILE."
 msgstr "Vis blokkliste av valgt FIL."
 
-#: util/grub-fstest.c:514
+#: util/grub-fstest.c:520
 msgid "xnu_uuid DEVICE"
 msgstr "xnu_uuid ENHET"
 
-#: util/grub-fstest.c:514
+#: util/grub-fstest.c:520
 msgid "Compute XNU UUID of the device."
 msgstr "Lag XNU-UUID for valgt enhet."
 
 #. TRANSLATORS: bitmaps are images like e.g. in JPEG.
-#: util/grub-fstest.c:517 util/grub-fstest.c:518 util/grub-fstest.c:519
-#: util/grub-mkfont.c:938 util/grub-mkfont.c:951 util/grub-mkfont.c:952
+#: util/grub-fstest.c:523 util/grub-fstest.c:524 util/grub-fstest.c:525
+#: util/grub-mkfont.c:984 util/grub-mkfont.c:997 util/grub-mkfont.c:998
 #: util/grub-mkpasswd-pbkdf2.c:46 util/grub-mkpasswd-pbkdf2.c:47
 #: util/grub-mkpasswd-pbkdf2.c:48
 msgid "NUM"
 msgstr "NUM"
 
-#: util/grub-fstest.c:517
+#: util/grub-fstest.c:523
 msgid "Skip N bytes from output file."
 msgstr "Hopp over N byte i utdatafil."
 
-#: util/grub-fstest.c:518
+#: util/grub-fstest.c:524
 msgid "Handle N bytes in output file."
 msgstr "Håndter N antall byte i utdatafil."
 
-#: util/grub-fstest.c:519
+#: util/grub-fstest.c:525
 msgid "Specify the number of input files."
 msgstr "Velg antall inndatafiler."
 
-#: util/grub-fstest.c:520 util/grub-mount.c:453
+#: util/grub-fstest.c:526 util/grub-mount.c:473
 msgid "Set debug environment variable."
 msgstr "Gi miljøvariabelen for feilsøking («debug») en verdi."
 
-#: util/grub-fstest.c:521 util/grub-mount.c:454
+#: util/grub-fstest.c:527 util/grub-mount.c:474
 msgid "Mount crypto devices."
 msgstr "Monter krypterte enheter."
 
 #. TRANSLATORS: "prompt" is a keyword.
-#: util/grub-fstest.c:524 util/grub-mount.c:457
+#: util/grub-fstest.c:530 util/grub-mount.c:477
 msgid "FILE|prompt"
 msgstr "FIL|ledetekst"
 
-#: util/grub-fstest.c:524 util/grub-mount.c:457
+#: util/grub-fstest.c:530 util/grub-mount.c:477
 msgid "Load zfs crypto key."
 msgstr "Last inn zfs-krypteringsnøkkel."
 
-#: util/grub-fstest.c:526
+#: util/grub-fstest.c:532
 msgid "Uncompress data."
 msgstr "Pakk ut data."
 
-#: util/grub-fstest.c:605
+#: util/grub-fstest.c:611
 msgid "Invalid disk count.\n"
 msgstr "Ugyldig diskantall.\n"
 
 #. TRANSLATORS: disk count is optional but if it's there it must
 #. be before disk list. So please don't imply disk count as mandatory.
 #.
-#: util/grub-fstest.c:613
+#: util/grub-fstest.c:619
 msgid "Disk count must precede disks list.\n"
 msgstr "Diskantall må komme før diskliste.\n"
 
-#: util/grub-fstest.c:633
+#: util/grub-fstest.c:639
 msgid "No command is specified.\n"
 msgstr "Ingen kommando er gitt.\n"
 
-#: util/grub-fstest.c:638
+#: util/grub-fstest.c:644
 msgid "Not enough parameters to command.\n"
 msgstr "Kommandoen mangler parametre.\n"
 
-#: util/grub-fstest.c:711
+#: util/grub-fstest.c:717
 #, c-format
 msgid "Invalid command %s.\n"
 msgstr "%s er en ugyldig kommando.\n"
 
-#: util/grub-fstest.c:724
+#: util/grub-fstest.c:730
 msgid "IMAGE_PATH COMMANDS"
 msgstr "BILDE-STI KOMMANDOER"
 
-#: util/grub-fstest.c:725 util/grub-mount.c:553
+#: util/grub-fstest.c:731 util/grub-mount.c:575
 msgid "Debug tool for filesystem driver."
 msgstr "Feilsøkingsverktøy for filsystem-driver."
 
@@ -5509,62 +6176,67 @@ msgstr "klarte ikke å kopiere «%s» til «%s». %s"
 msgid "can't compress `%s' to `%s'"
 msgstr "klarte ikke å komprimere «%s» til «%s»"
 
-#: util/grub-install-common.c:234 util/grub-install-common.c:717
-#: util/grub-install-common.c:744 util/grub-install-common.c:786
+#: util/grub-install-common.c:182 util/grub-install-common.c:189
+#, fuzzy, c-format
+msgid "failed to make directory: '%s'"
+msgstr "klarte ikke å lage midlertidig mappe: %s"
+
+#: util/grub-install-common.c:239 util/grub-install-common.c:735
+#: util/grub-install-common.c:762 util/grub-install-common.c:807
 #, c-format
 msgid "cannot open directory `%s': %s"
 msgstr "klarte ikke å åpne mappa «%s». %s"
 
-#: util/grub-install-common.c:259
+#: util/grub-install-common.c:264
 #, fuzzy, c-format
 msgid "cannot backup `%s': %s"
 msgstr "klarte ikke å lese «%s». %s"
 
-#: util/grub-install-common.c:269
+#: util/grub-install-common.c:274
 #, fuzzy, c-format
 msgid "cannot restore `%s': %s"
 msgstr "klarte ikke å skrive til «%s». %s"
 
-#: util/grub-install-common.c:276
+#: util/grub-install-common.c:281
 #, c-format
 msgid "cannot delete `%s': %s"
 msgstr "klarte ikke å slette «%s». %s"
 
-#: util/grub-install-common.c:477 util/grub-mkimage.c:213
+#: util/grub-install-common.c:482 util/grub-mkimage.c:213
 msgid "grub-mkimage is compiled without XZ support"
 msgstr "grub-mkimage er installert uten XZ-støtte"
 
-#: util/grub-install-common.c:485 util/grub-mkimage.c:221
+#: util/grub-install-common.c:490 util/grub-mkimage.c:221
 #, c-format
 msgid "Unknown compression format %s"
 msgstr "%s er et ukjent komprimeringsformat"
 
-#: util/grub-install-common.c:562
+#: util/grub-install-common.c:567
 #, c-format
 msgid "Unrecognized compression `%s'"
 msgstr "«%s» er en ukjent komprimeringsmetode"
 
-#: util/grub-install-common.c:673
+#: util/grub-install-common.c:691
 #, c-format
 msgid "unknown target format %s"
 msgstr "målformat %s er ukjent"
 
-#: util/grub-install-common.c:865
+#: util/grub-install-common.c:886
 #, c-format
 msgid "cannot find locale `%s'"
 msgstr "fant ikke regionen «%s»"
 
-#: util/grub-install-common.c:1104
+#: util/grub-install-common.c:1126
 #, c-format
 msgid "%s doesn't exist. Please specify --target or --directory"
 msgstr "%s finnes ikke. Velg «--target» (mål) eller «--directory» (mappe)"
 
-#: util/grub-install-common.c:1113 util/grub-install-common.c:1116
+#: util/grub-install-common.c:1135 util/grub-install-common.c:1138
 #, c-format
 msgid "invalid modinfo file `%s'"
 msgstr "«%s» er en ugyldig modinfo-fil"
 
-#: util/grub-install-common.c:1131
+#: util/grub-install-common.c:1153
 #, c-format
 msgid "Unknown platform `%s-%s'"
 msgstr "«%s-%s» er en ukjent plattform"
@@ -5685,15 +6357,15 @@ msgstr "bruk valgt FARGE på etikett-forgrunnen"
 msgid "use STRING as product version"
 msgstr "bruk STRENG som produktversjon"
 
-#: util/grub-install.c:369
+#: util/grub-install.c:371
 msgid "[OPTION] [INSTALL_DEVICE]"
 msgstr "[VALG] [INSTALLASJONSENHET]"
 
-#: util/grub-install.c:370
+#: util/grub-install.c:372
 msgid "Install GRUB on your drive."
 msgstr "Installer GRUB på lagringsenheten."
 
-#: util/grub-install.c:371
+#: util/grub-install.c:373
 #, c-format
 msgid ""
 "INSTALL_DEVICE must be system device filename.\n"
@@ -5704,55 +6376,65 @@ msgstr ""
 "Bruk %s for å kopiere GRUB-bilder til %s. Dette installerer også GRUB i "
 "oppstartssektoren på enkelte plattformer."
 
-#: util/grub-install.c:680
+#: util/grub-install.c:683
 #, c-format
 msgid "the drive %s is defined multiple times in the device map %s"
 msgstr "enheten %s er definert flere ganger på enhetskartet %s"
 
-#: util/grub-install.c:886
+#: util/grub-install.c:841
+#, fuzzy, c-format
+msgid "Unable to open %s: %s"
+msgstr "Klarte ikke å åpne strøm fra %s. %s"
+
+#: util/grub-install.c:902
 msgid "Unable to determine your platform. Use --target."
 msgstr "Klarte ikke å finne ut hvilken plattform du bruker. Bruk «--target»."
 
-#: util/grub-install.c:899
+#: util/grub-install.c:915
 #, c-format
 msgid "Installing for %s platform.\n"
 msgstr "Installerer for plattformen %s.\n"
 
-#: util/grub-install.c:947
+#: util/grub-install.c:964
 msgid "install device isn't specified"
 msgstr "du har ikke valgt installasjonsenhet"
 
-#: util/grub-install.c:1065
+#: util/grub-install.c:1098
 msgid "cannot find EFI directory"
 msgstr "fant ikke EFI-mappe"
 
-#: util/grub-install.c:1068 util/grub-install.c:1217 util/grub-install.c:1262
+#: util/grub-install.c:1101 util/grub-install.c:1261 util/grub-install.c:1299
 #: util/grub-macbless.c:76 util/grub-probe.c:329 util/setup.c:320
 #, c-format
 msgid "cannot find a device for %s (is /dev mounted?)"
 msgstr "fant ingen enhet for %s (er /dev montert?)"
 
-#: util/grub-install.c:1077 util/grub-install.c:1225 util/grub-install.c:1278
-#: util/grub-install.c:1373 util/grub-macbless.c:80 util/grub-probe.c:372
+#: util/grub-install.c:1110 util/grub-install.c:1269 util/grub-install.c:1315
+#: util/grub-install.c:1387 util/grub-macbless.c:80 util/grub-probe.c:372
 #, c-format
 msgid "cannot find a GRUB drive for %s.  Check your device.map"
 msgstr "fant ingen GRUB-enhet for %s. Sjekk fila «device.map»"
 
-#: util/grub-install.c:1095
+#: util/grub-install.c:1130
+#, fuzzy, c-format
+msgid "%s doesn't look like an EFI partition, system may not boot"
+msgstr "%s ser ikke ut som en EFI-partisjon"
+
+#: util/grub-install.c:1132
 #, c-format
 msgid "%s doesn't look like an EFI partition"
 msgstr "%s ser ikke ut som en EFI-partisjon"
 
-#: util/grub-install.c:1137 util/grub-install.c:1622
+#: util/grub-install.c:1178 util/grub-install.c:1670
 msgid "You've found a bug"
 msgstr "Du har funnet en programfeil"
 
-#: util/grub-install.c:1239
+#: util/grub-install.c:1283
 #, c-format
 msgid "filesystem on %s is neither HFS nor HFS+"
 msgstr "filsystemet på %s er hverken HFS eller HFS+"
 
-#: util/grub-install.c:1307
+#: util/grub-install.c:1344
 #, c-format
 msgid ""
 "attempt to install to encrypted disk without cryptodisk enabled. Set `%s' in "
@@ -5761,31 +6443,31 @@ msgstr ""
 "du forsøkte å installere på kryptert disk uten å slå på cryptodisk først. "
 "Endre eller legg til «%s» i fila «%s»"
 
-#: util/grub-install.c:1418 util/grub-install.c:1791 util/grub-install.c:1895
+#: util/grub-install.c:1464 util/grub-install.c:1840 util/grub-install.c:1945
 #, c-format
 msgid "Can't create file: %s"
 msgstr "Klarte ikke å opprette fil: %s"
 
-#: util/grub-install.c:1499
+#: util/grub-install.c:1546
 msgid "no hints available for your platform. Expect reduced performance"
 msgstr ""
 "fant ingen hint om plattformen du bruker. Redusert ytelse kan forventes"
 
 #. TRANSLATORS: This is a prefix in the log to indicate that usually
 #. a command would be executed but due to an option was skipped.
-#: util/grub-install.c:1710
+#: util/grub-install.c:1759
 msgid "NOT RUNNING: "
-msgstr "KJØRER IKKE:"
+msgstr "KJØRER IKKE: "
 
-#: util/grub-install.c:1827
+#: util/grub-install.c:1876
 msgid "the chosen partition is not a PReP partition"
 msgstr "valgt partisjon er ikke en PReP-partisjon"
 
-#: util/grub-install.c:1832
+#: util/grub-install.c:1881
 msgid "failed to copy Grub to the PReP partition"
 msgstr "klarte ikke å kopiere Grub til PReP-partisjonen"
 
-#: util/grub-install.c:1837
+#: util/grub-install.c:1887
 #, c-format
 msgid ""
 "the PReP partition is not empty. If you are sure you want to use it, run dd "
@@ -5794,20 +6476,20 @@ msgstr ""
 "PReP-partisjonen er ikke tom. Kjør dd hvis du er sikker på at du vil bruke "
 "den: «%s»"
 
-#: util/grub-install.c:1913 util/grub-install.c:1960
+#: util/grub-install.c:1963 util/grub-install.c:2011
 #, c-format
 msgid "efibootmgr failed to register the boot entry: %s"
 msgstr "efibootmgr klarte ikke å registrere oppføring: %s"
 
-#: util/grub-install.c:1944
+#: util/grub-install.c:1995
 msgid "EFI bootloader id isn't specified."
 msgstr "Du har ikke oppgitt ID på EFI-oppstartslasteren."
 
-#: util/grub-install.c:1978
+#: util/grub-install.c:2029
 msgid "WARNING: no platform-specific install was performed"
 msgstr "ADVARSEL: ingen plattform-spesifikk installasjon er utført"
 
-#: util/grub-install.c:1993
+#: util/grub-install.c:2044
 msgid "Installation finished. No error reported."
 msgstr "Installasjonen er ferdig. Ingen programfeil oppstod."
 
@@ -5819,7 +6501,7 @@ msgstr "kontroller om programmet fungerer med x86-baserte mac-maskiner"
 msgid "bless for ppc-based macs"
 msgstr "kontroller om programmet fungerer med ppc-baserte mac-maskiner"
 
-#: util/grub-macbless.c:136 util/grub-probe.c:823
+#: util/grub-macbless.c:136 util/grub-probe.c:824
 msgid "No path or device is specified.\n"
 msgstr "Ingen sti eller enhet er valgt.\n"
 
@@ -5836,7 +6518,7 @@ msgstr "Forhåndssjekk i Mac-stil på HFS eller HFS+"
 msgid "Usage: %s [INFILE [OUTFILE]]\n"
 msgstr "Bruk: %s [INNFIL [UTFIL]]\n"
 
-#: util/grub-mkfont.c:157
+#: util/grub-mkfont.c:162
 #, c-format
 msgid "Freetype Error %d loading glyph 0x%x for U+0x%x%s"
 msgstr "Freetype-feil %d oppstod ved innlasting av tegnet 0x%x for U+0x%x%s"
@@ -5846,52 +6528,57 @@ msgstr "Freetype-feil %d oppstod ved innlasting av tegnet 0x%x for U+0x%x%s"
 #. and not logical order and if used in left-to-right script then
 #. leftmost is initial but with right-to-left script like Arabic
 #. rightmost is the initial.
-#: util/grub-mkfont.c:165
+#: util/grub-mkfont.c:170
 msgid " (medial)"
 msgstr " (medial)"
 
-#: util/grub-mkfont.c:166
+#: util/grub-mkfont.c:171
 msgid " (leftmost)"
 msgstr " (lengst til venstre)"
 
-#: util/grub-mkfont.c:167
+#: util/grub-mkfont.c:172
 msgid " (rightmost)"
 msgstr " (lengst til høyre)"
 
-#: util/grub-mkfont.c:481
-#, c-format
-msgid "Out of range substitution (%d, %d)\n"
+#: util/grub-mkfont.c:486
+#, fuzzy, c-format
+msgid "Out of range substitution (%d, %u)\n"
 msgstr "Erstatninga er utenfor rekkevidde (%d, %d)\n"
 
 #. TRANSLATORS: "lookup" is taken directly from font specifications
 #. which are formulated as "Under condition X replace LOOKUP with
 #. SUBSTITUITION".  "
-#: util/grub-mkfont.c:506
+#: util/grub-mkfont.c:517
 #, c-format
 msgid "Out of range lookup: %d\n"
 msgstr "«lookup» %d er utenfor rekkevidde\n"
 
-#: util/grub-mkfont.c:514
+#: util/grub-mkfont.c:525
 #, c-format
 msgid "Unsupported substitution type: %d\n"
 msgstr "Erstatningstype %d støttes ikke\n"
 
-#: util/grub-mkfont.c:550
-#, c-format
-msgid "Unsupported substitution specification: %d\n"
+#: util/grub-mkfont.c:566
+#, fuzzy, c-format
+msgid "Unsupported substitution specification: %u\n"
 msgstr "Erstaningsspesifikasjon %d støttes ikke\n"
 
-#: util/grub-mkfont.c:582
-#, c-format
-msgid "Unsupported coverage specification: %d\n"
+#. TRANSLATORS: It refers to the range of characters in font.
+#: util/grub-mkfont.c:600 util/grub-mkfont.c:1105 util/grub-mkfont.c:1121
+msgid "invalid font range"
+msgstr "ugyldig skriftrekkevidde"
+
+#: util/grub-mkfont.c:613
+#, fuzzy, c-format
+msgid "Unsupported coverage specification: %u\n"
 msgstr "Dekningsspesifikasjon %d støttes ikke\n"
 
-#: util/grub-mkfont.c:622
+#: util/grub-mkfont.c:665
 #, c-format
 msgid "WARNING: unsupported font feature parameters: %x\n"
 msgstr "ADVARSEL: funksjonsparametre %x for skrifttype støttes ikke\n"
 
-#: util/grub-mkfont.c:936 util/grub-mkrescue.c:98 util/grub-mkstandalone.c:48
+#: util/grub-mkfont.c:982 util/grub-mkrescue.c:98 util/grub-mkstandalone.c:51
 #: util/grub-kbdcomp.in:29
 msgid "save output in FILE [required]"
 msgstr "lagre utdata i valgt FIL (påkrevet)"
@@ -5899,54 +6586,54 @@ msgstr "lagre utdata i valgt FIL (påkrevet)"
 #. TRANSLATORS: some font files may have multiple faces (fonts).
 #. This option is used to chose among them, the first face being '0'.
 #. Rarely used.
-#: util/grub-mkfont.c:942
+#: util/grub-mkfont.c:988
 msgid "select face index"
-msgstr "velg variantindeks («face») for skrifttype "
+msgstr "velg variantindeks («face») for skrifttype"
 
-#: util/grub-mkfont.c:943
+#: util/grub-mkfont.c:989
 msgid "FROM-TO[,FROM-TO]"
 msgstr "FRA-TIL[,FRA-TIL]"
 
 #. TRANSLATORS: It refers to the range of characters in font.
-#: util/grub-mkfont.c:945
+#: util/grub-mkfont.c:991
 msgid "set font range"
 msgstr "velg skriftrekkevidde"
 
-#: util/grub-mkfont.c:946
+#: util/grub-mkfont.c:992
 msgid "NAME"
 msgstr "NAME"
 
 #. TRANSLATORS: "family name" for font is just a generic name without suffix
 #. like "Bold".
-#: util/grub-mkfont.c:949
+#: util/grub-mkfont.c:995
 msgid "set font family name"
 msgstr "velg navn på skriftfamilie"
 
-#: util/grub-mkfont.c:950
+#: util/grub-mkfont.c:996
 msgid "SIZE"
 msgstr "STØRRELSE"
 
-#: util/grub-mkfont.c:950
+#: util/grub-mkfont.c:996
 msgid "set font size"
 msgstr "velg skriftstørrelse"
 
-#: util/grub-mkfont.c:951
+#: util/grub-mkfont.c:997
 msgid "set font descent"
 msgstr "velg underlengde for skrifttype"
 
-#: util/grub-mkfont.c:952
+#: util/grub-mkfont.c:998
 msgid "set font ascent"
 msgstr "velg overlengde for skrifttype"
 
-#: util/grub-mkfont.c:953
+#: util/grub-mkfont.c:999
 msgid "convert to bold font"
 msgstr "konverter til fet skrift"
 
-#: util/grub-mkfont.c:954
+#: util/grub-mkfont.c:1000
 msgid "force autohint"
 msgstr "tving auto-hint"
 
-#: util/grub-mkfont.c:955
+#: util/grub-mkfont.c:1001
 msgid "disable hinting"
 msgstr "slå av hinting"
 
@@ -5954,38 +6641,33 @@ msgstr "slå av hinting"
 #. some sizes. This option forces rerendering even if
 #. pre-rendered bitmap is available.
 #.
-#: util/grub-mkfont.c:961
+#: util/grub-mkfont.c:1007
 msgid "ignore bitmap strikes when loading"
 msgstr "ignorer punktgrafikk ved innlasting"
 
-#. TRANSLATORS: It refers to the range of characters in font.
-#: util/grub-mkfont.c:1059 util/grub-mkfont.c:1075
-msgid "invalid font range"
-msgstr "ugyldig skriftrekkevidde"
-
-#: util/grub-mkfont.c:1151
+#: util/grub-mkfont.c:1197
 msgid "[OPTIONS] FONT_FILES"
 msgstr "[VALG] SKRIFTFILER"
 
-#: util/grub-mkfont.c:1152
+#: util/grub-mkfont.c:1198
 msgid "Convert common font file formats into PF2"
 msgstr "Konverter vanlige skrift-filformater til PF2"
 
-#: util/grub-mkfont.c:1182 util/grub-mkrescue.c:483
-#: util/grub-mkstandalone.c:306 util/grub-kbdcomp.in:70
+#: util/grub-mkfont.c:1228 util/grub-mkrescue.c:503
+#: util/grub-mkstandalone.c:327 util/grub-kbdcomp.in:70
 msgid "output file must be specified"
 msgstr "du må velge utdatafil"
 
-#: util/grub-mkfont.c:1185
+#: util/grub-mkfont.c:1231
 msgid "FT_Init_FreeType fails"
 msgstr "FT_Init_FreeType mislyktes"
 
-#: util/grub-mkfont.c:1199
+#: util/grub-mkfont.c:1245
 #, c-format
 msgid "can't open file %s, index %d: error %d"
 msgstr "klarte ikke å åpne %s, indeks %d: feil %d"
 
-#: util/grub-mkfont.c:1229
+#: util/grub-mkfont.c:1275
 #, c-format
 msgid "can't set %dx%d font size: Freetype error %d: %s"
 msgstr "klarte ikke å velge skriftstørrelse for %dx%d: Freetype-feil %d: %s"
@@ -6027,15 +6709,15 @@ msgstr "skriv ut et generert bilde til FIL (standard=stdout)"
 msgid "FORMAT"
 msgstr "FORMAT"
 
-#: util/grub-mkimage.c:102 util/grub-mkstandalone.c:62
+#: util/grub-mkimage.c:102 util/grub-mkstandalone.c:65
 msgid "generate an image in FORMAT"
 msgstr "lag et bilde i valgt FORMAT"
 
-#: util/grub-mkimage.c:103 util/grub-mkstandalone.c:63
+#: util/grub-mkimage.c:103 util/grub-mkstandalone.c:66
 msgid "available formats:"
 msgstr "tilgjengelige formater:"
 
-#: util/grub-mkimage.c:156 util/grub-mkstandalone.c:96
+#: util/grub-mkimage.c:156 util/grub-mkstandalone.c:99
 #, c-format
 msgid "unknown target format %s\n"
 msgstr "%s er et ukjent målformat\n"
@@ -6048,7 +6730,7 @@ msgstr "[VALG] … [MODULER]"
 msgid "Make a bootable image of GRUB."
 msgstr "Lag et bilde av GRUB som maskinen kan starte opp."
 
-#: util/grub-mkimage.c:288 util/grub-mkstandalone.c:309
+#: util/grub-mkimage.c:288 util/grub-mkstandalone.c:330
 msgid "Target format not specified (use the -O option)."
 msgstr "Du har ikke valgt målformat (bruk valget «-O»)."
 
@@ -6061,7 +6743,7 @@ msgstr "Du har ikke valgt prefiks (bruk valget «-p»)."
 msgid "cannot close `%s': %s"
 msgstr "klarte ikke å lukke «%s». %s"
 
-#: util/grub-mkimagexx.c:2191
+#: util/grub-mkimagexx.c:2320
 #, c-format
 msgid ""
 "`%s' is miscompiled: its start address is 0x%llx instead of 0x%llx: ld.gold "
@@ -6113,13 +6795,13 @@ msgstr ""
 "Forbereder GRUB-bilder for nettverksoppstart på net_directory/subdir og "
 "legger til grunn at net_directory er TFTP-rotmappe."
 
-#: util/grub-mknetdir.c:146
+#: util/grub-mknetdir.c:147
 #, c-format
 msgid "unsupported platform %s"
 msgstr "plattform %s støttes ikke"
 
 #. TRANSLATORS: First %s is replaced by platform name. Second one by filename.
-#: util/grub-mknetdir.c:168
+#: util/grub-mknetdir.c:169
 #, c-format
 msgid ""
 "Netboot directory for %s created. Configure your DHCP server to point to %s\n"
@@ -6149,7 +6831,7 @@ msgstr "klarte ikke å lese passord"
 
 #: util/grub-mkpasswd-pbkdf2.c:146
 msgid "Reenter password: "
-msgstr "Skriv inn passordet på nytt:"
+msgstr "Skriv inn passordet på nytt: "
 
 #: util/grub-mkpasswd-pbkdf2.c:160
 msgid "passwords don't match"
@@ -6235,20 +6917,20 @@ msgstr "Valget «--» bytter til xorrisos egen kommandomodus."
 msgid "Mail xorriso support requests to <bug-xorriso@gnu.org>."
 msgstr "Send e-post til <bug-xorriso@gnu.org> for å få hjelp til xorriso."
 
-#: util/grub-mkrescue.c:221 util/grub-mkstandalone.c:114
+#: util/grub-mkrescue.c:221 util/grub-mkstandalone.c:117
 msgid "[OPTION] SOURCE..."
 msgstr "[VALG] KILDE …"
 
-#: util/grub-mkrescue.c:257 util/grub-mkrescue.c:300 util/grub-mkrescue.c:591
+#: util/grub-mkrescue.c:258 util/grub-mkrescue.c:320 util/grub-mkrescue.c:612
 #, c-format
 msgid "enabling %s support ..."
 msgstr "slår på støtte for %s …"
 
-#: util/grub-mkrescue.c:486
+#: util/grub-mkrescue.c:506
 msgid "xorriso not found"
 msgstr "fant ikke xorriso"
 
-#: util/grub-mkrescue.c:626
+#: util/grub-mkrescue.c:647
 msgid ""
 "Your xorriso doesn't support `--grub2-boot-info'. Some features are "
 "disabled. Please use xorriso 1.2.9 or later."
@@ -6256,7 +6938,7 @@ msgstr ""
 "Din versjon av xorriso støtter ikke «--grub2-boot-info», og enkelte "
 "funksjoner er slått av. Bruk helst 1.2.9 eller nyere versjon av xorriso."
 
-#: util/grub-mkrescue.c:653
+#: util/grub-mkrescue.c:674
 msgid ""
 "Your xorriso doesn't support `--grub2-boot-info'. Your core image is too "
 "big. Boot as disk is disabled. Please use xorriso 1.2.9 or later."
@@ -6265,20 +6947,27 @@ msgstr ""
 "stort, så du kan ikke starte opp dette som en disk. Bruk helst 1.2.9 eller "
 "nyere versjon av xorriso."
 
-#: util/grub-mkstandalone.c:115
+#: util/grub-mkstandalone.c:118
 msgid ""
 "Generate a standalone image (containing all modules) in the selected format"
-msgstr "Lag et "
+msgstr ""
+"Generer et frittstående bilde (som inneholder alle moduler) i det valgte "
+"formatet"
 
-#: util/grub-mkstandalone.c:115
+#: util/grub-mkstandalone.c:118
 msgid "Graft point syntax (E.g. /boot/grub/grub.cfg=./grub.cfg) is accepted"
 msgstr "Graft-syntaks (f.eks. /boot/grub/grub.cfg=./grub.cfg) kan brukes"
 
-#: util/grub-mount.c:552
+#: util/grub-mount.c:567
+#, fuzzy, c-format
+msgid "cannot find `%s': %s"
+msgstr "klarte ikke å lese «%s». %s"
+
+#: util/grub-mount.c:574
 msgid "IMAGE1 [IMAGE2 ...] MOUNTPOINT"
 msgstr "BILDE1 [BILDE2 …] MONTERINGSPUNKT"
 
-#: util/grub-mount.c:575
+#: util/grub-mount.c:597
 msgid "need an image and mountpoint"
 msgstr "bilde og monteringspunkt er påkrevet"
 
@@ -6287,27 +6976,31 @@ msgid "given argument is a system device, not a path"
 msgstr "argumentet er ikke en sti, men en systemenhet"
 
 #: util/grub-probe.c:736
+msgid "print verbose messages (pass twice to enable debug printing)."
+msgstr ""
+
+#: util/grub-probe.c:737
 msgid "separate items in output using ASCII NUL characters"
 msgstr "skill utskriftselementer ved å bruk ASCII NUL-tegn"
 
-#: util/grub-probe.c:754
+#: util/grub-probe.c:755
 #, c-format
 msgid "[default=%s]"
 msgstr "[standard=%s]"
 
-#: util/grub-probe.c:756
+#: util/grub-probe.c:757
 msgid "print TARGET"
 msgstr "skriv ut MÅL"
 
-#: util/grub-probe.c:757
+#: util/grub-probe.c:758
 msgid "available targets:"
 msgstr "tilgjengelige mål:"
 
-#: util/grub-probe.c:839
+#: util/grub-probe.c:840
 msgid "[OPTION]... [PATH|DEVICE]"
 msgstr "[VALG] … [STI|ENHET]"
 
-#: util/grub-probe.c:840
+#: util/grub-probe.c:841
 msgid ""
 "Probe device information for a given path (or device, if the -d option is "
 "given)."
@@ -6423,51 +7116,51 @@ msgstr "skriv utskrift til valgt FIL (standard: stdout)."
 msgid "Transform syslinux config into GRUB one."
 msgstr "Konverter syslinux-oppsett til GRUB-oppsett."
 
-#: util/mkimage.c:688 util/mkimage.c:717 util/mkimage.c:734
+#: util/mkimage.c:704 util/mkimage.c:733 util/mkimage.c:750
 msgid "cannot compress the kernel image"
 msgstr "du kan ikke komprimere kjernebildet"
 
-#: util/mkimage.c:766 util/mkimage.c:1141
+#: util/mkimage.c:782 util/mkimage.c:1157
 #, c-format
 msgid "unknown compression %d"
 msgstr "komprimeringsmetode %d er ukjent"
 
-#: util/mkimage.c:833
+#: util/mkimage.c:849
 #, c-format
 msgid "section name %s length is bigger than %lu"
-msgstr ""
+msgstr "seksjonsnavn %s lengde er større enn %lu"
 
-#: util/mkimage.c:930
+#: util/mkimage.c:946
 msgid ".sbat section can be embedded into EFI images only"
-msgstr ""
+msgstr ".sbat-seksjonen kan kun bygges inn i EFI-bilder"
 
-#: util/mkimage.c:1152
+#: util/mkimage.c:1168
 msgid "Decompressor is too big"
 msgstr "Utpakkeren er for stor"
 
-#: util/mkimage.c:1197
+#: util/mkimage.c:1213
 #, c-format
 msgid "core image is too big (0x%x > 0x%x)"
 msgstr "kjernebildet er for stort (0x%x > 0x%x)"
 
-#: util/mkimage.c:1204
+#: util/mkimage.c:1220
 #, c-format
 msgid "kernel image is too big (0x%x > 0x%x)"
 msgstr "kjernebildet er for stort (0x%x > 0x%x)"
 
-#: util/mkimage.c:1284 util/mkimage.c:1532
+#: util/mkimage.c:1300 util/mkimage.c:1569
 #, c-format
 msgid "diskboot.img size must be %u bytes"
 msgstr "størrelsen på diskboot.img skal være %u byte"
 
-#: util/mkimage.c:1602
+#: util/mkimage.c:1639
 msgid ""
 "fwstart.img doesn't match the known good version. proceed at your own risk"
 msgstr ""
 "fwstart.img samsvarer ikke med den kjente, brukbare versjonen. Du fortsetter "
 "nå på egen risiko"
 
-#: util/mkimage.c:1606 util/mkimage.c:1632
+#: util/mkimage.c:1643 util/mkimage.c:1669
 msgid "firmware image is too big"
 msgstr "fastvarebildet er for stort"
 
@@ -6475,6 +7168,11 @@ msgstr "fastvarebildet er for stort"
 #, c-format
 msgid "invalid line format: %s"
 msgstr "ugyldig linjeformat: %s"
+
+#: util/resolve.c:132
+#, c-format
+msgid "line too long, length greater than %zu: module %s"
+msgstr ""
 
 #: util/setup.c:167
 msgid "the first sector of the core file is not sector-aligned"
@@ -6693,12 +7391,12 @@ msgstr "%s: Du må kjøre dette programmet som rotbruker\\n"
 msgid "%s: Not found.\\n"
 msgstr "Fant ikke %s.\\n"
 
-#: util/grub-mkconfig.in:262
+#: util/grub-mkconfig.in:266
 msgid "Generating grub configuration file ..."
 msgstr "Lager grub-oppsettsfil …"
 
 #. TRANSLATORS: %s is replaced by filename
-#: util/grub-mkconfig.in:295
+#: util/grub-mkconfig.in:299
 msgid ""
 "Syntax errors are detected in generated GRUB config file.\n"
 "Ensure that there are no errors in /etc/default/grub\n"
@@ -6710,7 +7408,7 @@ msgstr ""
 "ikke innheholder feil, og send inn en feilrapport\n"
 "med %s vedlagt hvis du fremdeles har problemer."
 
-#: util/grub-mkconfig.in:308
+#: util/grub-mkconfig.in:315
 msgid "done"
 msgstr "ferdig"
 
@@ -6759,6 +7457,9 @@ msgid ""
 "when it is stored on an MDRAID or LVM device, the chosen boot menu entry "
 "will remain the default even after reboot. "
 msgstr ""
+"MERK: I tilfeller der GRUB ikke kan skrive til miljøblokken, for eksempel "
+"når den er lagret på en MDRAID- eller LVM-enhet, vil den valgte "
+"oppstartsmenyoppføringen forbli standard selv etter omstart. "
 
 #: util/grub-reboot.in:110 util/grub-set-default.in:104
 msgid "More than one menu entry?"
@@ -6771,6 +7472,7 @@ msgstr "Du har ikke valgt menyoppføring."
 #: util/grub-reboot.in:143
 msgid "%s will remain the default boot entry until manually cleared with:\\n"
 msgstr ""
+"%s vil forbli standard oppstartsoppføring inntil den fjernes manuelt med:\\n"
 
 #: util/grub-set-default.in:48
 msgid "Set the default boot menu entry for GRUB."
@@ -6830,24 +7532,24 @@ msgstr "Fant GNU Mach: %s"
 msgid "Found Hurd module: %s"
 msgstr "Fant Hurd-modul: %s"
 
-#: util/grub.d/10_hurd.in:77
+#: util/grub.d/10_hurd.in:95
 #, c-format
 msgid "Some Hurd stuff found, but not enough to boot."
 msgstr "Fant noen Hurd-greier, men ikke nok til å starte opp."
 
-#: util/grub.d/10_hurd.in:91
+#: util/grub.d/10_hurd.in:109
 #, c-format
 msgid "%s, with Hurd %s (recovery mode)"
 msgstr "%s, med Hurd %s (gjenopprettelsesmodus)"
 
-#: util/grub.d/10_hurd.in:94
+#: util/grub.d/10_hurd.in:112
 #, c-format
 msgid "%s, with Hurd %s"
 msgstr "%s, med Hurd %s"
 
-#: util/grub.d/10_hurd.in:100 util/grub.d/10_kfreebsd.in:87
-#: util/grub.d/10_linux.in:103 util/grub.d/10_netbsd.in:113
-#: util/grub.d/20_linux_xen.in:128 util/grub.d/30_os-prober.in:289
+#: util/grub.d/10_hurd.in:118 util/grub.d/10_kfreebsd.in:87
+#: util/grub.d/10_linux.in:105 util/grub.d/10_netbsd.in:113
+#: util/grub.d/20_linux_xen.in:131 util/grub.d/30_os-prober.in:293
 #, c-format
 msgid ""
 "Please don't use old title `%s' for GRUB_DEFAULT, use `%s' (for versions "
@@ -6856,20 +7558,20 @@ msgstr ""
 "Ikke gi GRUB_DEFAULT det gamle tittelformatet «%s». Bruk «%s» med eldre "
 "versjoner enn 2.00, og «%s» med versjon 2.00 eller nyere"
 
-#: util/grub.d/10_hurd.in:112
+#: util/grub.d/10_hurd.in:130
 #, c-format
 msgid "Loading GNU Mach ..."
 msgstr "Laster inn GNU Mach …"
 
-#: util/grub.d/10_hurd.in:128
+#: util/grub.d/10_hurd.in:148
 #, c-format
 msgid "Loading the Hurd ..."
 msgstr "Laster inn Hurd …"
 
 #. TRANSLATORS: %s is replaced with an OS name
-#: util/grub.d/10_hurd.in:172 util/grub.d/10_kfreebsd.in:233
-#: util/grub.d/10_linux.in:282 util/grub.d/10_netbsd.in:176
-#: util/grub.d/30_os-prober.in:265
+#: util/grub.d/10_hurd.in:252 util/grub.d/10_kfreebsd.in:243
+#: util/grub.d/10_linux.in:296 util/grub.d/10_netbsd.in:182
+#: util/grub.d/30_os-prober.in:269
 #, c-format
 msgid "Advanced options for %s"
 msgstr "Avanserte valg for %s"
@@ -6894,43 +7596,43 @@ msgstr "%s, med kFreeBSD %s"
 msgid "Loading kernel of FreeBSD %s ..."
 msgstr "Laster inn FreeBSD-kjerne %s …"
 
-#: util/grub.d/10_kfreebsd.in:164
+#: util/grub.d/10_kfreebsd.in:174
 #, c-format
 msgid "Found kernel of FreeBSD: %s\\n"
 msgstr "Fant FreeBSD-kjerne: %s\\n"
 
-#: util/grub.d/10_kfreebsd.in:213
+#: util/grub.d/10_kfreebsd.in:223
 #, c-format
 msgid "Found kernel module directory: %s\\n"
 msgstr "Fant mappe med kjernemoduler: %s\\n"
 
-#: util/grub.d/10_linux.in:95
+#: util/grub.d/10_linux.in:97
 #, c-format
 msgid "%s, with Linux %s (recovery mode)"
 msgstr "%s, med Linux %s (gjenopprettelsesmodus)"
 
-#: util/grub.d/10_linux.in:97
+#: util/grub.d/10_linux.in:99
 #, c-format
 msgid "%s, with Linux %s"
 msgstr "%s, med Linux %s"
 
-#: util/grub.d/10_linux.in:141 util/grub.d/20_linux_xen.in:144
+#: util/grub.d/10_linux.in:143 util/grub.d/20_linux_xen.in:147
 #, c-format
 msgid "Loading Linux %s ..."
 msgstr "Laster inn Linux %s …"
 
 #. TRANSLATORS: ramdisk isn't identifier. Should be translated.
-#: util/grub.d/10_linux.in:148 util/grub.d/20_linux_xen.in:158
+#: util/grub.d/10_linux.in:150 util/grub.d/20_linux_xen.in:161
 #, c-format
 msgid "Loading initial ramdisk ..."
 msgstr "Laster inn minnedisk for oppstart …"
 
-#: util/grub.d/10_linux.in:197 util/grub.d/20_linux_xen.in:274
+#: util/grub.d/10_linux.in:209 util/grub.d/20_linux_xen.in:289
 #, c-format
 msgid "Found linux image: %s\\n"
 msgstr "Fant linux-bilde: %s\\n"
 
-#: util/grub.d/10_linux.in:236 util/grub.d/20_linux_xen.in:305
+#: util/grub.d/10_linux.in:250 util/grub.d/20_linux_xen.in:325
 #, c-format
 msgid "Found initrd image: %s\\n"
 msgstr "Fant initrd-bilde: %s\\n"
@@ -6945,7 +7647,7 @@ msgstr "%s, med kjerne %s (via %s, gjenopprettelsesmodus)"
 msgid "%s, with kernel %s (via %s)"
 msgstr "%s, med kjerne %s (via %s)"
 
-#: util/grub.d/10_netbsd.in:158
+#: util/grub.d/10_netbsd.in:164
 #, c-format
 msgid "Found NetBSD kernel: %s\\n"
 msgstr "Fant NetBSD-kjerne: %s\\n"
@@ -6979,49 +7681,49 @@ msgstr "(64-bit)"
 
 #. TRANSLATORS: it refers on the OS residing on device %s
 #: util/grub.d/10_xnu.in:38 util/grub.d/30_os-prober.in:56
-#: util/grub.d/30_os-prober.in:152 util/grub.d/30_os-prober.in:184
-#: util/grub.d/30_os-prober.in:225 util/grub.d/30_os-prober.in:305
+#: util/grub.d/30_os-prober.in:156 util/grub.d/30_os-prober.in:188
+#: util/grub.d/30_os-prober.in:229 util/grub.d/30_os-prober.in:309
 #, c-format
 msgid "(on %s)"
 msgstr "(på %s)"
 
-#: util/grub.d/20_linux_xen.in:112
-#, fuzzy, c-format
+#: util/grub.d/20_linux_xen.in:115
+#, c-format
 msgid "%s (XSM enabled)"
-msgstr "APM aktivert\n"
+msgstr "%s (XSM aktivert)"
 
-#: util/grub.d/20_linux_xen.in:120
+#: util/grub.d/20_linux_xen.in:123
 #, c-format
 msgid "%s, with Xen %s and Linux %s (recovery mode)"
 msgstr "%s, med Xen %s og Linux %s (gjenopprettelsesmodus)"
 
-#: util/grub.d/20_linux_xen.in:122
+#: util/grub.d/20_linux_xen.in:125
 #, c-format
 msgid "%s, with Xen %s and Linux %s"
 msgstr "%s, med Xen %s og Linux %s"
 
-#: util/grub.d/20_linux_xen.in:132
+#: util/grub.d/20_linux_xen.in:135
 #, c-format
 msgid "%s, with Xen hypervisor"
 msgstr "%s, med Xen hypervisor"
 
-#: util/grub.d/20_linux_xen.in:143
+#: util/grub.d/20_linux_xen.in:146
 #, c-format
 msgid "Loading Xen %s ..."
 msgstr "Laster inn Xen %s …"
 
-#: util/grub.d/20_linux_xen.in:169
-#, fuzzy, c-format
+#: util/grub.d/20_linux_xen.in:172
+#, c-format
 msgid "Loading XSM policy ..."
-msgstr "Laster inn Xen %s …"
+msgstr "Laster inn XSM-policy …"
 
-#: util/grub.d/20_linux_xen.in:249 util/grub.d/20_linux_xen.in:338
+#: util/grub.d/20_linux_xen.in:265 util/grub.d/20_linux_xen.in:358
 #, c-format
 msgid "Xen hypervisor, version %s"
 msgstr "Xen hypervisor, versjon %s"
 
 #. TRANSLATORS: %s is replaced with an OS name
-#: util/grub.d/20_linux_xen.in:337
+#: util/grub.d/20_linux_xen.in:357
 #, c-format
 msgid "Advanced options for %s (with Xen hypervisor)"
 msgstr "Avanserte valg for %s (med Xen hypervisor)"
@@ -7033,6 +7735,9 @@ msgid ""
 "\\nSystems on them will not be added to the GRUB boot configuration.\\nCheck "
 "GRUB_DISABLE_OS_PROBER documentation entry."
 msgstr ""
+"os-prober vil ikke bli kjørt for å oppdage andre oppstartbare partisjoner."
+"\\nSystemer på dem vil ikke bli lagt til GRUB-oppstartskonfigurasjonen."
+"\\nSjekk dokumentasjonsoppføringen for GRUB_DISABLE_OS_PROBER."
 
 #: util/grub.d/30_os-prober.in:39
 #, c-format
@@ -7040,22 +7745,35 @@ msgid ""
 "os-prober will be executed to detect other bootable partitions.\\nIts output "
 "will be used to detect bootable binaries on them and create new boot entries."
 msgstr ""
+"os-prober vil bli kjørt for å oppdage andre oppstartbare partisjoner.\\nIts-"
+"utgangen vil bli brukt til å oppdage oppstartbare binære filer på dem og "
+"lage nye oppstartsoppføringer."
 
-#: util/grub.d/30_os-prober.in:147
+#: util/grub.d/30_os-prober.in:151
 #, c-format
 msgid "Found %s on %s\\n"
 msgstr "Fant %s på %s\\n"
 
 #. TRANSLATORS: %s is replaced by OS name.
-#: util/grub.d/30_os-prober.in:343
+#: util/grub.d/30_os-prober.in:347
 #, c-format
 msgid "%s is not yet supported by grub-mkconfig.\\n"
 msgstr "%s støttes ikke av grub-mkconfig ennå.\\n"
 
-#: util/grub.d/30_uefi-firmware.in:37
+#: util/grub.d/30_uefi-firmware.in:31
 #, c-format
 msgid "Adding boot menu entry for UEFI Firmware Settings ...\\n"
 msgstr ""
+"Legger til oppstartsmenyoppføring for UEFI-fastvareinnstillinger ...\\n"
+
+#~ msgid "SOURCE|-u UUID|-a|-b"
+#~ msgstr "KILDE|-u UUID|-a|-b"
+
+#~ msgid "Linux not supported yet"
+#~ msgstr "Linux støttes ikke enda"
+
+#~ msgid "interpret is not supported"
+#~ msgstr "«interpret» støttes ikke"
 
 #~ msgid "module cannot be loaded in UEFI secure boot mode: %s"
 #~ msgstr "UEFI secure boot-modus støtter ikke modul %s"

@@ -28,6 +28,9 @@
   - multiple regions may be used as free space. They may not be
   contiguous.
 
+  - if existing regions are insufficient to satisfy an allocation, a new
+  region can be requested from firmware.
+
   Regions are managed by a singly linked list, and the meta information is
   stored in the beginning of each region. Space after the meta information
   is used to allocate memory.
@@ -80,7 +83,51 @@
 
 
 
+/*
+ * GRUB_MM_MGMT_OVERHEAD is an upper bound of management overhead of
+ * each region, with any possible padding taken into account.
+ *
+ * The value must be large enough to make sure grub_memalign(align, size)
+ * always succeeds after a successful call to
+ * grub_mm_init_region(addr, size + align + GRUB_MM_MGMT_OVERHEAD),
+ * for any given addr, align and size (assuming no interger overflow).
+ *
+ * The worst case which has maximum overhead is shown in the figure below:
+ *
+ * +-- addr
+ * v                                           |<- size + align ->|
+ * +---------+----------------+----------------+------------------+---------+
+ * | padding | grub_mm_region | grub_mm_header |   usable bytes   | padding |
+ * +---------+----------------+----------------+------------------+---------+
+ * |<-  a  ->|<-     b      ->|<-     c      ->|<-      d       ->|<-  e  ->|
+ *                                             ^
+ *    b == sizeof (struct grub_mm_region)      | / Assuming no other suitable
+ *    c == sizeof (struct grub_mm_header)      | | block is available, then:
+ *    d == size + align                        +-| If align == 0, this will be
+ *                                               | the pointer returned by next
+ * Assuming addr % GRUB_MM_ALIGN == 1, then:     | grub_memalign(align, size).
+ *    a == GRUB_MM_ALIGN - 1                     | If align > 0, this chunk may
+ *                                               | need to be split to fulfill
+ * Assuming d % GRUB_MM_ALIGN == 1, then:        | alignment requirements, and
+ *    e == GRUB_MM_ALIGN - 1                     | the returned pointer may be
+ *                                               \ inside these usable bytes.
+ * Therefore, the maximum overhead is:
+ *    a + b + c + e == (GRUB_MM_ALIGN - 1) + sizeof (struct grub_mm_region)
+ *                     + sizeof (struct grub_mm_header) + (GRUB_MM_ALIGN - 1)
+ */
+#define GRUB_MM_MGMT_OVERHEAD	((GRUB_MM_ALIGN - 1) \
+				 + sizeof (struct grub_mm_region) \
+				 + sizeof (struct grub_mm_header) \
+				 + (GRUB_MM_ALIGN - 1))
+
+/* The size passed to grub_mm_add_region_fn() is aligned up by this value. */
+#define GRUB_MM_HEAP_GROW_ALIGN	4096
+
+/* Minimal heap growth granularity when existing heap space is exhausted. */
+#define GRUB_MM_HEAP_GROW_EXTRA	0x100000
+
 grub_mm_region_t grub_mm_base;
+grub_mm_add_region_func_t grub_mm_add_region_fn;
 
 /* Get a header from the pointer PTR, and set *P and *R to a pointer
    to the header and a pointer to its region, respectively. PTR must
@@ -115,9 +162,8 @@ grub_mm_init_region (void *addr, grub_size_t size)
   grub_mm_header_t h;
   grub_mm_region_t r, *p, q;
 
-#if 0
-  grub_printf ("Using memory for heap: start=%p, end=%p\n", addr, addr + (unsigned int) size);
-#endif
+  grub_dprintf ("regions", "Using memory for heap: start=%p, end=%p\n",
+                addr, (char *) addr + (unsigned int) size);
 
   /* Exclude last 4K to avoid overflows. */
   /* If addr + 0x1000 overflows then whole region is in excluded zone.  */
@@ -128,26 +174,109 @@ grub_mm_init_region (void *addr, grub_size_t size)
   if (((grub_addr_t) addr + 0x1000) > ~(grub_addr_t) size)
     size = ((grub_addr_t) -0x1000) - (grub_addr_t) addr;
 
+  /* Attempt to merge this region with every existing region */
   for (p = &grub_mm_base, q = *p; q; p = &(q->next), q = *p)
-    if ((grub_uint8_t *) addr + size + q->pre_size == (grub_uint8_t *) q)
-      {
-	r = (grub_mm_region_t) ALIGN_UP ((grub_addr_t) addr, GRUB_MM_ALIGN);
-	*r = *q;
-	r->pre_size += size;
-	
-	if (r->pre_size >> GRUB_MM_ALIGN_LOG2)
-	  {
-	    h = (grub_mm_header_t) (r + 1);
-	    h->size = (r->pre_size >> GRUB_MM_ALIGN_LOG2);
-	    h->magic = GRUB_MM_ALLOC_MAGIC;
-	    r->size += h->size << GRUB_MM_ALIGN_LOG2;
-	    r->pre_size &= (GRUB_MM_ALIGN - 1);
-	    *p = r;
-	    grub_free (h + 1);
-	  }
-	*p = r;
-	return;
-      }
+    {
+      /*
+       * Is the new region immediately below an existing region? That
+       * is, is the address of the memory we're adding now (addr) + size
+       * of the memory we're adding (size) + the bytes we couldn't use
+       * at the start of the region we're considering (q->pre_size)
+       * equal to the address of q? In other words, does the memory
+       * looks like this?
+       *
+       * addr                          q
+       *   |----size-----|-q->pre_size-|<q region>|
+       */
+      grub_dprintf ("regions", "Can we extend into region above?"
+		    " %p + %" PRIxGRUB_SIZE " + %" PRIxGRUB_SIZE " ?=? %p\n",
+		    (grub_uint8_t *) addr, size, q->pre_size, (grub_uint8_t *) q);
+      if ((grub_uint8_t *) addr + size + q->pre_size == (grub_uint8_t *) q)
+        {
+	  grub_dprintf ("regions", "Yes: extending a region: (%p -> %p) -> (%p -> %p)\n",
+			q, (grub_uint8_t *) q + sizeof (*q) + q->size,
+			addr, (grub_uint8_t *) q + sizeof (*q) + q->size);
+          /*
+           * Yes, we can merge the memory starting at addr into the
+           * existing region from below. Align up addr to GRUB_MM_ALIGN
+           * so that our new region has proper alignment.
+           */
+          r = (grub_mm_region_t) ALIGN_UP ((grub_addr_t) addr, GRUB_MM_ALIGN);
+          /* Copy the region data across */
+          *r = *q;
+          /* Consider all the new size as pre-size */
+          r->pre_size += size;
+
+          /*
+           * If we have enough pre-size to create a block, create a
+           * block with it. Mark it as allocated and pass it to
+           * grub_free (), which will sort out getting it into the free
+           * list.
+           */
+          if (r->pre_size >> GRUB_MM_ALIGN_LOG2)
+            {
+              h = (grub_mm_header_t) (r + 1);
+              /* block size is pre-size converted to cells */
+              h->size = (r->pre_size >> GRUB_MM_ALIGN_LOG2);
+              h->magic = GRUB_MM_ALLOC_MAGIC;
+              /* region size grows by block size converted back to bytes */
+              r->size += h->size << GRUB_MM_ALIGN_LOG2;
+              /* adjust pre_size to be accurate */
+              r->pre_size &= (GRUB_MM_ALIGN - 1);
+              *p = r;
+              grub_free (h + 1);
+            }
+          /* Replace the old region with the new region */
+          *p = r;
+          return;
+        }
+
+      /*
+       * Is the new region immediately above an existing region? That
+       * is:
+       *   q                       addr
+       *   |<q region>|-q->post_size-|----size-----|
+       */
+      grub_dprintf ("regions", "Can we extend into region below?"
+                    " %p + %x + %" PRIxGRUB_SIZE " + %" PRIxGRUB_SIZE " ?=? %p\n",
+                    (grub_uint8_t *) q, (int) sizeof (*q), q->size, q->post_size, (grub_uint8_t *) addr);
+      if ((grub_uint8_t *) q + sizeof (*q) + q->size + q->post_size ==
+	  (grub_uint8_t *) addr)
+	{
+	  grub_dprintf ("regions", "Yes: extending a region: (%p -> %p) -> (%p -> %p)\n",
+			q, (grub_uint8_t *) q + sizeof (*q) + q->size,
+			q, (grub_uint8_t *) addr + size);
+	  /*
+	   * Yes! Follow a similar pattern to above, but simpler.
+	   * Our header starts at address - post_size, which should align us
+	   * to a cell boundary.
+	   *
+	   * Cast to (void *) first to avoid the following build error:
+	   *   kern/mm.c: In function ‘grub_mm_init_region’:
+	   *   kern/mm.c:211:15: error: cast increases required alignment of target type [-Werror=cast-align]
+	   *     211 |           h = (grub_mm_header_t) ((grub_uint8_t *) addr - q->post_size);
+	   *         |               ^
+	   * It is safe to do that because proper alignment is enforced in grub_mm_size_sanity_check().
+	   */
+	  h = (grub_mm_header_t)(void *) ((grub_uint8_t *) addr - q->post_size);
+	  /* our size is the allocated size plus post_size, in cells */
+	  h->size = (size + q->post_size) >> GRUB_MM_ALIGN_LOG2;
+	  h->magic = GRUB_MM_ALLOC_MAGIC;
+	  /* region size grows by block size converted back to bytes */
+	  q->size += h->size << GRUB_MM_ALIGN_LOG2;
+	  /* adjust new post_size to be accurate */
+	  q->post_size = (q->post_size + size) & (GRUB_MM_ALIGN - 1);
+	  grub_free (h + 1);
+	  return;
+	}
+    }
+
+  grub_dprintf ("regions", "No: considering a new region at %p of size %" PRIxGRUB_SIZE "\n",
+		addr, size);
+  /*
+   * If you want to modify the code below, please also take a look at
+   * GRUB_MM_MGMT_OVERHEAD and make sure it is synchronized with the code.
+   */
 
   /* Allocate a region from the head.  */
   r = (grub_mm_region_t) ALIGN_UP ((grub_addr_t) addr, GRUB_MM_ALIGN);
@@ -166,6 +295,7 @@ grub_mm_init_region (void *addr, grub_size_t size)
   r->first = h;
   r->pre_size = (grub_addr_t) r - (grub_addr_t) addr;
   r->size = (h->size << GRUB_MM_ALIGN_LOG2);
+  r->post_size = size - r->size;
 
   /* Find where to insert this region. Put a smaller one before bigger ones,
      to prevent fragmentation.  */
@@ -178,13 +308,20 @@ grub_mm_init_region (void *addr, grub_size_t size)
 }
 
 /* Allocate the number of units N with the alignment ALIGN from the ring
-   buffer starting from *FIRST.  ALIGN must be a power of two. Both N and
-   ALIGN are in units of GRUB_MM_ALIGN.  Return a non-NULL if successful,
-   otherwise return NULL.  */
+ * buffer given in *FIRST.  ALIGN must be a power of two. Both N and
+ * ALIGN are in units of GRUB_MM_ALIGN.  Return a non-NULL if successful,
+ * otherwise return NULL.
+ *
+ * Note: because in certain circumstances we need to adjust the ->next
+ * pointer of the previous block, we iterate over the singly linked
+ * list with the pair (prev, cur). *FIRST is our initial previous, and
+ * *FIRST->next is our initial current pointer. So we will actually
+ * allocate from *FIRST->next first and *FIRST itself last.
+ */
 static void *
 grub_real_malloc (grub_mm_header_t *first, grub_size_t n, grub_size_t align)
 {
-  grub_mm_header_t p, q;
+  grub_mm_header_t cur, prev;
 
   /* When everything is allocated side effect is that *first will have alloc
      magic marked, meaning that there is no room in this region.  */
@@ -192,24 +329,24 @@ grub_real_malloc (grub_mm_header_t *first, grub_size_t n, grub_size_t align)
     return 0;
 
   /* Try to search free slot for allocation in this memory region.  */
-  for (q = *first, p = q->next; ; q = p, p = p->next)
+  for (prev = *first, cur = prev->next; ; prev = cur, cur = cur->next)
     {
       grub_off_t extra;
 
-      extra = ((grub_addr_t) (p + 1) >> GRUB_MM_ALIGN_LOG2) & (align - 1);
+      extra = ((grub_addr_t) (cur + 1) >> GRUB_MM_ALIGN_LOG2) & (align - 1);
       if (extra)
 	extra = align - extra;
 
-      if (! p)
+      if (! cur)
 	grub_fatal ("null in the ring");
 
-      if (p->magic != GRUB_MM_FREE_MAGIC)
-	grub_fatal ("free magic is broken at %p: 0x%x", p, p->magic);
+      if (cur->magic != GRUB_MM_FREE_MAGIC)
+	grub_fatal ("free magic is broken at %p: 0x%x", cur, cur->magic);
 
-      if (p->size >= n + extra)
+      if (cur->size >= n + extra)
 	{
-	  extra += (p->size - extra - n) & (~(align - 1));
-	  if (extra == 0 && p->size == n)
+	  extra += (cur->size - extra - n) & (~(align - 1));
+	  if (extra == 0 && cur->size == n)
 	    {
 	      /* There is no special alignment requirement and memory block
 	         is complete match.
@@ -222,9 +359,9 @@ grub_real_malloc (grub_mm_header_t *first, grub_size_t n, grub_size_t align)
 	         | alloc, size=n |          |
 	         +---------------+          v
 	       */
-	      q->next = p->next;
+	      prev->next = cur->next;
 	    }
-	  else if (align == 1 || p->size == n + extra)
+	  else if (align == 1 || cur->size == n + extra)
 	    {
 	      /* There might be alignment requirement, when taking it into
 	         account memory block fits in.
@@ -241,23 +378,22 @@ grub_real_malloc (grub_mm_header_t *first, grub_size_t n, grub_size_t align)
 	         | alloc, size=n |        |
 	         +---------------+        v
 	       */
-
-	      p->size -= n;
-	      p += p->size;
+	      cur->size -= n;
+	      cur += cur->size;
 	    }
 	  else if (extra == 0)
 	    {
 	      grub_mm_header_t r;
-	      
-	      r = p + extra + n;
-	      r->magic = GRUB_MM_FREE_MAGIC;
-	      r->size = p->size - extra - n;
-	      r->next = p->next;
-	      q->next = r;
 
-	      if (q == p)
+	      r = cur + extra + n;
+	      r->magic = GRUB_MM_FREE_MAGIC;
+	      r->size = cur->size - extra - n;
+	      r->next = cur->next;
+	      prev->next = r;
+
+	      if (prev == cur)
 		{
-		  q = r;
+		  prev = r;
 		  r->next = r;
 		}
 	    }
@@ -284,32 +420,32 @@ grub_real_malloc (grub_mm_header_t *first, grub_size_t n, grub_size_t align)
 	       */
 	      grub_mm_header_t r;
 
-	      r = p + extra + n;
+	      r = cur + extra + n;
 	      r->magic = GRUB_MM_FREE_MAGIC;
-	      r->size = p->size - extra - n;
-	      r->next = p;
+	      r->size = cur->size - extra - n;
+	      r->next = cur;
 
-	      p->size = extra;
-	      q->next = r;
-	      p += extra;
+	      cur->size = extra;
+	      prev->next = r;
+	      cur += extra;
 	    }
 
-	  p->magic = GRUB_MM_ALLOC_MAGIC;
-	  p->size = n;
+	  cur->magic = GRUB_MM_ALLOC_MAGIC;
+	  cur->size = n;
 
 	  /* Mark find as a start marker for next allocation to fasten it.
 	     This will have side effect of fragmenting memory as small
 	     pieces before this will be un-used.  */
-	  /* So do it only for chunks under 64K.  */
+	  /* So do it only for chunks under 32K.  */
 	  if (n < (0x8000 >> GRUB_MM_ALIGN_LOG2)
-	      || *first == p)
-	    *first = q;
+	      || *first == cur)
+	    *first = prev;
 
-	  return p + 1;
+	  return cur + 1;
 	}
 
       /* Search was completed without result.  */
-      if (p == *first)
+      if (cur == *first)
 	break;
     }
 
@@ -322,6 +458,7 @@ grub_memalign (grub_size_t align, grub_size_t size)
 {
   grub_mm_region_t r;
   grub_size_t n = ((size + GRUB_MM_ALIGN - 1) >> GRUB_MM_ALIGN_LOG2) + 1;
+  grub_size_t grow;
   int count = 0;
 
   if (!grub_mm_base)
@@ -330,10 +467,12 @@ grub_memalign (grub_size_t align, grub_size_t size)
   if (size > ~(grub_size_t) align)
     goto fail;
 
+  grow = size + align;
+
   /* We currently assume at least a 32-bit grub_size_t,
      so limiting allocations to <adress space size> - 1MiB
      in name of sanity is beneficial. */
-  if ((size + align) > ~(grub_size_t) 0x100000)
+  if (grow > ~(grub_size_t) 0x100000)
     goto fail;
 
   align = (align >> GRUB_MM_ALIGN_LOG2);
@@ -355,18 +494,55 @@ grub_memalign (grub_size_t align, grub_size_t size)
   switch (count)
     {
     case 0:
+      /* Request additional pages, contiguous */
+      count++;
+
+      /*
+       * Calculate the necessary size of heap growth (if applicable),
+       * with region management overhead taken into account.
+       */
+      if (grub_add (grow, GRUB_MM_MGMT_OVERHEAD, &grow))
+	goto fail;
+
+      /* Preallocate some extra space if heap growth is small. */
+      grow = grub_max (grow, GRUB_MM_HEAP_GROW_EXTRA);
+
+      /* Align up heap growth to make it friendly to CPU/MMU. */
+      if (grow > ~(grub_size_t) (GRUB_MM_HEAP_GROW_ALIGN - 1))
+	goto fail;
+      grow = ALIGN_UP (grow, GRUB_MM_HEAP_GROW_ALIGN);
+
+      /* Do the same sanity check again. */
+      if (grow > ~(grub_size_t) 0x100000)
+	goto fail;
+
+      if (grub_mm_add_region_fn != NULL &&
+          grub_mm_add_region_fn (grow, GRUB_MM_ADD_REGION_CONSECUTIVE) == GRUB_ERR_NONE)
+	goto again;
+
+      /* fallthrough  */
+
+    case 1:
+      /* Request additional pages, anything at all */
+      count++;
+
+      if (grub_mm_add_region_fn != NULL)
+        {
+          /*
+           * Try again even if this fails, in case it was able to partially
+           * satisfy the request
+           */
+          grub_mm_add_region_fn (grow, GRUB_MM_ADD_REGION_NONE);
+          goto again;
+        }
+
+      /* fallthrough */
+
+    case 2:
       /* Invalidate disk caches.  */
       grub_disk_cache_invalidate_all ();
       count++;
       goto again;
-
-#if 0
-    case 1:
-      /* Unload unneeded modules.  */
-      grub_dl_unload_unneeded ();
-      count++;
-      goto again;
-#endif
 
     default:
       break;
@@ -440,54 +616,73 @@ grub_free (void *ptr)
     }
   else
     {
-      grub_mm_header_t q, s;
+      grub_mm_header_t cur, prev;
 
 #if 0
-      q = r->first;
+      cur = r->first;
       do
 	{
 	  grub_printf ("%s:%d: q=%p, q->size=0x%x, q->magic=0x%x\n",
-		       GRUB_FILE, __LINE__, q, q->size, q->magic);
-	  q = q->next;
+		       GRUB_FILE, __LINE__, cur, cur->size, cur->magic);
+	  cur = cur->next;
 	}
-      while (q != r->first);
+      while (cur != r->first);
 #endif
-
-      for (s = r->first, q = s->next; q <= p || q->next >= p; s = q, q = s->next)
+      /* Iterate over all blocks in the free ring.
+       *
+       * The free ring is arranged from high addresses to low
+       * addresses, modulo wraparound.
+       *
+       * We are looking for a block with a higher address than p or
+       * whose next address is lower than p.
+       */
+      for (prev = r->first, cur = prev->next; cur <= p || cur->next >= p;
+	   prev = cur, cur = prev->next)
 	{
-	  if (q->magic != GRUB_MM_FREE_MAGIC)
-	    grub_fatal ("free magic is broken at %p: 0x%x", q, q->magic);
+	  if (cur->magic != GRUB_MM_FREE_MAGIC)
+	    grub_fatal ("free magic is broken at %p: 0x%x", cur, cur->magic);
 
-	  if (q <= q->next && (q > p || q->next < p))
+	  /* Deal with wrap-around */
+	  if (cur <= cur->next && (cur > p || cur->next < p))
 	    break;
 	}
 
+      /* mark p as free and insert it between cur and cur->next */
       p->magic = GRUB_MM_FREE_MAGIC;
-      p->next = q->next;
-      q->next = p;
+      p->next = cur->next;
+      cur->next = p;
 
+      /*
+       * If the block we are freeing can be merged with the next
+       * free block, do that.
+       */
       if (p->next + p->next->size == p)
 	{
 	  p->magic = 0;
 
 	  p->next->size += p->size;
-	  q->next = p->next;
+	  cur->next = p->next;
 	  p = p->next;
 	}
 
-      r->first = q;
+      r->first = cur;
 
-      if (q == p + p->size)
+      /* Likewise if can be merged with the preceeding free block */
+      if (cur == p + p->size)
 	{
-	  q->magic = 0;
-	  p->size += q->size;
-	  if (q == s)
-	    s = p;
-	  s->next = p;
-	  q = s;
+	  cur->magic = 0;
+	  p->size += cur->size;
+	  if (cur == prev)
+	    prev = p;
+	  prev->next = p;
+	  cur = prev;
 	}
 
-      r->first = q;
+      /*
+       * Set r->first such that the just free()d block is tried first.
+       * (An allocation is tried from *first->next, and cur->next == p.)
+       */
+      r->first = cur;
     }
 }
 
@@ -539,6 +734,8 @@ grub_mm_dump_free (void)
     {
       grub_mm_header_t p;
 
+      grub_printf ("Region %p (size %" PRIuGRUB_SIZE ")\n\n", r, r->size);
+
       /* Follow the free list.  */
       p = r->first;
       do
@@ -565,6 +762,8 @@ grub_mm_dump (unsigned lineno)
   for (r = grub_mm_base; r; r = r->next)
     {
       grub_mm_header_t p;
+
+      grub_printf ("Region %p (size %" PRIuGRUB_SIZE ")\n\n", r, r->size);
 
       for (p = (grub_mm_header_t) ALIGN_UP ((grub_addr_t) (r + 1),
 					    GRUB_MM_ALIGN);
@@ -653,7 +852,7 @@ grub_debug_memalign (const char *file, int line, grub_size_t align,
   void *ptr;
 
   if (grub_mm_debug)
-    grub_printf ("%s:%d: memalign (0x%" PRIxGRUB_SIZE  ", 0x%" PRIxGRUB_SIZE  
+    grub_printf ("%s:%d: memalign (0x%" PRIxGRUB_SIZE  ", 0x%" PRIxGRUB_SIZE
 		 ") = ", file, line, align, size);
   ptr = grub_memalign (align, size);
   if (grub_mm_debug)

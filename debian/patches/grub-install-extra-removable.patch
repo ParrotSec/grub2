@@ -1,6 +1,5 @@
-From a0bfbdf9139bc127d28c4102b941ee504f7f0041 Mon Sep 17 00:00:00 2001
 From: Steve McIntyre <93sam@debian.org>
-Date: Wed, 3 Dec 2014 01:25:12 +0000
+Date: Wed, 19 Jul 2023 12:23:19 +0200
 Subject: Add support for forcing EFI installation to the removable media path
 
 Add an extra option to grub-install "--force-extra-removable". On EFI
@@ -18,11 +17,11 @@ Last-Update: 2021-09-24
 
 Patch-Name: grub-install-extra-removable.patch
 ---
- util/grub-install.c | 110 +++++++++++++++++++++++++++++++++++++++++++-
+ util/grub-install.c | 110 +++++++++++++++++++++++++++++++++++++++++++++++++++-
  1 file changed, 108 insertions(+), 2 deletions(-)
 
 diff --git a/util/grub-install.c b/util/grub-install.c
-index 2304cc5c4..b51fe4710 100644
+index db378d7..fbb3a1c 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
 @@ -56,6 +56,7 @@
@@ -64,9 +63,9 @@ index 2304cc5c4..b51fe4710 100644
    {0, 0, 0, 0, 0, 0}
  };
  
-@@ -847,6 +856,91 @@ fill_core_services (const char *core_services)
-   free (sysv_plist);
+@@ -863,6 +872,91 @@ try_open (const char *path)
  }
+ #endif
  
 +/* Helper routine for also_install_removable() below. Walk through the
 +   specified dir, looking to see if there is a file/dir that matches
@@ -156,7 +155,7 @@ index 2304cc5c4..b51fe4710 100644
  int
  main (int argc, char *argv[])
  {
-@@ -864,6 +958,7 @@ main (int argc, char *argv[])
+@@ -880,6 +974,7 @@ main (int argc, char *argv[])
    char *relative_grubdir;
    char **efidir_device_names = NULL;
    grub_device_t efidir_grub_dev = NULL;
@@ -164,7 +163,7 @@ index 2304cc5c4..b51fe4710 100644
    char *efidir_grub_devname;
    int efidir_is_mac = 0;
    int is_prep = 0;
-@@ -896,6 +991,9 @@ main (int argc, char *argv[])
+@@ -912,6 +1007,9 @@ main (int argc, char *argv[])
        bootloader_id = xstrdup ("grub");
      }
  
@@ -174,16 +173,16 @@ index 2304cc5c4..b51fe4710 100644
    if (!grub_install_source_directory)
      {
        if (!target)
-@@ -1115,6 +1213,8 @@ main (int argc, char *argv[])
-       if (!efidir_is_mac && grub_strcmp (fs->name, "fat") != 0)
- 	grub_util_error (_("%s doesn't look like an EFI partition"), efidir);
+@@ -1153,6 +1251,8 @@ main (int argc, char *argv[])
+ 	    grub_util_error (_("%s doesn't look like an EFI partition"), efidir);
+ 	}
  
 +      base_efidir = xstrdup(efidir);
 +
        /* The EFI specification requires that an EFI System Partition must
  	 contain an "EFI" subdirectory, and that OS loaders are stored in
  	 subdirectories below EFI.  Vendors are expected to pick names that do
-@@ -2048,9 +2148,15 @@ main (int argc, char *argv[])
+@@ -2112,9 +2212,15 @@ main (int argc, char *argv[])
  	    fprintf (config_dst_f, "configfile $prefix/grub.cfg\n");
  	    fclose (config_dst_f);
  	    free (config_dst);

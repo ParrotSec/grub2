@@ -49,7 +49,6 @@ grub_ieee1275_find_options (void)
   grub_ieee1275_phandle_t root;
   grub_ieee1275_phandle_t options;
   grub_ieee1275_phandle_t openprom;
-  grub_ieee1275_phandle_t bootrom;
   int rc;
   grub_uint32_t realmode = 0;
   char tmp[256];
@@ -124,6 +123,14 @@ grub_ieee1275_find_options (void)
 	      break;
 	    }
 	}
+
+#if defined(__powerpc__)
+      if (grub_strncmp (tmp, "IBM,", 4) == 0)
+	{
+	  grub_ieee1275_set_flag (GRUB_IEEE1275_FLAG_CAN_TRY_CAS_FOR_MORE_MEMORY);
+	  grub_ieee1275_set_flag (GRUB_IEEE1275_FLAG_POWER_VM);
+	}
+#endif
     }
 
   if (is_smartfirmware)
@@ -189,21 +196,9 @@ grub_ieee1275_find_options (void)
       grub_ieee1275_set_flag (GRUB_IEEE1275_FLAG_NO_PRE1_5M_CLAIM);
 
       grub_ieee1275_set_flag (GRUB_IEEE1275_FLAG_HAS_CURSORONOFF);
-    }
-
-  if (! grub_ieee1275_finddevice ("/rom/boot-rom", &bootrom)
-      || ! grub_ieee1275_finddevice ("/boot-rom", &bootrom))
-    {
-      rc = grub_ieee1275_get_property (bootrom, "model", tmp, sizeof (tmp), 0);
-      if (rc >= 0 && !grub_strncmp (tmp, "PPC Open Hack'Ware",
-				    sizeof ("PPC Open Hack'Ware") - 1))
-	{
-	  grub_ieee1275_set_flag (GRUB_IEEE1275_FLAG_BROKEN_OUTPUT);
-	  grub_ieee1275_set_flag (GRUB_IEEE1275_FLAG_CANNOT_SET_COLORS);
-	  grub_ieee1275_set_flag (GRUB_IEEE1275_FLAG_CANNOT_INTERPRET);
-	  grub_ieee1275_set_flag (GRUB_IEEE1275_FLAG_FORCE_CLAIM);
-	  grub_ieee1275_set_flag (GRUB_IEEE1275_FLAG_NO_ANSI);
-	}
+#if defined(__powerpc__)
+      grub_ieee1275_set_flag (GRUB_IEEE1275_FLAG_POWER_KVM);
+#endif
     }
 }
 

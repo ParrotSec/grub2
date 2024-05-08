@@ -4,6 +4,10 @@ This is the GRUB.  Welcome.
 
 This file contains instructions for compiling and installing the GRUB.
 
+Where this document refers to packages names, they are named according to the
+Debian 11 package repositories. These packages can be found by searching
+https://packages.debian.org/.
+
 The Requirements
 ================
 
@@ -12,14 +16,15 @@ you don't have any of them, please obtain and install them before
 configuring the GRUB.
 
 * GCC 5.1.0 or later
-  Experimental support for clang 3.8.0 or later (results in much bigger binaries)
+  Experimental support for clang 8.0.0 or later (results in much bigger binaries)
   for i386, x86_64, arm (including thumb), arm64, mips(el), powerpc, sparc64
 * GNU Make
 * GNU Bison 2.3 or later
-* GNU gettext 0.17 or later
+* GNU gettext
 * GNU binutils 2.9.1.0.23 or later
 * Flex 2.5.35 or later
 * pkg-config
+* GNU patch
 * Other standard GNU/Unix tools
 * a libc with large file support (e.g. glibc 2.1 or later)
 
@@ -31,24 +36,73 @@ For optional grub-emu features, you need:
 
 * SDL (recommended)
 * libpciaccess (optional)
-* libusb (optional)
 
 To build GRUB's graphical terminal (gfxterm), you need:
 
 * FreeType 2.1.5 or later
 * GNU Unifont
 
+To build grub-mkfont the unicode fonts are required (xfonts-unifont package
+on Debian).
+
 If you use a development snapshot or want to hack on GRUB you may
 need the following.
 
-* Python 2.6 or later
-* Autoconf 2.63 or later
-* Automake 1.11 or later
+* Python 3 (NOTE: python 2.6 should still work, but it's not tested)
+* Autoconf 2.64 or later
+* Automake 1.14 or later
+
+Your distro may package cross-compiling toolchains such as the following
+incomplete list on Debian: gcc-aarch64-linux-gnu, gcc-arm-linux-gnueabihf,
+gcc-mips-linux-gnu, gcc-mipsel-linux-gnu, gcc-powerpc64-linux-gnu,
+gcc-riscv64-linux-gnu, gcc-sparc64-linux-gnu, mingw-w64 and mingw-w64-tools.
+
+More cross compiling toolchains can be found at the following trusted sites:
+
+* https://mirrors.kernel.org/pub/tools/crosstool/
+* https://toolchains.bootlin.com/
 
 Prerequisites for make-check:
 
-* qemu, specifically the binary 'qemu-system-i386'
+* qemu, specifically the binary "qemu-system-ARCH" where ARCH is the
+  architecture GRUB has been built for; the "qemu-system" package on Debian
+  will install all needed qemu architectures
+* OVMF, for EFI platforms (packages ovmf, ovmf-ia32, qemu-efi-arm, and
+  qemu-efi-aarch64)
+* OpenBIOS, for ieee1275 platforms (packages openbios-ppc and openbios-sparc)
 * xorriso 1.2.9 or later, for grub-mkrescue and grub-shell
+* wamerican, for grub-fs-tester
+* mtools, FAT tools for EFI platforms
+* xfonts-unifont, for the functional tests
+
+* If running a Linux kernel the following modules must be loaded:
+  - fuse, loop
+  - btrfs, ext4, f2fs, fat, hfs, hfsplus, jfs, mac-roman, minix, nilfs2,
+    reiserfs, udf, xfs
+  - On newer kernels, the exfat kernel modules may be used instead of the
+    exfat FUSE filesystem
+* The following are Debian named packages required mostly for the full
+  suite of filesystem testing (but some are needed by other tests as well):
+  - btrfs-progs, dosfstools, e2fsprogs, exfat-utils, f2fs-tools, genromfs,
+    hfsprogs, jfsutils, nilfs-tools, ntfs-3g, reiserfsprogs, squashfs-tools,
+    reiserfsprogs, udftools, xfsprogs, zfs-fuse
+  - exfat-fuse, if not using the exfat kernel module
+  - gzip, lzop, xz-utils
+  - attr, cpio, g++, gawk, parted, recode, tar, util-linux
+
+Note that `make check' will run and many tests may complete successfully
+with only a subset of these prerequisites. However, some tests may be
+skipped or fail due to missing prerequisites.
+
+To build the documentation you'll need:
+* texinfo, for the info and html documentation
+* texlive, for building the dvi and pdf documentation (optional)
+
+To use the gdb_grub GDB script you'll need:
+* readelf (binutils package)
+* objdump (binutils package)
+* GNU Debugger > 7, built with python support (gdb package)
+* Python >= 3.5 (python3 package)
 
 Configuring the GRUB
 ====================
@@ -86,9 +140,8 @@ The simplest way to compile this package is:
   
   3. Type `./bootstrap'.
 
-     * autogen.sh (called by bootstrap) uses python. By default the
-       invocation is "python", but it can be overridden by setting the
-       variable $PYTHON.
+     The autogen.sh (called by bootstrap) uses python. By default autodetect
+     it, but it can be overridden by setting the PYTHON variable.
 
   4. Type `./configure' to configure the package for your system.
      If you're using `csh' on an old version of System V, you might
@@ -101,12 +154,16 @@ The simplest way to compile this package is:
   6. Type `make' to compile the package.
 
   7. Optionally, type `make check' to run any self-tests that come with
-     the package.
+     the package. Note that many of the tests require root privileges in
+     order to run.
 
   8. Type `make install' to install the programs and any data files and
      documentation.
 
-  9. You can remove the program binaries and object files from the
+  9. Type `make html' or `make pdf' to generate the html or pdf
+     documentation.  Note, these are not built by default.
+
+ 10. You can remove the program binaries and object files from the
      source code directory by typing `make clean'.  To also remove the
      files that `configure' created (so you can compile the package for
      a different kind of computer), type `make distclean'.  There is
@@ -142,14 +199,19 @@ For this example the configure line might look like (more details below)
 (some options are optional and included here for completeness but some rarely
 used options are omitted):
 
-  ./configure --host=x86_64-linux-gnu --target=arm-linux-gnueabihf \
-    --with-platform=efi BUILD_CC=gcc BUILD_PKG_CONFIG=pkg-config \
+  ./configure --build=sparc64-freebsd --host=x86_64-linux-gnu \
+    --target=arm-linux-gnueabihf --with-platform=efi \
+    BUILD_CC=gcc BUILD_PKG_CONFIG=pkg-config \
     HOST_CC=x86_64-linux-gnu-gcc HOST_CFLAGS='-g -O2' \
     PKG_CONFIG=x86_64-linux-gnu-pkg-config TARGET_CC=arm-linux-gnueabihf-gcc \
     TARGET_CFLAGS='-Os -march=armv8.3-a' TARGET_CCASFLAGS='-march=armv8.3-a' \
     TARGET_OBJCOPY=arm-linux-gnueabihf-objcopy \
     TARGET_STRIP=arm-linux-gnueabihf-strip TARGET_NM=arm-linux-gnueabihf-nm \
     TARGET_RANLIB=arm-linux-gnueabihf-ranlib LEX=flex
+
+Note, that the autoconf 2.65 manual states that when using the --host argument
+to configure, the --build argument should be specified as well. Not sending
+--build, enters a compatibility mode that will be removed in the future.
 
 Normally, for building a GRUB on amd64 with tools to run on amd64 to
 generate images to run on ARM, using your Linux distribution's
@@ -162,13 +224,14 @@ version look at prerequisites. All tools not mentioned in this section under
 corresponding platform are not needed for the platform in question.
 
   - For build
-    1. BUILD_CC= to gcc able to compile for build. This is used, for
+    1. --build= to autoconf name of build.
+    2. BUILD_CC= to gcc able to compile for build. This is used, for
        example, to compile build-gentrigtables which is then run to
        generate sin and cos tables.
-    2. BUILD_CFLAGS= for C options for build.
-    3. BUILD_CPPFLAGS= for C preprocessor options for build.
-    4. BUILD_LDFLAGS= for linker options for build.
-    5. BUILD_PKG_CONFIG= for pkg-config for build (optional).
+    3. BUILD_CFLAGS= for C options for build.
+    4. BUILD_CPPFLAGS= for C preprocessor options for build.
+    5. BUILD_LDFLAGS= for linker options for build.
+    6. BUILD_PKG_CONFIG= for pkg-config for build (optional).
 
   - For host
     1. --host= to autoconf name of host.
@@ -205,7 +268,6 @@ corresponding platform are not needed for the platform in question.
   - Additionally for emu, for host and target.
     1. SDL is looked for in standard linker directories (-lSDL) (optional)
     2. libpciaccess is looked for in standard linker directories (-lpciaccess) (optional)
-    3. libusb is looked for in standard linker directories (-lusb) (optional)
 
   - Platform-agnostic tools and data.
     1. make is the tool you execute after ./configure.

@@ -1,4 +1,3 @@
-From a7b960126fbc0d4541babe5553546e5f9530ac48 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@debian.org>
 Date: Mon, 13 Jan 2014 12:13:01 +0000
 Subject: Restore grub-mkdevicemap
@@ -17,9 +16,9 @@ Patch-Name: restore-mkdevicemap.patch
  Makefile.util.def              |   17 +
  docs/man/grub-mkdevicemap.h2m  |    4 +
  include/grub/util/deviceiter.h |   14 +
- util/deviceiter.c              | 1027 ++++++++++++++++++++++++++++++++
+ util/deviceiter.c              | 1027 ++++++++++++++++++++++++++++++++++++++++
  util/devicemap.c               |   13 +
- util/grub-mkdevicemap.c        |  181 ++++++
+ util/grub-mkdevicemap.c        |  181 +++++++
  6 files changed, 1256 insertions(+)
  create mode 100644 docs/man/grub-mkdevicemap.h2m
  create mode 100644 include/grub/util/deviceiter.h
@@ -28,10 +27,10 @@ Patch-Name: restore-mkdevicemap.patch
  create mode 100644 util/grub-mkdevicemap.c
 
 diff --git a/Makefile.util.def b/Makefile.util.def
-index f8b356cc1..27f948291 100644
+index 9432365..970a003 100644
 --- a/Makefile.util.def
 +++ b/Makefile.util.def
-@@ -336,6 +336,23 @@ program = {
+@@ -339,6 +339,23 @@ program = {
    condition = COND_GRUB_MKFONT;
  };
  
@@ -57,7 +56,7 @@ index f8b356cc1..27f948291 100644
    installdir = sbin;
 diff --git a/docs/man/grub-mkdevicemap.h2m b/docs/man/grub-mkdevicemap.h2m
 new file mode 100644
-index 000000000..96cd6ee72
+index 0000000..96cd6ee
 --- /dev/null
 +++ b/docs/man/grub-mkdevicemap.h2m
 @@ -0,0 +1,4 @@
@@ -67,7 +66,7 @@ index 000000000..96cd6ee72
 +.BR grub-probe (8)
 diff --git a/include/grub/util/deviceiter.h b/include/grub/util/deviceiter.h
 new file mode 100644
-index 000000000..85374978c
+index 0000000..8537497
 --- /dev/null
 +++ b/include/grub/util/deviceiter.h
 @@ -0,0 +1,14 @@
@@ -87,7 +86,7 @@ index 000000000..85374978c
 +#endif /* ! GRUB_DEVICEITER_MACHINE_UTIL_HEADER */
 diff --git a/util/deviceiter.c b/util/deviceiter.c
 new file mode 100644
-index 000000000..b5b9ac6ab
+index 0000000..b5b9ac6
 --- /dev/null
 +++ b/util/deviceiter.c
 @@ -0,0 +1,1027 @@
@@ -1120,7 +1119,7 @@ index 000000000..b5b9ac6ab
 +}
 diff --git a/util/devicemap.c b/util/devicemap.c
 new file mode 100644
-index 000000000..c61864420
+index 0000000..c618644
 --- /dev/null
 +++ b/util/devicemap.c
 @@ -0,0 +1,13 @@
@@ -1139,7 +1138,7 @@ index 000000000..c61864420
 +}
 diff --git a/util/grub-mkdevicemap.c b/util/grub-mkdevicemap.c
 new file mode 100644
-index 000000000..c4bbdbf69
+index 0000000..c4bbdbf
 --- /dev/null
 +++ b/util/grub-mkdevicemap.c
 @@ -0,0 +1,181 @@

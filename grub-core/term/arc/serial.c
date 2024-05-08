@@ -100,11 +100,15 @@ struct grub_serial_driver grub_arcserial_driver =
     .put = serial_hw_put
   };
 
-const char *
+struct grub_serial_port *
 grub_arcserial_add_port (const char *path)
 {
   struct grub_serial_port *port;
   grub_err_t err;
+
+  FOR_SERIAL_PORTS (port)
+    if (grub_strcmp(path, port->name) == 0)
+      return port;
 
   port = grub_zalloc (sizeof (*port));
   if (!port)
@@ -120,7 +124,7 @@ grub_arcserial_add_port (const char *path)
 
   grub_serial_register (port);
 
-  return port->name;
+  return port;
 }
 
 static int

@@ -1,8 +1,8 @@
-# Copyright (C) 2002-2019 Free Software Foundation, Inc.
+# Copyright (C) 2002-2022 Free Software Foundation, Inc.
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This file is distributed in the hope that it will be useful,
@@ -50,7 +50,8 @@
 #  progname \
 #  realloc-gnu \
 #  regex \
-#  save-cwd
+#  save-cwd \
+#  stdbool
 
 # Specification in the form of a few gnulib-tool.m4 macro invocations:
 gl_LOCAL_DIR([gl])
@@ -68,6 +69,7 @@ gl_MODULES([
   realloc-gnu
   regex
   save-cwd
+  stdbool
 ])
 gl_AVOID([])
 gl_SOURCE_BASE([grub-core/lib/gnulib])

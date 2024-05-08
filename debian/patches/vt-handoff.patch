@@ -1,4 +1,3 @@
-From 4336395ce7d82827b466a0088e1b08d42ef24ae8 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Mon, 13 Jan 2014 12:13:30 +0000
 Subject: Add configure option to use vt.handoff=7
@@ -18,10 +17,10 @@ Patch-Name: vt-handoff.patch
  2 files changed, 38 insertions(+), 1 deletion(-)
 
 diff --git a/configure.ac b/configure.ac
-index 947fd529f..e11df6bc5 100644
+index 6812742..7f43651 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -1948,6 +1948,17 @@ else
+@@ -2101,6 +2101,17 @@ else
  fi
  AC_SUBST([GFXPAYLOAD_DYNAMIC])
  
@@ -40,7 +39,7 @@ index 947fd529f..e11df6bc5 100644
  
  AC_SUBST([FONT_SOURCE])
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index d46d7852b..64204c216 100644
+index 17cc3c5..77d5bd2 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -24,6 +24,7 @@ ubuntu_recovery="@UBUNTU_RECOVERY@"
@@ -51,7 +50,7 @@ index d46d7852b..64204c216 100644
  
  . "$pkgdatadir/grub-mkconfig_lib"
  
-@@ -104,6 +105,14 @@ if [ "$ubuntu_recovery" = 1 ]; then
+@@ -106,6 +107,14 @@ if [ "$ubuntu_recovery" = 1 ]; then
      GRUB_CMDLINE_LINUX_RECOVERY="$GRUB_CMDLINE_LINUX_RECOVERY nomodeset"
  fi
  
@@ -66,7 +65,7 @@ index d46d7852b..64204c216 100644
  linux_entry ()
  {
    os="$1"
-@@ -149,7 +158,7 @@ linux_entry ()
+@@ -151,7 +160,7 @@ linux_entry ()
    fi
    if ([ "$ubuntu_recovery" = 0 ] || [ x$type != xrecovery ]) && \
       ([ "x$GRUB_GFXPAYLOAD_LINUX" != x ] || [ "$gfxpayload_dynamic" = 1 ]); then
@@ -75,7 +74,7 @@ index d46d7852b..64204c216 100644
    fi
  
    echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
-@@ -228,6 +237,23 @@ prepare_root_cache=
+@@ -224,6 +233,23 @@ prepare_root_cache=
  boot_device_id=
  title_correction_code=
  

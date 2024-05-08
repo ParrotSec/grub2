@@ -220,8 +220,7 @@ grub_ieee1275_parse_bootpath (const char *devpath, char *bootpath,
                                  flags);
       inter->vlantag = vlantag;
       grub_net_add_ipv4_local (inter,
-                          __builtin_ctz (~grub_le_to_cpu32 (subnet_mask.ipv4)));
-
+                          __builtin_clz (~grub_be_to_cpu32 (subnet_mask.ipv4)));
     }
 
   if (gateway_addr.ipv4 != 0)
@@ -321,12 +320,6 @@ grub_ieee1275_alloc_mem (grub_size_t len)
   }
   args;
 
-  if (grub_ieee1275_test_flag (GRUB_IEEE1275_FLAG_CANNOT_INTERPRET))
-    {
-      grub_error (GRUB_ERR_UNKNOWN_COMMAND, N_("interpret is not supported"));
-      return NULL;
-    }
-
   INIT_IEEE1275_COMMON (&args.common, "interpret", 2, 2);
   args.len = len;
   args.method = (grub_ieee1275_cell_t) "alloc-mem";
@@ -353,12 +346,6 @@ grub_ieee1275_free_mem (void *addr, grub_size_t len)
     grub_ieee1275_cell_t catch;
   }
   args;
-
-  if (grub_ieee1275_test_flag (GRUB_IEEE1275_FLAG_CANNOT_INTERPRET))
-    {
-      grub_error (GRUB_ERR_UNKNOWN_COMMAND, N_("interpret is not supported"));
-      return grub_errno;
-    }
 
   INIT_IEEE1275_COMMON (&args.common, "interpret", 3, 1);
   args.addr = (grub_ieee1275_cell_t)addr;
@@ -558,7 +545,7 @@ GRUB_MOD_FINI(ofnet)
 {
   struct grub_net_card *card, *next;
 
-  FOR_NET_CARDS_SAFE (card, next) 
+  FOR_NET_CARDS_SAFE (card, next)
     if (card->driver && grub_strcmp (card->driver->name, "ofnet") == 0)
       grub_net_card_unregister (card);
   grub_ieee1275_net_config = 0;

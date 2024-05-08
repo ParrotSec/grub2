@@ -180,7 +180,8 @@ do_setkey (RIJNDAEL_context *ctx, const byte *key, const unsigned keylen)
   static int initialized = 0;
   static const char *selftest_failed=0;
   int rounds;
-  int i,j, r, t, rconpointer = 0;
+  unsigned int i;
+  int j, r, t, rconpointer = 0;
   int KC;
   union
   {
@@ -226,7 +227,9 @@ do_setkey (RIJNDAEL_context *ctx, const byte *key, const unsigned keylen)
       KC = 4;
 
       if (0)
-        ;
+        {
+          ;
+        }
 #ifdef USE_PADLOCK
       else if ((_gcry_get_hw_features () & HWF_PADLOCK_AES))
         {

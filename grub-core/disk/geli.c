@@ -135,8 +135,6 @@ const char *algorithms[] = {
   [0x16] = "aes"
 };
 
-#define MAX_PASSPHRASE 256
-
 static gcry_err_code_t
 geli_rekey (struct grub_cryptodisk *dev, grub_uint64_t zoneno)
 {
@@ -159,7 +157,7 @@ geli_rekey (struct grub_cryptodisk *dev, grub_uint64_t zoneno)
     return gcry_err;
 
   return grub_cryptodisk_setkey (dev, (grub_uint8_t *) key,
-				 dev->rekey_derived_size); 
+				 dev->rekey_derived_size);
 }
 
 static inline gcry_err_code_t
@@ -202,7 +200,7 @@ grub_util_get_geli_uuid (const char *dev)
   unsigned log_secsize;
   grub_uint8_t hdr[512];
   struct grub_geli_phdr *header;
-  char *uuid; 
+  char *uuid;
   gcry_err_code_t err;
 
   fd = grub_util_fd_open (dev, GRUB_UTIL_FD_O_RDONLY);
@@ -220,7 +218,7 @@ grub_util_get_geli_uuid (const char *dev)
     grub_util_error ("%s", _("couldn't read ELI metadata"));
 
   grub_util_fd_close (fd);
-	  
+
   COMPILE_TIME_ASSERT (sizeof (header) <= 512);
   header = (void *) &hdr;
 
@@ -242,8 +240,7 @@ grub_util_get_geli_uuid (const char *dev)
 #endif
 
 static grub_cryptodisk_t
-configure_ciphers (grub_disk_t disk, const char *check_uuid,
-		   int boot_only)
+geli_scan (grub_disk_t disk, grub_cryptomount_args_t cargs)
 {
   grub_cryptodisk_t newdev;
   struct grub_geli_phdr header;
@@ -254,6 +251,10 @@ configure_ciphers (grub_disk_t disk, const char *check_uuid,
   char uuid[GRUB_CRYPTODISK_MAX_UUID_LENGTH];
   grub_disk_addr_t sector;
   grub_err_t err;
+
+  /* Detached headers are not implemented yet */
+  if (cargs->hdr_file != NULL)
+    return NULL;
 
   if (2 * GRUB_MD_SHA256->mdlen + 1 > GRUB_CRYPTODISK_MAX_UUID_LENGTH)
     return NULL;
@@ -291,11 +292,11 @@ configure_ciphers (grub_disk_t disk, const char *check_uuid,
       return NULL;
     }
 
-  if (boot_only && !(grub_le_to_cpu32 (header.flags) & GRUB_GELI_FLAGS_BOOT))
+  if (cargs->check_boot && !(grub_le_to_cpu32 (header.flags) & GRUB_GELI_FLAGS_BOOT))
     {
       grub_dprintf ("geli", "not a boot volume\n");
       return NULL;
-    }    
+    }
 
   gcry_err = make_uuid (&header, uuid);
   if (gcry_err)
@@ -304,9 +305,9 @@ configure_ciphers (grub_disk_t disk, const char *check_uuid,
       return NULL;
     }
 
-  if (check_uuid && grub_strcasecmp (check_uuid, uuid) != 0)
+  if (cargs->search_uuid != NULL && grub_uuidcasecmp (cargs->search_uuid, uuid, sizeof (uuid)) != 0)
     {
-      grub_dprintf ("geli", "%s != %s\n", uuid, check_uuid);
+      grub_dprintf ("geli", "%s != %s\n", uuid, cargs->search_uuid);
       return NULL;
     }
 
@@ -379,9 +380,7 @@ configure_ciphers (grub_disk_t disk, const char *check_uuid,
   newdev->hash = GRUB_MD_SHA512;
   newdev->iv_hash = GRUB_MD_SHA256;
 
-  for (newdev->log_sector_size = 0;
-       (1U << newdev->log_sector_size) < grub_le_to_cpu32 (header.sector_size);
-       newdev->log_sector_size++);
+  newdev->log_sector_size = grub_log2ull (grub_le_to_cpu32 (header.sector_size));
 
   if (grub_le_to_cpu32 (header.version) >= 5)
     {
@@ -398,7 +397,7 @@ configure_ciphers (grub_disk_t disk, const char *check_uuid,
 }
 
 static grub_err_t
-recover_key (grub_disk_t source, grub_cryptodisk_t dev)
+geli_recover_key (grub_disk_t source, grub_cryptodisk_t dev, grub_cryptomount_args_t cargs)
 {
   grub_size_t keysize;
   grub_uint8_t digest[GRUB_CRYPTO_MAX_MDLEN];
@@ -406,13 +405,14 @@ recover_key (grub_disk_t source, grub_cryptodisk_t dev)
   grub_uint8_t verify_key[GRUB_CRYPTO_MAX_MDLEN];
   grub_uint8_t zero[GRUB_CRYPTO_MAX_CIPHER_BLOCKSIZE];
   grub_uint8_t geli_cipher_key[64];
-  char passphrase[MAX_PASSPHRASE] = "";
   unsigned i;
   gcry_err_code_t gcry_err;
   struct grub_geli_phdr header;
-  char *tmp;
   grub_disk_addr_t sector;
   grub_err_t err;
+
+  if (cargs->key_data == NULL || cargs->key_len == 0)
+    return grub_error (GRUB_ERR_BAD_ARGUMENT, "no key data");
 
   if (dev->cipher->cipher->blocksize > GRUB_CRYPTO_MAX_CIPHER_BLOCKSIZE)
     return grub_error (GRUB_ERR_BUG, "cipher block is too long");
@@ -434,23 +434,12 @@ recover_key (grub_disk_t source, grub_cryptodisk_t dev)
 
   grub_puts_ (N_("Attempting to decrypt master key..."));
 
-  /* Get the passphrase from the user.  */
-  tmp = NULL;
-  if (source->partition)
-    tmp = grub_partition_get_name (source->partition);
-  grub_printf_ (N_("Enter passphrase for %s%s%s (%s): "), source->name,
-		source->partition ? "," : "", tmp ? : "",
-		dev->uuid);
-  grub_free (tmp);
-  if (!grub_password_get (passphrase, MAX_PASSPHRASE))
-    return grub_error (GRUB_ERR_BAD_ARGUMENT, "Passphrase not supplied");
-
   /* Calculate the PBKDF2 of the user supplied passphrase.  */
   if (grub_le_to_cpu32 (header.niter) != 0)
     {
       grub_uint8_t pbkdf_key[64];
-      gcry_err = grub_crypto_pbkdf2 (dev->hash, (grub_uint8_t *) passphrase,
-				     grub_strlen (passphrase),
+      gcry_err = grub_crypto_pbkdf2 (dev->hash, cargs->key_data,
+				     cargs->key_len,
 				     header.salt,
 				     sizeof (header.salt),
 				     grub_le_to_cpu32 (header.niter),
@@ -473,7 +462,7 @@ recover_key (grub_disk_t source, grub_cryptodisk_t dev)
 	return grub_crypto_gcry_error (GPG_ERR_OUT_OF_MEMORY);
 
       grub_crypto_hmac_write (hnd, header.salt, sizeof (header.salt));
-      grub_crypto_hmac_write (hnd, passphrase, grub_strlen (passphrase));
+      grub_crypto_hmac_write (hnd, cargs->key_data, cargs->key_len);
 
       gcry_err = grub_crypto_hmac_fini (hnd, geomkey);
       if (gcry_err)
@@ -549,7 +538,7 @@ recover_key (grub_disk_t source, grub_cryptodisk_t dev)
 	  if (grub_le_to_cpu16 (header.alg) == 0x16)
 	    real_keysize *= 2;
 	  gcry_err = grub_cryptodisk_setkey (dev, candidate_key.cipher_key,
-					     real_keysize); 
+					     real_keysize);
 	  if (gcry_err)
 	    return grub_crypto_gcry_error (gcry_err);
 	}
@@ -580,8 +569,8 @@ recover_key (grub_disk_t source, grub_cryptodisk_t dev)
 }
 
 struct grub_cryptodisk_dev geli_crypto = {
-  .scan = configure_ciphers,
-  .recover_key = recover_key
+  .scan = geli_scan,
+  .recover_key = geli_recover_key
 };
 
 GRUB_MOD_INIT (geli)

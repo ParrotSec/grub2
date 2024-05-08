@@ -19,6 +19,7 @@
 
 #include <grub/efi/efi.h>
 #include <grub/efi/console.h>
+#include <grub/efi/debug.h>
 #include <grub/efi/disk.h>
 #include <grub/efi/sb.h>
 #include <grub/lockdown.h>
@@ -31,7 +32,12 @@
 
 #ifdef GRUB_STACK_PROTECTOR
 
-static grub_efi_guid_t rng_protocol_guid = GRUB_EFI_RNG_PROTOCOL_GUID;
+static grub_efi_char16_t stack_chk_fail_msg[] =
+  L"* GRUB: STACK SMASHING DETECTED!!! *\r\n"
+  L"* GRUB: ABORTED!!! *\r\n"
+  L"* GRUB: REBOOTING IN 5 SECONDS... *\r\n";
+
+static grub_guid_t rng_protocol_guid = GRUB_EFI_RNG_PROTOCOL_GUID;
 
 /*
  * Don't put this on grub_efi_init()'s local stack to avoid it
@@ -39,14 +45,29 @@ static grub_efi_guid_t rng_protocol_guid = GRUB_EFI_RNG_PROTOCOL_GUID;
  */
 static grub_efi_uint8_t stack_chk_guard_buf[32];
 
-grub_addr_t __stack_chk_guard;
+/* Initialize canary in case there is no RNG protocol. */
+grub_addr_t __stack_chk_guard = (grub_addr_t) GRUB_STACK_PROTECTOR_INIT;
 
 void __attribute__ ((noreturn))
 __stack_chk_fail (void)
 {
+  grub_efi_simple_text_output_interface_t *o;
+
   /*
-   * Assume it's not safe to call into EFI Boot Services. Sorry, that
-   * means no console message here.
+   * Use ConOut here rather than StdErr. StdErr only goes to
+   * the serial console, at least on EDK2.
+   */
+  o = grub_efi_system_table->con_out;
+  o->output_string (o, stack_chk_fail_msg);
+
+  grub_efi_system_table->boot_services->stall (5000000);
+  grub_efi_system_table->runtime_services->reset_system (GRUB_EFI_RESET_SHUTDOWN,
+							 GRUB_EFI_ABORTED, 0, NULL);
+
+  /*
+   * We shouldn't get here. It's unsafe to return because the stack
+   * is compromised and this function is noreturn, so just busy
+   * loop forever.
    */
   do
     {
@@ -67,8 +88,8 @@ stack_protector_init (void)
     {
       grub_efi_status_t status;
 
-      status = efi_call_4 (rng->get_rng, rng, NULL, sizeof (stack_chk_guard_buf),
-			   stack_chk_guard_buf);
+      status = rng->get_rng (rng, NULL, sizeof (stack_chk_guard_buf),
+			     stack_chk_guard_buf);
       if (status == GRUB_EFI_SUCCESS)
 	grub_memcpy (&__stack_chk_guard, stack_chk_guard_buf, sizeof (__stack_chk_guard));
     }
@@ -82,10 +103,10 @@ stack_protector_init (void)
 
 grub_addr_t grub_modbase;
 
-void
+__attribute__ ((__optimize__ ("-fno-stack-protector"))) void
 grub_efi_init (void)
 {
-  grub_modbase = grub_efi_modules_addr ();
+  grub_modbase = grub_efi_section_addr ("mods");
   /* First of all, initialize the console so that GRUB can display
      messages.  */
   grub_console_init ();
@@ -105,13 +126,14 @@ grub_efi_init (void)
       grub_shim_lock_verifier_setup ();
     }
 
-  efi_call_4 (grub_efi_system_table->boot_services->set_watchdog_timer,
-	      0, 0, 0, NULL);
+  grub_efi_system_table->boot_services->set_watchdog_timer (0, 0, 0, NULL);
 
   grub_efidisk_init ();
+
+  grub_efi_register_debug_commands ();
 }
 
-void (*grub_efi_net_config) (grub_efi_handle_t hnd, 
+void (*grub_efi_net_config) (grub_efi_handle_t hnd,
 			     char **device,
 			     char **path);
 

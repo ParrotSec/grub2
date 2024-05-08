@@ -59,7 +59,7 @@ grub_install_help_filter (int key, const char *text,
       return xasprintf(text, "unicode");
     case GRUB_INSTALL_OPTIONS_DIRECTORY:
     case GRUB_INSTALL_OPTIONS_DIRECTORY2:
-      return xasprintf(text, grub_util_get_pkglibdir ());      
+      return xasprintf(text, grub_util_get_pkglibdir ());
     case GRUB_INSTALL_OPTIONS_LOCALE_DIRECTORY:
       return xasprintf(text, grub_util_get_localedir ());
     case GRUB_INSTALL_OPTIONS_THEMES_DIRECTORY:
@@ -80,7 +80,7 @@ grub_install_copy_file (const char *src,
 			const char *dst,
 			int is_needed)
 {
-  grub_util_fd_t in, out;  
+  grub_util_fd_t in, out;
   ssize_t r;
 
   grub_util_info ("copying `%s' -> `%s'", src, dst);
@@ -106,7 +106,7 @@ grub_install_copy_file (const char *src,
 
   if (!grub_install_copy_buffer)
     grub_install_copy_buffer = xmalloc (GRUB_INSTALL_COPY_BUFFER_SIZE);
- 
+
   while (1)
     {
       r = grub_util_fd_read (in, grub_install_copy_buffer, GRUB_INSTALL_COPY_BUFFER_SIZE);
@@ -173,15 +173,20 @@ grub_install_mkdir_p (const char *dst)
   char *p;
   for (p = t; *p; p++)
     {
-      if (is_path_separator (*p))
+      if (is_path_separator (*p) && p != t)
 	{
 	  char s = *p;
 	  *p = '\0';
 	  grub_util_mkdir (t);
+	  if (!grub_util_is_directory (t))
+	    grub_util_error (_("failed to make directory: '%s'"), t);
+
 	  *p = s;
 	}
     }
   grub_util_mkdir (t);
+  if (!grub_util_is_directory (t))
+    grub_util_error (_("failed to make directory: '%s'"), t);
   free (t);
 }
 
@@ -467,7 +472,7 @@ grub_install_parse (int key, char *arg)
 {
   switch (key)
     {
-    case 'C':
+    case GRUB_INSTALL_OPTIONS_INSTALL_CORE_COMPRESS:
       if (grub_strcmp (arg, "xz") == 0)
 	{
 #ifdef HAVE_LIBLZMA
@@ -599,7 +604,7 @@ grub_install_make_image_wrap_file (const char *dir, const char *prefix,
 				   const char *mkimage_target, int note)
 {
   const struct grub_install_image_target_desc *tgt;
-  const char *const compnames[] = 
+  const char *const compnames[] =
     {
       [GRUB_COMPRESSION_AUTO] = "auto",
       [GRUB_COMPRESSION_NONE] = "none",
@@ -612,60 +617,73 @@ grub_install_make_image_wrap_file (const char *dir, const char *prefix,
   int dc = decompressors ();
 
   if (memdisk_path)
-    slen += 20 + grub_strlen (memdisk_path);
+    slen += sizeof (" --memdisk ''") + grub_strlen (memdisk_path);
   if (config_path)
-    slen += 20 + grub_strlen (config_path);
+    slen += sizeof (" --config ''") + grub_strlen (config_path);
+  if (dtb)
+    slen += sizeof (" --dtb ''") + grub_strlen (dtb);
+  if (sbat)
+    slen += sizeof (" --sbat ''") + grub_strlen (sbat);
 
   for (pk = pubkeys; pk < pubkeys + npubkeys; pk++)
-    slen += 20 + grub_strlen (*pk);
+    slen += sizeof (" --pubkey ''") + grub_strlen (*pk);
 
   for (md = modules.entries; *md; md++)
-    {
-      slen += 10 + grub_strlen (*md);
-    }
+    slen += sizeof (" ''") + grub_strlen (*md);
 
   p = s = xmalloc (slen);
   if (memdisk_path)
     {
+      *p++ = ' ';
       p = grub_stpcpy (p, "--memdisk '");
       p = grub_stpcpy (p, memdisk_path);
       *p++ = '\'';
-      *p++ = ' ';
     }
   if (config_path)
     {
+      *p++ = ' ';
       p = grub_stpcpy (p, "--config '");
       p = grub_stpcpy (p, config_path);
       *p++ = '\'';
+    }
+  if (dtb)
+    {
       *p++ = ' ';
+      p = grub_stpcpy (p, "--dtb '");
+      p = grub_stpcpy (p, dtb);
+      *p++ = '\'';
+    }
+  if (sbat)
+    {
+      *p++ = ' ';
+      p = grub_stpcpy (p, "--sbat '");
+      p = grub_stpcpy (p, sbat);
+      *p++ = '\'';
     }
   for (pk = pubkeys; pk < pubkeys + npubkeys; pk++)
     {
+      *p++ = ' ';
       p = grub_stpcpy (p, "--pubkey '");
       p = grub_stpcpy (p, *pk);
       *p++ = '\'';
-      *p++ = ' ';
     }
 
   for (md = modules.entries; *md; md++)
     {
+      *p++ = ' ';
       *p++ = '\'';
       p = grub_stpcpy (p, *md);
       *p++ = '\'';
-      *p++ = ' ';
     }
 
   *p = '\0';
 
-  grub_util_info ("grub-mkimage --directory '%s' --prefix '%s'"
-		  " --output '%s' "
-		  " --dtb '%s' "
-		  "--sbat '%s' "
-		  "--format '%s' --compression '%s' %s %s %s\n",
-		  dir, prefix,
-		  outname, dtb ? : "", sbat ? : "", mkimage_target,
-		  compnames[compression], note ? "--note" : "",
-		  disable_shim_lock ? "--disable-shim-lock" : "", s);
+  grub_util_info ("grub-mkimage --directory '%s' --prefix '%s' --output '%s'"
+		  " --format '%s' --compression '%s'%s%s%s\n",
+		  dir, prefix, outname,
+		  mkimage_target, compnames[compression],
+		  note ? " --note" : "",
+		  disable_shim_lock ? " --disable-shim-lock" : "", s);
   free (s);
 
   tgt = grub_install_get_image_target (mkimage_target);
@@ -754,7 +772,10 @@ copy_all (const char *srcd,
       srcf = grub_util_path_concat (2, srcd, de->d_name);
       if (grub_util_is_special_file (srcf)
 	  || grub_util_is_directory (srcf))
-	continue;
+	{
+	  free (srcf);
+	  continue;
+	}
       dstf = grub_util_path_concat (2, dstd, de->d_name);
       grub_install_compress_file (srcf, dstf, 1);
       free (srcf);
@@ -878,31 +899,32 @@ static struct
   const char *platform;
 } platforms[GRUB_INSTALL_PLATFORM_MAX] =
   {
-    [GRUB_INSTALL_PLATFORM_I386_PC] =          { "i386",    "pc"        },
-    [GRUB_INSTALL_PLATFORM_I386_EFI] =         { "i386",    "efi"       },
-    [GRUB_INSTALL_PLATFORM_I386_QEMU] =        { "i386",    "qemu"      },
-    [GRUB_INSTALL_PLATFORM_I386_COREBOOT] =    { "i386",    "coreboot"  },
-    [GRUB_INSTALL_PLATFORM_I386_MULTIBOOT] =   { "i386",    "multiboot" },
-    [GRUB_INSTALL_PLATFORM_I386_IEEE1275] =    { "i386",    "ieee1275"  },
-    [GRUB_INSTALL_PLATFORM_X86_64_EFI] =       { "x86_64",  "efi"       },
-    [GRUB_INSTALL_PLATFORM_I386_XEN] =         { "i386",    "xen"       },
-    [GRUB_INSTALL_PLATFORM_X86_64_XEN] =       { "x86_64",  "xen"       },
-    [GRUB_INSTALL_PLATFORM_I386_XEN_PVH] =     { "i386",    "xen_pvh"   },
-    [GRUB_INSTALL_PLATFORM_MIPSEL_LOONGSON] =  { "mipsel",  "loongson"  },
-    [GRUB_INSTALL_PLATFORM_MIPSEL_QEMU_MIPS] = { "mipsel",  "qemu_mips" },
-    [GRUB_INSTALL_PLATFORM_MIPS_QEMU_MIPS] =   { "mips",    "qemu_mips" },
-    [GRUB_INSTALL_PLATFORM_MIPSEL_ARC] =       { "mipsel",  "arc"       },
-    [GRUB_INSTALL_PLATFORM_MIPS_ARC] =         { "mips",    "arc"       },
-    [GRUB_INSTALL_PLATFORM_SPARC64_IEEE1275] = { "sparc64", "ieee1275"  },
-    [GRUB_INSTALL_PLATFORM_POWERPC_IEEE1275] = { "powerpc", "ieee1275"  },
-    [GRUB_INSTALL_PLATFORM_IA64_EFI] =         { "ia64",    "efi"       },
-    [GRUB_INSTALL_PLATFORM_ARM_EFI] =          { "arm",     "efi"       },
-    [GRUB_INSTALL_PLATFORM_ARM64_EFI] =        { "arm64",   "efi"       },
-    [GRUB_INSTALL_PLATFORM_ARM_UBOOT] =        { "arm",     "uboot"     },
-    [GRUB_INSTALL_PLATFORM_ARM_COREBOOT] =     { "arm",     "coreboot"  },
-    [GRUB_INSTALL_PLATFORM_RISCV32_EFI] =      { "riscv32", "efi"       },
-    [GRUB_INSTALL_PLATFORM_RISCV64_EFI] =      { "riscv64", "efi"       },
-  }; 
+    [GRUB_INSTALL_PLATFORM_I386_PC] =          { "i386",        "pc"        },
+    [GRUB_INSTALL_PLATFORM_I386_EFI] =         { "i386",        "efi"       },
+    [GRUB_INSTALL_PLATFORM_I386_QEMU] =        { "i386",        "qemu"      },
+    [GRUB_INSTALL_PLATFORM_I386_COREBOOT] =    { "i386",        "coreboot"  },
+    [GRUB_INSTALL_PLATFORM_I386_MULTIBOOT] =   { "i386",        "multiboot" },
+    [GRUB_INSTALL_PLATFORM_I386_IEEE1275] =    { "i386",        "ieee1275"  },
+    [GRUB_INSTALL_PLATFORM_X86_64_EFI] =       { "x86_64",      "efi"       },
+    [GRUB_INSTALL_PLATFORM_I386_XEN] =         { "i386",        "xen"       },
+    [GRUB_INSTALL_PLATFORM_X86_64_XEN] =       { "x86_64",      "xen"       },
+    [GRUB_INSTALL_PLATFORM_I386_XEN_PVH] =     { "i386",        "xen_pvh"   },
+    [GRUB_INSTALL_PLATFORM_MIPSEL_LOONGSON] =  { "mipsel",      "loongson"  },
+    [GRUB_INSTALL_PLATFORM_MIPSEL_QEMU_MIPS] = { "mipsel",      "qemu_mips" },
+    [GRUB_INSTALL_PLATFORM_MIPS_QEMU_MIPS] =   { "mips",        "qemu_mips" },
+    [GRUB_INSTALL_PLATFORM_MIPSEL_ARC] =       { "mipsel",      "arc"       },
+    [GRUB_INSTALL_PLATFORM_MIPS_ARC] =         { "mips",        "arc"       },
+    [GRUB_INSTALL_PLATFORM_SPARC64_IEEE1275] = { "sparc64",     "ieee1275"  },
+    [GRUB_INSTALL_PLATFORM_POWERPC_IEEE1275] = { "powerpc",     "ieee1275"  },
+    [GRUB_INSTALL_PLATFORM_IA64_EFI] =         { "ia64",        "efi"       },
+    [GRUB_INSTALL_PLATFORM_ARM_EFI] =          { "arm",         "efi"       },
+    [GRUB_INSTALL_PLATFORM_ARM64_EFI] =        { "arm64",       "efi"       },
+    [GRUB_INSTALL_PLATFORM_ARM_UBOOT] =        { "arm",         "uboot"     },
+    [GRUB_INSTALL_PLATFORM_ARM_COREBOOT] =     { "arm",         "coreboot"  },
+    [GRUB_INSTALL_PLATFORM_LOONGARCH64_EFI] =  { "loongarch64", "efi"       },
+    [GRUB_INSTALL_PLATFORM_RISCV32_EFI] =      { "riscv32",     "efi"       },
+    [GRUB_INSTALL_PLATFORM_RISCV64_EFI] =      { "riscv64",     "efi"       },
+  };
 
 char *
 grub_install_get_platforms_string (void)
@@ -930,7 +952,7 @@ grub_install_get_platforms_string (void)
     }
   ptr[-2] = 0;
   free (arr);
- 
+
   return platforms_string;
 }
 
@@ -1101,7 +1123,7 @@ grub_install_get_target (const char *src)
   fn = grub_util_path_concat (2, src, "modinfo.sh");
   f = grub_util_fd_open (fn, GRUB_UTIL_FD_O_RDONLY);
   if (!GRUB_UTIL_FD_IS_VALID (f))
-    grub_util_error (_("%s doesn't exist. Please specify --target or --directory"), 
+    grub_util_error (_("%s doesn't exist. Please specify --target or --directory"),
 		     fn);
   r = grub_util_fd_read (f, buf, sizeof (buf) - 1);
   if (r < 0)

@@ -30,7 +30,9 @@
 #include <grub/types.h>
 #include <grub/verify.h>
 
-static grub_efi_guid_t shim_lock_guid = GRUB_EFI_SHIM_LOCK_GUID;
+static grub_guid_t shim_lock_guid = GRUB_EFI_SHIM_LOCK_GUID;
+
+static bool shim_lock_enabled = false;
 
 /*
  * Determine whether we're in secure boot mode.
@@ -41,7 +43,7 @@ static grub_efi_guid_t shim_lock_guid = GRUB_EFI_SHIM_LOCK_GUID;
 grub_uint8_t
 grub_efi_get_secureboot (void)
 {
-  static grub_efi_guid_t efi_variable_guid = GRUB_EFI_GLOBAL_VARIABLE_GUID;
+  static grub_guid_t efi_variable_guid = GRUB_EFI_GLOBAL_VARIABLE_GUID;
   grub_efi_status_t status;
   grub_efi_uint32_t attr = 0;
   grub_size_t size = 0;
@@ -93,6 +95,14 @@ grub_efi_get_secureboot (void)
   if (!(attr & GRUB_EFI_VARIABLE_RUNTIME_ACCESS) && *moksbstate == 1)
     {
       secureboot = GRUB_EFI_SECUREBOOT_MODE_DISABLED;
+      /*
+       * TODO: Replace this all with shim's LoadImage protocol, delegating policy to it.
+       *
+       * We need to set shim_lock_enabled here because we disabled secure boot
+       * validation *inside* shim but not in the firmware, so we set this variable
+       * here to trigger that code path, whereas the actual verifier is not enabled.
+       */
+      shim_lock_enabled = true;
       goto out;
     }
 
@@ -119,10 +129,11 @@ shim_lock_verifier_init (grub_file_t io __attribute__ ((unused)),
 			 void **context __attribute__ ((unused)),
 			 enum grub_verify_flags *flags)
 {
-  *flags = GRUB_VERIFY_FLAGS_SKIP_VERIFICATION;
+  *flags = GRUB_VERIFY_FLAGS_NONE;
 
   switch (type & GRUB_FILE_TYPE_MASK)
     {
+    /* Files we check. */
     case GRUB_FILE_TYPE_LINUX_KERNEL:
     case GRUB_FILE_TYPE_MULTIBOOT_KERNEL:
     case GRUB_FILE_TYPE_BSD_KERNEL:
@@ -130,11 +141,42 @@ shim_lock_verifier_init (grub_file_t io __attribute__ ((unused)),
     case GRUB_FILE_TYPE_PLAN9_KERNEL:
     case GRUB_FILE_TYPE_EFI_CHAINLOADED_IMAGE:
       *flags = GRUB_VERIFY_FLAGS_SINGLE_CHUNK;
-
-      /* Fall through. */
-
-    default:
       return GRUB_ERR_NONE;
+
+    /* Files that do not affect secureboot state. */
+    case GRUB_FILE_TYPE_NONE:
+    case GRUB_FILE_TYPE_LOOPBACK:
+    case GRUB_FILE_TYPE_LINUX_INITRD:
+    case GRUB_FILE_TYPE_OPENBSD_RAMDISK:
+    case GRUB_FILE_TYPE_XNU_RAMDISK:
+    case GRUB_FILE_TYPE_SIGNATURE:
+    case GRUB_FILE_TYPE_PUBLIC_KEY:
+    case GRUB_FILE_TYPE_PUBLIC_KEY_TRUST:
+    case GRUB_FILE_TYPE_PRINT_BLOCKLIST:
+    case GRUB_FILE_TYPE_TESTLOAD:
+    case GRUB_FILE_TYPE_GET_SIZE:
+    case GRUB_FILE_TYPE_ZFS_ENCRYPTION_KEY:
+    case GRUB_FILE_TYPE_CAT:
+    case GRUB_FILE_TYPE_HEXCAT:
+    case GRUB_FILE_TYPE_CMP:
+    case GRUB_FILE_TYPE_HASHLIST:
+    case GRUB_FILE_TYPE_TO_HASH:
+    case GRUB_FILE_TYPE_KEYBOARD_LAYOUT:
+    case GRUB_FILE_TYPE_PIXMAP:
+    case GRUB_FILE_TYPE_GRUB_MODULE_LIST:
+    case GRUB_FILE_TYPE_CONFIG:
+    case GRUB_FILE_TYPE_THEME:
+    case GRUB_FILE_TYPE_GETTEXT_CATALOG:
+    case GRUB_FILE_TYPE_FS_SEARCH:
+    case GRUB_FILE_TYPE_LOADENV:
+    case GRUB_FILE_TYPE_SAVEENV:
+    case GRUB_FILE_TYPE_VERIFY_SIGNATURE:
+      *flags = GRUB_VERIFY_FLAGS_SKIP_VERIFICATION;
+      return GRUB_ERR_NONE;
+
+    /* Other files. */
+    default:
+      return grub_error (GRUB_ERR_ACCESS_DENIED, N_("prohibited by secure boot policy"));
     }
 }
 
@@ -183,6 +225,14 @@ grub_shim_lock_verifier_setup (void)
   /* Enforce shim_lock_verifier. */
   grub_verifier_register (&shim_lock_verifier);
 
+  shim_lock_enabled = true;
+
   grub_env_set ("shim_lock", "y");
   grub_env_export ("shim_lock");
+}
+
+bool
+grub_is_shim_lock_enabled (void)
+{
+  return shim_lock_enabled;
 }

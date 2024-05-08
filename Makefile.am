@@ -24,6 +24,15 @@ CCASFLAGS_PROGRAM += $(CCASFLAGS_GNULIB)
 
 include $(srcdir)/Makefile.util.am
 
+check_SCRIPTS = $(check_SCRIPTS_native) $(check_SCRIPTS_nonnative)
+check_PROGRAMS = $(check_PROGRAMS_native) $(check_PROGRAMS_nonnative)
+TESTS = $(check_SCRIPTS) $(check_PROGRAMS)
+
+check-native:
+	$(MAKE) TESTS="$(check_PROGRAMS_native) $(check_SCRIPTS_native)" check
+check-nonnative:
+	$(MAKE) TESTS="$(check_PROGRAMS_nonnative) $(check_SCRIPTS_nonnative)" check
+
 # XXX Use Automake's LEX & YACC support
 grub_script.tab.h: $(top_srcdir)/grub-core/script/parser.y
 	$(YACC) -d -p grub_script_yy -b grub_script $(top_srcdir)/grub-core/script/parser.y
@@ -43,7 +52,7 @@ libgrub.pp: config-util.h grub_script.tab.h grub_script.yy.h $(libgrubmods_a_SOU
 CLEANFILES += libgrub.pp
 
 libgrub_a_init.lst: libgrub.pp
-	cat $< | grep '@MARKER@' | sed 's/@MARKER@\(.*\)@/\1/g' | sort -u > $@ || (rm -f $@; exit 1)
+	cat $< | grep '^@MARKER@' | sed 's/@MARKER@\(.*\)@/\1/g' | sort -u > $@ || (rm -f $@; exit 1)
 CLEANFILES += libgrub_a_init.lst
 
 libgrub_a_init.c: libgrub_a_init.lst $(top_srcdir)/geninit.sh
@@ -51,13 +60,13 @@ libgrub_a_init.c: libgrub_a_init.lst $(top_srcdir)/geninit.sh
 CLEANFILES += libgrub_a_init.c
 
 # For grub-fstest
-grub_fstest.pp: $(grub_fstest_SOURCES)
+grub_fstest.pp: config-util.h $(grub_fstest_SOURCES)
 	$(CPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(grub_fstest_CPPFLAGS) $(CPPFLAGS) \
 	  -D'GRUB_MOD_INIT(x)=@MARKER@x@' $^ > $@ || (rm -f $@; exit 1)
 CLEANFILES += grub_fstest.pp
 
 grub_fstest_init.lst: libgrub.pp grub_fstest.pp
-	cat $^ | grep '@MARKER@' | sed 's/@MARKER@\(.*\)@/\1/g' | sort -u > $@ || (rm -f $@; exit 1)
+	cat $^ | grep '^@MARKER@' | sed 's/@MARKER@\(.*\)@/\1/g' | sort -u > $@ || (rm -f $@; exit 1)
 CLEANFILES += grub_fstest_init.lst
 
 grub_fstest_init.c: grub_fstest_init.lst $(top_srcdir)/geninit.sh
@@ -472,8 +481,6 @@ ChangeLog: FORCE
 	else \
 		touch $@; \
 	fi
-
-EXTRA_DIST += ChangeLog ChangeLog-2015
 
 syslinux_test: $(top_builddir)/config.status tests/syslinux/ubuntu10.04_grub.cfg
 

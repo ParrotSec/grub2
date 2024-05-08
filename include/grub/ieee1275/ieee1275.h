@@ -24,6 +24,9 @@
 #include <grub/types.h>
 #include <grub/machine/ieee1275.h>
 
+#define GRUB_IEEE1275_CELL_FALSE       ((grub_ieee1275_cell_t) 0)
+#define GRUB_IEEE1275_CELL_TRUE        ((grub_ieee1275_cell_t) -1)
+
 struct grub_ieee1275_mem_region
 {
   unsigned int start;
@@ -85,14 +88,6 @@ extern grub_ieee1275_ihandle_t EXPORT_VAR(grub_ieee1275_mmu);
 
 extern int (* EXPORT_VAR(grub_ieee1275_entry_fn)) (void *) GRUB_IEEE1275_ENTRY_FN_ATTRIBUTE;
 
-/* Static heap, used only if FORCE_CLAIM is set,
-   happens on Open Hack'Ware. Should be in platform-specific
-   header but is used only on PPC anyway.
-*/
-#define GRUB_IEEE1275_STATIC_HEAP_START 0x1000000
-#define GRUB_IEEE1275_STATIC_HEAP_LEN   0x1000000
-
-
 enum grub_ieee1275_flag
 {
   /* Old World Macintosh firmware fails seek when "dev:0" is opened.  */
@@ -113,25 +108,13 @@ enum grub_ieee1275_flag
   /* OLPC / XO firmware hangs when accessing USB devices.  */
   GRUB_IEEE1275_FLAG_OFDISK_SDCARD_ONLY,
 
-  /* Open Hack'Ware stops when trying to set colors */
-  GRUB_IEEE1275_FLAG_CANNOT_SET_COLORS,
-
-  /* Open Hack'Ware stops when grub_ieee1275_interpret is used.  */
-  GRUB_IEEE1275_FLAG_CANNOT_INTERPRET,
-
-  /* Open Hack'Ware has no memory map, just claim what we need.  */
-  GRUB_IEEE1275_FLAG_FORCE_CLAIM,
-
-  /* Open Hack'Ware don't support the ANSI sequence.  */
-  GRUB_IEEE1275_FLAG_NO_ANSI,
-
   /* OpenFirmware hangs on qemu if one requests any memory below 1.5 MiB.  */
   GRUB_IEEE1275_FLAG_NO_PRE1_5M_CLAIM,
 
   /* OLPC / XO firmware has the cursor ON/OFF routines.  */
   GRUB_IEEE1275_FLAG_HAS_CURSORONOFF,
 
-  /* Some PowerMacs claim to use 2 address cells but in fact use only 1. 
+  /* Some PowerMacs claim to use 2 address cells but in fact use only 1.
      Other PowerMacs claim to use only 1 and really do so. Always assume
      1 address cell is used on PowerMacs.
    */
@@ -148,6 +131,20 @@ enum grub_ieee1275_flag
   GRUB_IEEE1275_FLAG_CURSORONOFF_ANSI_BROKEN,
 
   GRUB_IEEE1275_FLAG_RAW_DEVNAMES,
+
+#if defined(__powerpc__)
+  /*
+   * On PFW, the first time we boot a Linux partition, we may only get 256MB of
+   * real memory area, even if the partition has more memory. Set this flag if
+   * we think we're running under PFW. Then, if this flag is set, and the RMA is
+   * only 256MB in size, try asking for more with CAS.
+   */
+  GRUB_IEEE1275_FLAG_CAN_TRY_CAS_FOR_MORE_MEMORY,
+#endif
+
+  GRUB_IEEE1275_FLAG_POWER_VM,
+
+  GRUB_IEEE1275_FLAG_POWER_KVM,
 };
 
 extern int EXPORT_FUNC(grub_ieee1275_test_flag) (enum grub_ieee1275_flag flag);

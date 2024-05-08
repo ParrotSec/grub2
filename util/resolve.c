@@ -102,7 +102,7 @@ read_dep_list (FILE *fp)
       dep_list = dep;
 
       /* Add dependencies.  */
-      while (*p)
+      while (p < (buf + sizeof (buf)) && *p)
 	{
 	  struct mod_list *mod;
 	  char *name;
@@ -127,6 +127,9 @@ read_dep_list (FILE *fp)
 	  mod->next = dep->list;
 	  dep->list = mod;
 	}
+
+	if ((p - buf) == sizeof (buf))
+	  grub_util_error (_("line too long, length greater than %zu: module %s"), sizeof (buf), dep->name);
     }
 
   return dep_list;

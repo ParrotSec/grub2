@@ -47,7 +47,7 @@
 
 #include <sys/types.h>
 
-#if defined(HAVE_LIBZFS) && defined(HAVE_LIBNVPAIR)
+#ifdef USE_LIBZFS
 # include <grub/util/libzfs.h>
 # include <grub/util/libnvpair.h>
 #endif
@@ -156,7 +156,7 @@ convert_system_partition_to_system_disk (const char *os_dev, int *is_part)
 
   if (stat (os_dev, &st) < 0)
     {
-      const char *errstr = strerror (errno); 
+      const char *errstr = strerror (errno);
       grub_error (GRUB_ERR_BAD_DEVICE, N_("cannot stat `%s': %s"),
 		  os_dev, errstr);
       grub_util_info (_("cannot stat `%s': %s"), os_dev, errstr);
@@ -293,7 +293,7 @@ grub_util_biosdisk_get_grub_dev (const char *os_dev)
 		 == 0);
 
     dri = make_device_name (drive);
- 
+
     if (!disk && !rdisk)
       return dri;
 
@@ -451,12 +451,12 @@ int
 grub_util_biosdisk_is_present (const char *os_dev)
 {
   int ret = (find_system_device (os_dev) != NULL);
-  grub_util_info ((ret ? "%s is present" : "%s is not present"), 
+  grub_util_info ((ret ? "%s is present" : "%s is not present"),
 		  os_dev);
   return ret;
 }
 
-#ifdef HAVE_LIBZFS
+#ifdef USE_LIBZFS
 static libzfs_handle_t *__libzfs_handle;
 
 static void
@@ -478,5 +478,5 @@ grub_get_libzfs_handle (void)
 
   return __libzfs_handle;
 }
-#endif /* HAVE_LIBZFS */
+#endif /* USE_LIBZFS */
 

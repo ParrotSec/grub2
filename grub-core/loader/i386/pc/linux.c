@@ -55,7 +55,7 @@ static grub_err_t
 grub_linux16_boot (void)
 {
   grub_uint16_t segment;
-  struct grub_relocator16_state state;
+  struct grub_relocator16_state state = {0};
 
   segment = grub_linux_real_target >> 4;
   state.gs = state.fs = state.es = state.ds = state.ss = segment;
@@ -67,7 +67,7 @@ grub_linux16_boot (void)
   grub_video_set_mode ("text", 0, 0);
 
   grub_stop_floppy ();
-  
+
   return grub_relocator16_boot (relocator, state);
 }
 
@@ -462,7 +462,7 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
     initrd_addr = get_physical_target_address (ch);
   }
 
-  if (grub_initrd_load (&initrd_ctx, argv, initrd_chunk))
+  if (grub_initrd_load (&initrd_ctx, initrd_chunk))
     goto fail;
 
   lh->ramdisk_image = initrd_addr;

@@ -27,6 +27,8 @@
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
+static grub_efi_boolean_t efifwsetup_is_supported (void);
+
 static grub_err_t
 grub_cmd_fwsetup (grub_command_t cmd __attribute__ ((unused)),
 		  int argc __attribute__ ((unused)),
@@ -36,13 +38,22 @@ grub_cmd_fwsetup (grub_command_t cmd __attribute__ ((unused)),
   grub_efi_uint64_t os_indications = GRUB_EFI_OS_INDICATIONS_BOOT_TO_FW_UI;
   grub_err_t status;
   grub_size_t oi_size;
-  grub_efi_guid_t global = GRUB_EFI_GLOBAL_VARIABLE_GUID;
+  static grub_guid_t global = GRUB_EFI_GLOBAL_VARIABLE_GUID;
+
+  if (argc >= 1 && grub_strcmp(args[0], "--is-supported") == 0)
+    return !efifwsetup_is_supported ();
+
+  if (!efifwsetup_is_supported ())
+	  return grub_error (GRUB_ERR_INVALID_COMMAND,
+			     N_("reboot to firmware setup is not supported by the current firmware"));
 
   grub_efi_get_variable ("OsIndications", &global, &oi_size,
 			 (void **) &old_os_indications);
 
   if (old_os_indications != NULL && oi_size == sizeof (os_indications))
     os_indications |= *old_os_indications;
+
+  grub_free (old_os_indications);
 
   status = grub_efi_set_variable ("OsIndications", &global, &os_indications,
 				  sizeof (os_indications));
@@ -61,26 +72,27 @@ efifwsetup_is_supported (void)
 {
   grub_efi_uint64_t *os_indications_supported = NULL;
   grub_size_t oi_size = 0;
-  grub_efi_guid_t global = GRUB_EFI_GLOBAL_VARIABLE_GUID;
+  static grub_guid_t global = GRUB_EFI_GLOBAL_VARIABLE_GUID;
+  grub_efi_boolean_t ret = 0;
 
   grub_efi_get_variable ("OsIndicationsSupported", &global, &oi_size,
 			 (void **) &os_indications_supported);
 
   if (!os_indications_supported)
-    return 0;
+    goto done;
 
   if (*os_indications_supported & GRUB_EFI_OS_INDICATIONS_BOOT_TO_FW_UI)
-    return 1;
+    ret = 1;
 
-  return 0;
+ done:
+  grub_free (os_indications_supported);
+  return ret;
 }
 
 GRUB_MOD_INIT (efifwsetup)
 {
-  if (efifwsetup_is_supported ())
-    cmd = grub_register_command ("fwsetup", grub_cmd_fwsetup, NULL,
-				 N_("Reboot into firmware setup menu."));
-
+  cmd = grub_register_command ("fwsetup", grub_cmd_fwsetup, NULL,
+                               N_("Reboot into firmware setup menu."));
 }
 
 GRUB_MOD_FINI (efifwsetup)

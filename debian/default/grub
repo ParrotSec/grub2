@@ -14,7 +14,7 @@ GRUB_CMDLINE_LINUX=""
 # for guest OSes installed via LVM or raw disk devices, running
 # os-prober can cause damage to those guest OSes as it mounts
 # filesystems to look for things.
-GRUB_DISABLE_OS_PROBER=false
+GRUB_DISABLE_OS_PROBER=true
 
 # Uncomment to enable BadRAM filtering, modify to suit your needs
 # This works with Linux (no patch required) and with any kernel that obtains
@@ -33,7 +33,7 @@ GRUB_DISABLE_OS_PROBER=false
 #GRUB_DISABLE_LINUX_UUID=true
 
 # Uncomment to disable generation of recovery mode menu entries
-GRUB_DISABLE_RECOVERY="true"
+#GRUB_DISABLE_RECOVERY="true"
 
 # Uncomment to get a beep at grub start
 #GRUB_INIT_TUNE="480 440 1"

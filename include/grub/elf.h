@@ -23,6 +23,7 @@
 /* Standard ELF types.  */
 
 #include <grub/types.h>
+#include <grub/err.h>
 
 /* Type for a 16-bit quantity.  */
 typedef grub_uint16_t Elf32_Half;
@@ -56,6 +57,9 @@ typedef grub_uint16_t Elf64_Section;
 typedef Elf32_Half Elf32_Versym;
 typedef Elf64_Half Elf64_Versym;
 
+/* Type for number of section header table entries */
+typedef Elf32_Word Elf32_Shnum;
+typedef Elf64_Xword Elf64_Shnum;
 
 /* The ELF file header.  This appears at the start of every ELF file.  */
 
@@ -248,6 +252,7 @@ typedef struct
 #define EM_NUM		95
 #define EM_AARCH64	183		/* ARM 64-bit architecture */
 #define EM_RISCV	243		/* RISC-V */
+#define EM_LOONGARCH	258		/* LoongArch */
 
 /* If it is necessary to assign new unofficial EM_* values, please
    pick large random numbers (0x8523, 0xa7f2, etc.) to minimize the
@@ -566,6 +571,7 @@ typedef struct
 #define PT_HIOS		0x6fffffff	/* End of OS-specific */
 #define PT_LOPROC	0x70000000	/* Start of processor-specific */
 #define PT_HIPROC	0x7fffffff	/* End of processor-specific */
+#define PN_XNUM		0xffff
 
 /* Legal values for p_flags (segment flags).  */
 
@@ -2531,6 +2537,43 @@ typedef Elf32_Addr Elf32_Conflict;
 #define R_RISCV_SET32           56
 #define R_RISCV_32_PCREL        57
 
+/* LoongArch relocations */
+#define R_LARCH_NONE			      0
+#define R_LARCH_64			      2
+#define R_LARCH_MARK_LA			      20
+#define R_LARCH_SOP_PUSH_PCREL		      22
+#define R_LARCH_SOP_PUSH_ABSOLUTE	      23
+#define R_LARCH_SOP_PUSH_PLT_PCREL	      29
+#define R_LARCH_SOP_SUB			      32
+#define R_LARCH_SOP_SL			      33
+#define R_LARCH_SOP_SR			      34
+#define R_LARCH_SOP_ADD			      35
+#define R_LARCH_SOP_AND			      36
+#define R_LARCH_SOP_IF_ELSE		      37
+#define R_LARCH_SOP_POP_32_S_10_5	      38
+#define R_LARCH_SOP_POP_32_U_10_12	      39
+#define R_LARCH_SOP_POP_32_S_10_12	      40
+#define R_LARCH_SOP_POP_32_S_10_16	      41
+#define R_LARCH_SOP_POP_32_S_10_16_S2	      42
+#define R_LARCH_SOP_POP_32_S_5_20	      43
+#define R_LARCH_SOP_POP_32_S_0_5_10_16_S2     44
+#define R_LARCH_SOP_POP_32_S_0_10_10_16_S2    45
+#define R_LARCH_B26			      66
+#define R_LARCH_ABS_HI20		      67
+#define R_LARCH_ABS_LO12		      68
+#define R_LARCH_ABS64_LO20		      69
+#define R_LARCH_ABS64_HI12		      70
+#define R_LARCH_PCALA_HI20		      71
+#define R_LARCH_PCALA_LO12		      72
+
+extern grub_err_t grub_elf32_get_shnum (Elf32_Ehdr *e, Elf32_Shnum *shnum);
+extern grub_err_t grub_elf32_get_shstrndx (Elf32_Ehdr *e, Elf32_Word *shstrndx);
+extern grub_err_t grub_elf32_get_phnum (Elf32_Ehdr *e, Elf32_Word *phnum);
+
+extern grub_err_t grub_elf64_get_shnum (Elf64_Ehdr *e, Elf64_Shnum *shnum);
+extern grub_err_t grub_elf64_get_shstrndx (Elf64_Ehdr *e, Elf64_Word *shstrndx);
+extern grub_err_t grub_elf64_get_phnum (Elf64_Ehdr *e, Elf64_Word *phnum);
+
 #ifdef GRUB_TARGET_WORDSIZE
 #if GRUB_TARGET_WORDSIZE == 32
 
@@ -2548,6 +2591,7 @@ typedef Elf32_Sword Elf_Sword;
 typedef Elf32_Sym Elf_Sym;
 typedef Elf32_Word Elf_Word;
 typedef Elf32_Xword Elf_Xword;
+typedef Elf32_Shnum Elf_Shnum;
 
 #define ELF_ST_BIND(val)	ELF32_ST_BIND(val)
 #define ELF_ST_TYPE(val)	ELF32_ST_TYPE(val)
@@ -2556,6 +2600,10 @@ typedef Elf32_Xword Elf_Xword;
 #define ELF_R_SYM(val)		ELF32_R_SYM(val)
 #define ELF_R_TYPE(val)		ELF32_R_TYPE(val)
 #define ELF_R_INFO(sym, type)	ELF32_R_INFO(sym, type)
+
+#define grub_elf_get_shnum	grub_elf32_get_shnum
+#define grub_elf_get_shstrndx	grub_elf32_get_shstrndx
+#define grub_elf_get_phnum	grub_elf32_get_phnum
 
 #elif GRUB_TARGET_WORDSIZE == 64
 
@@ -2573,13 +2621,18 @@ typedef Elf64_Sword Elf_Sword;
 typedef Elf64_Sym Elf_Sym;
 typedef Elf64_Word Elf_Word;
 typedef Elf64_Xword Elf_Xword;
+typedef Elf64_Shnum Elf_Shnum;
 
-#define ELF_ST_BIND(val)	ELF64_ST_BIND (val)
-#define ELF_ST_TYPE(val)	ELF64_ST_TYPE (val)
+#define ELF_ST_BIND(val)	ELF64_ST_BIND(val)
+#define ELF_ST_TYPE(val)	ELF64_ST_TYPE(val)
 #define ELF_ST_INFO(a,b)	ELF64_ST_INFO(a,b)
 #define ELF_R_SYM(val)		ELF64_R_SYM(val)
 #define ELF_R_TYPE(val)		ELF64_R_TYPE(val)
 #define ELF_R_INFO(sym, type)	ELF64_R_INFO(sym, type)
+
+#define grub_elf_get_shnum	grub_elf64_get_shnum
+#define grub_elf_get_shstrndx	grub_elf64_get_shstrndx
+#define grub_elf_get_phnum	grub_elf64_get_phnum
 
 #endif /* GRUB_TARGET_WORDSIZE == 64 */
 #endif

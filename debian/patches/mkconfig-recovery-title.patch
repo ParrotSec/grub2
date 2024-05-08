@@ -1,4 +1,3 @@
-From fd81fffa2d498d66dce65b50da2532690c806ea4 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@ubuntu.com>
 Date: Mon, 13 Jan 2014 12:13:33 +0000
 Subject: Add GRUB_RECOVERY_TITLE option
@@ -21,10 +20,10 @@ Patch-Name: mkconfig-recovery-title.patch
  7 files changed, 17 insertions(+), 7 deletions(-)
 
 diff --git a/docs/grub.texi b/docs/grub.texi
-index 0b58dafb2..86e46f33b 100644
+index e9cf6f9..b4825b7 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
-@@ -1577,6 +1577,11 @@ a console is restricted or limited.
+@@ -1610,6 +1610,11 @@ a console is restricted or limited.
  This option is only effective when GRUB was configured with the
  @option{--enable-quick-boot} option.
  
@@ -37,7 +36,7 @@ index 0b58dafb2..86e46f33b 100644
  
  The following options are still accepted for compatibility with existing
 diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
-index fa9c53a92..0d39c8f05 100644
+index 0ecf2a7..13e436b 100644
 --- a/util/grub-mkconfig.in
 +++ b/util/grub-mkconfig.in
 @@ -201,6 +201,10 @@ GRUB_ACTUAL_DEFAULT="$GRUB_DEFAULT"
@@ -51,7 +50,7 @@ index fa9c53a92..0d39c8f05 100644
  
  # These are defined in this script, export them here so that user can
  # override them.
-@@ -257,7 +261,8 @@ export GRUB_DEFAULT \
+@@ -261,7 +265,8 @@ export GRUB_DEFAULT \
    GRUB_BADRAM \
    GRUB_OS_PROBER_SKIP_LIST \
    GRUB_DISABLE_SUBMENU \
@@ -62,10 +61,10 @@ index fa9c53a92..0d39c8f05 100644
  if test "x${grub_cfg}" != "x"; then
    rm -f "${grub_cfg}.new"
 diff --git a/util/grub.d/10_hurd.in b/util/grub.d/10_hurd.in
-index 3663d360e..8f6041894 100644
+index 7d1e463..940021a 100644
 --- a/util/grub.d/10_hurd.in
 +++ b/util/grub.d/10_hurd.in
-@@ -88,8 +88,8 @@ hurd_entry () {
+@@ -106,8 +106,8 @@ hurd_entry () {
  
    if [ x$type != xsimple ] ; then
        if [ x$type = xrecovery ] ; then
@@ -77,7 +76,7 @@ index 3663d360e..8f6041894 100644
  	  title="$(gettext_printf "%s, with Hurd %s" "${OS}" "${kernel_base}")"
  	  oldtitle="$OS using $kernel_base"
 diff --git a/util/grub.d/10_kfreebsd.in b/util/grub.d/10_kfreebsd.in
-index 199b20e16..bbd63cf74 100644
+index 83e9636..1431673 100644
 --- a/util/grub.d/10_kfreebsd.in
 +++ b/util/grub.d/10_kfreebsd.in
 @@ -76,7 +76,7 @@ kfreebsd_entry ()
@@ -90,10 +89,10 @@ index 199b20e16..bbd63cf74 100644
  	  title="$(gettext_printf "%s, with kFreeBSD %s" "${os}" "${version}")"
        fi
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 64204c216..f88a2de10 100644
+index 77d5bd2..9339926 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -126,7 +126,7 @@ linux_entry ()
+@@ -128,7 +128,7 @@ linux_entry ()
    if [ x$type != xsimple ] ; then
        case $type in
  	  recovery)
@@ -103,7 +102,7 @@ index 64204c216..f88a2de10 100644
  	      title="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")" ;;
        esac
 diff --git a/util/grub.d/10_netbsd.in b/util/grub.d/10_netbsd.in
-index dc0cd1b17..336895012 100644
+index 3154e9e..a377f4b 100644
 --- a/util/grub.d/10_netbsd.in
 +++ b/util/grub.d/10_netbsd.in
 @@ -102,7 +102,7 @@ netbsd_entry ()
@@ -116,15 +115,15 @@ index dc0cd1b17..336895012 100644
  	  title="$(gettext_printf "%s, with kernel %s (via %s)" "${OS}" "$(echo ${kernel} | sed -e 's,^.*/,,')" "${loader}")"
        fi
 diff --git a/util/grub.d/20_linux_xen.in b/util/grub.d/20_linux_xen.in
-index 7620a14fa..64e26e4b4 100644
+index f496beb..fff6587 100644
 --- a/util/grub.d/20_linux_xen.in
 +++ b/util/grub.d/20_linux_xen.in
-@@ -122,7 +122,7 @@ linux_entry_xsm ()
+@@ -125,7 +125,7 @@ linux_entry_xsm ()
    fi
    if [ x$type != xsimple ] ; then
        if [ x$type = xrecovery ] ; then
--	  title="$(gettext_printf "%s, with Xen %s and Linux %s (recovery mode)" "${os}" "${xen_version}" "${version}")"
-+	  title="$(gettext_printf "%s, with Xen %s and Linux %s (%s)" "${os}" "${xen_version}" "${version}" "$(gettext "${GRUB_RECOVERY_TITLE}")")"
+-	  title="$(gettext_printf "%s, with Xen %s and Linux %s (recovery mode)" "${os}" "${entry_xen_version}" "${version}")"
++	  title="$(gettext_printf "%s, with Xen %s and Linux %s (%s)" "${os}" "${entry_xen_version}" "${version}" "$(gettext "${GRUB_RECOVERY_TITLE}")")"
        else
- 	  title="$(gettext_printf "%s, with Xen %s and Linux %s" "${os}" "${xen_version}" "${version}")"
+ 	  title="$(gettext_printf "%s, with Xen %s and Linux %s" "${os}" "${entry_xen_version}" "${version}")"
        fi

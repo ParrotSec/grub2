@@ -1,4 +1,3 @@
-From bc7f762a1d253537eb524946884b0f3e50a419f0 Mon Sep 17 00:00:00 2001
 From: Evan Broder <evan@ebroder.net>
 Date: Mon, 13 Jan 2014 12:13:29 +0000
 Subject: Add configure option to enable gfxpayload=keep dynamically
@@ -13,19 +12,19 @@ Last-Update: 2019-05-25
 
 Patch-Name: gfxpayload-dynamic.patch
 ---
- configure.ac                         |  11 ++
+ configure.ac                         |  11 +++
  grub-core/Makefile.core.def          |   8 ++
- grub-core/commands/i386/pc/hwmatch.c | 146 +++++++++++++++++++++++++++
+ grub-core/commands/i386/pc/hwmatch.c | 146 +++++++++++++++++++++++++++++++++++
  include/grub/file.h                  |   1 +
- util/grub.d/10_linux.in              |  37 ++++++-
+ util/grub.d/10_linux.in              |  37 ++++++++-
  5 files changed, 200 insertions(+), 3 deletions(-)
  create mode 100644 grub-core/commands/i386/pc/hwmatch.c
 
 diff --git a/configure.ac b/configure.ac
-index c42e4c784..947fd529f 100644
+index 6084381..6812742 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -1937,6 +1937,17 @@ else
+@@ -2090,6 +2090,17 @@ else
  fi
  AC_SUBST([QUICK_BOOT])
  
@@ -44,10 +43,10 @@ index c42e4c784..947fd529f 100644
  
  AC_SUBST([FONT_SOURCE])
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index e5b3d27f5..2ff266806 100644
+index 1571421..15be5db 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
-@@ -964,6 +964,14 @@ module = {
+@@ -993,6 +993,14 @@ module = {
    common = lib/hexdump.c;
  };
  
@@ -64,7 +63,7 @@ index e5b3d27f5..2ff266806 100644
    common = commands/keystatus.c;
 diff --git a/grub-core/commands/i386/pc/hwmatch.c b/grub-core/commands/i386/pc/hwmatch.c
 new file mode 100644
-index 000000000..6de07cecc
+index 0000000..6de07ce
 --- /dev/null
 +++ b/grub-core/commands/i386/pc/hwmatch.c
 @@ -0,0 +1,146 @@
@@ -215,10 +214,10 @@ index 000000000..6de07cecc
 +  grub_unregister_command (cmd);
 +}
 diff --git a/include/grub/file.h b/include/grub/file.h
-index 31567483c..e3c4cae2b 100644
+index a5bf3a7..59d53f6 100644
 --- a/include/grub/file.h
 +++ b/include/grub/file.h
-@@ -122,6 +122,7 @@ enum grub_file_type
+@@ -126,6 +126,7 @@ enum grub_file_type
      GRUB_FILE_TYPE_FS_SEARCH,
      GRUB_FILE_TYPE_AUDIO,
      GRUB_FILE_TYPE_VBE_DUMP,
@@ -227,7 +226,7 @@ index 31567483c..e3c4cae2b 100644
      GRUB_FILE_TYPE_LOADENV,
      GRUB_FILE_TYPE_SAVEENV,
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 80315a31b..d46d7852b 100644
+index 9fb7c53..17cc3c5 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -23,6 +23,7 @@ datarootdir="@datarootdir@"
@@ -238,7 +237,7 @@ index 80315a31b..d46d7852b 100644
  
  . "$pkgdatadir/grub-mkconfig_lib"
  
-@@ -145,9 +146,10 @@ linux_entry ()
+@@ -147,9 +148,10 @@ linux_entry ()
        if [ "x$GRUB_GFXPAYLOAD_LINUX" != xtext ]; then
  	  echo "	load_video" | sed "s/^/$submenu_indentation/"
        fi
@@ -252,7 +251,7 @@ index 80315a31b..d46d7852b 100644
    fi
  
    echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
-@@ -226,6 +228,35 @@ prepare_root_cache=
+@@ -222,6 +224,35 @@ prepare_root_cache=
  boot_device_id=
  title_correction_code=
  

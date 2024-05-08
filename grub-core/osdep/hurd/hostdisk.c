@@ -87,6 +87,23 @@ grub_util_hurd_get_disk_info (const char *dev, grub_uint32_t *secsize, grub_disk
 	  *parent = xmalloc (len+1);
 	  memcpy (*parent, data, len);
 	  (*parent)[len] = '\0';
+
+	  if ((*parent)[0] == '@')
+	    {
+	      /*
+	       * Non-bootstrap disk driver, the /dev/ entry is normally set up with
+	       * the same @.
+	       */
+	      char *next_path = strchr (*parent, ':');
+
+	      if (next_path)
+		{
+		  char *n = xstrdup (next_path + 1);
+
+		  free (*parent);
+		  *parent = n;
+		}
+	    }
 	}
     }
   if (offset)
@@ -130,9 +147,7 @@ grub_util_get_fd_size_os (grub_util_fd_t fd, const char *name, unsigned *log_sec
 
   if (sector_size & (sector_size - 1) || !sector_size)
     return -1;
-  for (log_sector_size = 0;
-       (1 << log_sector_size) < sector_size;
-       log_sector_size++);
+  log_sector_size = grub_log2ull (sector_size);
 
   if (log_secsize)
     *log_secsize = log_sector_size;

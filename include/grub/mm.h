@@ -20,12 +20,30 @@
 #ifndef GRUB_MM_H
 #define GRUB_MM_H	1
 
+#include <grub/err.h>
 #include <grub/types.h>
 #include <grub/symbol.h>
 #include <config.h>
 
 #ifndef NULL
 # define NULL	((void *) 0)
+#endif
+
+#define GRUB_MM_ADD_REGION_NONE        0
+#define GRUB_MM_ADD_REGION_CONSECUTIVE (1 << 0)
+
+/*
+ * Function used to request memory regions of `grub_size_t` bytes. The second
+ * parameter is a bitfield of `GRUB_MM_ADD_REGION` flags.
+ */
+typedef grub_err_t (*grub_mm_add_region_func_t) (grub_size_t, unsigned int);
+
+/*
+ * Set this function pointer to enable adding memory-regions at runtime in case
+ * a memory allocation cannot be satisfied with existing regions.
+ */
+#ifndef GRUB_MACHINE_EMU
+extern grub_mm_add_region_func_t EXPORT_VAR(grub_mm_add_region_fn);
 #endif
 
 void grub_mm_init_region (void *addr, grub_size_t size);
@@ -46,8 +64,8 @@ void grub_mm_check_real (const char *file, int line);
 /* Set this variable to 1 when you want to trace all memory function calls.  */
 extern int EXPORT_VAR(grub_mm_debug);
 
-void grub_mm_dump_free (void);
-void grub_mm_dump (unsigned lineno);
+void EXPORT_FUNC(grub_mm_dump_free) (void);
+void EXPORT_FUNC(grub_mm_dump) (unsigned lineno);
 
 #define grub_calloc(nmemb, size)	\
   grub_debug_calloc (GRUB_FILE, __LINE__, nmemb, size)

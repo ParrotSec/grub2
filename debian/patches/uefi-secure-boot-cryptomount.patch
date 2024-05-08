@@ -1,5 +1,4 @@
-From 7fd79864c87c57d586989d12c3d4a7e432b3d73a Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Herv=C3=A9=20Werner?= <dud225@hotmail.com>
+From: =?utf-8?q?Herv=C3=A9_Werner?= <dud225@hotmail.com>
 Date: Mon, 28 Jan 2019 17:24:23 +0100
 Subject: Fix setup on Secure Boot systems where cryptodisk is in use
 
@@ -19,11 +18,11 @@ Patch-Name: uefi-secure-boot-cryptomount.patch
  1 file changed, 17 insertions(+)
 
 diff --git a/util/grub-install.c b/util/grub-install.c
-index b51fe4710..58f1453ba 100644
+index 44ae196..ddce04c 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
-@@ -1531,6 +1531,23 @@ main (int argc, char *argv[])
- 	  || uefi_secure_boot)
+@@ -1447,6 +1447,23 @@ main (int argc, char *argv[])
+ 	  || !have_bootdev (platform))
  	{
  	  char *uuid = NULL;
 +

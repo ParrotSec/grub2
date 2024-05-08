@@ -194,16 +194,6 @@ __ctzsi2 (grub_uint32_t x)
 
 #endif
 
-
-#if defined (__clang__) && !defined(GRUB_EMBED_DECOMPRESSOR)
-/* clang emits references to abort().  */
-void __attribute__ ((noreturn))
-abort (void)
-{
-  grub_fatal ("compiler abort");
-}
-#endif
-
 #if (defined (__MINGW32__) || defined (__CYGWIN__))
 void __register_frame_info (void)
 {
@@ -431,7 +421,7 @@ __clzsi2 (grub_uint32_t val)
 
   for (; j; j >>= 1)
     {
-      if ((temp = val) >> j)
+      if ((temp = val >> j))
         {
           if (j == 1)
             {
