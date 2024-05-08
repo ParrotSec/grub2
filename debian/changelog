@@ -1,3 +1,9 @@
+grub2 (2.12-1parrot2) lory; urgency=medium
+
+  * Disable broken tests.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Thu, 09 May 2024 00:16:19 +0200
+
 grub2 (2.12-1parrot1) lory; urgency=medium
 
   * Import new Debian-backports release.
