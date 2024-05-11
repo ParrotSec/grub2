@@ -1,3 +1,9 @@
+grub2 (2.12-1parrot3) lory; urgency=medium
+
+  * Add missing Parrot SBAT file.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 11 May 2024 21:42:03 +0200
+
 grub2 (2.12-1parrot2) lory; urgency=medium
 
   * Disable broken tests.

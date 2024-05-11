@@ -73,3 +73,4 @@ install-signed.patch
 grub-install-extra-removable.patch
 grub-install-removable-shim.patch
 99-parrot-custom-boot-options.patch
+99-parrot-disable-tests.patch
