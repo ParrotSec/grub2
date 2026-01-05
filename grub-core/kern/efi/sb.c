@@ -31,8 +31,12 @@
 #include <grub/verify.h>
 
 static grub_guid_t shim_lock_guid = GRUB_EFI_SHIM_LOCK_GUID;
+static grub_guid_t shim_loader_guid = GRUB_EFI_SHIM_IMAGE_LOADER_GUID;
 
-static bool shim_lock_enabled = false;
+static grub_efi_loader_t *shim_loader = NULL;
+static grub_efi_shim_lock_protocol_t *shim_lock = NULL;
+
+static grub_efi_handle_t last_verified_image_handle = NULL;
 
 /*
  * Determine whether we're in secure boot mode.
@@ -95,14 +99,6 @@ grub_efi_get_secureboot (void)
   if (!(attr & GRUB_EFI_VARIABLE_RUNTIME_ACCESS) && *moksbstate == 1)
     {
       secureboot = GRUB_EFI_SECUREBOOT_MODE_DISABLED;
-      /*
-       * TODO: Replace this all with shim's LoadImage protocol, delegating policy to it.
-       *
-       * We need to set shim_lock_enabled here because we disabled secure boot
-       * validation *inside* shim but not in the firmware, so we set this variable
-       * here to trigger that code path, whereas the actual verifier is not enabled.
-       */
-      shim_lock_enabled = true;
       goto out;
     }
 
@@ -183,15 +179,39 @@ shim_lock_verifier_init (grub_file_t io __attribute__ ((unused)),
 static grub_err_t
 shim_lock_verifier_write (void *context __attribute__ ((unused)), void *buf, grub_size_t size)
 {
-  grub_efi_shim_lock_protocol_t *sl = grub_efi_locate_protocol (&shim_lock_guid, 0);
+  grub_efi_handle_t image_handle;
 
-  if (!sl)
-    return grub_error (GRUB_ERR_ACCESS_DENIED, N_("shim_lock protocol not found"));
+  if (shim_loader != NULL)
+    {
+      if (last_verified_image_handle != NULL)
+        {
+          /*
+	   * Unload the previous image because ownership of the handle was
+	   * not transfered to a loader, and a new image is being loaded.
+	   */
+          shim_loader->unload_image (last_verified_image_handle);
+          last_verified_image_handle = NULL;
+        }
 
-  if (sl->verify (buf, size) != GRUB_EFI_SUCCESS)
-    return grub_error (GRUB_ERR_BAD_SIGNATURE, N_("bad shim signature"));
+      if (shim_loader->load_image (false, grub_efi_image_handle, NULL, buf, size, &image_handle) != GRUB_EFI_SUCCESS)
+	/* If verification fails no handle is produced. */
+        return grub_error (GRUB_ERR_BAD_SIGNATURE, N_("bad shim loader signature"));
 
-  return GRUB_ERR_NONE;
+      /*
+       * Not unloading the image here because chainloader and linux
+       * might use this handle to avoid double TPM measurements.
+       */
+      last_verified_image_handle = image_handle;
+      return GRUB_ERR_NONE;
+    }
+  if (shim_lock != NULL)
+    {
+      if (shim_lock->verify (buf, size) != GRUB_EFI_SUCCESS)
+        return grub_error (GRUB_ERR_BAD_SIGNATURE, N_("bad shim lock signature"));
+      return GRUB_ERR_NONE;
+    }
+
+  return grub_error (GRUB_ERR_ACCESS_DENIED, N_("shim protocols not found"));
 }
 
 struct grub_file_verifier shim_lock_verifier =
@@ -205,11 +225,17 @@ void
 grub_shim_lock_verifier_setup (void)
 {
   struct grub_module_header *header;
-  grub_efi_shim_lock_protocol_t *sl =
-    grub_efi_locate_protocol (&shim_lock_guid, 0);
 
-  /* shim_lock is missing, check if GRUB image is built with --disable-shim-lock. */
-  if (!sl)
+  /* Secure Boot is off. Ignore shim. */
+  if (grub_efi_get_secureboot () != GRUB_EFI_SECUREBOOT_MODE_ENABLED)
+    return;
+
+  /* Find both shim protocols. */
+  shim_loader = grub_efi_locate_protocol (&shim_loader_guid, 0);
+  shim_lock = grub_efi_locate_protocol (&shim_lock_guid, 0);
+
+  /* shim is missing, check if GRUB image is built with --disable-shim-lock. */
+  if (shim_loader == NULL && shim_lock == NULL)
     {
       FOR_MODULES (header)
 	{
@@ -218,21 +244,32 @@ grub_shim_lock_verifier_setup (void)
 	}
     }
 
-  /* Secure Boot is off. Do not load shim_lock. */
-  if (grub_efi_get_secureboot () != GRUB_EFI_SECUREBOOT_MODE_ENABLED)
-    return;
-
   /* Enforce shim_lock_verifier. */
   grub_verifier_register (&shim_lock_verifier);
 
-  shim_lock_enabled = true;
+  /* Register shim loader if supported. */
+  grub_efi_register_loader (shim_loader);
 
   grub_env_set ("shim_lock", "y");
   grub_env_export ("shim_lock");
 }
 
 bool
-grub_is_shim_lock_enabled (void)
+grub_is_using_legacy_shim_lock_protocol (void)
 {
-  return shim_lock_enabled;
+  return (shim_loader == NULL && shim_lock != NULL) ? true : false;
+}
+
+grub_efi_handle_t
+grub_efi_get_last_verified_image_handle (void)
+{
+  grub_efi_handle_t tmp = last_verified_image_handle;
+
+  /*
+   * This function is intended to act as a "transfer of ownership"
+   * of the handle. We set it to NULL so that it cannot be buggily
+   * retrieved more than once and reused for the wrong image.
+   */
+  last_verified_image_handle = NULL;
+  return tmp;
 }

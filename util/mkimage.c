@@ -886,7 +886,8 @@ grub_install_generate_image (const char *dir, const char *prefix,
 			     size_t npubkeys, char *config_path,
 			     const struct grub_install_image_target_desc *image_target,
 			     int note, grub_compression_t comp, const char *dtb_path,
-			     const char *sbat_path, int disable_shim_lock)
+			     const char *sbat_path, int disable_shim_lock,
+			     int disable_cli)
 {
   char *kernel_img, *core_img;
   size_t total_module_size, core_size;
@@ -942,10 +943,13 @@ grub_install_generate_image (const char *dir, const char *prefix,
       total_module_size += dtb_size + sizeof (struct grub_module_header);
     }
 
-  if (sbat_path != NULL && image_target->id != IMAGE_EFI)
-    grub_util_error (_(".sbat section can be embedded into EFI images only"));
+  if (sbat_path != NULL && (image_target->id != IMAGE_EFI && image_target->id != IMAGE_PPC))
+    grub_util_error (_("SBAT data can be added only to EFI or powerpc-ieee1275 images"));
 
   if (disable_shim_lock)
+    total_module_size += sizeof (struct grub_module_header);
+
+  if (disable_cli)
     total_module_size += sizeof (struct grub_module_header);
 
   if (config_path)
@@ -1090,6 +1094,16 @@ grub_install_generate_image (const char *dir, const char *prefix,
 
       header = (struct grub_module_header *) (kernel_img + offset);
       header->type = grub_host_to_target32 (OBJ_TYPE_DISABLE_SHIM_LOCK);
+      header->size = grub_host_to_target32 (sizeof (*header));
+      offset += sizeof (*header);
+    }
+
+  if (disable_cli)
+    {
+      struct grub_module_header *header;
+
+      header = (struct grub_module_header *) (kernel_img + offset);
+      header->type = grub_host_to_target32 (OBJ_TYPE_DISABLE_CLI);
       header->size = grub_host_to_target32 (sizeof (*header));
       offset += sizeof (*header);
     }
@@ -1403,6 +1417,7 @@ grub_install_generate_image (const char *dir, const char *prefix,
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdangling-pointer"
 #endif
+	PE_OHDR (o32, o64, dll_characteristics) = grub_host_to_target16 (GRUB_PE32_NX_COMPAT);
 	PE_OHDR (o32, o64, header_size) = grub_host_to_target32 (header_size);
 	PE_OHDR (o32, o64, entry_addr) = grub_host_to_target32 (layout.start_address);
 	PE_OHDR (o32, o64, image_base) = 0;
@@ -1799,6 +1814,14 @@ grub_install_generate_image (const char *dir, const char *prefix,
     case IMAGE_I386_IEEE1275:
       {
 	grub_uint64_t target_addr;
+	char *sbat = NULL;
+	if (sbat_path != NULL)
+	  {
+	    sbat_size = grub_util_get_image_size (sbat_path);
+	    sbat = xmalloc (sbat_size);
+	    grub_util_load_image (sbat_path, sbat);
+	    layout.sbat_size = sbat_size;
+	  }
 	if (image_target->id == IMAGE_LOONGSON_ELF)
 	  {
 	    if (comp == GRUB_COMPRESSION_NONE)
@@ -1810,10 +1833,10 @@ grub_install_generate_image (const char *dir, const char *prefix,
 	else
 	  target_addr = image_target->link_addr;
 	if (image_target->voidp_sizeof == 4)
-	  grub_mkimage_generate_elf32 (image_target, note, &core_img, &core_size,
+	  grub_mkimage_generate_elf32 (image_target, note, sbat, &core_img, &core_size,
 				       target_addr, &layout);
 	else
-	  grub_mkimage_generate_elf64 (image_target, note, &core_img, &core_size,
+	  grub_mkimage_generate_elf64 (image_target, note, sbat, &core_img, &core_size,
 				       target_addr, &layout);
       }
       break;

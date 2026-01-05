@@ -1,7 +1,8 @@
-This is grub-dev.info, produced by makeinfo version 6.3 from
+This is grub-dev.info, produced by makeinfo version 6.8 from
 grub-dev.texi.
 
-This developer manual is for GNU GRUB (version 2.12, 31 August 2023).
+This developer manual is for GNU GRUB (version 2.14~git20250718.0e36779,
+18 July 2025).
 
    Copyright (C) 1999,2000,2001,2002,2004,2005,2006,2008,2009,2010,2011
 Free Software Foundation, Inc.
@@ -25,9 +26,10 @@ This is the developer documentation of GNU GRUB, the GRand Unified
 Bootloader, a flexible and powerful boot loader program for a wide range
 of architectures.
 
-   This edition documents version 2.12.
+   This edition documents version 2.14~git20250718.0e36779.
 
-   This developer manual is for GNU GRUB (version 2.12, 31 August 2023).
+   This developer manual is for GNU GRUB (version
+2.14~git20250718.0e36779, 18 July 2025).
 
    Copyright (C) 1999,2000,2001,2002,2004,2005,2006,2008,2009,2010,2011
 Free Software Foundation, Inc.
@@ -535,6 +537,8 @@ necessary to update it.
 * Gnulib::
 * jsmn::
 * minilzo::
+* libtasn1::
+* libgcrypt::
 
 
 File: grub-dev.info,  Node: Gnulib,  Next: jsmn,  Up: Updating External Code
@@ -609,7 +613,7 @@ commit to the target directory:
          -o grub-core/lib/json/jsmn.h
 
 
-File: grub-dev.info,  Node: minilzo,  Prev: jsmn,  Up: Updating External Code
+File: grub-dev.info,  Node: minilzo,  Next: libtasn1,  Prev: jsmn,  Up: Updating External Code
 
 6.3 minilzo
 ===========
@@ -627,6 +631,68 @@ release tarball and copy the files into the target directory:
      rm -r grub-core/lib/minilzo/*
      cp minilzo-2.10/*.[hc] grub-core/lib/minilzo
      rm -r minilzo-2.10*
+
+
+File: grub-dev.info,  Node: libtasn1,  Next: libgcrypt,  Prev: minilzo,  Up: Updating External Code
+
+6.4 libtasn1
+============
+
+libtasn1 is a library providing Abstract Syntax Notation One (ASN.1, as
+specified by the X.680 ITU-T recommendation) parsing and structures
+management, and Distinguished Encoding Rules (DER, as per X.690)
+encoding and decoding functions.
+
+   To upgrade to a new version of the libtasn1 library, download the
+release tarball and copy the files into the target directory:
+
+     curl -L -O https://ftp.gnu.org/gnu/libtasn1/libtasn1-4.19.0.tar.gz
+     tar xvzf libtasn1-4.19.0.tar.gz
+     rm -rf grub-core/lib/libtasn1
+     mkdir -p grub-core/lib/libtasn1/lib
+     mkdir -p grub-core/lib/libtasn1/tests
+     cp libtasn1-4.19.0/{README.md,COPYING} grub-core/lib/libtasn1
+     cp libtasn1-4.19.0/lib/{coding.c,decoding.c,element.c,element.h,errors.c,gstr.c,gstr.h,int.h,parser_aux.c,parser_aux.h,structure.c,structure.h} grub-core/lib/libtasn1/lib
+     cp libtasn1-4.19.0/lib/includes/libtasn1.h grub-core/lib/libtasn1
+     cp libtasn1-4.19.0/tests/{CVE-2018-1000654-1_asn1_tab.h,CVE-2018-1000654-2_asn1_tab.h,CVE-2018-1000654.c,object-id-decoding.c,object-id-encoding.c,octet-string.c,reproducers.c,Test_overflow.c,Test_simple.c,Test_strings.c} grub-core/lib/libtasn1/tests
+     rm -rf libtasn1-4.19.0*
+
+   After upgrading the library, it may be necessary to apply the patches
+in 'grub-core/lib/libtasn1-patches/' to adjust the code to be compatible
+with GRUB. These patches were needed to use the current version of
+libtasn1.  The existing patches may not apply cleanly, apply at all, or
+even be needed for a newer version of the library, and other patches may
+be needed due to changes in the newer version.  If existing patches need
+to be refreshed to apply cleanly, please include updated patches as part
+of the a patch set sent to the list.  If new patches are needed or
+existing patches are not needed, also please send additions or removals
+as part of any patch set upgrading libtasn1.
+
+
+File: grub-dev.info,  Node: libgcrypt,  Prev: libtasn1,  Up: Updating External Code
+
+6.5 libgcrypt
+=============
+
+libgcrypt is a GNU implementation of crypto library.  To import a new
+version you need to unpack the release tarball into
+grub-core/lib/libgcrypt.  Delete following files/directories: *
+acinclude.m4 * aclocal.m4 * autogen.rc * autogen.sh * build-aux *
+ChangeLog * ChangeLog-2011 * doc * INSTALL * m4 * Makefile.am *
+Makefile.in * NEWS * random * tests * TODO * */Makefile.in * mpi/hppa1.1
+
+   Regenerate the file gost-sb.h: grub-core/lib/libgcrypt/cipher$ gcc -o
+gost-s-box gost-s-box.c grub-core/lib/libgcrypt/cipher$ ./gost-s-box
+gost-sb.h
+
+   Then rerun ./bootstrap and pay attention to the errors.  Especially
+to warnings that a file isn't a module as it means that some file is
+actually unused by GRUB. If any, find where it declares its cipher or
+hash and add a pattern to import_gcry.py.  See commit "libgcrypt: Import
+blake family of hashes" for an example.  If file reallly is useless to
+GRUB in its current state, add it to whitelist in import_gcry.py.
+Compile and fix any new errors.  Put patches into
+grub-core/lib/libgcrypt-patches
 
 
 File: grub-dev.info,  Node: Debugging,  Next: Porting,  Prev: Updating External Code,  Up: Top
@@ -2266,6 +2332,7 @@ File: grub-dev.info,  Node: Font Metrics,  Prev: File Structure,  Up: PFF2 Font 
 
  [image src="font_char_metrics.png" text="Please fill this in." ]
 
+
    An illustration of how the various font metrics apply to characters.
 
 
@@ -2944,52 +3011,59 @@ Index
 
 
 Tag Table:
-Node: Top639
-Node: Getting the source code1856
-Node: Coding style2848
-Node: Naming Conventions3257
-Node: Functions3542
-Node: Variables4416
-Node: Types5531
-Node: Macros6132
-Node: Comments6464
-Node: Multi-Line Comments7073
-Node: Finding your way around7998
-Node: Contributing Changes11314
-Node: Getting started12430
-Node: Typical Developer Experience16482
-Node: When you are approved for write access to project's files17524
-Node: Setting up and running test suite18957
-Node: Updating External Code19654
-Node: Gnulib19961
-Node: jsmn21954
-Node: minilzo22425
-Node: Debugging23132
-Node: i386-pc25153
-Node: x86_64-efi27698
-Node: OVMF debug log34181
-Node: Using the gdbinfo command35356
-Node: Porting35654
-Node: Error Handling47408
-Node: Stack and heap size52500
-Node: BIOS port memory map55300
-Node: Video Subsystem56151
-Node: Video API56625
-Node: Example usage of Video API77074
-Node: Bitmap API78654
-Node: PFF2 Font File Format81187
-Node: Introduction81427
-Node: File Structure82930
-Node: Font Metrics87848
-Node: Graphical Menu Software Design88996
-Node: Introduction_289288
-Node: Startup Sequence90022
-Node: GUI Components90873
-Node: Command Line Window93474
-Node: Verifiers framework94426
-Node: Lockdown framework97033
-Node: Copying This Manual97975
-Node: GNU Free Documentation License98219
-Node: Index120612
+Node: Top657
+Node: Getting the source code1912
+Node: Coding style2904
+Node: Naming Conventions3313
+Node: Functions3598
+Node: Variables4472
+Node: Types5587
+Node: Macros6188
+Node: Comments6520
+Node: Multi-Line Comments7129
+Node: Finding your way around8054
+Node: Contributing Changes11370
+Node: Getting started12486
+Node: Typical Developer Experience16538
+Node: When you are approved for write access to project's files17580
+Node: Setting up and running test suite19013
+Node: Updating External Code19710
+Node: Gnulib20044
+Node: jsmn22037
+Node: minilzo22508
+Node: libtasn123232
+Node: libgcrypt25250
+Node: Debugging26412
+Node: i386-pc28433
+Node: x86_64-efi30978
+Node: OVMF debug log37461
+Node: Using the gdbinfo command38636
+Node: Porting38934
+Node: Error Handling50688
+Node: Stack and heap size55780
+Node: BIOS port memory map58580
+Node: Video Subsystem59431
+Node: Video API59905
+Node: Example usage of Video API80354
+Node: Bitmap API81934
+Node: PFF2 Font File Format84467
+Node: Introduction84707
+Node: File Structure86210
+Node: Font Metrics91128
+Node: Graphical Menu Software Design92277
+Node: Introduction_292569
+Node: Startup Sequence93303
+Node: GUI Components94154
+Node: Command Line Window96755
+Node: Verifiers framework97707
+Node: Lockdown framework100314
+Node: Copying This Manual101256
+Node: GNU Free Documentation License101500
+Node: Index123893
 
 End Tag Table
+
+
+Local Variables:
+coding: utf-8
+End:

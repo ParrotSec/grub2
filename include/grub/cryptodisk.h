@@ -70,6 +70,18 @@ typedef gcry_err_code_t
 (*grub_cryptodisk_rekey_func_t) (struct grub_cryptodisk *dev,
 				 grub_uint64_t zoneno);
 
+struct grub_cryptomount_cached_key
+{
+  grub_uint8_t *key;
+  grub_size_t key_len;
+
+  /*
+   * The key protector associated with this cache entry failed, so avoid it
+   * even if the cached entry (an instance of this structure) is empty.
+   */
+  bool invalid;
+};
+
 struct grub_cryptomount_args
 {
   /* scan: Flag to indicate that only bootable volumes should be decrypted */
@@ -81,6 +93,10 @@ struct grub_cryptomount_args
   /* recover_key: Length of key_data */
   grub_size_t key_len;
   grub_file_t hdr_file;
+  /* recover_key: Names of the key protectors to use (NULL-terminated) */
+  char **protectors;
+  /* recover_key: Key cache to avoid invoking the same key protector twice */
+  struct grub_cryptomount_cached_key *key_cache;
 };
 typedef struct grub_cryptomount_args *grub_cryptomount_args_t;
 
@@ -187,4 +203,8 @@ grub_util_get_geli_uuid (const char *dev);
 grub_cryptodisk_t grub_cryptodisk_get_by_uuid (const char *uuid);
 grub_cryptodisk_t grub_cryptodisk_get_by_source_disk (grub_disk_t disk);
 
+#ifdef GRUB_MACHINE_EFI
+grub_err_t grub_cryptodisk_challenge_password (void);
+void grub_cryptodisk_erasesecrets (void);
+#endif
 #endif

@@ -87,37 +87,44 @@ grub_ls_list_devices (int longlist)
 struct grub_ls_list_files_ctx
 {
   char *dirname;
+  char *filename;
   int all;
   int human;
+  int longlist;
+  int print_dirhdr;
 };
 
 /* Helper for grub_ls_list_files.  */
 static int
-print_files (const char *filename, const struct grub_dirhook_info *info,
-	     void *data)
-{
-  struct grub_ls_list_files_ctx *ctx = data;
-
-  if (ctx->all || filename[0] != '.')
-    grub_printf ("%s%s ", filename, info->dir ? "/" : "");
-
-  return 0;
-}
-
-/* Helper for grub_ls_list_files.  */
-static int
-print_files_long (const char *filename, const struct grub_dirhook_info *info,
+print_file (const char *filename, const struct grub_dirhook_info *info,
 		  void *data)
 {
+  char *pathname = NULL;
   struct grub_ls_list_files_ctx *ctx = data;
 
   if ((! ctx->all) && (filename[0] == '.'))
     return 0;
 
+  if ((ctx->filename != NULL) && (grub_strcmp (filename, ctx->filename) != 0))
+    return 0;
+
+  if (ctx->print_dirhdr)
+    {
+      grub_printf ("%s:\n", ctx->dirname);
+      ctx->print_dirhdr = 0;
+    }
+
+  if (! ctx->longlist)
+    {
+      if (ctx->filename != NULL)
+	grub_xputs (ctx->dirname);
+      grub_printf ("%s%s ", filename, info->dir ? "/" : "");
+      return 0;
+    }
+
   if (! info->dir)
     {
       grub_file_t file;
-      char *pathname;
 
       if (ctx->dirname[grub_strlen (ctx->dirname) - 1] == '/')
 	pathname = grub_xasprintf ("%s%s", ctx->dirname, filename);
@@ -143,7 +150,6 @@ print_files_long (const char *filename, const struct grub_dirhook_info *info,
       else
 	grub_xputs ("????????????");
 
-      grub_free (pathname);
       grub_errno = GRUB_ERR_NONE;
     }
   else
@@ -165,13 +171,22 @@ print_files_long (const char *filename, const struct grub_dirhook_info *info,
 		     datetime.day, datetime.hour,
 		     datetime.minute, datetime.second);
     }
-  grub_printf ("%s%s\n", filename, info->dir ? "/" : "");
+  /*
+   * Only print the full path when listing a file path given as an argument
+   * to ls, i.e. when ctx->filename != NULL. File listings that are printed
+   * due to showing the contents of a directory do not need a full path because
+   * the full path to the directory will have already been printed.
+   */
+  grub_printf ("%s%s\n", (ctx->filename != NULL) ? pathname : filename,
+			 info->dir ? "/" : "");
+
+  grub_free (pathname);
 
   return 0;
 }
 
 static grub_err_t
-grub_ls_list_files (char *dirname, int longlist, int all, int human)
+grub_ls_list_files (char *dirname, int longlist, int all, int human, int dirhdr)
 {
   char *device_name;
   grub_fs_t fs;
@@ -216,42 +231,36 @@ grub_ls_list_files (char *dirname, int longlist, int all, int human)
     {
       struct grub_ls_list_files_ctx ctx = {
 	.dirname = dirname,
+	.filename = NULL,
 	.all = all,
-	.human = human
+	.human = human,
+	.longlist = longlist,
+	.print_dirhdr = dirhdr
       };
 
-      if (longlist)
-	(fs->fs_dir) (dev, path, print_files_long, &ctx);
-      else
-	(fs->fs_dir) (dev, path, print_files, &ctx);
+      (fs->fs_dir) (dev, path, print_file, &ctx);
 
       if (grub_errno == GRUB_ERR_BAD_FILE_TYPE
 	  && path[grub_strlen (path) - 1] != '/')
 	{
+	  /*
+	   * Reset errno as it is currently set, but will cause subsequent code
+	   * to think there is an error.
+	   */
+	  grub_errno = GRUB_ERR_NONE;
+
 	  /* PATH might be a regular file.  */
-	  char *p;
-	  grub_file_t file;
-	  struct grub_dirhook_info info;
-	  grub_errno = 0;
-
-	  file = grub_file_open (dirname, GRUB_FILE_TYPE_GET_SIZE
-				 | GRUB_FILE_TYPE_NO_DECOMPRESS);
-	  if (! file)
+	  ctx.print_dirhdr = 0;
+	  ctx.filename = grub_strrchr (dirname, '/');
+	  if (ctx.filename == NULL)
 	    goto fail;
+	  ++(ctx.filename);
 
-	  grub_file_close (file);
-
-	  p = grub_strrchr (dirname, '/') + 1;
-	  ctx.dirname = grub_strndup (dirname, p - dirname);
+	  ctx.dirname = grub_strndup (dirname, ctx.filename - dirname);
 	  if (ctx.dirname == NULL)
 	    goto fail;
 
-	  all = 1;
-	  grub_memset (&info, 0, sizeof (info));
-	  if (longlist)
-	    print_files_long (p, &info, &ctx);
-	  else
-	    print_files (p, &info, &ctx);
+	  (fs->fs_dir) (dev, ctx.dirname + (path - dirname), print_file, &ctx);
 
 	  grub_free (ctx.dirname);
 	}
@@ -268,7 +277,7 @@ grub_ls_list_files (char *dirname, int longlist, int all, int human)
 
   grub_free (device_name);
 
-  return 0;
+  return GRUB_ERR_NONE;
 }
 
 static grub_err_t
@@ -281,10 +290,10 @@ grub_cmd_ls (grub_extcmd_context_t ctxt, int argc, char **args)
     grub_ls_list_devices (state[0].set);
   else
     for (i = 0; i < argc; i++)
-      grub_ls_list_files (args[i], state[0].set, state[2].set,
-			  state[1].set);
+      grub_ls_list_files (args[i], state[0].set, state[2].set, state[1].set,
+			  argc > 1);
 
-  return 0;
+  return GRUB_ERR_NONE;
 }
 
 static grub_extcmd_t cmd;

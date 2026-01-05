@@ -33,6 +33,7 @@
 #include <grub/efi/efi.h>
 #include <grub/efi/disk.h>
 #include <grub/efi/memory.h>
+#include <grub/efi/sb.h>
 #include <grub/command.h>
 #include <grub/i18n.h>
 #include <grub/net.h>
@@ -50,14 +51,12 @@ grub_chainloader_unload (void *context)
 {
   grub_efi_handle_t image_handle = (grub_efi_handle_t) context;
   grub_efi_loaded_image_t *loaded_image;
-  grub_efi_boot_services_t *b;
 
   loaded_image = grub_efi_get_loaded_image (image_handle);
   if (loaded_image != NULL)
     grub_free (loaded_image->load_options);
 
-  b = grub_efi_system_table->boot_services;
-  b->unload_image (image_handle);
+  grub_efi_unload_image (image_handle);
 
   grub_dl_unref (my_mod);
   return GRUB_ERR_NONE;
@@ -73,7 +72,7 @@ grub_chainloader_boot (void *context)
   grub_efi_char16_t *exit_data = NULL;
 
   b = grub_efi_system_table->boot_services;
-  status = b->start_image (image_handle, &exit_data_size, &exit_data);
+  status = grub_efi_start_image (image_handle, &exit_data_size, &exit_data);
   if (status != GRUB_EFI_SUCCESS)
     {
       if (exit_data)
@@ -185,7 +184,6 @@ make_file_path (grub_efi_device_path_t *dp, const char *filename)
   /* Fill the file path for the directory.  */
   d = (grub_efi_device_path_t *) ((char *) file_path
 				  + ((char *) d - (char *) dp));
-  grub_efi_print_device_path (d);
   if (copy_file_path ((grub_efi_file_path_device_path_t *) d,
 		      dir_start, dir_end - dir_start) != GRUB_ERR_NONE)
     {
@@ -272,9 +270,6 @@ grub_cmd_chainloader (grub_command_t cmd __attribute__ ((unused)),
       file_path = make_file_path (dp, filename);
       if (file_path == NULL)
 	goto fail;
-
-      grub_printf ("file path: ");
-      grub_efi_print_device_path (file_path);
     }
 
   size = grub_file_size (file);
@@ -343,17 +338,20 @@ grub_cmd_chainloader (grub_command_t cmd __attribute__ ((unused)),
     }
 #endif
 
-  status = b->load_image (0, grub_efi_image_handle, file_path,
-			  boot_image, size,
-			  &image_handle);
-  if (status != GRUB_EFI_SUCCESS)
+  image_handle = grub_efi_get_last_verified_image_handle ();
+  if (image_handle == NULL)
     {
-      if (status == GRUB_EFI_OUT_OF_RESOURCES)
-	grub_error (GRUB_ERR_OUT_OF_MEMORY, "out of resources");
-      else
-	grub_error (GRUB_ERR_BAD_OS, "cannot load image");
+      status = grub_efi_load_image (0, grub_efi_image_handle, file_path,
+				boot_image, size, &image_handle);
+      if (status != GRUB_EFI_SUCCESS)
+	{
+	  if (status == GRUB_EFI_OUT_OF_RESOURCES)
+	    grub_error (GRUB_ERR_OUT_OF_MEMORY, "out of resources");
+	  else
+	    grub_error (GRUB_ERR_BAD_OS, "cannot load image");
 
-      goto fail;
+	  goto fail;
+	}
     }
 
   /* LoadImage does not set a device handler when the image is
@@ -422,7 +420,7 @@ grub_cmd_chainloader (grub_command_t cmd __attribute__ ((unused)),
     b->free_pages (address, pages);
 
   if (image_handle != NULL)
-    b->unload_image (image_handle);
+    grub_efi_unload_image (image_handle);
 
   grub_dl_unref (my_mod);
 

@@ -150,14 +150,11 @@ __grub_list_modules () {
 #
 # grub-set-default & grub-reboot
 #
-_grub_set_entry () {
-    local cur prev split=false
+__grub_set_entry () {
+    local cur prev words cword split
+    _init_completion -s || return
 
     COMPREPLY=()
-    cur=`_get_cword`
-    prev=${COMP_WORDS[COMP_CWORD-1]}
-
-    _split_longopt && split=true
 
     case "$prev" in
         --boot-directory)
@@ -176,26 +173,14 @@ _grub_set_entry () {
     fi
 }
 
-__grub_set_default_program="@grub_set_default@"
-have ${__grub_set_default_program} && \
-    complete -F _grub_set_entry -o filenames ${__grub_set_default_program}
-unset __grub_set_default_program
-
-__grub_reboot_program="@grub_reboot@"
-have ${__grub_reboot_program} && \
- complete -F _grub_set_entry -o filenames ${__grub_reboot_program}
-unset __grub_reboot_program
-
-
 #
 # grub-editenv
 #
-_grub_editenv () {
-    local cur prev
+__grub_editenv () {
+    local cur prev words cword
+    _init_completion || return
 
     COMPREPLY=()
-    cur=`_get_cword`
-    prev=${COMP_WORDS[COMP_CWORD-1]}
 
     case "$prev" in
         create|list|set|unset)
@@ -208,20 +193,14 @@ _grub_editenv () {
                 create list set unset"
 }
 
-__grub_editenv_program="@grub_editenv@"
-have ${__grub_editenv_program} && \
- complete -F _grub_editenv -o filenames ${__grub_editenv_program}
-unset __grub_editenv_program
-
-
 #
 # grub-mkconfig
 #
-_grub_mkconfig () {
-    local cur prev
+__grub_mkconfig () {
+    local cur prev words cword
+    _init_completion || return
 
     COMPREPLY=()
-    cur=`_get_cword`
 
     if [[ "$cur" == -* ]]; then
         __grubcomp "$(__grub_get_options_from_help)"
@@ -229,23 +208,15 @@ _grub_mkconfig () {
         _filedir
     fi
 }
-__grub_mkconfig_program="@grub_mkconfig@"
-have ${__grub_mkconfig_program} && \
- complete -F _grub_mkconfig -o filenames ${__grub_mkconfig_program}
-unset __grub_mkconfig_program
-
 
 #
 # grub-setup
 #
-_grub_setup () {
-    local cur prev split=false
+__grub_setup () {
+    local cur prev words cword split
+    _init_completion -s || return
 
     COMPREPLY=()
-    cur=`_get_cword`
-    prev=${COMP_WORDS[COMP_CWORD-1]}
-
-    _split_longopt && split=true
 
     case "$prev" in
         -d|--directory)
@@ -264,29 +235,15 @@ _grub_setup () {
     fi
 }
 
-__grub_bios_setup_program="@grub_bios_setup@"
-have ${__grub_bios_setup_program} && \
- complete -F _grub_setup -o filenames ${__grub_bios_setup_program}
-unset __grub_bios_setup_program
-
-__grub_sparc64_setup_program="@grub_sparc64_setup@"
-have ${__grub_sparc64_setup_program} && \
- complete -F _grub_setup -o filenames ${__grub_sparc64_setup_program}
-unset __grub_sparc64_setup_program
-
-
 #
 # grub-install
 #
-_grub_install () {
-    local cur prev last split=false
+__grub_install () {
+    local cur prev words cword split last
+    _init_completion -s || return
 
     COMPREPLY=()
-    cur=`_get_cword`
-    prev=${COMP_WORDS[COMP_CWORD-1]}
     last=$(__grub_get_last_option)
-
-    _split_longopt && split=true
 
     case "$prev" in
         --boot-directory)
@@ -315,20 +272,15 @@ _grub_install () {
         _filedir
     fi
 }
-__grub_install_program="@grub_install@"
-have ${__grub_install_program} && \
- complete -F _grub_install -o filenames ${__grub_install_program}
-unset __grub_install_program
-
 
 #
 # grub-mkfont
 #
-_grub_mkfont () {
-    local cur
+__grub_mkfont () {
+    local cur prev words cword
+    _init_completion || return
 
     COMPREPLY=()
-    cur=`_get_cword`
 
     if [[ "$cur" == -* ]]; then
         __grubcomp "$(__grub_get_options_from_help)"
@@ -337,21 +289,15 @@ _grub_mkfont () {
         _filedir
     fi
 }
-__grub_mkfont_program="@grub_mkfont@"
-have ${__grub_mkfont_program} && \
- complete -F _grub_mkfont -o filenames ${__grub_mkfont_program}
-unset __grub_mkfont_program
-
 
 #
 # grub-mkrescue
 #
-_grub_mkrescue () {
-    local cur prev last
+__grub_mkrescue () {
+    local cur prev words cword last
+    _init_completion || return
 
     COMPREPLY=()
-    cur=`_get_cword`
-    prev=${COMP_WORDS[COMP_CWORD-1]}
     last=$(__grub_get_last_option)
 
     if [[ "$cur" == -* ]]; then
@@ -368,23 +314,15 @@ _grub_mkrescue () {
         _filedir
     fi
 }
-__grub_mkrescue_program="@grub_mkrescue@"
-have ${__grub_mkrescue_program} && \
- complete -F _grub_mkrescue -o filenames ${__grub_mkrescue_program}
-unset __grub_mkrescue_program
-
 
 #
 # grub-mkimage
 #
-_grub_mkimage () {
-    local cur prev split=false
+__grub_mkimage () {
+    local cur prev words cword split
+    _init_completion -s || return
 
     COMPREPLY=()
-    cur=`_get_cword`
-    prev=${COMP_WORDS[COMP_CWORD-1]}
-
-    _split_longopt && split=true
 
     case "$prev" in
         -d|--directory|-p|--prefix)
@@ -410,20 +348,15 @@ _grub_mkimage () {
         _filedir
     fi
 }
-__grub_mkimage_program="@grub_mkimage@"
-have ${__grub_mkimage_program} && \
- complete -F _grub_mkimage -o filenames ${__grub_mkimage_program}
-unset __grub_mkimage_program
-
 
 #
 # grub-mkpasswd-pbkdf2
 #
-_grub_mkpasswd_pbkdf2 () {
-    local cur
+__grub_mkpasswd_pbkdf2 () {
+    local cur prev words cword
+    _init_completion || return
 
     COMPREPLY=()
-    cur=`_get_cword`
 
     if [[ "$cur" == -* ]]; then
         __grubcomp "$(__grub_get_options_from_help)"
@@ -432,23 +365,15 @@ _grub_mkpasswd_pbkdf2 () {
         _filedir
     fi
 }
-__grub_mkpasswd_pbkdf2_program="@grub_mkpasswd_pbkdf2@"
-have ${__grub_mkpasswd_pbkdf2_program} && \
- complete -F _grub_mkpasswd_pbkdf2 -o filenames ${__grub_mkpasswd_pbkdf2_program}
-unset __grub_mkpasswd_pbkdf2_program
-
 
 #
 # grub-probe
 #
-_grub_probe () {
-    local cur prev split=false
+__grub_probe () {
+    local cur prev words cword split
+    _init_completion -s || return
 
     COMPREPLY=()
-    cur=`_get_cword`
-    prev=${COMP_WORDS[COMP_CWORD-1]}
-
-    _split_longopt && split=true
 
     case "$prev" in
         -t|--target)
@@ -470,20 +395,15 @@ _grub_probe () {
         _filedir
     fi
 }
-__grub_probe_program="@grub_probe@"
-have ${__grub_probe_program} && \
- complete -F _grub_probe -o filenames ${__grub_probe_program}
-unset __grub_probe_program
-
 
 #
 # grub-script-check
 #
-_grub_script_check () {
-    local cur
+__grub_script_check () {
+    local cur prev words cword
+    _init_completion || return
 
     COMPREPLY=()
-    cur=`_get_cword`
 
     if [[ "$cur" == -* ]]; then
         __grubcomp "$(__grub_get_options_from_help)"
@@ -492,10 +412,6 @@ _grub_script_check () {
         _filedir
     fi
 }
-__grub_script_check_program="@grub_script_check@"
-have ${__grub_script_check_program} && \
- complete -F _grub_script_check -o filenames ${__grub_script_check_program}
-
 
 # Local variables:
 # mode: shell-script

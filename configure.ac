@@ -34,7 +34,7 @@ dnl "TARGET_" (such as TARGET_CC, TARGET_CFLAGS, etc.) are used for
 dnl the target type. See INSTALL for full list of variables and
 dnl description of the relationships between them.
 
-AC_INIT([GRUB],[2.12],[bug-grub@gnu.org])
+AC_INIT([GRUB],[2.14~git20250718.0e36779],[bug-grub@gnu.org])
 
 AS_CASE(["$ERROR_PLATFORM_NOT_SUPPORT_SSP"],
   [n | no | nO | N | No | NO], [ERROR_PLATFORM_NOT_SUPPORT_SSP=no],
@@ -76,6 +76,7 @@ grub_TRANSFORM([grub-mkpasswd-pbkdf2])
 grub_TRANSFORM([grub-mkrelpath])
 grub_TRANSFORM([grub-mkrescue])
 grub_TRANSFORM([grub-probe])
+grub_TRANSFORM([grub-protect])
 grub_TRANSFORM([grub-reboot])
 grub_TRANSFORM([grub-script-check])
 grub_TRANSFORM([grub-set-default])
@@ -802,6 +803,17 @@ if test "x$target_cpu" = xmips || test "x$target_cpu" = xmipsel ; then
   if test "x$grub_cv_cc_mflush_func" = xyes; then
     TARGET_CFLAGS="$TARGET_CFLAGS -mflush-func=grub_red_herring"
   fi
+
+  AC_CACHE_CHECK([whether -mno-gpopt works], [grub_cv_cc_mno_gpopt], [
+    CFLAGS="$TARGET_CFLAGS -mno-gpopt -Werror"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],
+	[grub_cv_cc_mno_gpopt=yes],
+	[grub_cv_cc_mno_gpopt=no])
+  ])
+
+  if test "x$grub_cv_cc_mno_gpopt" = xyes; then
+    TARGET_CFLAGS="$TARGET_CFLAGS -mno-gpopt"
+  fi
 fi
 
 
@@ -899,6 +911,31 @@ if test "x$target_cpu" = xloongarch64; then
 
   TARGET_CFLAGS="$TARGET_CFLAGS -Wa,-mla-global-with-abs"
   TARGET_CCASFLAGS="$TARGET_CCASFLAGS -Wa,-mla-global-with-abs"
+fi
+
+if test "x$target_cpu" = xriscv64 || test "x$target_cpu" = xriscv32; then
+  AC_CACHE_CHECK([for no-relax options], grub_cv_target_cc_mno_relax, [
+    grub_cv_target_cc_mno_relax=no
+    for cand in "-mno-relax" "-Wa,-mno-relax"; do
+      if test x"$grub_cv_target_cc_mno_relax" != xno ; then
+        break
+      fi
+      CFLAGS="$TARGET_CFLAGS $cand -Werror"
+      AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+	    asm (".globl start; start:");
+	    void __main (void);
+	    void __main (void) {}
+	    int main (void);
+	    ]], [[]])], [grub_cv_target_cc_mno_relax="$cand"], [])
+    done
+  ])
+
+  CFLAGS="$TARGET_CFLAGS"
+
+  if test x"$grub_cv_target_cc_mno_relax" != xno ; then
+    TARGET_CFLAGS="$TARGET_CFLAGS $grub_cv_target_cc_mno_relax"
+    TARGET_CCASFLAGS="$TARGET_CCASFLAGS $grub_cv_target_cc_mno_relax"
+  fi
 fi
 
 # GRUB doesn't use float or doubles at all. Yet some toolchains may decide
@@ -1847,7 +1884,7 @@ if test "x$with_dejavufont" = x; then
   # search in well-known directories
   if test x"$starfield_excuse" = x; then
      for ext in pcf pcf.gz bdf bdf.gz ttf ttf.gz; do
-       for dir in . /usr/src /usr/share/fonts/X11/misc /usr/share/fonts/truetype/ttf-dejavu /usr/share/fonts/dejavu /usr/share/fonts/truetype /usr/pkg/share/fonts/X11/TTF /usr/local/share/fonts/dejavu /usr/X11R6/lib/X11/fonts/TTF; do
+       for dir in . /usr/src /usr/share/fonts/X11/misc /usr/share/fonts/truetype/ttf-dejavu /usr/share/fonts/dejavu /usr/share/fonts/truetype /usr/pkg/share/fonts/X11/TTF /usr/local/share/fonts/dejavu /usr/X11R6/lib/X11/fonts/TTF /usr/share/fonts/dejavu-sans-fonts /usr/share/fonts/truetype/dejavu; do
           if test -f "$dir/DejaVuSans.$ext"; then
             DJVU_FONT_SOURCE="$dir/DejaVuSans.$ext"
             break 2
@@ -1875,7 +1912,7 @@ AC_ARG_WITH([unifont],
 
 if test "x$with_unifont" = x; then
   # search in well-known directories
-  for ext in pcf pcf.gz bdf bdf.gz ttf ttf.gz; do
+  for ext in pcf pcf.gz bdf bdf.gz ttf ttf.gz otf otf.gz; do
     for dir in . /usr/src /usr/share/fonts/X11/misc /usr/share/fonts/unifont /usr/share/fonts/uni /usr/share/fonts/truetype/unifont /usr/share/fonts/misc /usr/pkg/share/fonts/X11/misc /usr/local/share/fonts/gnu-unifont /usr/local/share/fonts/unifont; do
       if test -f "$dir/unifont.$ext"; then
         md5="$(md5sum "$dir/unifont.$ext"|awk '{ print $1; }')"
@@ -2057,6 +2094,29 @@ fi
 AC_SUBST([LIBZFS])
 AC_SUBST([LIBNVPAIR])
 
+AC_ARG_ENABLE([grub-protect],
+	      [AS_HELP_STRING([--enable-grub-protect],
+                             [build and install the `grub-protect' utility (default=guessed)])])
+if test x"$enable_grub_protect" = xno ; then
+  grub_protect_excuse="explicitly disabled"
+fi
+
+LIBTASN1=
+if test x"$grub_protect_excuse" = x ; then
+  AC_CHECK_LIB([tasn1], [asn1_write_value], [LIBTASN1="-ltasn1"], [grub_protect_excuse="need libtasn1 library"])
+fi
+AC_SUBST([LIBTASN1])
+
+if test x"$enable_grub_protect" = xyes && test x"$grub_protect_excuse" != x ; then
+  AC_MSG_ERROR([grub-protect was explicitly requested but can't be compiled ($grub_protect_excuse)])
+fi
+if test x"$grub_protect_excuse" = x ; then
+enable_grub_protect=yes
+else
+enable_grub_protect=no
+fi
+AC_SUBST([enable_grub_protect])
+
 LIBS=""
 
 AC_SUBST([FONT_SOURCE])
@@ -2173,6 +2233,7 @@ AM_CONDITIONAL([COND_GRUB_EMU_SDL], [test x$enable_grub_emu_sdl = xyes])
 AM_CONDITIONAL([COND_GRUB_EMU_PCI], [test x$enable_grub_emu_pci = xyes])
 AM_CONDITIONAL([COND_GRUB_MKFONT], [test x$enable_grub_mkfont = xyes])
 AM_CONDITIONAL([COND_GRUB_MOUNT], [test x$enable_grub_mount = xyes])
+AM_CONDITIONAL([COND_GRUB_PROTECT], [test x$enable_grub_protect = xyes])
 AM_CONDITIONAL([COND_HAVE_FONT_SOURCE], [test x$FONT_SOURCE != x])
 if test x$FONT_SOURCE != x ; then
    HAVE_FONT_SOURCE=1
@@ -2299,6 +2360,11 @@ if [ x"$grub_mount_excuse" = x ]; then
 echo grub-mount: Yes
 else
 echo grub-mount: No "($grub_mount_excuse)"
+fi
+if [ x"$grub_protect_excuse" = x ]; then
+echo grub-protect: Yes
+else
+echo grub-protect: No "($grub_protect_excuse)"
 fi
 if [ x"$starfield_excuse" = x ]; then
 echo starfield theme: Yes

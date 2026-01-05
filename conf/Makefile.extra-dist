@@ -29,12 +29,19 @@ EXTRA_DIST += grub-core/genemuinit.sh
 EXTRA_DIST += grub-core/genemuinitheader.sh
 
 EXTRA_DIST += grub-core/lib/gnulib-patches/fix-width.patch
+EXTRA_DIST += grub-core/lib/gnulib-patches/fix-regcomp-resource-leak.patch
+EXTRA_DIST += grub-core/lib/gnulib-patches/fix-regexec-resource-leak.patch
+EXTRA_DIST += grub-core/lib/gnulib-patches/fix-gcc-15-compile.patch
+EXTRA_DIST += grub-core/lib/gnulib-patches/fix-unused-value.patch
 
 EXTRA_DIST += grub-core/lib/libgcrypt
 EXTRA_DIST += grub-core/lib/libgcrypt-grub/mpi/generic
 EXTRA_DIST += $(shell find $(top_srcdir)/include -name '*.h')
 EXTRA_DIST += $(shell find $(top_srcdir)/grub-core/lib -name '*.h')
 EXTRA_DIST += grub-core/efiemu/runtime/config.h
+EXTRA_DIST += grub-core/tests/asn1/asn1_test.h
+EXTRA_DIST += $(shell find $(top_srcdir)/grub-core/tests/asn1/tests -name '*.h')
+EXTRA_DIST += $(shell find $(top_srcdir)/grub-core/commands/tpm2_key_protector -name '*.h')
 
 EXTRA_DIST += grub-core/lib/LzmaDec.c
 

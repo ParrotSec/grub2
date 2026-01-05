@@ -119,7 +119,7 @@ grub_mod_fini (void)
 #define ATTRIBUTE_USED __unused__
 #endif
 #define GRUB_MOD_LICENSE(license)	\
-  static char grub_module_license[] __attribute__ ((section (GRUB_MOD_SECTION (module_license)), ATTRIBUTE_USED)) = "LICENSE=" license;
+  static const char grub_module_license[] __attribute__ ((section (GRUB_MOD_SECTION (module_license)), ATTRIBUTE_USED)) = "LICENSE=" license;
 #define GRUB_MOD_DEP(name)	\
 static const char grub_module_depend_##name[] \
  __attribute__((section(GRUB_MOD_SECTION(moddeps)), ATTRIBUTE_USED)) = #name
@@ -174,7 +174,7 @@ typedef struct grub_dl_dep *grub_dl_dep_t;
 struct grub_dl
 {
   char *name;
-  int ref_count;
+  grub_uint64_t ref_count;
   int persistent;
   grub_dl_dep_t dep;
   grub_dl_segment_t segment;
@@ -203,9 +203,9 @@ grub_dl_t EXPORT_FUNC(grub_dl_load) (const char *name);
 grub_dl_t grub_dl_load_core (void *addr, grub_size_t size);
 grub_dl_t EXPORT_FUNC(grub_dl_load_core_noinit) (void *addr, grub_size_t size);
 int EXPORT_FUNC(grub_dl_unload) (grub_dl_t mod);
-extern int EXPORT_FUNC(grub_dl_ref) (grub_dl_t mod);
-extern int EXPORT_FUNC(grub_dl_unref) (grub_dl_t mod);
-extern int EXPORT_FUNC(grub_dl_ref_count) (grub_dl_t mod);
+extern grub_uint64_t EXPORT_FUNC(grub_dl_ref) (grub_dl_t mod);
+extern grub_uint64_t EXPORT_FUNC(grub_dl_unref) (grub_dl_t mod);
+extern grub_uint64_t EXPORT_FUNC(grub_dl_ref_count) (grub_dl_t mod);
 
 extern grub_dl_t EXPORT_VAR(grub_dl_head);
 
@@ -242,6 +242,26 @@ grub_dl_get (const char *name)
   return 0;
 }
 
+#ifdef GRUB_MACHINE_EMU
+/*
+ * Under grub-emu, modules are faked and NULL is passed to GRUB_MOD_INIT.
+ * So we fake this out to avoid a NULL deref.
+ */
+static inline void
+grub_dl_set_persistent (grub_dl_t mod __attribute__((unused)))
+{
+}
+
+/*
+ * Under grub-emu, modules are faked and NULL is passed to GRUB_MOD_INIT.
+ * So we fake this out to avoid a NULL deref.
+ */
+static inline int
+grub_dl_is_persistent (grub_dl_t mod __attribute__((unused)))
+{
+  return 0;
+}
+#else
 static inline void
 grub_dl_set_persistent (grub_dl_t mod)
 {
@@ -253,7 +273,7 @@ grub_dl_is_persistent (grub_dl_t mod)
 {
   return mod->persistent;
 }
-
+#endif
 #endif
 
 grub_err_t grub_dl_register_symbol (const char *name, void *addr,

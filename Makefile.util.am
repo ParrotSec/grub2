@@ -14,7 +14,7 @@ libgrubgcry_a_CFLAGS  =
 libgrubgcry_a_CPPFLAGS  = 
 libgrubgcry_a_CCASFLAGS  = 
 noinst_LIBRARIES += libgrubkern.a
-libgrubkern_a_SOURCES += grub-core/commands/extcmd.c grub-core/disk/AFSplitter.c grub-core/disk/cryptodisk.c grub-core/disk/diskfilter.c grub-core/disk/geli.c grub-core/disk/ldm.c grub-core/disk/luks.c grub-core/disk/luks2.c grub-core/fs/archelp.c grub-core/fs/proc.c grub-core/kern/command.c grub-core/kern/device.c grub-core/kern/disk.c grub-core/kern/emu/hostdisk.c grub-core/kern/emu/misc.c grub-core/kern/emu/mm.c grub-core/kern/env.c grub-core/kern/err.c grub-core/kern/file.c grub-core/kern/fs.c grub-core/kern/list.c grub-core/kern/misc.c grub-core/kern/partition.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/disk.c grub-core/lib/json/json.c grub-core/lib/pbkdf2.c grub-core/osdep/devmapper/getroot.c grub-core/osdep/devmapper/hostdisk.c grub-core/osdep/exec.c grub-core/osdep/getroot.c grub-core/osdep/hostdisk.c grub-core/osdep/password.c grub-core/osdep/relpath.c grub-core/osdep/sleep.c grub-core/osdep/unix/getroot.c grub-core/osdep/unix/hostdisk.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c util/getroot.c util/misc.c 
+libgrubkern_a_SOURCES += grub-core/commands/extcmd.c grub-core/disk/AFSplitter.c grub-core/disk/cryptodisk.c grub-core/disk/diskfilter.c grub-core/disk/geli.c grub-core/disk/key_protector.c grub-core/disk/ldm.c grub-core/disk/luks.c grub-core/disk/luks2.c grub-core/fs/archelp.c grub-core/fs/proc.c grub-core/kern/command.c grub-core/kern/device.c grub-core/kern/disk.c grub-core/kern/emu/hostdisk.c grub-core/kern/emu/misc.c grub-core/kern/emu/mm.c grub-core/kern/env.c grub-core/kern/err.c grub-core/kern/file.c grub-core/kern/fs.c grub-core/kern/list.c grub-core/kern/misc.c grub-core/kern/partition.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/disk.c grub-core/lib/json/json.c grub-core/lib/pbkdf2.c grub-core/osdep/devmapper/getroot.c grub-core/osdep/devmapper/hostdisk.c grub-core/osdep/exec.c grub-core/osdep/getroot.c grub-core/osdep/hostdisk.c grub-core/osdep/password.c grub-core/osdep/relpath.c grub-core/osdep/sleep.c grub-core/osdep/unix/getroot.c grub-core/osdep/unix/hostdisk.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c util/getroot.c util/misc.c 
 nodist_libgrubkern_a_SOURCES += 
 libgrubkern_a_CFLAGS += $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GNULIB) 
 libgrubkern_a_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GNULIB) -I$(srcdir)/grub-core/lib/json 
@@ -23,7 +23,7 @@ dist_noinst_DATA += grub-core/kern/disk_common.c grub-core/osdep/unix/relpath.c 
 BUILT_SOURCES += $(nodist_libgrubkern_a_SOURCES)
 CLEANFILES += $(nodist_libgrubkern_a_SOURCES)
 noinst_LIBRARIES += libgrubmods.a
-libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/ls.c grub-core/commands/macbless.c grub-core/commands/testload.c grub-core/commands/xnu_uuid.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid1x_linux.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid_linux_be.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/font/font.c grub-core/fs/affs.c grub-core/fs/afs.c grub-core/fs/bfs.c grub-core/fs/btrfs.c grub-core/fs/cbfs.c grub-core/fs/cpio.c grub-core/fs/cpio_be.c grub-core/fs/exfat.c grub-core/fs/ext2.c grub-core/fs/f2fs.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/hfspluscomp.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/minix2_be.c grub-core/fs/minix3.c grub-core/fs/minix3_be.c grub-core/fs/minix_be.c grub-core/fs/newc.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/odc.c grub-core/fs/reiserfs.c grub-core/fs/romfs.c grub-core/fs/sfs.c grub-core/fs/squash4.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs.c grub-core/fs/ufs2.c grub-core/fs/ufs_be.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_fletcher.c grub-core/fs/zfs/zfs_lz4.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfscrypt.c grub-core/fs/zfs/zfsinfo.c grub-core/gfxmenu/font.c grub-core/io/bufio.c grub-core/io/gzio.c grub-core/io/lzopio.c grub-core/io/xzio.c grub-core/kern/arm/dl_helper.c grub-core/kern/arm64/dl_helper.c grub-core/kern/ia64/dl_helper.c grub-core/kern/loongarch64/dl_helper.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/adler32.c grub-core/lib/crc.c grub-core/lib/crc64.c grub-core/lib/datetime.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/minilzo/minilzo.c grub-core/lib/xzembed/xz_dec_bcj.c grub-core/lib/xzembed/xz_dec_lzma2.c grub-core/lib/xzembed/xz_dec_stream.c grub-core/lib/zstd/debug.c grub-core/lib/zstd/entropy_common.c grub-core/lib/zstd/error_private.c grub-core/lib/zstd/fse_decompress.c grub-core/lib/zstd/huf_decompress.c grub-core/lib/zstd/module.c grub-core/lib/zstd/xxhash.c grub-core/lib/zstd/zstd_common.c grub-core/lib/zstd/zstd_decompress.c grub-core/normal/charset.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/bsdlabel.c grub-core/partmap/dfly.c grub-core/partmap/dvh.c grub-core/partmap/plan.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/script/argv.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/unidata.c grub-core/video/capture.c grub-core/video/colors.c grub-core/video/fb/fbblit.c grub-core/video/fb/fbfill.c grub-core/video/fb/fbutil.c grub-core/video/fb/video_fb.c grub-core/video/video.c 
+libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/ls.c grub-core/commands/macbless.c grub-core/commands/testload.c grub-core/commands/xnu_uuid.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid1x_linux.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid_linux_be.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/font/font.c grub-core/fs/affs.c grub-core/fs/afs.c grub-core/fs/bfs.c grub-core/fs/btrfs.c grub-core/fs/cbfs.c grub-core/fs/cpio.c grub-core/fs/cpio_be.c grub-core/fs/erofs.c grub-core/fs/exfat.c grub-core/fs/ext2.c grub-core/fs/f2fs.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/hfspluscomp.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/minix2_be.c grub-core/fs/minix3.c grub-core/fs/minix3_be.c grub-core/fs/minix_be.c grub-core/fs/newc.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/odc.c grub-core/fs/reiserfs.c grub-core/fs/romfs.c grub-core/fs/sfs.c grub-core/fs/squash4.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs.c grub-core/fs/ufs2.c grub-core/fs/ufs_be.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_fletcher.c grub-core/fs/zfs/zfs_lz4.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfscrypt.c grub-core/fs/zfs/zfsinfo.c grub-core/gfxmenu/font.c grub-core/io/bufio.c grub-core/io/gzio.c grub-core/io/lzopio.c grub-core/io/xzio.c grub-core/kern/arm/dl_helper.c grub-core/kern/arm64/dl_helper.c grub-core/kern/ia64/dl_helper.c grub-core/kern/loongarch64/dl_helper.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/adler32.c grub-core/lib/crc.c grub-core/lib/crc64.c grub-core/lib/datetime.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/minilzo/minilzo.c grub-core/lib/xzembed/xz_dec_bcj.c grub-core/lib/xzembed/xz_dec_lzma2.c grub-core/lib/xzembed/xz_dec_stream.c grub-core/lib/zstd/debug.c grub-core/lib/zstd/entropy_common.c grub-core/lib/zstd/error_private.c grub-core/lib/zstd/fse_decompress.c grub-core/lib/zstd/huf_decompress.c grub-core/lib/zstd/module.c grub-core/lib/zstd/xxhash.c grub-core/lib/zstd/zstd_common.c grub-core/lib/zstd/zstd_decompress.c grub-core/normal/charset.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/bsdlabel.c grub-core/partmap/dfly.c grub-core/partmap/dvh.c grub-core/partmap/plan.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/script/argv.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/unidata.c grub-core/video/capture.c grub-core/video/colors.c grub-core/video/fb/fbblit.c grub-core/video/fb/fbfill.c grub-core/video/fb/fbutil.c grub-core/video/fb/video_fb.c grub-core/video/video.c 
 nodist_libgrubmods_a_SOURCES += grub_script.tab.c grub_script.tab.h grub_script.yy.c grub_script.yy.h libgrub_a_init.c 
 libgrubmods_a_CFLAGS += $(AM_CFLAGS) $(CFLAGS_LIBRARY) -fno-builtin -Wno-undef -Wno-unused-but-set-variable 
 libgrubmods_a_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) -I$(srcdir)/grub-core/lib/minilzo -I$(srcdir)/grub-core/lib/xzembed -I$(srcdir)/grub-core/lib/zstd -DMINILZO_HAVE_CONFIG_H 
@@ -32,7 +32,7 @@ dist_noinst_DATA +=
 BUILT_SOURCES += $(nodist_libgrubmods_a_SOURCES)
 CLEANFILES += $(nodist_libgrubmods_a_SOURCES)
 noinst_LIBRARIES += libgrubgcry.a
-libgrubgcry_a_SOURCES += grub-core/lib/libgcrypt-grub/cipher/arcfour.c grub-core/lib/libgcrypt-grub/cipher/blowfish.c grub-core/lib/libgcrypt-grub/cipher/camellia-glue.c grub-core/lib/libgcrypt-grub/cipher/camellia.c grub-core/lib/libgcrypt-grub/cipher/cast5.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/libgcrypt-grub/cipher/des.c grub-core/lib/libgcrypt-grub/cipher/idea.c grub-core/lib/libgcrypt-grub/cipher/init.c grub-core/lib/libgcrypt-grub/cipher/md4.c grub-core/lib/libgcrypt-grub/cipher/md5.c grub-core/lib/libgcrypt-grub/cipher/rfc2268.c grub-core/lib/libgcrypt-grub/cipher/rijndael.c grub-core/lib/libgcrypt-grub/cipher/rmd160.c grub-core/lib/libgcrypt-grub/cipher/seed.c grub-core/lib/libgcrypt-grub/cipher/serpent.c grub-core/lib/libgcrypt-grub/cipher/sha1.c grub-core/lib/libgcrypt-grub/cipher/sha256.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/tiger.c grub-core/lib/libgcrypt-grub/cipher/twofish.c grub-core/lib/libgcrypt-grub/cipher/whirlpool.c 
+libgrubgcry_a_SOURCES += grub-core/lib/libgcrypt-grub/cipher/arcfour.c grub-core/lib/libgcrypt-grub/cipher/aria.c grub-core/lib/libgcrypt-grub/cipher/blake2.c grub-core/lib/libgcrypt-grub/cipher/blowfish.c grub-core/lib/libgcrypt-grub/cipher/camellia-glue.c grub-core/lib/libgcrypt-grub/cipher/camellia.c grub-core/lib/libgcrypt-grub/cipher/cast5.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/libgcrypt-grub/cipher/des.c grub-core/lib/libgcrypt-grub/cipher/gost28147.c grub-core/lib/libgcrypt-grub/cipher/gostr3411-94.c grub-core/lib/libgcrypt-grub/cipher/hash-common.c grub-core/lib/libgcrypt-grub/cipher/idea.c grub-core/lib/libgcrypt-grub/cipher/init.c grub-core/lib/libgcrypt-grub/cipher/keccak.c grub-core/lib/libgcrypt-grub/cipher/md4.c grub-core/lib/libgcrypt-grub/cipher/md5.c grub-core/lib/libgcrypt-grub/cipher/rfc2268.c grub-core/lib/libgcrypt-grub/cipher/rijndael.c grub-core/lib/libgcrypt-grub/cipher/rmd160.c grub-core/lib/libgcrypt-grub/cipher/salsa20.c grub-core/lib/libgcrypt-grub/cipher/seed.c grub-core/lib/libgcrypt-grub/cipher/serpent.c grub-core/lib/libgcrypt-grub/cipher/sha1.c grub-core/lib/libgcrypt-grub/cipher/sha256.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/sm3.c grub-core/lib/libgcrypt-grub/cipher/sm4.c grub-core/lib/libgcrypt-grub/cipher/stribog.c grub-core/lib/libgcrypt-grub/cipher/tiger.c grub-core/lib/libgcrypt-grub/cipher/twofish.c grub-core/lib/libgcrypt-grub/cipher/whirlpool.c grub-core/lib/libgcrypt-grub/src/const-time.c 
 nodist_libgrubgcry_a_SOURCES += 
 libgrubgcry_a_CFLAGS += $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 libgrubgcry_a_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -60,6 +60,28 @@ grub_mkimage_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_PROGRAM)
 dist_noinst_DATA += grub-core/osdep/aros/config.c grub-core/osdep/windows/config.c grub-core/osdep/unix/config.c util/grub-mkimagexx.c 
 BUILT_SOURCES += $(nodist_grub_mkimage_SOURCES)
 CLEANFILES += $(nodist_grub_mkimage_SOURCES)
+if COND_GRUB_PROTECT
+bin_PROGRAMS += grub-protect
+if COND_MAN_PAGES
+man_MANS += grub-protect.1
+
+grub-protect.1: grub-protect 
+	chmod a+x grub-protect
+	PATH=$(builddir):$$PATH pkgdatadir=$(builddir) $(HELP2MAN) --section=1 -i $(top_srcdir)/docs/man/grub-protect.h2m -o $@ grub-protect
+	
+CLEANFILES += grub-protect.1
+endif
+grub_protect_SOURCES  = grub-core/commands/tpm2_key_protector/args.c grub-core/commands/tpm2_key_protector/tpm2key_asn1_tab.c grub-core/kern/emu/argp_common.c grub-core/lib/tss2/buffer.c grub-core/lib/tss2/tpm2_cmd.c grub-core/lib/tss2/tss2_mu.c grub-core/osdep/init.c util/grub-protect.c util/probe.c 
+nodist_grub_protect_SOURCES  = 
+grub_protect_LDADD  = libgrubmods.a libgrubgcry.a libgrubkern.a grub-core/lib/gnulib/libgnu.a $(LIBTASN1) $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
+grub_protect_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) -I$(srcdir)/grub-core/lib/tss2 -I$(srcdir)/grub-core/commands/tpm2_key_protector 
+grub_protect_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
+grub_protect_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
+grub_protect_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_PROGRAM) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_grub_protect_SOURCES)
+CLEANFILES += $(nodist_grub_protect_SOURCES)
+endif COND_GRUB_PROTECT
 bin_PROGRAMS += grub-mkrelpath
 if COND_MAN_PAGES
 man_MANS += grub-mkrelpath.1
@@ -844,6 +866,15 @@ grub-fs-tester: $(top_builddir)/config.status tests/util/grub-fs-tester.in garba
 CLEANFILES += grub-fs-tester
 EXTRA_DIST += 
 dist_noinst_DATA += tests/util/grub-fs-tester.in 
+check_SCRIPTS_native += erofs_test
+
+erofs_test: $(top_builddir)/config.status tests/erofs_test.in 
+	(for x in tests/erofs_test.in ; do cat $(srcdir)/"$$x"; done) | $(top_builddir)/config.status --file=$@:-
+	chmod a+x erofs_test
+	
+CLEANFILES += erofs_test
+EXTRA_DIST += 
+dist_noinst_DATA += tests/erofs_test.in 
 check_SCRIPTS_native += ext234_test
 
 ext234_test: $(top_builddir)/config.status tests/ext234_test.in 
@@ -1573,5 +1604,23 @@ luks2_test: $(top_builddir)/config.status tests/luks2_test.in
 CLEANFILES += luks2_test
 EXTRA_DIST += 
 dist_noinst_DATA += tests/luks2_test.in 
+check_SCRIPTS_native += asn1_test
+
+asn1_test: $(top_builddir)/config.status tests/asn1_test.in 
+	(for x in tests/asn1_test.in ; do cat $(srcdir)/"$$x"; done) | $(top_builddir)/config.status --file=$@:-
+	chmod a+x asn1_test
+	
+CLEANFILES += asn1_test
+EXTRA_DIST += 
+dist_noinst_DATA += tests/asn1_test.in 
+check_SCRIPTS_native += tpm2_key_protector_test
+
+tpm2_key_protector_test: $(top_builddir)/config.status tests/tpm2_key_protector_test.in 
+	(for x in tests/tpm2_key_protector_test.in ; do cat $(srcdir)/"$$x"; done) | $(top_builddir)/config.status --file=$@:-
+	chmod a+x tpm2_key_protector_test
+	
+CLEANFILES += tpm2_key_protector_test
+EXTRA_DIST += 
+dist_noinst_DATA += tests/tpm2_key_protector_test.in 
 dist_grubconf_DATA += util/grub.d/README 
 dist_noinst_DATA += 

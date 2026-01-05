@@ -31,6 +31,8 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #include "g10lib.h"
 #include "mpi.h"
 #include "cipher.h"
+#include "pubkey-internal.h"
+#include "const-time.h"
 
 
 typedef struct
@@ -51,14 +53,23 @@ typedef struct
 } RSA_secret_key;
 
 
-/* A sample 1024 bit RSA key used for the selftests.  */
-/* A sample 1024 bit RSA key used for the selftests (public only).  */
+static const char *rsa_names[] =
+  {
+    "rsa",
+    "openpgp-rsa",
+    "oid.1.2.840.113549.1.1.1",
+    NULL,
+  };
 
 
+/* A sample 2048 bit RSA key used for the selftests.  */
+
+/* A sample 2048 bit RSA key used for the selftests (public only).  */
 
 
 static int  check_secret_key (RSA_secret_key *sk);
 static void public (gcry_mpi_t output, gcry_mpi_t input, RSA_public_key *skey);
+static unsigned int rsa_get_nbits (gcry_sexp_t parms);
 
 
 /* Check that a freshly generated key actually works.  Returns 0 on success. */
@@ -74,6 +85,53 @@ static void public (gcry_mpi_t output, gcry_mpi_t input, RSA_public_key *skey);
  *           specification to be 65537.
  *       > 2 Use this public exponent.  If the given exponent
  *           is not odd one is internally added to it.
+ * TRANSIENT_KEY:  If true, generate the primes using the standard RNG.
+ * Returns: 2 structures filled with all needed values
+ */
+
+
+/* Check the RSA key length is acceptable for key generation or usage */
+static gpg_err_code_t
+rsa_check_keysize (unsigned int nbits)
+{
+  if (fips_mode () && nbits < 2048)
+    return GPG_ERR_INV_VALUE;
+
+  return GPG_ERR_NO_ERROR;
+}
+
+
+/* Check the RSA key length is acceptable for signature verification
+ *
+ * FIPS allows signature verification with RSA keys of size
+ * 1024, 1280, 1536 and 1792 in legacy mode, but this is up to the
+ * calling application to decide if the signature is legacy and
+ * should be accepted.
+ */
+static gpg_err_code_t
+rsa_check_verify_keysize (unsigned int nbits)
+{
+  if (fips_mode ())
+    {
+      if ((nbits >= 1024 && (nbits % 256) == 0) || nbits >= 2048)
+        return GPG_ERR_NO_ERROR;
+
+      return GPG_ERR_INV_VALUE;
+    }
+
+  return GPG_ERR_NO_ERROR;
+}
+
+
+/****************
+ * Generate a key pair with a key of size NBITS.
+ * USE_E = 0 let Libcgrypt decide what exponent to use.
+ *       = 1 request the use of a "secure" exponent; this is required by some
+ *           specification to be 65537.
+ *       > 2 Use this public exponent.  If the given exponent
+ *           is not odd one is internally added to it.
+ * TESTPARMS: If set, do not generate but test whether the p,q is probably prime
+ *            Returns key with zeroes to not break code calling this function.
  * TRANSIENT_KEY:  If true, generate the primes using the standard RNG.
  * Returns: 2 structures filled with all needed values
  */
@@ -173,7 +231,7 @@ stronger_key_check ( RSA_secret_key *skey )
       {
         log_info ( "RSA Oops: d is wrong - fixed\n");
         mpi_set (skey->d, t);
-        _gcry_log_mpidump ("  fixed d", skey->d);
+        log_printmpi ("  fixed d", skey->d);
       }
 
     /* check for correctness of u */
@@ -182,7 +240,7 @@ stronger_key_check ( RSA_secret_key *skey )
       {
         log_info ( "RSA Oops: u is wrong - fixed\n");
         mpi_set (skey->u, t);
-        _gcry_log_mpidump ("  fixed u", skey->u);
+        log_printmpi ("  fixed u", skey->u);
       }
 
     log_info ( "RSA secret key check finished\n");
@@ -195,76 +253,134 @@ stronger_key_check ( RSA_secret_key *skey )
 #endif
 
 
-
-/****************
- * Secret key operation. Encrypt INPUT with SKEY and put result into OUTPUT.
+
+/* Secret key operation - standard version.
  *
  *	m = c^d mod n
- *
- * Or faster:
+ */
+
+
+/* Secret key operation - using the CRT.
  *
  *      m1 = c ^ (d mod (p-1)) mod p
  *      m2 = c ^ (d mod (q-1)) mod q
  *      h = u * (m2 - m1) mod q
  *      m = m1 + h * p
- *
- * Where m is OUTPUT, c is INPUT and d,n,p,q,u are elements of SKEY.
+ */
+
+
+/* Secret key operation.
+ * Encrypt INPUT with SKEY and put result into
+ * OUTPUT.  SKEY has the secret key parameters.
  */
 
 
 
-/* Perform RSA blinding.  */
-
-/* Undo RSA blinding.  */
-
+
 /*********************************************
  **************  interface  ******************
  *********************************************/
 
-
-
 #define rsa_generate 0
 
 static gcry_err_code_t
-rsa_check_secret_key (int algo, gcry_mpi_t *skey)
+rsa_check_secret_key (gcry_sexp_t keyparms)
 {
-  gcry_err_code_t err = GPG_ERR_NO_ERROR;
-  RSA_secret_key sk;
+  gcry_err_code_t rc;
+  RSA_secret_key sk = {NULL, NULL, NULL, NULL, NULL, NULL};
 
-  (void)algo;
+  /* To check the key we need the optional parameters. */
+  rc = sexp_extract_param (keyparms, NULL, "nedpqu",
+                           &sk.n, &sk.e, &sk.d, &sk.p, &sk.q, &sk.u,
+                           NULL);
+  if (rc)
+    goto leave;
 
-  sk.n = skey[0];
-  sk.e = skey[1];
-  sk.d = skey[2];
-  sk.p = skey[3];
-  sk.q = skey[4];
-  sk.u = skey[5];
+  if (!check_secret_key (&sk))
+    rc = GPG_ERR_BAD_SECKEY;
 
-  if (!sk.p || !sk.q || !sk.u)
-    err = GPG_ERR_NO_OBJ;  /* To check the key we need the optional
-                              parameters. */
-  else if (!check_secret_key (&sk))
-    err = GPG_ERR_BAD_SECKEY;
-
-  return err;
+ leave:
+  _gcry_mpi_release (sk.n);
+  _gcry_mpi_release (sk.e);
+  _gcry_mpi_release (sk.d);
+  _gcry_mpi_release (sk.p);
+  _gcry_mpi_release (sk.q);
+  _gcry_mpi_release (sk.u);
+  if (DBG_CIPHER)
+    log_debug ("rsa_testkey    => %s\n", gpg_strerror (rc));
+  return rc;
 }
 
 
 static gcry_err_code_t
-rsa_encrypt (int algo, gcry_mpi_t *resarr, gcry_mpi_t data,
-             gcry_mpi_t *pkey, int flags)
+rsa_encrypt (gcry_sexp_t *r_ciph, gcry_sexp_t s_data, gcry_sexp_t keyparms)
 {
-  RSA_public_key pk;
+  gcry_err_code_t rc;
+  struct pk_encoding_ctx ctx;
+  gcry_mpi_t data = NULL;
+  RSA_public_key pk = {NULL, NULL};
+  gcry_mpi_t ciph = NULL;
+  unsigned int nbits = rsa_get_nbits (keyparms);
 
-  (void)algo;
-  (void)flags;
+  rc = rsa_check_keysize (nbits);
+  if (rc)
+    return rc;
 
-  pk.n = pkey[0];
-  pk.e = pkey[1];
-  resarr[0] = mpi_alloc (mpi_get_nlimbs (pk.n));
-  public (resarr[0], data, &pk);
+  _gcry_pk_util_init_encoding_ctx (&ctx, PUBKEY_OP_ENCRYPT, nbits);
 
-  return GPG_ERR_NO_ERROR;
+  /* Extract the data.  */
+  rc = _gcry_pk_util_data_to_mpi (s_data, &data, &ctx);
+  if (rc)
+    goto leave;
+  if (DBG_CIPHER)
+    log_mpidump ("rsa_encrypt data", data);
+  if (!data || mpi_is_opaque (data))
+    {
+      rc = GPG_ERR_INV_DATA;
+      goto leave;
+    }
+
+  /* Extract the key.  */
+  rc = sexp_extract_param (keyparms, NULL, "ne", &pk.n, &pk.e, NULL);
+  if (rc)
+    goto leave;
+  if (DBG_CIPHER)
+    {
+      log_mpidump ("rsa_encrypt    n", pk.n);
+      log_mpidump ("rsa_encrypt    e", pk.e);
+    }
+
+  /* Do RSA computation and build result.  */
+  ciph = mpi_new (0);
+  public (ciph, data, &pk);
+  if (DBG_CIPHER)
+    log_mpidump ("rsa_encrypt  res", ciph);
+  if ((ctx.flags & PUBKEY_FLAG_FIXEDLEN))
+    {
+      /* We need to make sure to return the correct length to avoid
+         problems with missing leading zeroes.  */
+      unsigned char *em;
+      size_t emlen = (mpi_get_nbits (pk.n)+7)/8;
+
+      rc = _gcry_mpi_to_octet_string (&em, NULL, ciph, emlen);
+      if (!rc)
+        {
+          rc = sexp_build (r_ciph, NULL, "(enc-val(rsa(a%b)))", (int)emlen, em);
+          xfree (em);
+        }
+    }
+  else
+    rc = sexp_build (r_ciph, NULL, "(enc-val(rsa(a%m)))", ciph);
+
+ leave:
+  _gcry_mpi_release (ciph);
+  _gcry_mpi_release (pk.n);
+  _gcry_mpi_release (pk.e);
+  _gcry_mpi_release (data);
+  _gcry_pk_util_free_encoding_ctx (&ctx);
+  if (DBG_CIPHER)
+    log_debug ("rsa_encrypt    => %s\n", gpg_strerror (rc));
+  return rc;
 }
 
 
@@ -273,45 +389,106 @@ rsa_encrypt (int algo, gcry_mpi_t *resarr, gcry_mpi_t data,
 #define rsa_sign 0
 
 static gcry_err_code_t
-rsa_verify (int algo, gcry_mpi_t hash, gcry_mpi_t *data, gcry_mpi_t *pkey,
-		  int (*cmp) (void *opaque, gcry_mpi_t tmp),
-		  void *opaquev)
+rsa_verify (gcry_sexp_t s_sig, gcry_sexp_t s_data, gcry_sexp_t keyparms)
 {
-  RSA_public_key pk;
-  gcry_mpi_t result;
   gcry_err_code_t rc;
+  struct pk_encoding_ctx ctx;
+  gcry_sexp_t l1 = NULL;
+  gcry_mpi_t sig = NULL;
+  gcry_mpi_t data = NULL;
+  RSA_public_key pk = { NULL, NULL };
+  gcry_mpi_t result = NULL;
+  unsigned int nbits = rsa_get_nbits (keyparms);
 
-  (void)algo;
-  (void)cmp;
-  (void)opaquev;
+  rc = rsa_check_verify_keysize (nbits);
+  if (rc)
+    return rc;
 
-  pk.n = pkey[0];
-  pk.e = pkey[1];
-  result = gcry_mpi_new ( 160 );
-  public( result, data[0], &pk );
-#ifdef IS_DEVELOPMENT_VERSION
+  _gcry_pk_util_init_encoding_ctx (&ctx, PUBKEY_OP_VERIFY, nbits);
+
+  /* Extract the data.  */
+  rc = _gcry_pk_util_data_to_mpi (s_data, &data, &ctx);
+  if (rc)
+    goto leave;
+  if (DBG_CIPHER)
+    log_printmpi ("rsa_verify data", data);
+  if (ctx.encoding != PUBKEY_ENC_PSS && mpi_is_opaque (data))
+    {
+      rc = GPG_ERR_INV_DATA;
+      goto leave;
+    }
+
+  /* Extract the signature value.  */
+  rc = _gcry_pk_util_preparse_sigval (s_sig, rsa_names, &l1, NULL);
+  if (rc)
+    goto leave;
+  rc = sexp_extract_param (l1, NULL, "s", &sig, NULL);
+  if (rc)
+    goto leave;
+  if (DBG_CIPHER)
+    log_printmpi ("rsa_verify  sig", sig);
+
+  /* Extract the key.  */
+  rc = sexp_extract_param (keyparms, NULL, "ne", &pk.n, &pk.e, NULL);
+  if (rc)
+    goto leave;
   if (DBG_CIPHER)
     {
-      log_mpidump ("rsa verify result:", result );
-      log_mpidump ("             hash:", hash );
+      log_printmpi ("rsa_verify    n", pk.n);
+      log_printmpi ("rsa_verify    e", pk.e);
     }
-#endif /*IS_DEVELOPMENT_VERSION*/
-  if (cmp)
-    rc = (*cmp) (opaquev, result);
-  else
-    rc = mpi_cmp (result, hash) ? GPG_ERR_BAD_SIGNATURE : GPG_ERR_NO_ERROR;
-  gcry_mpi_release (result);
 
+  /* Do RSA computation and compare.  */
+  result = mpi_new (0);
+  public (result, sig, &pk);
+  if (DBG_CIPHER)
+    log_printmpi ("rsa_verify  cmp", result);
+  if (ctx.verify_cmp)
+    rc = ctx.verify_cmp (&ctx, result);
+  else
+    rc = mpi_cmp (result, data) ? GPG_ERR_BAD_SIGNATURE : 0;
+
+ leave:
+  _gcry_mpi_release (result);
+  _gcry_mpi_release (pk.n);
+  _gcry_mpi_release (pk.e);
+  _gcry_mpi_release (data);
+  _gcry_mpi_release (sig);
+  sexp_release (l1);
+  _gcry_pk_util_free_encoding_ctx (&ctx);
+  if (DBG_CIPHER)
+    log_debug ("rsa_verify    => %s\n", rc?gpg_strerror (rc):"Good");
   return rc;
 }
 
 
-static unsigned int
-rsa_get_nbits (int algo, gcry_mpi_t *pkey)
-{
-  (void)algo;
 
-  return mpi_get_nbits (pkey[0]);
+/* Return the number of bits for the key described by PARMS.  On error
+ * 0 is returned.  The format of PARMS starts with the algorithm name;
+ * for example:
+ *
+ *   (rsa
+ *     (n <mpi>)
+ *     (e <mpi>))
+ *
+ * More parameters may be given but we only need N here.
+ */
+static unsigned int
+rsa_get_nbits (gcry_sexp_t parms)
+{
+  gcry_sexp_t l1;
+  gcry_mpi_t n;
+  unsigned int nbits;
+
+  l1 = sexp_find_token (parms, "n", 1);
+  if (!l1)
+    return 0; /* Parameter N not found.  */
+
+  n = sexp_nth_mpi (l1, 1, GCRYMPI_FMT_USG);
+  sexp_release (l1);
+  nbits = n? mpi_get_nbits (n) : 0;
+  _gcry_mpi_release (n);
+  return nbits;
 }
 
 
@@ -328,6 +505,29 @@ rsa_get_nbits (int algo, gcry_mpi_t *pkey)
    however, it is not clear whether this is meant to use the raw bytes
    (assuming this is an unsigned integer) or whether the DER required
    0 should be prefixed.  We hash the raw bytes.  */
+static gpg_err_code_t
+compute_keygrip (gcry_md_hd_t md, gcry_sexp_t keyparam)
+{
+  gcry_sexp_t l1;
+  const char *data;
+  size_t datalen;
+
+  l1 = sexp_find_token (keyparam, "n", 1);
+  if (!l1)
+    return GPG_ERR_NO_OBJ;
+
+  data = sexp_nth_data (l1, 1, &datalen);
+  if (!data)
+    {
+      sexp_release (l1);
+      return GPG_ERR_NO_OBJ;
+    }
+
+  _gcry_md_write (md, data, datalen);
+  sexp_release (l1);
+
+  return 0;
+}
 
 
 
@@ -335,6 +535,7 @@ rsa_get_nbits (int algo, gcry_mpi_t *pkey)
 /*
      Self-test section.
  */
+
 
 
 
@@ -358,19 +559,12 @@ rsa_get_nbits (int algo, gcry_mpi_t *pkey)
 
 
 
-static const char *rsa_names[] =
-  {
-    "rsa",
-    "openpgp-rsa",
-    "oid.1.2.840.113549.1.1.1",
-    NULL,
-  };
-
 gcry_pk_spec_t _gcry_pubkey_spec_rsa =
   {
+    GCRY_PK_RSA, { 0, 1 },
+    (GCRY_PK_USAGE_SIGN | GCRY_PK_USAGE_ENCR),
     "RSA", rsa_names,
     "ne", "nedpqu", "a", "s", "n",
-    GCRY_PK_USAGE_SIGN | GCRY_PK_USAGE_ENCR,
     rsa_generate,
     rsa_check_secret_key,
     rsa_encrypt,
@@ -378,9 +572,9 @@ gcry_pk_spec_t _gcry_pubkey_spec_rsa =
     rsa_sign,
     rsa_verify,
     rsa_get_nbits,
-#ifdef GRUB_UTIL
-    .modname = "gcry_rsa",
-#endif
+    compute_keygrip
+    ,
+    GRUB_UTIL_MODNAME("gcry_rsa")
   };
 
 

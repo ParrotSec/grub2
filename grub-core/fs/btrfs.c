@@ -1276,8 +1276,8 @@ grub_btrfs_mount (grub_device_t dev)
     }
 
   data->n_devices_allocated = 16;
-  data->devices_attached = grub_malloc (sizeof (data->devices_attached[0])
-					* data->n_devices_allocated);
+  data->devices_attached = grub_calloc (data->n_devices_allocated,
+					sizeof (data->devices_attached[0]));
   if (!data->devices_attached)
     {
       grub_free (data);
@@ -1538,7 +1538,10 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
 	  err = lower_bound (data, &key_in, &key_out, tree,
 			     &elemaddr, &elemsize, &desc, 0);
 	  if (err)
-	    return -1;
+	    {
+	      grub_free (desc.data);
+	      return -1;
+	    }
 	  if (key_out.object_id != ino
 	      || key_out.type != GRUB_BTRFS_ITEM_TYPE_EXTENT_ITEM)
 	    {
@@ -1801,6 +1804,7 @@ find_path (struct grub_btrfs_data *data,
   char *path_alloc = NULL;
   char *origpath = NULL;
   unsigned symlinks_max = 32;
+  grub_size_t sz;
 
   err = get_root (data, key, tree, type);
   if (err)
@@ -1891,9 +1895,15 @@ find_path (struct grub_btrfs_data *data,
       struct grub_btrfs_dir_item *cdirel;
       if (elemsize > allocated)
 	{
-	  allocated = 2 * elemsize;
+	  if (grub_mul (2, elemsize, &allocated) ||
+	      grub_add (allocated, 1, &sz))
+	    {
+	      grub_free (path_alloc);
+	      grub_free (origpath);
+	      return grub_error (GRUB_ERR_OUT_OF_RANGE, N_("directory item size overflow"));
+	    }
 	  grub_free (direl);
-	  direl = grub_malloc (allocated + 1);
+	  direl = grub_malloc (sz);
 	  if (!direl)
 	    {
 	      grub_free (path_alloc);
@@ -1955,8 +1965,16 @@ find_path (struct grub_btrfs_data *data,
 	      grub_free (origpath);
 	      return err;
 	    }
-	  tmp = grub_malloc (grub_le_to_cpu64 (inode.size)
-			     + grub_strlen (path) + 1);
+
+	  if (grub_add (grub_le_to_cpu64 (inode.size), grub_strlen (path), &sz) ||
+	      grub_add (sz, 1, &sz))
+	    {
+	      grub_free (direl);
+	      grub_free (path_alloc);
+	      grub_free (origpath);
+	      return grub_error (GRUB_ERR_OUT_OF_RANGE, N_("buffer size overflow"));
+	    }
+	  tmp = grub_malloc (sz);
 	  if (!tmp)
 	    {
 	      grub_free (direl);
@@ -2078,6 +2096,7 @@ grub_btrfs_dir (grub_device_t device, const char *path,
   grub_uint64_t tree;
   grub_uint8_t type;
   grub_size_t est_size = 0;
+  grub_size_t sz;
 
   if (!data)
     return grub_errno;
@@ -2099,6 +2118,7 @@ grub_btrfs_dir (grub_device_t device, const char *path,
   if (err)
     {
       grub_btrfs_unmount (data);
+      grub_free (desc.data);
       return err;
     }
   if (key_out.type != GRUB_BTRFS_ITEM_TYPE_DIR_ITEM
@@ -2119,9 +2139,15 @@ grub_btrfs_dir (grub_device_t device, const char *path,
 	}
       if (elemsize > allocated)
 	{
-	  allocated = 2 * elemsize;
+	  if (grub_mul (2, elemsize, &allocated) ||
+	      grub_add (allocated, 1, &sz))
+	    {
+	      grub_error (GRUB_ERR_OUT_OF_RANGE, N_("directory element size overflow"));
+	      r = -grub_errno;
+	      break;
+	    }
 	  grub_free (direl);
-	  direl = grub_malloc (allocated + 1);
+	  direl = grub_malloc (sz);
 	  if (!direl)
 	    {
 	      r = -grub_errno;
@@ -2413,6 +2439,7 @@ static struct grub_fs grub_btrfs_fs = {
 
 GRUB_MOD_INIT (btrfs)
 {
+  grub_btrfs_fs.mod = mod;
   grub_fs_register (&grub_btrfs_fs);
 }
 

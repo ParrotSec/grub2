@@ -113,6 +113,16 @@ grub_addr_t grub_ieee1275_original_stack;
 #define DRC_INFO            0x40
 #define BYTE22              (DY_MEM_V2 | DRC_INFO)
 
+/* For ibm,arch-vec-5-platform-support. */
+#define XIVE_INDEX           0x17
+#define MMU_INDEX            0x18
+#define RADIX_GTSE_INDEX     0x1a
+#define RADIX_ENABLED        0x40
+#define XIVE_ENABLED         0x40
+#define HASH_ENABLED         0x00
+#define MAX_SUPPORTED        0xC0
+#define RADIX_GTSE_ENABLED   0x40
+
 void
 grub_exit (void)
 {
@@ -737,6 +747,10 @@ struct option_vector5
   grub_uint32_t platform_facilities;
   grub_uint8_t sub_processors;
   grub_uint8_t byte22;
+  grub_uint8_t xive;
+  grub_uint8_t mmu;
+  grub_uint8_t hpt_ext;
+  grub_uint8_t radix_gtse;
 } GRUB_PACKED;
 
 struct pvr_entry
@@ -766,7 +780,7 @@ struct cas_vector
 
 /*
  * Call ibm,client-architecture-support to try to get more RMA.
- * We ask for 512MB which should be enough to verify a distro kernel.
+ * We ask for 768MB which should be enough to verify a distro kernel.
  * We ignore most errors: if we don't succeed we'll proceed with whatever
  * memory we have.
  */
@@ -775,6 +789,13 @@ grub_ieee1275_ibm_cas (void)
 {
   int rc;
   grub_ieee1275_ihandle_t root;
+  grub_uint8_t ibm_arch_platform_support[8];
+  grub_ssize_t actual;
+  grub_uint8_t xive_support = 0;
+  grub_uint8_t mmu_support = 0;
+  grub_uint8_t radix_gtse_support = 0;
+  int i = 0;
+  int prop_len = 8;
   struct cas_args
   {
     struct grub_ieee1275_common_hdr common;
@@ -783,6 +804,46 @@ grub_ieee1275_ibm_cas (void)
     grub_ieee1275_cell_t cas_addr;
     grub_ieee1275_cell_t result;
   } args;
+
+  grub_ieee1275_get_integer_property (grub_ieee1275_chosen,
+                                      "ibm,arch-vec-5-platform-support",
+                                      (grub_uint32_t *) ibm_arch_platform_support,
+                                      sizeof (ibm_arch_platform_support),
+                                      &actual);
+
+  for (i = 0; i < prop_len; i++)
+    {
+      switch (ibm_arch_platform_support[i])
+        {
+          case XIVE_INDEX:
+            if (ibm_arch_platform_support[i + 1] & MAX_SUPPORTED)
+              xive_support = XIVE_ENABLED;
+            else
+              xive_support = 0;
+            break;
+
+          case MMU_INDEX:
+            if (ibm_arch_platform_support[i + 1] & MAX_SUPPORTED)
+              mmu_support = RADIX_ENABLED;
+            else
+              mmu_support = HASH_ENABLED;
+            break;
+
+          case RADIX_GTSE_INDEX:
+            if (mmu_support == RADIX_ENABLED)
+              radix_gtse_support = ibm_arch_platform_support[i + 1] & RADIX_GTSE_ENABLED;
+            else
+              radix_gtse_support = 0;
+            break;
+
+          default:
+            /* Ignoring the other indexes of ibm,arch-vec-5-platform-support. */
+            break;
+        }
+      /* Skipping the property value. */
+      i++;
+    }
+
   struct cas_vector vector =
   {
     .pvr_list = { { 0x00000000, 0xffffffff } }, /* any processor */
@@ -791,7 +852,7 @@ grub_ieee1275_ibm_cas (void)
     .vec1 = 0x80, /* ignore */
     .vec2_size = 1 + sizeof (struct option_vector2) - 2,
     .vec2 = {
-      0, 0, -1, -1, -1, -1, -1, 512, -1, 0, 48
+      0, 0, -1, -1, -1, -1, -1, 768, -1, 0, 48
     },
     .vec3_size = 2 - 1,
     .vec3 = 0x00e0, /* ask for FP + VMX + DFP but don't halt if unsatisfied */
@@ -799,7 +860,7 @@ grub_ieee1275_ibm_cas (void)
     .vec4 = 0x0001, /* set required minimum capacity % to the lowest value */
     .vec5_size = 1 + sizeof (struct option_vector5) - 2,
     .vec5 = {
-      0, BYTE2, 0, CMO, ASSOCIATIVITY, BIN_OPTS, 0, 0, MAX_CPU, 0, 0, PLATFORM_FACILITIES, SUB_PROCESSORS, BYTE22
+      0, BYTE2, 0, CMO, ASSOCIATIVITY, BIN_OPTS, 0, 0, MAX_CPU, 0, 0, PLATFORM_FACILITIES, SUB_PROCESSORS, BYTE22, xive_support, mmu_support, 0, radix_gtse_support
     }
   };
 
@@ -828,6 +889,10 @@ grub_claim_heap (void)
 {
   grub_err_t err;
   grub_uint32_t total = HEAP_MAX_SIZE;
+#if defined(__powerpc__)
+  grub_uint32_t ibm_ca_support_reboot = 0;
+  grub_ssize_t actual;
+#endif
 
   err = grub_ieee1275_total_mem (&rmo_top);
 
@@ -840,11 +905,49 @@ grub_claim_heap (void)
     grub_mm_add_region_fn = grub_ieee1275_mm_add_region;
 
 #if defined(__powerpc__)
+  /* Check if it's a CAS reboot with below property. If so, we will skip CAS call. */
+  if (grub_ieee1275_get_integer_property (grub_ieee1275_chosen,
+                                          "ibm,client-architecture-support-reboot",
+                                          &ibm_ca_support_reboot,
+                                          sizeof (ibm_ca_support_reboot),
+                                          &actual) >= 0)
+    grub_dprintf ("ieee1275", "ibm,client-architecture-support-reboot: %" PRIuGRUB_UINT32_T "\n",
+                  ibm_ca_support_reboot);
+
   if (grub_ieee1275_test_flag (GRUB_IEEE1275_FLAG_CAN_TRY_CAS_FOR_MORE_MEMORY))
     {
-      /* if we have an error, don't call CAS, just hope for the best */
-      if (err == GRUB_ERR_NONE && rmo_top < (512 * 1024 * 1024))
-	grub_ieee1275_ibm_cas ();
+      /*
+       * If we have an error don't call CAS. Just hope for the best.
+       * Along with the above, if the rmo_top is 512 MB or above. We
+       * will skip the CAS call. However, if we call CAS, the rmo_top
+       * will be set to 768 MB via CAS Vector2. But we need to call
+       * CAS with rmo_top < 512 MB to avoid the issue on the older
+       * Linux kernel, which still uses rmo_top as 512 MB. If we call
+       * CAS with a condition rmo_top < 768 MB, it will result in an
+       * issue due to the IBM CAS reboot feature and we won't be able
+       * to boot the newer kernel. Whenever a reboot is detected as
+       * the CAS reboot by GRUB it will boot the machine with the
+       * last booted kernel by reading the variable boot-last-label
+       * which has the info related to the last boot and it's specific
+       * to IBM PowerPC. Due to this, the machine will boot with the
+       * last booted kernel which has rmo_top as 512 MB. Also, if the
+       * reboot is detected as a CAS reboot, the GRUB will skip the CAS
+       * call. As the CAS has already been called earlier, so it is
+       * not required to call CAS even if the other conditions are met.
+       * This condition will also prevent a scenario where the machine
+       * get stuck in the CAS reboot loop while booting a machine with
+       * an older kernel, having option_vector2 MIN_RMA as 512 MB in
+       * Linux prom_init.c and GRUB uses rmo_top < 768 MB condition
+       * for calling CAS. Due to their respective conditions, Linux
+       * CAS and GRUB CAS will keep doing the CAS calls and change
+       * the MIN_RMA from 768, changed by GRUB, to 512, changed by Linux,
+       * to 768, changed by GRUB, to 512, changed by Linux, and so on.
+       * The machine will stuck in this CAS reboot loop forever.
+       *
+       * IBM PAPR: https://openpower.foundation/specifications/linuxonpower/
+       */
+      if (!ibm_ca_support_reboot && err == GRUB_ERR_NONE && rmo_top < (512 * 1024 * 1024))
+        grub_ieee1275_ibm_cas ();
     }
 #endif
 

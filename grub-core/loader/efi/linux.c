@@ -187,10 +187,10 @@ grub_arch_efi_linux_boot_image (grub_addr_t addr, grub_size_t size, char *args)
 {
   grub_efi_memory_mapped_device_path_t *mempath;
   grub_efi_handle_t image_handle;
-  grub_efi_boot_services_t *b;
   grub_efi_status_t status;
   grub_efi_loaded_image_t *loaded_image;
-  int len;
+  grub_size_t len;
+  grub_size_t args_len;
 
   mempath = grub_malloc (2 * sizeof (grub_efi_memory_mapped_device_path_t));
   if (!mempath)
@@ -207,42 +207,53 @@ grub_arch_efi_linux_boot_image (grub_addr_t addr, grub_size_t size, char *args)
   mempath[1].header.subtype = GRUB_EFI_END_ENTIRE_DEVICE_PATH_SUBTYPE;
   mempath[1].header.length = sizeof (grub_efi_device_path_t);
 
-  b = grub_efi_system_table->boot_services;
-  status = b->load_image (0, grub_efi_image_handle,
-			  (grub_efi_device_path_t *) mempath,
-			  (void *) addr, size, &image_handle);
-  if (status != GRUB_EFI_SUCCESS)
-    return grub_error (GRUB_ERR_BAD_OS, "cannot load image");
+  image_handle = grub_efi_get_last_verified_image_handle ();
+  if (image_handle == NULL)
+    {
+      status = grub_efi_load_image (0, grub_efi_image_handle,
+				    (grub_efi_device_path_t *) mempath,
+				    (void *) addr, size, &image_handle);
+      if (status != GRUB_EFI_SUCCESS)
+	{
+	  grub_free (mempath);
+	  return grub_error (GRUB_ERR_BAD_OS, "cannot load image");
+	}
+    }
+
+  grub_free (mempath);
 
   grub_dprintf ("linux", "linux command line: '%s'\n", args);
 
-  /* Convert command line to UCS-2 */
+  /* Convert command line to UTF-16. */
   loaded_image = grub_efi_get_loaded_image (image_handle);
   if (loaded_image == NULL)
     {
       grub_error (GRUB_ERR_BAD_FIRMWARE, "missing loaded_image proto");
       goto unload;
     }
-  loaded_image->load_options_size = len =
-    (grub_strlen (args) + 1) * sizeof (grub_efi_char16_t);
+  args_len = grub_strlen (args);
+  len = (args_len + 1) * sizeof (grub_efi_char16_t);
   loaded_image->load_options =
-    grub_efi_allocate_any_pages (GRUB_EFI_BYTES_TO_PAGES (loaded_image->load_options_size));
+    grub_efi_allocate_any_pages (GRUB_EFI_BYTES_TO_PAGES (len));
   if (!loaded_image->load_options)
     return grub_errno;
 
-  loaded_image->load_options_size =
-    2 * grub_utf8_to_utf16 (loaded_image->load_options, len,
-			    (grub_uint8_t *) args, len, NULL);
+  len = grub_utf8_to_utf16 (loaded_image->load_options, len,
+			    (grub_uint8_t *) args, args_len, NULL);
+  /* NUL terminate. */
+  ((grub_efi_char16_t *) loaded_image->load_options)[len++] = 0;
+  loaded_image->load_options_size = len * sizeof (grub_efi_char16_t);
 
   grub_dprintf ("linux", "starting image %p\n", image_handle);
-  status = b->start_image (image_handle, 0, NULL);
+  status = grub_efi_start_image (image_handle, 0, NULL);
 
   /* When successful, not reached */
   grub_error (GRUB_ERR_BAD_OS, "start_image() returned 0x%" PRIxGRUB_EFI_UINTN_T, status);
   grub_efi_free_pages ((grub_addr_t) loaded_image->load_options,
-		       GRUB_EFI_BYTES_TO_PAGES (loaded_image->load_options_size));
+		       GRUB_EFI_BYTES_TO_PAGES (len));
+  loaded_image->load_options = NULL;
 unload:
-  b->unload_image (image_handle);
+  grub_efi_unload_image (image_handle);
 
   return grub_errno;
 }
@@ -462,10 +473,10 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 
   grub_dl_ref (my_mod);
 
-  if (grub_is_shim_lock_enabled () == true)
+  if (grub_is_using_legacy_shim_lock_protocol () == true)
     {
 #if defined(__i386__) || defined(__x86_64__)
-      grub_dprintf ("linux", "shim_lock enabled, falling back to legacy Linux kernel loader\n");
+      grub_dprintf ("linux", "using legacy shim_lock protocol, falling back to legacy Linux kernel loader\n");
 
       err = grub_cmd_linux_x86_legacy (cmd, argc, argv);
 
@@ -474,7 +485,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
       else
 	goto fail;
 #else
-      grub_dprintf ("linux", "shim_lock enabled, trying Linux kernel EFI stub loader\n");
+      grub_dprintf ("linux", "using legacy shim_lock protocol on non-x86, only db verifiable kernels will work\n");
 #endif
     }
 
@@ -487,6 +498,8 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   file = grub_file_open (argv[0], GRUB_FILE_TYPE_LINUX_KERNEL);
   if (!file)
     goto fail;
+
+  grub_loader_unset();
 
   kernel_size = grub_file_size (file);
 
@@ -509,8 +522,6 @@ fallback:
       return grub_cmd_linux_x86_legacy (cmd, argc, argv);
     }
 #endif
-
-  grub_loader_unset();
 
   grub_dprintf ("linux", "kernel file size: %lld\n", (long long) kernel_size);
   kernel_addr = grub_efi_allocate_any_pages (GRUB_EFI_BYTES_TO_PAGES (kernel_size));
