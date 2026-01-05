@@ -1340,6 +1340,7 @@ static grub_err_t
 grub_bsd_load_elf (grub_elf_t elf, const char *filename)
 {
   grub_err_t err;
+  grub_size_t sz;
 
   kern_end = 0;
   kern_start = ~0;
@@ -1370,8 +1371,11 @@ grub_bsd_load_elf (grub_elf_t elf, const char *filename)
 
       if (grub_errno)
 	return grub_errno;
-      err = grub_relocator_alloc_chunk_addr (relocator, &ch,
-					     kern_start, kern_end - kern_start);
+
+      if (grub_sub (kern_end, kern_start, &sz))
+	return grub_error (GRUB_ERR_OUT_OF_RANGE, "underflow detected while determining size of kernel for relocator");
+
+      err = grub_relocator_alloc_chunk_addr (relocator, &ch, kern_start, sz);
       if (err)
 	return err;
 
@@ -1431,8 +1435,10 @@ grub_bsd_load_elf (grub_elf_t elf, const char *filename)
       {
 	grub_relocator_chunk_t ch;
 
-	err = grub_relocator_alloc_chunk_addr (relocator, &ch, kern_start,
-					       kern_end - kern_start);
+	if (grub_sub (kern_end, kern_start, &sz))
+	  return grub_error (GRUB_ERR_OUT_OF_RANGE, "underflow detected while determining size of kernel for relocator");
+
+	err = grub_relocator_alloc_chunk_addr (relocator, &ch, kern_start, sz);
 	if (err)
 	  return err;
 	kern_chunk_src = get_virtual_current_address (ch);
@@ -1537,9 +1543,7 @@ grub_cmd_freebsd (grub_extcmd_context_t ctxt, int argc, char *argv[])
 	  grub_file_t file;
 	  int len = is_64bit ? 8 : 4;
 
-	  err = grub_freebsd_add_meta_module (argv[0], is_64bit
-					      ? FREEBSD_MODTYPE_KERNEL64
-					      : FREEBSD_MODTYPE_KERNEL,
+	  err = grub_freebsd_add_meta_module (argv[0], FREEBSD_MODTYPE_KERNEL,
 					      argc - 1, argv + 1,
 					      kern_start,
 					      kern_end - kern_start);

@@ -26,22 +26,22 @@ Signed-off-by: Michael Chang <mchang@suse.com>
 Origin: other, https://lists.gnu.org/archive/html/grub-devel/2021-03/msg00251.html
 Bug-Debian: https://bugs.debian.org/984488
 Bug-Debian: https://bugs.debian.org/985374
-Last-Update: 2021-09-24
+Last-Update: 2025-07-21
 
 Patch-Name: pc-verifiers-module.patch
 ---
  grub-core/Makefile.am       |  2 ++
  grub-core/Makefile.core.def |  8 +++++++-
- grub-core/kern/main.c       |  4 ++++
+ grub-core/kern/main.c       |  6 +++++-
  grub-core/kern/verifiers.c  | 17 +++++++++++++++++
  include/grub/verify.h       |  9 +++++++++
- 5 files changed, 39 insertions(+), 1 deletion(-)
+ 5 files changed, 40 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/Makefile.am b/grub-core/Makefile.am
-index f18550c..f9d4aa2 100644
+index e50db81..5b862de 100644
 --- a/grub-core/Makefile.am
 +++ b/grub-core/Makefile.am
-@@ -93,7 +93,9 @@ KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/partition.h
+@@ -94,7 +94,9 @@ KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/key_protector.h
  KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/stack_protector.h
  KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/term.h
  KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/time.h
@@ -52,7 +52,7 @@ index f18550c..f9d4aa2 100644
  KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/net.h
  KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/memory.h
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 044e53c..333d3fe 100644
+index 9a2eb1d..b8bd4b3 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -152,7 +152,7 @@ kernel = {
@@ -64,8 +64,8 @@ index 044e53c..333d3fe 100644
  
    noemu = kern/compiler-rt.c;
    noemu = kern/mm.c;
-@@ -975,6 +975,12 @@ module = {
-   cppflags = '-I$(srcdir)/lib/posix_wrap';
+@@ -979,6 +979,12 @@ module = {
+   cppflags = '$(CPPFLAGS_GCRY)';
  };
  
 +module = {
@@ -78,20 +78,22 @@ index 044e53c..333d3fe 100644
    name = hdparm;
    common = commands/hdparm.c;
 diff --git a/grub-core/kern/main.c b/grub-core/kern/main.c
-index 8401bc3..1258514 100644
+index 402572c..3789282 100644
 --- a/grub-core/kern/main.c
 +++ b/grub-core/kern/main.c
-@@ -29,7 +29,9 @@
+@@ -30,8 +30,10 @@
  #include <grub/command.h>
  #include <grub/reader.h>
  #include <grub/parser.h>
+-#include <grub/verify.h>
+ #include <grub/types.h>
 +#ifndef GRUB_MACHINE_PCBIOS
- #include <grub/verify.h>
++#include <grub/verify.h>
 +#endif
  
  #ifdef GRUB_MACHINE_PCBIOS
  #include <grub/machine/memory.h>
-@@ -296,8 +298,10 @@ grub_main (void)
+@@ -344,8 +346,10 @@ grub_main (void)
  #endif
  #endif
  

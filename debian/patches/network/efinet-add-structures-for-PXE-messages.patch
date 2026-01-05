@@ -20,10 +20,10 @@ Signed-off-by: Robbie Harwood <rharwood@redhat.com>
  2 files changed, 46 insertions(+), 27 deletions(-)
 
 diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
-index a599037..5d7cad2 100644
+index f9ccd41..35bd66c 100644
 --- a/grub-core/net/drivers/efi/efinet.c
 +++ b/grub-core/net/drivers/efi/efinet.c
-@@ -426,6 +426,8 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
+@@ -436,6 +436,8 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
  	  grub_print_error ();
  	if (device && path)
  	  grub_dprintf ("efinet", "device: `%s' path: `%s'\n", *device, *path);
@@ -33,10 +33,10 @@ index a599037..5d7cad2 100644
      else
        {
 diff --git a/include/grub/efi/api.h b/include/grub/efi/api.h
-index c1b869d..ad8b697 100644
+index 0ed5af8..de6a581 100644
 --- a/include/grub/efi/api.h
 +++ b/include/grub/efi/api.h
-@@ -1562,31 +1562,6 @@ typedef union
+@@ -1572,31 +1572,6 @@ typedef union
    grub_efi_pxe_dhcpv6_packet_t dhcpv6;
  } grub_efi_pxe_packet_t;
  
@@ -68,7 +68,7 @@ index c1b869d..ad8b697 100644
  typedef struct grub_efi_pxe_icmp_error
  {
    grub_efi_uint8_t type;
-@@ -1612,6 +1587,48 @@ typedef struct grub_efi_pxe_tftp_error
+@@ -1622,6 +1597,48 @@ typedef struct grub_efi_pxe_tftp_error
    grub_efi_char8_t error_string[127];
  } grub_efi_pxe_tftp_error_t;
  
@@ -117,7 +117,7 @@ index c1b869d..ad8b697 100644
  typedef struct grub_efi_pxe_mode
  {
    grub_efi_boolean_t started;
-@@ -1643,9 +1660,9 @@ typedef struct grub_efi_pxe_mode
+@@ -1653,9 +1670,9 @@ typedef struct grub_efi_pxe_mode
    grub_efi_pxe_packet_t pxe_bis_reply;
    grub_efi_pxe_ip_filter_t ip_filter;
    grub_efi_uint32_t arp_cache_entries;

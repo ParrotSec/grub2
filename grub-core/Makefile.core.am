@@ -2249,6 +2249,29 @@ cmostest.marker: $(cmostest_module_SOURCES) $(nodist_cmostest_module_SOURCES)
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 endif
 
+if COND_i386_efi
+platform_PROGRAMS += cmostest.module
+MODULE_FILES += cmostest.module$(EXEEXT)
+cmostest_module_SOURCES  = commands/i386/cmostest.c  ## platform sources
+nodist_cmostest_module_SOURCES  =  ## platform nodist sources
+cmostest_module_LDADD  = 
+cmostest_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+cmostest_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+cmostest_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+cmostest_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+cmostest_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_cmostest_module_SOURCES)
+CLEANFILES += $(nodist_cmostest_module_SOURCES)
+MOD_FILES += cmostest.mod
+MARKER_FILES += cmostest.marker
+CLEANFILES += cmostest.marker
+
+cmostest.marker: $(cmostest_module_SOURCES) $(nodist_cmostest_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cmostest_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
 if COND_i386_qemu
 platform_PROGRAMS += cmostest.module
 MODULE_FILES += cmostest.module$(EXEEXT)
@@ -2319,6 +2342,29 @@ cmostest.marker: $(cmostest_module_SOURCES) $(nodist_cmostest_module_SOURCES)
 endif
 
 if COND_i386_ieee1275
+platform_PROGRAMS += cmostest.module
+MODULE_FILES += cmostest.module$(EXEEXT)
+cmostest_module_SOURCES  = commands/i386/cmostest.c  ## platform sources
+nodist_cmostest_module_SOURCES  =  ## platform nodist sources
+cmostest_module_LDADD  = 
+cmostest_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+cmostest_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+cmostest_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+cmostest_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+cmostest_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_cmostest_module_SOURCES)
+CLEANFILES += $(nodist_cmostest_module_SOURCES)
+MOD_FILES += cmostest.mod
+MARKER_FILES += cmostest.marker
+CLEANFILES += cmostest.marker
+
+cmostest.marker: $(cmostest_module_SOURCES) $(nodist_cmostest_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cmostest_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_x86_64_efi
 platform_PROGRAMS += cmostest.module
 MODULE_FILES += cmostest.module$(EXEEXT)
 cmostest_module_SOURCES  = commands/i386/cmostest.c  ## platform sources
@@ -2456,6 +2502,29 @@ cmosdump.marker: $(cmosdump_module_SOURCES) $(nodist_cmosdump_module_SOURCES)
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 endif
 
+if COND_i386_efi
+platform_PROGRAMS += cmosdump.module
+MODULE_FILES += cmosdump.module$(EXEEXT)
+cmosdump_module_SOURCES  = commands/i386/cmosdump.c  ## platform sources
+nodist_cmosdump_module_SOURCES  =  ## platform nodist sources
+cmosdump_module_LDADD  = 
+cmosdump_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+cmosdump_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+cmosdump_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+cmosdump_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+cmosdump_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_cmosdump_module_SOURCES)
+CLEANFILES += $(nodist_cmosdump_module_SOURCES)
+MOD_FILES += cmosdump.mod
+MARKER_FILES += cmosdump.marker
+CLEANFILES += cmosdump.marker
+
+cmosdump.marker: $(cmosdump_module_SOURCES) $(nodist_cmosdump_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cmosdump_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
 if COND_i386_qemu
 platform_PROGRAMS += cmosdump.module
 MODULE_FILES += cmosdump.module$(EXEEXT)
@@ -2526,6 +2595,29 @@ cmosdump.marker: $(cmosdump_module_SOURCES) $(nodist_cmosdump_module_SOURCES)
 endif
 
 if COND_i386_ieee1275
+platform_PROGRAMS += cmosdump.module
+MODULE_FILES += cmosdump.module$(EXEEXT)
+cmosdump_module_SOURCES  = commands/i386/cmosdump.c  ## platform sources
+nodist_cmosdump_module_SOURCES  =  ## platform nodist sources
+cmosdump_module_LDADD  = 
+cmosdump_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+cmosdump_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+cmosdump_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+cmosdump_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+cmosdump_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_cmosdump_module_SOURCES)
+CLEANFILES += $(nodist_cmosdump_module_SOURCES)
+MOD_FILES += cmosdump.mod
+MARKER_FILES += cmosdump.marker
+CLEANFILES += cmosdump.marker
+
+cmosdump.marker: $(cmosdump_module_SOURCES) $(nodist_cmosdump_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cmosdump_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_x86_64_efi
 platform_PROGRAMS += cmosdump.module
 MODULE_FILES += cmosdump.module$(EXEEXT)
 cmosdump_module_SOURCES  = commands/i386/cmosdump.c  ## platform sources
@@ -7375,9 +7467,9 @@ MODULE_FILES += pgp.module$(EXEEXT)
 pgp_module_SOURCES  = commands/pgp.c  ## platform sources
 nodist_pgp_module_SOURCES  =  ## platform nodist sources
 pgp_module_LDADD  = 
-pgp_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_POSIX) 
+pgp_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) -Wno-redundant-decls 
 pgp_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-pgp_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/posix_wrap 
+pgp_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(CPPFLAGS_GCRY) 
 pgp_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
 pgp_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
 dist_noinst_DATA += 
@@ -10050,6 +10142,26 @@ CLEANFILES += raid6rec.marker
 raid6rec.marker: $(raid6rec_module_SOURCES) $(nodist_raid6rec_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(raid6rec_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+platform_PROGRAMS += key_protector.module
+MODULE_FILES += key_protector.module$(EXEEXT)
+key_protector_module_SOURCES  = disk/key_protector.c  ## platform sources
+nodist_key_protector_module_SOURCES  =  ## platform nodist sources
+key_protector_module_LDADD  = 
+key_protector_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+key_protector_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+key_protector_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+key_protector_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+key_protector_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_key_protector_module_SOURCES)
+CLEANFILES += $(nodist_key_protector_module_SOURCES)
+MOD_FILES += key_protector.mod
+MARKER_FILES += key_protector.marker
+CLEANFILES += key_protector.marker
+
+key_protector.marker: $(key_protector_module_SOURCES) $(nodist_key_protector_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(key_protector_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 platform_PROGRAMS += scsi.module
 MODULE_FILES += scsi.module$(EXEEXT)
 scsi_module_SOURCES  = disk/scsi.c  ## platform sources
@@ -11779,6 +11891,26 @@ CLEANFILES += odc.marker
 odc.marker: $(odc_module_SOURCES) $(nodist_odc_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(odc_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+platform_PROGRAMS += erofs.module
+MODULE_FILES += erofs.module$(EXEEXT)
+erofs_module_SOURCES  = fs/erofs.c  ## platform sources
+nodist_erofs_module_SOURCES  =  ## platform nodist sources
+erofs_module_LDADD  = 
+erofs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+erofs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+erofs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+erofs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+erofs_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_erofs_module_SOURCES)
+CLEANFILES += $(nodist_erofs_module_SOURCES)
+MOD_FILES += erofs.mod
+MARKER_FILES += erofs.marker
+CLEANFILES += erofs.marker
+
+erofs.marker: $(erofs_module_SOURCES) $(nodist_erofs_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(erofs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 platform_PROGRAMS += ext2.module
 MODULE_FILES += ext2.module$(EXEEXT)
 ext2_module_SOURCES  = fs/ext2.c  ## platform sources
@@ -12366,7 +12498,7 @@ nodist_zfs_module_SOURCES  =  ## platform nodist sources
 zfs_module_LDADD  = 
 zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
 zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/posix_wrap -I$(srcdir)/lib/zstd 
 zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
 zfs_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
 dist_noinst_DATA += 
@@ -19048,6 +19180,46 @@ CLEANFILES += setjmp_test.marker
 setjmp_test.marker: $(setjmp_test_module_SOURCES) $(nodist_setjmp_test_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(setjmp_test_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+platform_PROGRAMS += dsa_sexp_test.module
+MODULE_FILES += dsa_sexp_test.module$(EXEEXT)
+dsa_sexp_test_module_SOURCES  = tests/dsa_sexp_test.c  ## platform sources
+nodist_dsa_sexp_test_module_SOURCES  =  ## platform nodist sources
+dsa_sexp_test_module_LDADD  = 
+dsa_sexp_test_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) -Wno-redundant-decls 
+dsa_sexp_test_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+dsa_sexp_test_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(CPPFLAGS_GCRY) 
+dsa_sexp_test_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+dsa_sexp_test_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_dsa_sexp_test_module_SOURCES)
+CLEANFILES += $(nodist_dsa_sexp_test_module_SOURCES)
+MOD_FILES += dsa_sexp_test.mod
+MARKER_FILES += dsa_sexp_test.marker
+CLEANFILES += dsa_sexp_test.marker
+
+dsa_sexp_test.marker: $(dsa_sexp_test_module_SOURCES) $(nodist_dsa_sexp_test_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(dsa_sexp_test_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+platform_PROGRAMS += rsa_sexp_test.module
+MODULE_FILES += rsa_sexp_test.module$(EXEEXT)
+rsa_sexp_test_module_SOURCES  = tests/rsa_sexp_test.c  ## platform sources
+nodist_rsa_sexp_test_module_SOURCES  =  ## platform nodist sources
+rsa_sexp_test_module_LDADD  = 
+rsa_sexp_test_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) -Wno-redundant-decls 
+rsa_sexp_test_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+rsa_sexp_test_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(CPPFLAGS_GCRY) 
+rsa_sexp_test_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+rsa_sexp_test_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_rsa_sexp_test_module_SOURCES)
+CLEANFILES += $(nodist_rsa_sexp_test_module_SOURCES)
+MOD_FILES += rsa_sexp_test.mod
+MARKER_FILES += rsa_sexp_test.marker
+CLEANFILES += rsa_sexp_test.marker
+
+rsa_sexp_test.marker: $(rsa_sexp_test_module_SOURCES) $(nodist_rsa_sexp_test_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(rsa_sexp_test_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 platform_PROGRAMS += signature_test.module
 MODULE_FILES += signature_test.module$(EXEEXT)
 signature_test_module_SOURCES  = tests/signature_test.c tests/signatures.h  ## platform sources
@@ -19865,46 +20037,6 @@ CLEANFILES += videotest_checksum.marker
 
 videotest_checksum.marker: $(videotest_checksum_module_SOURCES) $(nodist_videotest_checksum_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(videotest_checksum_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
-platform_PROGRAMS += gfxterm_menu.module
-MODULE_FILES += gfxterm_menu.module$(EXEEXT)
-gfxterm_menu_module_SOURCES  = tests/gfxterm_menu.c  ## platform sources
-nodist_gfxterm_menu_module_SOURCES  =  ## platform nodist sources
-gfxterm_menu_module_LDADD  = 
-gfxterm_menu_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-gfxterm_menu_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-gfxterm_menu_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
-gfxterm_menu_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-gfxterm_menu_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
-dist_noinst_DATA += 
-BUILT_SOURCES += $(nodist_gfxterm_menu_module_SOURCES)
-CLEANFILES += $(nodist_gfxterm_menu_module_SOURCES)
-MOD_FILES += gfxterm_menu.mod
-MARKER_FILES += gfxterm_menu.marker
-CLEANFILES += gfxterm_menu.marker
-
-gfxterm_menu.marker: $(gfxterm_menu_module_SOURCES) $(nodist_gfxterm_menu_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gfxterm_menu_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
-platform_PROGRAMS += cmdline_cat_test.module
-MODULE_FILES += cmdline_cat_test.module$(EXEEXT)
-cmdline_cat_test_module_SOURCES  = tests/cmdline_cat_test.c  ## platform sources
-nodist_cmdline_cat_test_module_SOURCES  =  ## platform nodist sources
-cmdline_cat_test_module_LDADD  = 
-cmdline_cat_test_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-cmdline_cat_test_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-cmdline_cat_test_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
-cmdline_cat_test_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-cmdline_cat_test_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
-dist_noinst_DATA += 
-BUILT_SOURCES += $(nodist_cmdline_cat_test_module_SOURCES)
-CLEANFILES += $(nodist_cmdline_cat_test_module_SOURCES)
-MOD_FILES += cmdline_cat_test.mod
-MARKER_FILES += cmdline_cat_test.marker
-CLEANFILES += cmdline_cat_test.marker
-
-cmdline_cat_test.marker: $(cmdline_cat_test_module_SOURCES) $(nodist_cmdline_cat_test_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cmdline_cat_test_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 platform_PROGRAMS += bitmap.module
 MODULE_FILES += bitmap.module$(EXEEXT)
@@ -22498,10 +22630,10 @@ crc64.marker: $(crc64_module_SOURCES) $(nodist_crc64_module_SOURCES)
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 platform_PROGRAMS += mpi.module
 MODULE_FILES += mpi.module$(EXEEXT)
-mpi_module_SOURCES  = lib/libgcrypt-grub/mpi/mpi-add.c lib/libgcrypt-grub/mpi/mpi-bit.c lib/libgcrypt-grub/mpi/mpi-cmp.c lib/libgcrypt-grub/mpi/mpi-div.c lib/libgcrypt-grub/mpi/mpi-gcd.c lib/libgcrypt-grub/mpi/mpi-inline.c lib/libgcrypt-grub/mpi/mpi-inv.c lib/libgcrypt-grub/mpi/mpi-mod.c lib/libgcrypt-grub/mpi/mpi-mpow.c lib/libgcrypt-grub/mpi/mpi-mul.c lib/libgcrypt-grub/mpi/mpi-pow.c lib/libgcrypt-grub/mpi/mpicoder.c lib/libgcrypt-grub/mpi/mpih-add1.c lib/libgcrypt-grub/mpi/mpih-div.c lib/libgcrypt-grub/mpi/mpih-lshift.c lib/libgcrypt-grub/mpi/mpih-mul.c lib/libgcrypt-grub/mpi/mpih-mul1.c lib/libgcrypt-grub/mpi/mpih-mul2.c lib/libgcrypt-grub/mpi/mpih-mul3.c lib/libgcrypt-grub/mpi/mpih-rshift.c lib/libgcrypt-grub/mpi/mpih-sub1.c lib/libgcrypt-grub/mpi/mpiutil.c lib/libgcrypt_wrap/mem.c  ## platform sources
+mpi_module_SOURCES  = lib/libgcrypt-grub/cipher/md.c lib/libgcrypt-grub/mpi/mpi-add.c lib/libgcrypt-grub/mpi/mpi-bit.c lib/libgcrypt-grub/mpi/mpi-cmp.c lib/libgcrypt-grub/mpi/mpi-div.c lib/libgcrypt-grub/mpi/mpi-gcd.c lib/libgcrypt-grub/mpi/mpi-inline.c lib/libgcrypt-grub/mpi/mpi-inv.c lib/libgcrypt-grub/mpi/mpi-mod.c lib/libgcrypt-grub/mpi/mpi-mpow.c lib/libgcrypt-grub/mpi/mpi-mul.c lib/libgcrypt-grub/mpi/mpi-pow.c lib/libgcrypt-grub/mpi/mpi-scan.c lib/libgcrypt-grub/mpi/mpicoder.c lib/libgcrypt-grub/mpi/mpih-add1.c lib/libgcrypt-grub/mpi/mpih-const-time.c lib/libgcrypt-grub/mpi/mpih-div.c lib/libgcrypt-grub/mpi/mpih-lshift.c lib/libgcrypt-grub/mpi/mpih-mul.c lib/libgcrypt-grub/mpi/mpih-mul1.c lib/libgcrypt-grub/mpi/mpih-mul2.c lib/libgcrypt-grub/mpi/mpih-mul3.c lib/libgcrypt-grub/mpi/mpih-rshift.c lib/libgcrypt-grub/mpi/mpih-sub1.c lib/libgcrypt-grub/mpi/mpiutil.c lib/libgcrypt-grub/src/const-time.c lib/libgcrypt_wrap/mem.c  ## platform sources
 nodist_mpi_module_SOURCES  =  ## platform nodist sources
 mpi_module_LDADD  = 
-mpi_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) -Wno-redundant-decls -Wno-sign-compare 
+mpi_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) -Wno-redundant-decls -Wno-unused-but-set-variable 
 mpi_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
 mpi_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(CPPFLAGS_GCRY) 
 mpi_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
@@ -22515,6 +22647,26 @@ CLEANFILES += mpi.marker
 
 mpi.marker: $(mpi_module_SOURCES) $(nodist_mpi_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(mpi_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+platform_PROGRAMS += pubkey.module
+MODULE_FILES += pubkey.module$(EXEEXT)
+pubkey_module_SOURCES  = lib/b64dec.c lib/libgcrypt-grub/cipher/dsa-common.c lib/libgcrypt-grub/cipher/pubkey-util.c lib/libgcrypt-grub/cipher/rsa-common.c lib/libgcrypt-grub/src/sexp.c  ## platform sources
+nodist_pubkey_module_SOURCES  =  ## platform nodist sources
+pubkey_module_LDADD  = 
+pubkey_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) -Wno-redundant-decls 
+pubkey_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+pubkey_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(CPPFLAGS_GCRY) 
+pubkey_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+pubkey_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_pubkey_module_SOURCES)
+CLEANFILES += $(nodist_pubkey_module_SOURCES)
+MOD_FILES += pubkey.mod
+MARKER_FILES += pubkey.marker
+CLEANFILES += pubkey.marker
+
+pubkey.marker: $(pubkey_module_SOURCES) $(nodist_pubkey_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pubkey_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 platform_PROGRAMS += all_video.module
 MODULE_FILES += all_video.module$(EXEEXT)
@@ -22876,6 +23028,466 @@ CLEANFILES += tpm.marker
 
 tpm.marker: $(tpm_module_SOURCES) $(nodist_tpm_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tpm_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_emu
+platform_PROGRAMS += tss2.module
+MODULE_FILES += tss2.module$(EXEEXT)
+tss2_module_SOURCES  = lib/tss2/buffer.c lib/tss2/tcg2_emu.c lib/tss2/tpm2_cmd.c lib/tss2/tss2.c lib/tss2/tss2_mu.c  ## platform sources
+nodist_tss2_module_SOURCES  =  ## platform nodist sources
+tss2_module_LDADD  = 
+tss2_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tss2_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tss2_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 
+tss2_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tss2_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tss2_module_SOURCES)
+CLEANFILES += $(nodist_tss2_module_SOURCES)
+MOD_FILES += tss2.mod
+MARKER_FILES += tss2.marker
+CLEANFILES += tss2.marker
+
+tss2.marker: $(tss2_module_SOURCES) $(nodist_tss2_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tss2_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_i386_efi
+platform_PROGRAMS += tss2.module
+MODULE_FILES += tss2.module$(EXEEXT)
+tss2_module_SOURCES  = lib/efi/tcg2.c lib/tss2/buffer.c lib/tss2/tpm2_cmd.c lib/tss2/tss2.c lib/tss2/tss2_mu.c  ## platform sources
+nodist_tss2_module_SOURCES  =  ## platform nodist sources
+tss2_module_LDADD  = 
+tss2_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tss2_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tss2_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 
+tss2_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tss2_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tss2_module_SOURCES)
+CLEANFILES += $(nodist_tss2_module_SOURCES)
+MOD_FILES += tss2.mod
+MARKER_FILES += tss2.marker
+CLEANFILES += tss2.marker
+
+tss2.marker: $(tss2_module_SOURCES) $(nodist_tss2_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tss2_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_x86_64_efi
+platform_PROGRAMS += tss2.module
+MODULE_FILES += tss2.module$(EXEEXT)
+tss2_module_SOURCES  = lib/efi/tcg2.c lib/tss2/buffer.c lib/tss2/tpm2_cmd.c lib/tss2/tss2.c lib/tss2/tss2_mu.c  ## platform sources
+nodist_tss2_module_SOURCES  =  ## platform nodist sources
+tss2_module_LDADD  = 
+tss2_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tss2_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tss2_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 
+tss2_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tss2_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tss2_module_SOURCES)
+CLEANFILES += $(nodist_tss2_module_SOURCES)
+MOD_FILES += tss2.mod
+MARKER_FILES += tss2.marker
+CLEANFILES += tss2.marker
+
+tss2.marker: $(tss2_module_SOURCES) $(nodist_tss2_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tss2_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_powerpc_ieee1275
+platform_PROGRAMS += tss2.module
+MODULE_FILES += tss2.module$(EXEEXT)
+tss2_module_SOURCES  = lib/ieee1275/tcg2.c lib/tss2/buffer.c lib/tss2/tpm2_cmd.c lib/tss2/tss2.c lib/tss2/tss2_mu.c  ## platform sources
+nodist_tss2_module_SOURCES  =  ## platform nodist sources
+tss2_module_LDADD  = 
+tss2_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tss2_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tss2_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 
+tss2_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tss2_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tss2_module_SOURCES)
+CLEANFILES += $(nodist_tss2_module_SOURCES)
+MOD_FILES += tss2.mod
+MARKER_FILES += tss2.marker
+CLEANFILES += tss2.marker
+
+tss2.marker: $(tss2_module_SOURCES) $(nodist_tss2_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tss2_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_ia64_efi
+platform_PROGRAMS += tss2.module
+MODULE_FILES += tss2.module$(EXEEXT)
+tss2_module_SOURCES  = lib/efi/tcg2.c lib/tss2/buffer.c lib/tss2/tpm2_cmd.c lib/tss2/tss2.c lib/tss2/tss2_mu.c  ## platform sources
+nodist_tss2_module_SOURCES  =  ## platform nodist sources
+tss2_module_LDADD  = 
+tss2_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tss2_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tss2_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 
+tss2_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tss2_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tss2_module_SOURCES)
+CLEANFILES += $(nodist_tss2_module_SOURCES)
+MOD_FILES += tss2.mod
+MARKER_FILES += tss2.marker
+CLEANFILES += tss2.marker
+
+tss2.marker: $(tss2_module_SOURCES) $(nodist_tss2_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tss2_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_arm_efi
+platform_PROGRAMS += tss2.module
+MODULE_FILES += tss2.module$(EXEEXT)
+tss2_module_SOURCES  = lib/efi/tcg2.c lib/tss2/buffer.c lib/tss2/tpm2_cmd.c lib/tss2/tss2.c lib/tss2/tss2_mu.c  ## platform sources
+nodist_tss2_module_SOURCES  =  ## platform nodist sources
+tss2_module_LDADD  = 
+tss2_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tss2_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tss2_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 
+tss2_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tss2_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tss2_module_SOURCES)
+CLEANFILES += $(nodist_tss2_module_SOURCES)
+MOD_FILES += tss2.mod
+MARKER_FILES += tss2.marker
+CLEANFILES += tss2.marker
+
+tss2.marker: $(tss2_module_SOURCES) $(nodist_tss2_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tss2_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_arm64_efi
+platform_PROGRAMS += tss2.module
+MODULE_FILES += tss2.module$(EXEEXT)
+tss2_module_SOURCES  = lib/efi/tcg2.c lib/tss2/buffer.c lib/tss2/tpm2_cmd.c lib/tss2/tss2.c lib/tss2/tss2_mu.c  ## platform sources
+nodist_tss2_module_SOURCES  =  ## platform nodist sources
+tss2_module_LDADD  = 
+tss2_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tss2_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tss2_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 
+tss2_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tss2_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tss2_module_SOURCES)
+CLEANFILES += $(nodist_tss2_module_SOURCES)
+MOD_FILES += tss2.mod
+MARKER_FILES += tss2.marker
+CLEANFILES += tss2.marker
+
+tss2.marker: $(tss2_module_SOURCES) $(nodist_tss2_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tss2_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_loongarch64_efi
+platform_PROGRAMS += tss2.module
+MODULE_FILES += tss2.module$(EXEEXT)
+tss2_module_SOURCES  = lib/efi/tcg2.c lib/tss2/buffer.c lib/tss2/tpm2_cmd.c lib/tss2/tss2.c lib/tss2/tss2_mu.c  ## platform sources
+nodist_tss2_module_SOURCES  =  ## platform nodist sources
+tss2_module_LDADD  = 
+tss2_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tss2_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tss2_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 
+tss2_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tss2_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tss2_module_SOURCES)
+CLEANFILES += $(nodist_tss2_module_SOURCES)
+MOD_FILES += tss2.mod
+MARKER_FILES += tss2.marker
+CLEANFILES += tss2.marker
+
+tss2.marker: $(tss2_module_SOURCES) $(nodist_tss2_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tss2_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_riscv32_efi
+platform_PROGRAMS += tss2.module
+MODULE_FILES += tss2.module$(EXEEXT)
+tss2_module_SOURCES  = lib/efi/tcg2.c lib/tss2/buffer.c lib/tss2/tpm2_cmd.c lib/tss2/tss2.c lib/tss2/tss2_mu.c  ## platform sources
+nodist_tss2_module_SOURCES  =  ## platform nodist sources
+tss2_module_LDADD  = 
+tss2_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tss2_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tss2_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 
+tss2_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tss2_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tss2_module_SOURCES)
+CLEANFILES += $(nodist_tss2_module_SOURCES)
+MOD_FILES += tss2.mod
+MARKER_FILES += tss2.marker
+CLEANFILES += tss2.marker
+
+tss2.marker: $(tss2_module_SOURCES) $(nodist_tss2_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tss2_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_riscv64_efi
+platform_PROGRAMS += tss2.module
+MODULE_FILES += tss2.module$(EXEEXT)
+tss2_module_SOURCES  = lib/efi/tcg2.c lib/tss2/buffer.c lib/tss2/tpm2_cmd.c lib/tss2/tss2.c lib/tss2/tss2_mu.c  ## platform sources
+nodist_tss2_module_SOURCES  =  ## platform nodist sources
+tss2_module_LDADD  = 
+tss2_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tss2_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tss2_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 
+tss2_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tss2_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tss2_module_SOURCES)
+CLEANFILES += $(nodist_tss2_module_SOURCES)
+MOD_FILES += tss2.mod
+MARKER_FILES += tss2.marker
+CLEANFILES += tss2.marker
+
+tss2.marker: $(tss2_module_SOURCES) $(nodist_tss2_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tss2_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_emu
+platform_PROGRAMS += tpm2_key_protector.module
+MODULE_FILES += tpm2_key_protector.module$(EXEEXT)
+tpm2_key_protector_module_SOURCES  = commands/tpm2_key_protector/args.c commands/tpm2_key_protector/module.c commands/tpm2_key_protector/tpm2key.c commands/tpm2_key_protector/tpm2key_asn1_tab.c  ## platform sources
+nodist_tpm2_key_protector_module_SOURCES  =  ## platform nodist sources
+tpm2_key_protector_module_LDADD  = 
+tpm2_key_protector_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tpm2_key_protector_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tpm2_key_protector_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 -I$(srcdir)/lib/libtasn1-grub 
+tpm2_key_protector_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tpm2_key_protector_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tpm2_key_protector_module_SOURCES)
+CLEANFILES += $(nodist_tpm2_key_protector_module_SOURCES)
+MOD_FILES += tpm2_key_protector.mod
+MARKER_FILES += tpm2_key_protector.marker
+CLEANFILES += tpm2_key_protector.marker
+
+tpm2_key_protector.marker: $(tpm2_key_protector_module_SOURCES) $(nodist_tpm2_key_protector_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tpm2_key_protector_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_i386_efi
+platform_PROGRAMS += tpm2_key_protector.module
+MODULE_FILES += tpm2_key_protector.module$(EXEEXT)
+tpm2_key_protector_module_SOURCES  = commands/tpm2_key_protector/args.c commands/tpm2_key_protector/module.c commands/tpm2_key_protector/tpm2key.c commands/tpm2_key_protector/tpm2key_asn1_tab.c  ## platform sources
+nodist_tpm2_key_protector_module_SOURCES  =  ## platform nodist sources
+tpm2_key_protector_module_LDADD  = 
+tpm2_key_protector_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tpm2_key_protector_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tpm2_key_protector_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 -I$(srcdir)/lib/libtasn1-grub 
+tpm2_key_protector_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tpm2_key_protector_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tpm2_key_protector_module_SOURCES)
+CLEANFILES += $(nodist_tpm2_key_protector_module_SOURCES)
+MOD_FILES += tpm2_key_protector.mod
+MARKER_FILES += tpm2_key_protector.marker
+CLEANFILES += tpm2_key_protector.marker
+
+tpm2_key_protector.marker: $(tpm2_key_protector_module_SOURCES) $(nodist_tpm2_key_protector_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tpm2_key_protector_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_x86_64_efi
+platform_PROGRAMS += tpm2_key_protector.module
+MODULE_FILES += tpm2_key_protector.module$(EXEEXT)
+tpm2_key_protector_module_SOURCES  = commands/tpm2_key_protector/args.c commands/tpm2_key_protector/module.c commands/tpm2_key_protector/tpm2key.c commands/tpm2_key_protector/tpm2key_asn1_tab.c  ## platform sources
+nodist_tpm2_key_protector_module_SOURCES  =  ## platform nodist sources
+tpm2_key_protector_module_LDADD  = 
+tpm2_key_protector_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tpm2_key_protector_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tpm2_key_protector_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 -I$(srcdir)/lib/libtasn1-grub 
+tpm2_key_protector_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tpm2_key_protector_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tpm2_key_protector_module_SOURCES)
+CLEANFILES += $(nodist_tpm2_key_protector_module_SOURCES)
+MOD_FILES += tpm2_key_protector.mod
+MARKER_FILES += tpm2_key_protector.marker
+CLEANFILES += tpm2_key_protector.marker
+
+tpm2_key_protector.marker: $(tpm2_key_protector_module_SOURCES) $(nodist_tpm2_key_protector_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tpm2_key_protector_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_powerpc_ieee1275
+platform_PROGRAMS += tpm2_key_protector.module
+MODULE_FILES += tpm2_key_protector.module$(EXEEXT)
+tpm2_key_protector_module_SOURCES  = commands/tpm2_key_protector/args.c commands/tpm2_key_protector/module.c commands/tpm2_key_protector/tpm2key.c commands/tpm2_key_protector/tpm2key_asn1_tab.c  ## platform sources
+nodist_tpm2_key_protector_module_SOURCES  =  ## platform nodist sources
+tpm2_key_protector_module_LDADD  = 
+tpm2_key_protector_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tpm2_key_protector_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tpm2_key_protector_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 -I$(srcdir)/lib/libtasn1-grub 
+tpm2_key_protector_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tpm2_key_protector_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tpm2_key_protector_module_SOURCES)
+CLEANFILES += $(nodist_tpm2_key_protector_module_SOURCES)
+MOD_FILES += tpm2_key_protector.mod
+MARKER_FILES += tpm2_key_protector.marker
+CLEANFILES += tpm2_key_protector.marker
+
+tpm2_key_protector.marker: $(tpm2_key_protector_module_SOURCES) $(nodist_tpm2_key_protector_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tpm2_key_protector_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_ia64_efi
+platform_PROGRAMS += tpm2_key_protector.module
+MODULE_FILES += tpm2_key_protector.module$(EXEEXT)
+tpm2_key_protector_module_SOURCES  = commands/tpm2_key_protector/args.c commands/tpm2_key_protector/module.c commands/tpm2_key_protector/tpm2key.c commands/tpm2_key_protector/tpm2key_asn1_tab.c  ## platform sources
+nodist_tpm2_key_protector_module_SOURCES  =  ## platform nodist sources
+tpm2_key_protector_module_LDADD  = 
+tpm2_key_protector_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tpm2_key_protector_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tpm2_key_protector_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 -I$(srcdir)/lib/libtasn1-grub 
+tpm2_key_protector_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tpm2_key_protector_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tpm2_key_protector_module_SOURCES)
+CLEANFILES += $(nodist_tpm2_key_protector_module_SOURCES)
+MOD_FILES += tpm2_key_protector.mod
+MARKER_FILES += tpm2_key_protector.marker
+CLEANFILES += tpm2_key_protector.marker
+
+tpm2_key_protector.marker: $(tpm2_key_protector_module_SOURCES) $(nodist_tpm2_key_protector_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tpm2_key_protector_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_arm_efi
+platform_PROGRAMS += tpm2_key_protector.module
+MODULE_FILES += tpm2_key_protector.module$(EXEEXT)
+tpm2_key_protector_module_SOURCES  = commands/tpm2_key_protector/args.c commands/tpm2_key_protector/module.c commands/tpm2_key_protector/tpm2key.c commands/tpm2_key_protector/tpm2key_asn1_tab.c  ## platform sources
+nodist_tpm2_key_protector_module_SOURCES  =  ## platform nodist sources
+tpm2_key_protector_module_LDADD  = 
+tpm2_key_protector_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tpm2_key_protector_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tpm2_key_protector_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 -I$(srcdir)/lib/libtasn1-grub 
+tpm2_key_protector_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tpm2_key_protector_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tpm2_key_protector_module_SOURCES)
+CLEANFILES += $(nodist_tpm2_key_protector_module_SOURCES)
+MOD_FILES += tpm2_key_protector.mod
+MARKER_FILES += tpm2_key_protector.marker
+CLEANFILES += tpm2_key_protector.marker
+
+tpm2_key_protector.marker: $(tpm2_key_protector_module_SOURCES) $(nodist_tpm2_key_protector_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tpm2_key_protector_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_arm64_efi
+platform_PROGRAMS += tpm2_key_protector.module
+MODULE_FILES += tpm2_key_protector.module$(EXEEXT)
+tpm2_key_protector_module_SOURCES  = commands/tpm2_key_protector/args.c commands/tpm2_key_protector/module.c commands/tpm2_key_protector/tpm2key.c commands/tpm2_key_protector/tpm2key_asn1_tab.c  ## platform sources
+nodist_tpm2_key_protector_module_SOURCES  =  ## platform nodist sources
+tpm2_key_protector_module_LDADD  = 
+tpm2_key_protector_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tpm2_key_protector_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tpm2_key_protector_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 -I$(srcdir)/lib/libtasn1-grub 
+tpm2_key_protector_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tpm2_key_protector_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tpm2_key_protector_module_SOURCES)
+CLEANFILES += $(nodist_tpm2_key_protector_module_SOURCES)
+MOD_FILES += tpm2_key_protector.mod
+MARKER_FILES += tpm2_key_protector.marker
+CLEANFILES += tpm2_key_protector.marker
+
+tpm2_key_protector.marker: $(tpm2_key_protector_module_SOURCES) $(nodist_tpm2_key_protector_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tpm2_key_protector_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_loongarch64_efi
+platform_PROGRAMS += tpm2_key_protector.module
+MODULE_FILES += tpm2_key_protector.module$(EXEEXT)
+tpm2_key_protector_module_SOURCES  = commands/tpm2_key_protector/args.c commands/tpm2_key_protector/module.c commands/tpm2_key_protector/tpm2key.c commands/tpm2_key_protector/tpm2key_asn1_tab.c  ## platform sources
+nodist_tpm2_key_protector_module_SOURCES  =  ## platform nodist sources
+tpm2_key_protector_module_LDADD  = 
+tpm2_key_protector_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tpm2_key_protector_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tpm2_key_protector_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 -I$(srcdir)/lib/libtasn1-grub 
+tpm2_key_protector_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tpm2_key_protector_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tpm2_key_protector_module_SOURCES)
+CLEANFILES += $(nodist_tpm2_key_protector_module_SOURCES)
+MOD_FILES += tpm2_key_protector.mod
+MARKER_FILES += tpm2_key_protector.marker
+CLEANFILES += tpm2_key_protector.marker
+
+tpm2_key_protector.marker: $(tpm2_key_protector_module_SOURCES) $(nodist_tpm2_key_protector_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tpm2_key_protector_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_riscv32_efi
+platform_PROGRAMS += tpm2_key_protector.module
+MODULE_FILES += tpm2_key_protector.module$(EXEEXT)
+tpm2_key_protector_module_SOURCES  = commands/tpm2_key_protector/args.c commands/tpm2_key_protector/module.c commands/tpm2_key_protector/tpm2key.c commands/tpm2_key_protector/tpm2key_asn1_tab.c  ## platform sources
+nodist_tpm2_key_protector_module_SOURCES  =  ## platform nodist sources
+tpm2_key_protector_module_LDADD  = 
+tpm2_key_protector_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tpm2_key_protector_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tpm2_key_protector_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 -I$(srcdir)/lib/libtasn1-grub 
+tpm2_key_protector_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tpm2_key_protector_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tpm2_key_protector_module_SOURCES)
+CLEANFILES += $(nodist_tpm2_key_protector_module_SOURCES)
+MOD_FILES += tpm2_key_protector.mod
+MARKER_FILES += tpm2_key_protector.marker
+CLEANFILES += tpm2_key_protector.marker
+
+tpm2_key_protector.marker: $(tpm2_key_protector_module_SOURCES) $(nodist_tpm2_key_protector_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tpm2_key_protector_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+endif
+
+if COND_riscv64_efi
+platform_PROGRAMS += tpm2_key_protector.module
+MODULE_FILES += tpm2_key_protector.module$(EXEEXT)
+tpm2_key_protector_module_SOURCES  = commands/tpm2_key_protector/args.c commands/tpm2_key_protector/module.c commands/tpm2_key_protector/tpm2key.c commands/tpm2_key_protector/tpm2key_asn1_tab.c  ## platform sources
+nodist_tpm2_key_protector_module_SOURCES  =  ## platform nodist sources
+tpm2_key_protector_module_LDADD  = 
+tpm2_key_protector_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+tpm2_key_protector_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+tpm2_key_protector_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/tss2 -I$(srcdir)/lib/libtasn1-grub 
+tpm2_key_protector_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+tpm2_key_protector_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_tpm2_key_protector_module_SOURCES)
+CLEANFILES += $(nodist_tpm2_key_protector_module_SOURCES)
+MOD_FILES += tpm2_key_protector.mod
+MARKER_FILES += tpm2_key_protector.marker
+CLEANFILES += tpm2_key_protector.marker
+
+tpm2_key_protector.marker: $(tpm2_key_protector_module_SOURCES) $(nodist_tpm2_key_protector_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tpm2_key_protector_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 endif
 platform_PROGRAMS += tr.module
@@ -23300,6 +23912,7 @@ CLEANFILES += $(nodist_bli_module_SOURCES)
 MOD_FILES += bli.mod
 MARKER_FILES += bli.marker
 CLEANFILES += bli.marker
+EXTRA_DEPS += depends bli part_gpt:
 
 bli.marker: $(bli_module_SOURCES) $(nodist_bli_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bli_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
@@ -23323,6 +23936,7 @@ CLEANFILES += $(nodist_bli_module_SOURCES)
 MOD_FILES += bli.mod
 MARKER_FILES += bli.marker
 CLEANFILES += bli.marker
+EXTRA_DEPS += depends bli part_gpt:
 
 bli.marker: $(bli_module_SOURCES) $(nodist_bli_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bli_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
@@ -23346,6 +23960,7 @@ CLEANFILES += $(nodist_bli_module_SOURCES)
 MOD_FILES += bli.mod
 MARKER_FILES += bli.marker
 CLEANFILES += bli.marker
+EXTRA_DEPS += depends bli part_gpt:
 
 bli.marker: $(bli_module_SOURCES) $(nodist_bli_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bli_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
@@ -23369,6 +23984,7 @@ CLEANFILES += $(nodist_bli_module_SOURCES)
 MOD_FILES += bli.mod
 MARKER_FILES += bli.marker
 CLEANFILES += bli.marker
+EXTRA_DEPS += depends bli part_gpt:
 
 bli.marker: $(bli_module_SOURCES) $(nodist_bli_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bli_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
@@ -23392,6 +24008,7 @@ CLEANFILES += $(nodist_bli_module_SOURCES)
 MOD_FILES += bli.mod
 MARKER_FILES += bli.marker
 CLEANFILES += bli.marker
+EXTRA_DEPS += depends bli part_gpt:
 
 bli.marker: $(bli_module_SOURCES) $(nodist_bli_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bli_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
@@ -23415,6 +24032,7 @@ CLEANFILES += $(nodist_bli_module_SOURCES)
 MOD_FILES += bli.mod
 MARKER_FILES += bli.marker
 CLEANFILES += bli.marker
+EXTRA_DEPS += depends bli part_gpt:
 
 bli.marker: $(bli_module_SOURCES) $(nodist_bli_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bli_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
@@ -23438,6 +24056,7 @@ CLEANFILES += $(nodist_bli_module_SOURCES)
 MOD_FILES += bli.mod
 MARKER_FILES += bli.marker
 CLEANFILES += bli.marker
+EXTRA_DEPS += depends bli part_gpt:
 
 bli.marker: $(bli_module_SOURCES) $(nodist_bli_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bli_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
@@ -23461,11 +24080,52 @@ CLEANFILES += $(nodist_bli_module_SOURCES)
 MOD_FILES += bli.mod
 MARKER_FILES += bli.marker
 CLEANFILES += bli.marker
+EXTRA_DEPS += depends bli part_gpt:
 
 bli.marker: $(bli_module_SOURCES) $(nodist_bli_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bli_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 endif
+platform_PROGRAMS += asn1.module
+MODULE_FILES += asn1.module$(EXEEXT)
+asn1_module_SOURCES  = lib/libtasn1-grub/lib/coding.c lib/libtasn1-grub/lib/decoding.c lib/libtasn1-grub/lib/element.c lib/libtasn1-grub/lib/errors.c lib/libtasn1-grub/lib/gstr.c lib/libtasn1-grub/lib/parser_aux.c lib/libtasn1-grub/lib/structure.c lib/libtasn1_wrap/wrap.c  ## platform sources
+nodist_asn1_module_SOURCES  =  ## platform nodist sources
+asn1_module_LDADD  = 
+asn1_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_POSIX) $(CFLAGS_GNULIB) 
+asn1_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+asn1_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(CPPFLAGS_POSIX) $(CPPFLAGS_GNULIB) -I$(srcdir)/lib/libtasn1-grub -I$(srcdir)/lib/libtasn1-grub/lib -Wno-type-limits 
+asn1_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+asn1_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_asn1_module_SOURCES)
+CLEANFILES += $(nodist_asn1_module_SOURCES)
+MOD_FILES += asn1.mod
+MARKER_FILES += asn1.marker
+CLEANFILES += asn1.marker
+
+asn1.marker: $(asn1_module_SOURCES) $(nodist_asn1_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(asn1_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+platform_PROGRAMS += asn1_test.module
+MODULE_FILES += asn1_test.module$(EXEEXT)
+asn1_test_module_SOURCES  = tests/asn1/asn1_test.c tests/asn1/tests/CVE-2018-1000654.c tests/asn1/tests/Test_overflow.c tests/asn1/tests/Test_simple.c tests/asn1/tests/Test_strings.c tests/asn1/tests/object-id-decoding.c tests/asn1/tests/object-id-encoding.c tests/asn1/tests/octet-string.c tests/asn1/tests/reproducers.c  ## platform sources
+nodist_asn1_test_module_SOURCES  =  ## platform nodist sources
+asn1_test_module_LDADD  = 
+asn1_test_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) -Wno-uninitialized 
+asn1_test_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+asn1_test_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) -I$(srcdir)/lib/libtasn1-grub -I$(srcdir)/tests/asn1/ 
+asn1_test_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+asn1_test_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_asn1_test_module_SOURCES)
+CLEANFILES += $(nodist_asn1_test_module_SOURCES)
+MOD_FILES += asn1_test.mod
+MARKER_FILES += asn1_test.marker
+CLEANFILES += asn1_test.marker
+
+asn1_test.marker: $(asn1_test_module_SOURCES) $(nodist_asn1_test_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(asn1_test_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 platform_PROGRAMS += gcry_arcfour.module
 MODULE_FILES += gcry_arcfour.module$(EXEEXT)
 gcry_arcfour_module_SOURCES  = lib/libgcrypt-grub/cipher/arcfour.c  ## platform sources
@@ -23485,6 +24145,46 @@ CLEANFILES += gcry_arcfour.marker
 
 gcry_arcfour.marker: $(gcry_arcfour_module_SOURCES) $(nodist_gcry_arcfour_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcry_arcfour_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+platform_PROGRAMS += gcry_aria.module
+MODULE_FILES += gcry_aria.module$(EXEEXT)
+gcry_aria_module_SOURCES  = lib/libgcrypt-grub/cipher/aria.c  ## platform sources
+nodist_gcry_aria_module_SOURCES  =  ## platform nodist sources
+gcry_aria_module_LDADD  = 
+gcry_aria_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) 
+gcry_aria_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+gcry_aria_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(CPPFLAGS_GCRY) 
+gcry_aria_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+gcry_aria_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_gcry_aria_module_SOURCES)
+CLEANFILES += $(nodist_gcry_aria_module_SOURCES)
+MOD_FILES += gcry_aria.mod
+MARKER_FILES += gcry_aria.marker
+CLEANFILES += gcry_aria.marker
+
+gcry_aria.marker: $(gcry_aria_module_SOURCES) $(nodist_gcry_aria_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcry_aria_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+platform_PROGRAMS += gcry_blake2.module
+MODULE_FILES += gcry_blake2.module$(EXEEXT)
+gcry_blake2_module_SOURCES  = lib/libgcrypt-grub/cipher/blake2.c  ## platform sources
+nodist_gcry_blake2_module_SOURCES  =  ## platform nodist sources
+gcry_blake2_module_LDADD  = 
+gcry_blake2_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) 
+gcry_blake2_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+gcry_blake2_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(CPPFLAGS_GCRY) 
+gcry_blake2_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+gcry_blake2_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_gcry_blake2_module_SOURCES)
+CLEANFILES += $(nodist_gcry_blake2_module_SOURCES)
+MOD_FILES += gcry_blake2.mod
+MARKER_FILES += gcry_blake2.marker
+CLEANFILES += gcry_blake2.marker
+
+gcry_blake2.marker: $(gcry_blake2_module_SOURCES) $(nodist_gcry_blake2_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcry_blake2_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 platform_PROGRAMS += gcry_blowfish.module
 MODULE_FILES += gcry_blowfish.module$(EXEEXT)
@@ -23606,6 +24306,46 @@ CLEANFILES += gcry_dsa.marker
 gcry_dsa.marker: $(gcry_dsa_module_SOURCES) $(nodist_gcry_dsa_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcry_dsa_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+platform_PROGRAMS += gcry_gost28147.module
+MODULE_FILES += gcry_gost28147.module$(EXEEXT)
+gcry_gost28147_module_SOURCES  = lib/libgcrypt-grub/cipher/gost28147.c  ## platform sources
+nodist_gcry_gost28147_module_SOURCES  =  ## platform nodist sources
+gcry_gost28147_module_LDADD  = 
+gcry_gost28147_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) 
+gcry_gost28147_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+gcry_gost28147_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(CPPFLAGS_GCRY) 
+gcry_gost28147_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+gcry_gost28147_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_gcry_gost28147_module_SOURCES)
+CLEANFILES += $(nodist_gcry_gost28147_module_SOURCES)
+MOD_FILES += gcry_gost28147.mod
+MARKER_FILES += gcry_gost28147.marker
+CLEANFILES += gcry_gost28147.marker
+
+gcry_gost28147.marker: $(gcry_gost28147_module_SOURCES) $(nodist_gcry_gost28147_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcry_gost28147_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+platform_PROGRAMS += gcry_gostr3411_94.module
+MODULE_FILES += gcry_gostr3411_94.module$(EXEEXT)
+gcry_gostr3411_94_module_SOURCES  = lib/libgcrypt-grub/cipher/gostr3411-94.c  ## platform sources
+nodist_gcry_gostr3411_94_module_SOURCES  =  ## platform nodist sources
+gcry_gostr3411_94_module_LDADD  = 
+gcry_gostr3411_94_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) 
+gcry_gostr3411_94_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+gcry_gostr3411_94_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(CPPFLAGS_GCRY) 
+gcry_gostr3411_94_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+gcry_gostr3411_94_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_gcry_gostr3411_94_module_SOURCES)
+CLEANFILES += $(nodist_gcry_gostr3411_94_module_SOURCES)
+MOD_FILES += gcry_gostr3411_94.mod
+MARKER_FILES += gcry_gostr3411_94.marker
+CLEANFILES += gcry_gostr3411_94.marker
+
+gcry_gostr3411_94.marker: $(gcry_gostr3411_94_module_SOURCES) $(nodist_gcry_gostr3411_94_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcry_gostr3411_94_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 platform_PROGRAMS += gcry_idea.module
 MODULE_FILES += gcry_idea.module$(EXEEXT)
 gcry_idea_module_SOURCES  = lib/libgcrypt-grub/cipher/idea.c  ## platform sources
@@ -23625,6 +24365,26 @@ CLEANFILES += gcry_idea.marker
 
 gcry_idea.marker: $(gcry_idea_module_SOURCES) $(nodist_gcry_idea_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcry_idea_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+platform_PROGRAMS += gcry_keccak.module
+MODULE_FILES += gcry_keccak.module$(EXEEXT)
+gcry_keccak_module_SOURCES  = lib/libgcrypt-grub/cipher/keccak.c  ## platform sources
+nodist_gcry_keccak_module_SOURCES  =  ## platform nodist sources
+gcry_keccak_module_LDADD  = 
+gcry_keccak_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) 
+gcry_keccak_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+gcry_keccak_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(CPPFLAGS_GCRY) 
+gcry_keccak_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+gcry_keccak_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_gcry_keccak_module_SOURCES)
+CLEANFILES += $(nodist_gcry_keccak_module_SOURCES)
+MOD_FILES += gcry_keccak.mod
+MARKER_FILES += gcry_keccak.marker
+CLEANFILES += gcry_keccak.marker
+
+gcry_keccak.marker: $(gcry_keccak_module_SOURCES) $(nodist_gcry_keccak_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcry_keccak_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 platform_PROGRAMS += gcry_md4.module
 MODULE_FILES += gcry_md4.module$(EXEEXT)
@@ -23746,6 +24506,26 @@ CLEANFILES += gcry_rsa.marker
 gcry_rsa.marker: $(gcry_rsa_module_SOURCES) $(nodist_gcry_rsa_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcry_rsa_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+platform_PROGRAMS += gcry_salsa20.module
+MODULE_FILES += gcry_salsa20.module$(EXEEXT)
+gcry_salsa20_module_SOURCES  = lib/libgcrypt-grub/cipher/salsa20.c  ## platform sources
+nodist_gcry_salsa20_module_SOURCES  =  ## platform nodist sources
+gcry_salsa20_module_LDADD  = 
+gcry_salsa20_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) 
+gcry_salsa20_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+gcry_salsa20_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(CPPFLAGS_GCRY) 
+gcry_salsa20_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+gcry_salsa20_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_gcry_salsa20_module_SOURCES)
+CLEANFILES += $(nodist_gcry_salsa20_module_SOURCES)
+MOD_FILES += gcry_salsa20.mod
+MARKER_FILES += gcry_salsa20.marker
+CLEANFILES += gcry_salsa20.marker
+
+gcry_salsa20.marker: $(gcry_salsa20_module_SOURCES) $(nodist_gcry_salsa20_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcry_salsa20_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 platform_PROGRAMS += gcry_seed.module
 MODULE_FILES += gcry_seed.module$(EXEEXT)
 gcry_seed_module_SOURCES  = lib/libgcrypt-grub/cipher/seed.c  ## platform sources
@@ -23828,7 +24608,7 @@ gcry_sha256.marker: $(gcry_sha256_module_SOURCES) $(nodist_gcry_sha256_module_SO
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 platform_PROGRAMS += gcry_sha512.module
 MODULE_FILES += gcry_sha512.module$(EXEEXT)
-gcry_sha512_module_SOURCES  = lib/libgcrypt-grub/cipher/sha512.c  ## platform sources
+gcry_sha512_module_SOURCES  = lib/libgcrypt-grub/cipher/hash-common.c lib/libgcrypt-grub/cipher/sha512.c  ## platform sources
 nodist_gcry_sha512_module_SOURCES  =  ## platform nodist sources
 gcry_sha512_module_LDADD  = 
 gcry_sha512_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) -Wno-cast-align 
@@ -23845,6 +24625,66 @@ CLEANFILES += gcry_sha512.marker
 
 gcry_sha512.marker: $(gcry_sha512_module_SOURCES) $(nodist_gcry_sha512_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcry_sha512_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+platform_PROGRAMS += gcry_sm3.module
+MODULE_FILES += gcry_sm3.module$(EXEEXT)
+gcry_sm3_module_SOURCES  = lib/libgcrypt-grub/cipher/sm3.c  ## platform sources
+nodist_gcry_sm3_module_SOURCES  =  ## platform nodist sources
+gcry_sm3_module_LDADD  = 
+gcry_sm3_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) 
+gcry_sm3_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+gcry_sm3_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(CPPFLAGS_GCRY) 
+gcry_sm3_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+gcry_sm3_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_gcry_sm3_module_SOURCES)
+CLEANFILES += $(nodist_gcry_sm3_module_SOURCES)
+MOD_FILES += gcry_sm3.mod
+MARKER_FILES += gcry_sm3.marker
+CLEANFILES += gcry_sm3.marker
+
+gcry_sm3.marker: $(gcry_sm3_module_SOURCES) $(nodist_gcry_sm3_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcry_sm3_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+platform_PROGRAMS += gcry_sm4.module
+MODULE_FILES += gcry_sm4.module$(EXEEXT)
+gcry_sm4_module_SOURCES  = lib/libgcrypt-grub/cipher/sm4.c  ## platform sources
+nodist_gcry_sm4_module_SOURCES  =  ## platform nodist sources
+gcry_sm4_module_LDADD  = 
+gcry_sm4_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) 
+gcry_sm4_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+gcry_sm4_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(CPPFLAGS_GCRY) 
+gcry_sm4_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+gcry_sm4_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_gcry_sm4_module_SOURCES)
+CLEANFILES += $(nodist_gcry_sm4_module_SOURCES)
+MOD_FILES += gcry_sm4.mod
+MARKER_FILES += gcry_sm4.marker
+CLEANFILES += gcry_sm4.marker
+
+gcry_sm4.marker: $(gcry_sm4_module_SOURCES) $(nodist_gcry_sm4_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcry_sm4_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
+platform_PROGRAMS += gcry_stribog.module
+MODULE_FILES += gcry_stribog.module$(EXEEXT)
+gcry_stribog_module_SOURCES  = lib/libgcrypt-grub/cipher/stribog.c  ## platform sources
+nodist_gcry_stribog_module_SOURCES  =  ## platform nodist sources
+gcry_stribog_module_LDADD  = 
+gcry_stribog_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) $(CFLAGS_GCRY) 
+gcry_stribog_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+gcry_stribog_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(CPPFLAGS_GCRY) 
+gcry_stribog_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+gcry_stribog_module_DEPENDENCIES  = $(TARGET_OBJ2ELF) 
+dist_noinst_DATA += 
+BUILT_SOURCES += $(nodist_gcry_stribog_module_SOURCES)
+CLEANFILES += $(nodist_gcry_stribog_module_SOURCES)
+MOD_FILES += gcry_stribog.mod
+MARKER_FILES += gcry_stribog.marker
+CLEANFILES += gcry_stribog.marker
+
+gcry_stribog.marker: $(gcry_stribog_module_SOURCES) $(nodist_gcry_stribog_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcry_stribog_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
 	grep 'MARKER' $@.new | grep -v '^#' > $@; rm -f $@.new
 platform_PROGRAMS += gcry_tiger.module
 MODULE_FILES += gcry_tiger.module$(EXEEXT)
@@ -24647,7 +25487,7 @@ endif
 
 if COND_mips_loongson
 platform_PROGRAMS += xz_decompress.image
-xz_decompress_image_SOURCES  = boot/decompressor/minilib.c boot/decompressor/xz.c boot/mips/startup_raw.S kern/compiler-rt.c lib/xzembed/xz_dec_bcj.c lib/xzembed/xz_dec_lzma2.c lib/xzembed/xz_dec_stream.c 
+xz_decompress_image_SOURCES  = boot/mips/startup_raw.S boot/decompressor/minilib.c boot/decompressor/xz.c kern/compiler-rt.c lib/xzembed/xz_dec_bcj.c lib/xzembed/xz_dec_lzma2.c lib/xzembed/xz_dec_stream.c 
 nodist_xz_decompress_image_SOURCES  = ## platform nodist sources
 xz_decompress_image_LDADD  = 
 xz_decompress_image_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_IMAGE) -Wno-unreachable-code 
@@ -24668,7 +25508,7 @@ endif
 
 if COND_mips_arc
 platform_PROGRAMS += xz_decompress.image
-xz_decompress_image_SOURCES  = boot/decompressor/minilib.c boot/decompressor/xz.c boot/mips/startup_raw.S kern/compiler-rt.c lib/xzembed/xz_dec_bcj.c lib/xzembed/xz_dec_lzma2.c lib/xzembed/xz_dec_stream.c 
+xz_decompress_image_SOURCES  = boot/mips/startup_raw.S boot/decompressor/minilib.c boot/decompressor/xz.c kern/compiler-rt.c lib/xzembed/xz_dec_bcj.c lib/xzembed/xz_dec_lzma2.c lib/xzembed/xz_dec_stream.c 
 nodist_xz_decompress_image_SOURCES  = ## platform nodist sources
 xz_decompress_image_LDADD  = 
 xz_decompress_image_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_IMAGE) -Wno-unreachable-code 
@@ -24689,7 +25529,7 @@ endif
 
 if COND_mips_qemu_mips
 platform_PROGRAMS += xz_decompress.image
-xz_decompress_image_SOURCES  = boot/decompressor/minilib.c boot/decompressor/xz.c boot/mips/startup_raw.S kern/compiler-rt.c lib/xzembed/xz_dec_bcj.c lib/xzembed/xz_dec_lzma2.c lib/xzembed/xz_dec_stream.c 
+xz_decompress_image_SOURCES  = boot/mips/startup_raw.S boot/decompressor/minilib.c boot/decompressor/xz.c kern/compiler-rt.c lib/xzembed/xz_dec_bcj.c lib/xzembed/xz_dec_lzma2.c lib/xzembed/xz_dec_stream.c 
 nodist_xz_decompress_image_SOURCES  = ## platform nodist sources
 xz_decompress_image_LDADD  = 
 xz_decompress_image_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_IMAGE) -Wno-unreachable-code 
@@ -24710,7 +25550,7 @@ endif
 
 if COND_mips_loongson
 platform_PROGRAMS += none_decompress.image
-none_decompress_image_SOURCES  = boot/decompressor/none.c boot/mips/startup_raw.S 
+none_decompress_image_SOURCES  = boot/mips/startup_raw.S boot/decompressor/none.c 
 nodist_none_decompress_image_SOURCES  = ## platform nodist sources
 none_decompress_image_LDADD  = 
 none_decompress_image_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_IMAGE) 
@@ -24731,7 +25571,7 @@ endif
 
 if COND_mips_arc
 platform_PROGRAMS += none_decompress.image
-none_decompress_image_SOURCES  = boot/decompressor/none.c boot/mips/startup_raw.S 
+none_decompress_image_SOURCES  = boot/mips/startup_raw.S boot/decompressor/none.c 
 nodist_none_decompress_image_SOURCES  = ## platform nodist sources
 none_decompress_image_LDADD  = 
 none_decompress_image_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_IMAGE) 
@@ -24752,7 +25592,7 @@ endif
 
 if COND_mips_qemu_mips
 platform_PROGRAMS += none_decompress.image
-none_decompress_image_SOURCES  = boot/decompressor/none.c boot/mips/startup_raw.S 
+none_decompress_image_SOURCES  = boot/mips/startup_raw.S boot/decompressor/none.c 
 nodist_none_decompress_image_SOURCES  = ## platform nodist sources
 none_decompress_image_LDADD  = 
 none_decompress_image_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_IMAGE) 

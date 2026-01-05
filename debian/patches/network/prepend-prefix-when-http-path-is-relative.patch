@@ -19,10 +19,10 @@ Signed-off-by: Robbie Harwood <rharwood@redhat.com>
  2 files changed, 73 insertions(+), 22 deletions(-)
 
 diff --git a/grub-core/kern/main.c b/grub-core/kern/main.c
-index 0678237..8401bc3 100644
+index 99fa13f..402572c 100644
 --- a/grub-core/kern/main.c
 +++ b/grub-core/kern/main.c
-@@ -131,12 +131,20 @@ grub_set_prefix_and_root (void)
+@@ -136,12 +136,20 @@ grub_set_prefix_and_root (void)
    if (fwdevice && fwpath)
      {
        char *fw_path;

@@ -35,6 +35,7 @@ ${PYTHON} util/import_unicode.py unicode/UnicodeData.txt unicode/BidiMirroring.t
 echo "Importing libgcrypt..."
 ${PYTHON} util/import_gcry.py grub-core/lib/libgcrypt/ grub-core
 sed -n -f util/import_gcrypth.sed < grub-core/lib/libgcrypt/src/gcrypt.h.in > include/grub/gcrypt/gcrypt.h
+sed -n -f util/import_gcrypt_inth.sed < grub-core/lib/libgcrypt/src/gcrypt-int.h >> include/grub/gcrypt/gcrypt.h
 if [ -f include/grub/gcrypt/g10lib.h ]; then
     rm include/grub/gcrypt/g10lib.h
 fi
@@ -49,6 +50,43 @@ for x in mpi-asm-defs.h mpih-add1.c mpih-sub1.c mpih-mul1.c mpih-mul2.c mpih-mul
 	rm grub-core/lib/libgcrypt-grub/mpi/"$x"
     fi
     cp grub-core/lib/libgcrypt-grub/mpi/generic/"$x" grub-core/lib/libgcrypt-grub/mpi/"$x"
+done
+
+for x in grub-core/lib/libgcrypt-patches/*.patch; do
+    patch -i $x -p1
+done
+
+echo "Importing libtasn1..."
+if [ -d grub-core/lib/libtasn1-grub ]; then
+  rm -rf grub-core/lib/libtasn1-grub
+fi
+
+mkdir -p grub-core/lib/libtasn1-grub/lib
+cp grub-core/lib/libtasn1/lib/*.[ch] grub-core/lib/libtasn1-grub/lib
+cp grub-core/lib/libtasn1/libtasn1.h grub-core/lib/libtasn1-grub/
+
+if [ -d grub-core/tests/asn1/tests ]; then
+  rm -rf grub-core/tests/asn1/tests
+fi
+
+mkdir grub-core/tests/asn1/tests
+cp grub-core/lib/libtasn1/tests/*.[ch] grub-core/tests/asn1/tests
+
+for patch in \
+	0001-libtasn1-disable-code-not-needed-in-grub.patch \
+	0002-libtasn1-replace-strcat-with-strcpy-in-_asn1_str_cat.patch \
+	0003-libtasn1-replace-strcat-with-_asn1_str_cat.patch \
+	0004-libtasn1-adjust-the-header-paths-in-libtasn1.h.patch \
+	0005-libtasn1-Use-grub_divmod64-for-division.patch \
+	0006-libtasn1-fix-the-potential-buffer-overrun.patch \
+	0007-asn1_test-include-asn1_test.h-only.patch \
+	0008-asn1_test-rename-the-main-functions-to-the-test-name.patch \
+	0009-asn1_test-return-either-0-or-1-to-reflect-the-result.patch \
+	0010-asn1_test-remove-verbose-and-the-unnecessary-printf.patch \
+	0011-asn1_test-print-the-error-messages-with-grub_printf.patch \
+	0012-asn1_test-use-the-grub-specific-functions-and-types.patch \
+	0013-asn1_test-enable-the-testcase-only-when-GRUB_LONG_MA.patch ; do
+  patch -p1 -i grub-core/lib/libtasn1-patches/$patch
 done
 
 echo "Generating Automake input..."

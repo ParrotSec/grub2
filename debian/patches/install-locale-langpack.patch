@@ -12,10 +12,10 @@ Patch-Name: install-locale-langpack.patch
  1 file changed, 30 insertions(+), 7 deletions(-)
 
 diff --git a/util/grub-install-common.c b/util/grub-install-common.c
-index ce854d8..0adeeda 100644
+index 22bccb6..8f7f9a1 100644
 --- a/util/grub-install-common.c
 +++ b/util/grub-install-common.c
-@@ -795,17 +795,25 @@ get_localedir (void)
+@@ -800,17 +800,25 @@ get_localedir (void)
  }
  
  static void
@@ -45,7 +45,7 @@ index ce854d8..0adeeda 100644
        return;
      }
  
-@@ -822,14 +830,14 @@ copy_locales (const char *dstd)
+@@ -827,14 +835,14 @@ copy_locales (const char *dstd)
        if (ext && (grub_strcmp (ext, ".mo") == 0
  		  || grub_strcmp (ext, ".gmo") == 0))
  	{
@@ -62,7 +62,7 @@ index ce854d8..0adeeda 100644
  					    "LC_MESSAGES", PACKAGE, ".mo");
  	  dstf = grub_util_path_concat_ext (2, dstd, de->d_name, ".mo");
  	}
-@@ -838,6 +846,7 @@ copy_locales (const char *dstd)
+@@ -843,6 +851,7 @@ copy_locales (const char *dstd)
        free (dstf);
      }
    grub_util_fd_closedir (d);
@@ -70,7 +70,7 @@ index ce854d8..0adeeda 100644
  }
  #endif
  
-@@ -856,13 +865,15 @@ grub_install_copy_nls(const char *src __attribute__ ((unused)),
+@@ -861,13 +870,15 @@ grub_install_copy_nls(const char *src __attribute__ ((unused)),
      {
        char *srcd = grub_util_path_concat (2, src, "po");
        copy_by_ext (srcd, dst_locale, ".mo", 0);
@@ -87,7 +87,7 @@ index ce854d8..0adeeda 100644
  
        for (i = 0; i < install_locales.n_entries; i++)
        {
-@@ -879,6 +890,16 @@ grub_install_copy_nls(const char *src __attribute__ ((unused)),
+@@ -884,6 +895,16 @@ grub_install_copy_nls(const char *src __attribute__ ((unused)),
              continue;
            }
          free (srcf);
@@ -104,7 +104,7 @@ index ce854d8..0adeeda 100644
          srcf = grub_util_path_concat_ext (4, locale_dir,
                                            install_locales.entries[i],
                                            "LC_MESSAGES", PACKAGE, ".mo");
-@@ -888,6 +909,8 @@ grub_install_copy_nls(const char *src __attribute__ ((unused)),
+@@ -893,6 +914,8 @@ grub_install_copy_nls(const char *src __attribute__ ((unused)),
          free (srcf);
          free (dstf);
        }

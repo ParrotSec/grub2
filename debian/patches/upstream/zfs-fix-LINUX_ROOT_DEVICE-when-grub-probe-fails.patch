@@ -1,0 +1,44 @@
+From: Doug Goldstein <cardoe@cardoe.com>
+Date: Thu, 17 Dec 2020 20:27:14 -0600
+Subject: zfs: fix LINUX_ROOT_DEVICE when grub-probe fails
+
+When grub-probe fails, the current code is to just stuff an empty result
+in which causes the user to not knowingly have a system that no longer
+boots. grub-probe can fail because the ZFS pool that contains the root
+filesystem might have features that grub does not yet support which is a
+common configuration for people with a rpool and a bpool. This behavior
+uses the zdb utility to dump the same value as the filesystem label
+would print.
+
+Signed-off-by: Doug Goldstein <cardoe@cardoe.com>
+---
+ util/grub.d/10_linux.in     | 2 +-
+ util/grub.d/20_linux_xen.in | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
+index c47a8bb..268121d 100644
+--- a/util/grub.d/10_linux.in
++++ b/util/grub.d/10_linux.in
+@@ -89,7 +89,7 @@ case x"$GRUB_FS" in
+ 	    GRUB_CMDLINE_LINUX="rootflags=subvol=${rootsubvol} ${GRUB_CMDLINE_LINUX}"
+ 	fi;;
+     xzfs)
+-	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || true`
++	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || zdb -l ${GRUB_DEVICE} | awk -F \' '/ name/ { print $2 }'`
+ 	bootfs="`make_system_path_relative_to_its_root / | sed -e "s,@$,,"`"
+ 	LINUX_ROOT_DEVICE="ZFS=${rpool}${bootfs%/}"
+ 	;;
+diff --git a/util/grub.d/20_linux_xen.in b/util/grub.d/20_linux_xen.in
+index e73e96f..15597ad 100644
+--- a/util/grub.d/20_linux_xen.in
++++ b/util/grub.d/20_linux_xen.in
+@@ -81,7 +81,7 @@ case x"$GRUB_FS" in
+ 	    GRUB_CMDLINE_LINUX="rootflags=subvol=${rootsubvol} ${GRUB_CMDLINE_LINUX}"
+ 	fi;;
+     xzfs)
+-	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || true`
++	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || zdb -l ${GRUB_DEVICE} | awk -F \' '/ name/ { print $2 }'`
+ 	bootfs="`make_system_path_relative_to_its_root / | sed -e "s,@$,,"`"
+ 	LINUX_ROOT_DEVICE="ZFS=${rpool}${bootfs%/}"
+ 	;;

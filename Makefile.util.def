@@ -40,6 +40,7 @@ library = {
   common = grub-core/disk/luks.c;
   common = grub-core/disk/luks2.c;
   common = grub-core/disk/geli.c;
+  common = grub-core/disk/key_protector.c;
   common = grub-core/disk/cryptodisk.c;
   common = grub-core/disk/AFSplitter.c;
   common = grub-core/lib/pbkdf2.c;
@@ -98,6 +99,7 @@ library = {
   common = grub-core/fs/cpio_be.c;
   common = grub-core/fs/odc.c;
   common = grub-core/fs/newc.c;
+  common = grub-core/fs/erofs.c;
   common = grub-core/fs/ext2.c;
   common = grub-core/fs/fat.c;
   common = grub-core/fs/exfat.c;
@@ -204,6 +206,32 @@ program = {
   ldadd = grub-core/lib/gnulib/libgnu.a;
   ldadd = '$(LIBLZMA)';
   ldadd = '$(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM)';
+};
+
+program = {
+  name = grub-protect;
+  mansection = 1;
+
+  common = grub-core/kern/emu/argp_common.c;
+  common = grub-core/osdep/init.c;
+  common = grub-core/lib/tss2/buffer.c;
+  common = grub-core/lib/tss2/tss2_mu.c;
+  common = grub-core/lib/tss2/tpm2_cmd.c;
+  common = grub-core/commands/tpm2_key_protector/args.c;
+  common = grub-core/commands/tpm2_key_protector/tpm2key_asn1_tab.c;
+  common = util/grub-protect.c;
+  common = util/probe.c;
+
+  cflags = '-I$(srcdir)/grub-core/lib/tss2 -I$(srcdir)/grub-core/commands/tpm2_key_protector';
+
+  ldadd = libgrubmods.a;
+  ldadd = libgrubgcry.a;
+  ldadd = libgrubkern.a;
+  ldadd = grub-core/lib/gnulib/libgnu.a;
+  ldadd = '$(LIBTASN1)';
+  ldadd = '$(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM)';
+
+  condition = COND_GRUB_PROTECT;
 };
 
 program = {
@@ -765,6 +793,12 @@ script = {
 
 script = {
   testcase = native;
+  name = erofs_test;
+  common = tests/erofs_test.in;
+};
+
+script = {
+  testcase = native;
   name = ext234_test;
   common = tests/ext234_test.in;
 };
@@ -1248,6 +1282,18 @@ script = {
   testcase = native;
   name = luks2_test;
   common = tests/luks2_test.in;
+};
+
+script = {
+  testcase = native;
+  name = asn1_test;
+  common = tests/asn1_test.in;
+};
+
+script = {
+  testcase = native;
+  name = tpm2_key_protector_test;
+  common = tests/tpm2_key_protector_test.in;
 };
 
 program = {

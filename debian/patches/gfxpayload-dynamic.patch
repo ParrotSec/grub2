@@ -21,10 +21,10 @@ Patch-Name: gfxpayload-dynamic.patch
  create mode 100644 grub-core/commands/i386/pc/hwmatch.c
 
 diff --git a/configure.ac b/configure.ac
-index 6084381..6812742 100644
+index c3597eb..52de262 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -2090,6 +2090,17 @@ else
+@@ -2150,6 +2150,17 @@ else
  fi
  AC_SUBST([QUICK_BOOT])
  
@@ -43,10 +43,10 @@ index 6084381..6812742 100644
  
  AC_SUBST([FONT_SOURCE])
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 1571421..15be5db 100644
+index b3f7119..c83bece 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
-@@ -993,6 +993,14 @@ module = {
+@@ -997,6 +997,14 @@ module = {
    common = lib/hexdump.c;
  };
  
@@ -226,7 +226,7 @@ index a5bf3a7..59d53f6 100644
      GRUB_FILE_TYPE_LOADENV,
      GRUB_FILE_TYPE_SAVEENV,
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 9fb7c53..17cc3c5 100644
+index 2cb08de..28d5103 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -23,6 +23,7 @@ datarootdir="@datarootdir@"
@@ -237,7 +237,7 @@ index 9fb7c53..17cc3c5 100644
  
  . "$pkgdatadir/grub-mkconfig_lib"
  
-@@ -147,9 +148,10 @@ linux_entry ()
+@@ -141,9 +142,10 @@ linux_entry ()
        if [ "x$GRUB_GFXPAYLOAD_LINUX" != xtext ]; then
  	  echo "	load_video" | sed "s/^/$submenu_indentation/"
        fi
@@ -251,7 +251,7 @@ index 9fb7c53..17cc3c5 100644
    fi
  
    echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
-@@ -222,6 +224,35 @@ prepare_root_cache=
+@@ -216,6 +218,35 @@ prepare_root_cache=
  boot_device_id=
  title_correction_code=
  

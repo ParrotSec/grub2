@@ -364,6 +364,11 @@
     { 0xab, 0xb6, 0x3d, 0xd8, 0x10, 0xdd, 0x8b, 0x23 } \
   }
 
+#define GRUB_EFI_SHIM_IMAGE_LOADER_GUID \
+  { 0x1f492041, 0xfadb, 0x4e59, \
+    {0x9e, 0x57, 0x7c, 0xaf, 0xe7, 0x3a, 0x55, 0xab } \
+  }
+
 #define GRUB_EFI_RNG_PROTOCOL_GUID \
   { 0x3152bca5, 0xeade, 0x433d, \
     { 0x86, 0x2e, 0xc0, 0x1c, 0xdc, 0x29, 0x1f, 0x44 } \
@@ -377,6 +382,11 @@
 #define GRUB_EFI_VENDOR_BOOT_LOADER_INTERFACE_GUID \
   { 0x4a67b082, 0x0a4c, 0x41cf, \
     {0xb6, 0xc7, 0x44, 0x0b, 0x29, 0xbb, 0x8c, 0x4f } \
+  }
+
+#define GRUB_EFI_MEMORY_ATTRIBUTE_PROTOCOL_GUID \
+  { 0xf4560cf6, 0x40ec, 0x4b4a, \
+    { 0xa1, 0x92, 0xbf, 0x1d, 0x57, 0xd0, 0xb1, 0x89 } \
   }
 
 struct grub_efi_sal_system_table
@@ -1814,5 +1824,25 @@ struct initrd_media_device_path {
   grub_efi_device_path_t               end;
 } GRUB_PACKED;
 typedef struct initrd_media_device_path initrd_media_device_path_t;
+
+struct grub_efi_memory_attribute_protocol
+{
+  grub_efi_status_t (__grub_efi_api *get_memory_attributes) (
+			    struct grub_efi_memory_attribute_protocol *this,
+			    grub_efi_physical_address_t base_address,
+			    grub_efi_uint64_t length,
+			    grub_efi_uint64_t *attributes);
+  grub_efi_status_t (__grub_efi_api *set_memory_attributes) (
+			    struct grub_efi_memory_attribute_protocol *this,
+			    grub_efi_physical_address_t base_address,
+			    grub_efi_uint64_t length,
+			    grub_efi_uint64_t attributes);
+  grub_efi_status_t (__grub_efi_api *clear_memory_attributes) (
+			    struct grub_efi_memory_attribute_protocol *this,
+			    grub_efi_physical_address_t base_address,
+			    grub_efi_uint64_t length,
+			    grub_efi_uint64_t attributes);
+};
+typedef struct grub_efi_memory_attribute_protocol grub_efi_memory_attribute_protocol_t;
 
 #endif /* ! GRUB_EFI_API_HEADER */

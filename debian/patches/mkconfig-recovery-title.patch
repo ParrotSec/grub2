@@ -20,10 +20,10 @@ Patch-Name: mkconfig-recovery-title.patch
  7 files changed, 17 insertions(+), 7 deletions(-)
 
 diff --git a/docs/grub.texi b/docs/grub.texi
-index e9cf6f9..b4825b7 100644
+index 1a67293..00bf798 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
-@@ -1610,6 +1610,11 @@ a console is restricted or limited.
+@@ -1618,6 +1618,11 @@ a console is restricted or limited.
  This option is only effective when GRUB was configured with the
  @option{--enable-quick-boot} option.
  
@@ -61,10 +61,10 @@ index 0ecf2a7..13e436b 100644
  if test "x${grub_cfg}" != "x"; then
    rm -f "${grub_cfg}.new"
 diff --git a/util/grub.d/10_hurd.in b/util/grub.d/10_hurd.in
-index 7d1e463..940021a 100644
+index f9c394e..718eee9 100644
 --- a/util/grub.d/10_hurd.in
 +++ b/util/grub.d/10_hurd.in
-@@ -106,8 +106,8 @@ hurd_entry () {
+@@ -113,8 +113,8 @@ hurd_entry () {
  
    if [ x$type != xsimple ] ; then
        if [ x$type = xrecovery ] ; then
@@ -89,10 +89,10 @@ index 83e9636..1431673 100644
  	  title="$(gettext_printf "%s, with kFreeBSD %s" "${os}" "${version}")"
        fi
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 77d5bd2..9339926 100644
+index c1b1c29..3249dd2 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -128,7 +128,7 @@ linux_entry ()
+@@ -122,7 +122,7 @@ linux_entry ()
    if [ x$type != xsimple ] ; then
        case $type in
  	  recovery)
@@ -115,10 +115,10 @@ index 3154e9e..a377f4b 100644
  	  title="$(gettext_printf "%s, with kernel %s (via %s)" "${OS}" "$(echo ${kernel} | sed -e 's,^.*/,,')" "${loader}")"
        fi
 diff --git a/util/grub.d/20_linux_xen.in b/util/grub.d/20_linux_xen.in
-index f496beb..fff6587 100644
+index 94dd8be..5c93c99 100644
 --- a/util/grub.d/20_linux_xen.in
 +++ b/util/grub.d/20_linux_xen.in
-@@ -125,7 +125,7 @@ linux_entry_xsm ()
+@@ -120,7 +120,7 @@ linux_entry_xsm ()
    fi
    if [ x$type != xsimple ] ; then
        if [ x$type = xrecovery ] ; then

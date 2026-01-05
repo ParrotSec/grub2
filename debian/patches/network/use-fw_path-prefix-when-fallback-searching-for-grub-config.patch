@@ -17,7 +17,7 @@ Signed-off-by: Robbie Harwood <rharwood@redhat.com>
  1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/normal/main.c b/grub-core/normal/main.c
-index b1947c7..c0255a9 100644
+index 51bce0e..ecf977e 100644
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
 @@ -322,7 +322,7 @@ grub_cmd_normal (struct grub_command *cmd __attribute__ ((unused)),

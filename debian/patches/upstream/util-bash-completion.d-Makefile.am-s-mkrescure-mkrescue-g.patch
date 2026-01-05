@@ -1,0 +1,34 @@
+From: Mate Kukri <mate.kukri@canonical.com>
+Date: Tue, 19 Aug 2025 14:12:19 +0100
+Subject: util/bash-completion.d/Makefile.am: s/mkrescure/mkrescue/g
+
+This is a typo that was stopping this bash-completion from being
+installed.
+
+Signed-off-by: Mate Kukri <mate.kukri@canonical.com>
+---
+ util/bash-completion.d/Makefile.am | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/util/bash-completion.d/Makefile.am b/util/bash-completion.d/Makefile.am
+index 33fff95..ede14af 100644
+--- a/util/bash-completion.d/Makefile.am
++++ b/util/bash-completion.d/Makefile.am
+@@ -50,7 +50,7 @@ CLEANFILES = $(bash_completion_script) \
+ 	$(grub_mkfont_script) \
+ 	$(grub_mkimage_script) \
+ 	$(grub_mkpasswd_pbkdf2_script) \
+-	$(grub_mkrescure_script) \
++	$(grub_mkrescue_script) \
+ 	$(grub_probe_script) \
+ 	$(grub_reboot_script) \
+ 	$(grub_script_check_script) \
+@@ -67,7 +67,7 @@ bashcompletion_DATA = $(bash_completion_script) \
+ 	$(grub_mkfont_script) \
+ 	$(grub_mkimage_script) \
+ 	$(grub_mkpasswd_pbkdf2_script) \
+-	$(grub_mkrescure_script) \
++	$(grub_mkrescue_script) \
+ 	$(grub_probe_script) \
+ 	$(grub_reboot_script) \
+ 	$(grub_script_check_script) \

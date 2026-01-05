@@ -15,20 +15,20 @@ Signed-off-by: Robbie Harwood <rharwood@redhat.com>
  grub-core/net/bootp.c              | 910 ++++++++++++++++++++++++++++++++++++-
  grub-core/net/drivers/efi/efinet.c |  50 +-
  grub-core/net/ip.c                 |  39 ++
- grub-core/net/net.c                |  72 +++
+ grub-core/net/net.c                |  73 +++
  grub-core/net/tftp.c               |   3 +
  include/grub/efi/api.h             | 129 +++++-
  include/grub/net.h                 |  79 ++++
- 7 files changed, 1266 insertions(+), 16 deletions(-)
+ 7 files changed, 1267 insertions(+), 16 deletions(-)
 
 diff --git a/grub-core/net/bootp.c b/grub-core/net/bootp.c
-index abe45ef..12996a7 100644
+index 2f45a3c..53656ee 100644
 --- a/grub-core/net/bootp.c
 +++ b/grub-core/net/bootp.c
-@@ -24,6 +24,98 @@
- #include <grub/net/netbuff.h>
+@@ -25,6 +25,98 @@
  #include <grub/net/udp.h>
  #include <grub/datetime.h>
+ #include <grub/safemath.h>
 +#include <grub/time.h>
 +#include <grub/list.h>
 +
@@ -124,7 +124,7 @@ index abe45ef..12996a7 100644
  
  struct grub_dhcp_discover_options
  {
-@@ -610,6 +702,583 @@ out:
+@@ -611,6 +703,583 @@ out:
    return err;
  }
  
@@ -708,7 +708,7 @@ index abe45ef..12996a7 100644
  /*
   * This is called directly from net/ip.c:handle_dgram(), because those
   * BOOTP/DHCP packets are a bit special due to their improper
-@@ -678,6 +1347,77 @@ grub_net_process_dhcp (struct grub_net_buff *nb,
+@@ -679,6 +1348,77 @@ grub_net_process_dhcp (struct grub_net_buff *nb,
      }
  }
  
@@ -786,7 +786,7 @@ index abe45ef..12996a7 100644
  static grub_err_t
  grub_cmd_dhcpopt (struct grub_command *cmd __attribute__ ((unused)),
  		  int argc, char **args)
-@@ -903,7 +1643,171 @@ grub_cmd_bootp (struct grub_command *cmd __attribute__ ((unused)),
+@@ -915,7 +1655,171 @@ grub_cmd_bootp (struct grub_command *cmd __attribute__ ((unused)),
    return err;
  }
  
@@ -959,7 +959,7 @@ index abe45ef..12996a7 100644
  
  void
  grub_bootp_init (void)
-@@ -917,11 +1821,15 @@ grub_bootp_init (void)
+@@ -929,11 +1833,15 @@ grub_bootp_init (void)
    cmd_getdhcp = grub_register_command ("net_get_dhcp_option", grub_cmd_dhcpopt,
  				       N_("VAR INTERFACE NUMBER DESCRIPTION"),
  				       N_("retrieve DHCP option and save it into VAR. If VAR is - then print the value."));
@@ -976,7 +976,7 @@ index abe45ef..12996a7 100644
    grub_unregister_command (cmd_bootp);
    grub_unregister_command (cmd_dhcp);
 diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
-index 3ea25cf..a599037 100644
+index 58fe381..f9ccd41 100644
 --- a/grub-core/net/drivers/efi/efinet.c
 +++ b/grub-core/net/drivers/efi/efinet.c
 @@ -18,11 +18,14 @@
@@ -994,7 +994,7 @@ index 3ea25cf..a599037 100644
  
  GRUB_MOD_LICENSE ("GPLv3+");
  
-@@ -346,8 +349,8 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
+@@ -347,8 +350,8 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
  			  char **path)
  {
    struct grub_net_card *card;
@@ -1005,7 +1005,7 @@ index 3ea25cf..a599037 100644
    grub_efi_device_path_t *vlan_dp;
    grub_efi_uint16_t vlan_dp_len;
    grub_efi_vlan_device_path_t *vlan;
-@@ -361,14 +364,19 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
+@@ -362,14 +365,19 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
      grub_efi_device_path_t *cdp;
      struct grub_efi_pxe *pxe;
      struct grub_efi_pxe_mode *pxe_mode;
@@ -1026,7 +1026,7 @@ index 3ea25cf..a599037 100644
  	int match;
  
  	/* EDK2 UEFI PXE driver creates pseudo devices with type IPv4/IPv6
-@@ -377,7 +385,6 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
+@@ -378,7 +386,6 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
  	   devices. We skip them when enumerating cards, so here we need to
  	   find matching MAC device.
           */
@@ -1034,7 +1034,7 @@ index 3ea25cf..a599037 100644
  	if (GRUB_EFI_DEVICE_PATH_TYPE (ldp) != GRUB_EFI_MESSAGING_DEVICE_PATH_TYPE
  	    || (GRUB_EFI_DEVICE_PATH_SUBTYPE (ldp) != GRUB_EFI_IPV4_DEVICE_PATH_SUBTYPE
  		&& GRUB_EFI_DEVICE_PATH_SUBTYPE (ldp) != GRUB_EFI_IPV6_DEVICE_PATH_SUBTYPE))
-@@ -394,17 +401,42 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
+@@ -404,17 +411,42 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
  	if (!match)
  	  continue;
        }
@@ -1133,11 +1133,11 @@ index 3c3d0be..f967618 100644
        {
  	const struct grub_net_bootp_packet *bootp;
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index 8cad4fb..a31f0c9 100644
+index 6ea33d1..4a305a7 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
-@@ -984,6 +984,78 @@ grub_net_network_level_interface_register (struct grub_net_network_level_interfa
-   grub_net_network_level_interfaces = inter;
+@@ -1037,6 +1037,79 @@ grub_net_network_level_interface_unregister (struct grub_net_network_level_inter
+   inter->prev = 0;
  }
  
 +int
@@ -1158,17 +1158,17 @@ index 8cad4fb..a31f0c9 100644
 +    {
 +      grub_uint8_t octet = mask[x];
 +      if (!octet)
-+	{
-+	  ret -= 8;
-+	  continue;
-+	}
++  {
++    ret -= 8;
++    continue;
++  }
 +      for (y = 0; y < 8; y++)
-+	{
-+	  if (octet & (1 << y))
-+	    break;
-+	  else
-+	    ret--;
-+	}
++  {
++    if (octet & (1 << y))
++      break;
++    else
++      ret--;
++  }
 +      break;
 +    }
 +
@@ -1177,7 +1177,7 @@ index 8cad4fb..a31f0c9 100644
 +
 +grub_err_t
 +grub_net_add_ipv6_local (struct grub_net_network_level_interface *inter,
-+			 int mask)
++       int mask)
 +{
 +  struct grub_net_route *route;
 +
@@ -1203,7 +1203,7 @@ index 8cad4fb..a31f0c9 100644
 +
 +  route->target.type = GRUB_NET_NETWORK_LEVEL_PROTOCOL_IPV6;
 +  grub_memcpy (route->target.ipv6.base, inter->address.ipv6,
-+	       sizeof (inter->address.ipv6));
++         sizeof (inter->address.ipv6));
 +  route->target.ipv6.masksize = mask;
 +  route->is_gateway = 0;
 +  route->interface = inter;
@@ -1212,14 +1212,15 @@ index 8cad4fb..a31f0c9 100644
 +
 +  return 0;
 +}
- 
++
  grub_err_t
  grub_net_add_ipv4_local (struct grub_net_network_level_interface *inter,
+ 			 int mask)
 diff --git a/grub-core/net/tftp.c b/grub-core/net/tftp.c
-index 409b1d0..f300a9d 100644
+index 336b786..3d96e50 100644
 --- a/grub-core/net/tftp.c
 +++ b/grub-core/net/tftp.c
-@@ -359,6 +359,7 @@ tftp_open (struct grub_file *file, const char *filename)
+@@ -369,6 +369,7 @@ tftp_open (struct grub_file *file, const char *filename)
    file->not_easily_seekable = 1;
    file->data = data;
  
@@ -1227,7 +1228,7 @@ index 409b1d0..f300a9d 100644
    err = grub_net_resolve_address (file->device->net->server, &addr);
    if (err)
      {
-@@ -369,11 +370,13 @@ tftp_open (struct grub_file *file, const char *filename)
+@@ -379,11 +380,13 @@ tftp_open (struct grub_file *file, const char *filename)
        return err;
      }
  
@@ -1242,10 +1243,10 @@ index 409b1d0..f300a9d 100644
        return grub_errno;
      }
 diff --git a/include/grub/efi/api.h b/include/grub/efi/api.h
-index d44d00a..c1b869d 100644
+index 9ae9087..0ed5af8 100644
 --- a/include/grub/efi/api.h
 +++ b/include/grub/efi/api.h
-@@ -637,10 +637,16 @@ typedef void *grub_efi_handle_t;
+@@ -647,10 +647,16 @@ typedef void *grub_efi_handle_t;
  typedef void *grub_efi_event_t;
  typedef grub_efi_uint64_t grub_efi_lba_t;
  typedef grub_efi_uintn_t grub_efi_tpl_t;
@@ -1266,7 +1267,7 @@ index d44d00a..c1b869d 100644
  typedef grub_efi_uint64_t grub_efi_physical_address_t;
  typedef grub_efi_uint64_t grub_efi_virtual_address_t;
  
-@@ -1521,16 +1527,127 @@ struct grub_efi_simple_text_output_interface
+@@ -1531,16 +1537,127 @@ struct grub_efi_simple_text_output_interface
  };
  typedef struct grub_efi_simple_text_output_interface grub_efi_simple_text_output_interface_t;
  
@@ -1397,7 +1398,7 @@ index d44d00a..c1b869d 100644
  
  typedef struct grub_efi_pxe
 diff --git a/include/grub/net.h b/include/grub/net.h
-index 844e501..3e2704e 100644
+index 58a4f83..16f0e76 100644
 --- a/include/grub/net.h
 +++ b/include/grub/net.h
 @@ -450,6 +450,66 @@ struct grub_net_bootp_packet

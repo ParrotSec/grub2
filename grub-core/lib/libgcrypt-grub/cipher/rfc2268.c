@@ -9,7 +9,7 @@ GRUB_MOD_LICENSE ("GPLv3+");
  * This file is part of Libgcrypt
  *
  * Libgcrypt is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser general Public License as
+ * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
  *
@@ -19,8 +19,8 @@ GRUB_MOD_LICENSE ("GPLv3+");
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ * License along with this program; if not, see <https://www.gnu.org/licenses/>.
+ * SPDX-License-Identifier: LGPL-2.1-or-later
  */
 
 /* This implementation was written by Nikos Mavroyanopoulos for GNUTLS
@@ -35,6 +35,7 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #include "g10lib.h"
 #include "types.h"
 #include "cipher.h"
+#include "cipher-internal.h"
 
 #define RFC2268_BLOCKSIZE 8
 
@@ -135,6 +136,13 @@ do_encrypt (void *context, unsigned char *outbuf, const unsigned char *inbuf)
   outbuf[7] = word3 >> 8;
 }
 
+static unsigned int
+encrypt_block (void *context, unsigned char *outbuf, const unsigned char *inbuf)
+{
+  do_encrypt (context, outbuf, inbuf);
+  return /*burn_stack*/ (4 * sizeof(void *) + sizeof(void *) + sizeof(u32) * 4);
+}
+
 static void
 do_decrypt (void *context, unsigned char *outbuf, const unsigned char *inbuf)
 {
@@ -187,6 +195,13 @@ do_decrypt (void *context, unsigned char *outbuf, const unsigned char *inbuf)
   outbuf[7] = word3 >> 8;
 }
 
+static unsigned int
+decrypt_block (void *context, unsigned char *outbuf, const unsigned char *inbuf)
+{
+  do_decrypt (context, outbuf, inbuf);
+  return /*burn_stack*/ (4 * sizeof(void *) + sizeof(void *) + sizeof(u32) * 4);
+}
+
 
 static gpg_err_code_t
 setkey_core (void *context, const unsigned char *key, unsigned int keylen, int with_phase2)
@@ -210,6 +225,9 @@ setkey_core (void *context, const unsigned char *key, unsigned int keylen, int w
     return GPG_ERR_SELFTEST_FAILED;
 
   if (keylen < 40 / 8)	/* We want at least 40 bits. */
+    return GPG_ERR_INV_KEYLEN;
+
+  if (keylen > 128)
     return GPG_ERR_INV_KEYLEN;
 
   S = (unsigned char *) ctx->S;
@@ -247,15 +265,17 @@ setkey_core (void *context, const unsigned char *key, unsigned int keylen, int w
 }
 
 static gpg_err_code_t
-do_setkey (void *context, const unsigned char *key, unsigned int keylen)
+do_setkey (void *context, const unsigned char *key, unsigned int keylen,
+           cipher_bulk_ops_t *bulk_ops)
 {
+  (void)bulk_ops;
   return setkey_core (context, key, keylen, 1);
 }
 
 
 
 
-static gcry_cipher_oid_spec_t oids_rfc2268_40[] =
+static const gcry_cipher_oid_spec_t oids_rfc2268_40[] =
   {
     /*{ "1.2.840.113549.3.2", GCRY_CIPHER_MODE_CBC },*/
     /* pbeWithSHAAnd40BitRC2_CBC */
@@ -263,23 +283,42 @@ static gcry_cipher_oid_spec_t oids_rfc2268_40[] =
     { NULL }
   };
 
-gcry_cipher_spec_t _gcry_cipher_spec_rfc2268_40 = {
-  "RFC2268_40", NULL, oids_rfc2268_40,
-  RFC2268_BLOCKSIZE, 40, sizeof(RFC2268_context),
-  do_setkey, do_encrypt, do_decrypt
+static const gcry_cipher_oid_spec_t oids_rfc2268_128[] =
+  {
+    /* pbeWithSHAAnd128BitRC2_CBC */
+    { "1.2.840.113549.1.12.1.5", GCRY_CIPHER_MODE_CBC },
+    { NULL }
+  };
+
+gcry_cipher_spec_t _gcry_cipher_spec_rfc2268_40 =
+  {
+    GCRY_CIPHER_RFC2268_40, {0, 0},
+    "RFC2268_40", NULL, oids_rfc2268_40,
+    RFC2268_BLOCKSIZE, 40, sizeof(RFC2268_context),
+    do_setkey, encrypt_block, decrypt_block
     ,
-#ifdef GRUB_UTIL
-    .modname = "gcry_rfc2268",
-#endif
-};
+    GRUB_UTIL_MODNAME("gcry_rfc2268")
+  };
+
+gcry_cipher_spec_t _gcry_cipher_spec_rfc2268_128 =
+  {
+    GCRY_CIPHER_RFC2268_128, {0, 0},
+    "RFC2268_128", NULL, oids_rfc2268_128,
+    RFC2268_BLOCKSIZE, 128, sizeof(RFC2268_context),
+    do_setkey, encrypt_block, decrypt_block
+    ,
+    GRUB_UTIL_MODNAME("gcry_rfc2268")
+  };
 
 
 GRUB_MOD_INIT(gcry_rfc2268)
 {
   grub_cipher_register (&_gcry_cipher_spec_rfc2268_40);
+  grub_cipher_register (&_gcry_cipher_spec_rfc2268_128);
 }
 
 GRUB_MOD_FINI(gcry_rfc2268)
 {
   grub_cipher_unregister (&_gcry_cipher_spec_rfc2268_40);
+  grub_cipher_unregister (&_gcry_cipher_spec_rfc2268_128);
 }

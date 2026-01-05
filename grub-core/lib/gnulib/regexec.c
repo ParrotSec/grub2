@@ -807,7 +807,11 @@ re_search_internal (const regex_t *preg, const char *string, Idx length,
 		    break;
 		  if (__glibc_unlikely (err != REG_NOMATCH))
 		    goto free_return;
+#ifdef DEBUG
+		  /* Only used for assertion below when DEBUG is set, otherwise
+		     it will be over-written when we loop around.  */
 		  match_last = -1;
+#endif
 		}
 	      else
 		break; /* We found a match.  */
@@ -2270,7 +2274,7 @@ merge_state_with_log (reg_errcode_t *err, re_match_context_t *mctx,
 	 these destinations and the results of the transition table.  */
       pstate = mctx->state_log[cur_idx];
       log_nodes = pstate->entrance_nodes;
-      if (next_state != NULL)
+      if (next_state != NULL && next_state->entrance_nodes != NULL)
 	{
 	  table_nodes = next_state->entrance_nodes;
 	  *err = re_node_set_init_union (&next_nodes, table_nodes,

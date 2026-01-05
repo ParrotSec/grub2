@@ -344,7 +344,7 @@ grub_cmd_normal (struct grub_command *cmd __attribute__ ((unused)),
 
           if (grub_strncmp (prefix + 1, "tftp", sizeof ("tftp") - 1) == 0 &&
               !disable_net_search)
-            grub_net_search_config_file (config);
+            grub_net_search_config_file (config, config_len);
 
 	  grub_enter_normal_mode (config);
 	  grub_free (config);
@@ -453,9 +453,13 @@ grub_cmdline_run (int nested, int force_auth)
     }
   while (err && force_auth);
 
+  if (err == GRUB_ERR_NONE)
+    err = grub_auth_check_cli_access ();
+
   if (err)
     {
       grub_print_error ();
+      grub_wait_after_message ();
       grub_errno = GRUB_ERR_NONE;
       return;
     }
@@ -507,7 +511,8 @@ static const char *features[] = {
   "feature_chainloader_bpb", "feature_ntldr", "feature_platform_search_hint",
   "feature_default_font_path", "feature_all_video_module",
   "feature_menuentry_id", "feature_menuentry_options", "feature_200_final",
-  "feature_nativedisk_cmd", "feature_timeout_style"
+  "feature_nativedisk_cmd", "feature_timeout_style",
+  "feature_search_cryptodisk_only"
 };
 
 GRUB_MOD_INIT(normal)
@@ -582,7 +587,9 @@ GRUB_MOD_FINI(normal)
   grub_xputs = grub_xputs_saved;
 
   grub_set_history (0);
-  grub_register_variable_hook ("pager", 0, 0);
+  grub_register_variable_hook ("pager", NULL, NULL);
+  grub_register_variable_hook ("color_normal", NULL, NULL);
+  grub_register_variable_hook ("color_highlight", NULL, NULL);
   grub_fs_autoload_hook = 0;
   grub_unregister_command (cmd_clear);
 }

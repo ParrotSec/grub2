@@ -95,8 +95,10 @@ grub_efi_drop_alloc (grub_efi_physical_address_t address,
 
   for (eap = NULL, ea = efi_allocated_memory; ea; eap = ea, ea = ea->next)
     {
-      if (ea->address != address || ea->pages != pages)
-         continue;
+      if (ea->address != address)
+	continue;
+      if (ea->pages != pages)
+	grub_fatal ("grub_efi_drop_alloc() called with wrong page count");
 
       /* Remove the current entry from the list. */
       if (eap)
@@ -150,7 +152,7 @@ grub_efi_allocate_pages_real (grub_efi_physical_address_t address,
 	 so reallocate another one.  */
       address = GRUB_EFI_MAX_USABLE_ADDRESS;
       status = b->allocate_pages (alloctype, memtype, pages, &address);
-      grub_efi_free_pages (0, pages);
+      b->free_pages (0, pages);
       if (status != GRUB_EFI_SUCCESS)
 	{
 	  grub_error (GRUB_ERR_OUT_OF_MEMORY, N_("out of memory"));
@@ -294,6 +296,12 @@ grub_efi_finish_boot_services (grub_efi_uintn_t *outbuf_size, void *outbuf,
     *efi_desc_size = finish_desc_size;
   if (efi_desc_version)
     *efi_desc_version = finish_desc_version;
+
+  /*
+   * We cannot request new memory regions from the EFI Boot Services anymore.
+   * FIXME: Can we completely avoid memory allocations after this?
+   */
+  grub_mm_add_region_fn = NULL;
 
 #if defined (__i386__) || defined (__x86_64__)
   if (is_apple)
@@ -574,13 +582,15 @@ grub_efi_mm_add_regions (grub_size_t required_bytes, unsigned int flags)
   grub_efi_memory_descriptor_t *memory_map_end;
   grub_efi_memory_descriptor_t *filtered_memory_map;
   grub_efi_memory_descriptor_t *filtered_memory_map_end;
+  grub_efi_uintn_t alloc_size;
   grub_efi_uintn_t map_size;
   grub_efi_uintn_t desc_size;
   grub_err_t err;
   int mm_status;
 
   /* Prepare a memory region to store two memory maps.  */
-  memory_map = grub_efi_allocate_any_pages (2 * BYTES_TO_PAGES (MEMORY_MAP_SIZE));
+  alloc_size = 2 * BYTES_TO_PAGES (MEMORY_MAP_SIZE);
+  memory_map = grub_efi_allocate_any_pages (alloc_size);
   if (! memory_map)
     return grub_error (GRUB_ERR_OUT_OF_MEMORY, "cannot allocate memory for memory map");
 
@@ -591,14 +601,13 @@ grub_efi_mm_add_regions (grub_size_t required_bytes, unsigned int flags)
 
   if (mm_status == 0)
     {
-      grub_efi_free_pages
-	((grub_efi_physical_address_t) ((grub_addr_t) memory_map),
-	 2 * BYTES_TO_PAGES (MEMORY_MAP_SIZE));
+      grub_efi_free_pages ((grub_efi_physical_address_t)(grub_addr_t) memory_map, alloc_size);
 
       /* Freeing/allocating operations may increase memory map size.  */
       map_size += desc_size * 32;
 
-      memory_map = grub_efi_allocate_any_pages (2 * BYTES_TO_PAGES (map_size));
+      alloc_size = 2 * BYTES_TO_PAGES (map_size);
+      memory_map = grub_efi_allocate_any_pages (alloc_size);
       if (! memory_map)
 	return grub_error (GRUB_ERR_OUT_OF_MEMORY, "cannot allocate memory for new memory map");
 
@@ -642,8 +651,7 @@ grub_efi_mm_add_regions (grub_size_t required_bytes, unsigned int flags)
 #endif
 
   /* Release the memory maps.  */
-  grub_efi_free_pages ((grub_addr_t) memory_map,
-		       2 * BYTES_TO_PAGES (MEMORY_MAP_SIZE));
+  grub_efi_free_pages ((grub_efi_physical_address_t)(grub_addr_t) memory_map, alloc_size);
 
   return GRUB_ERR_NONE;
 }
@@ -687,3 +695,112 @@ grub_efi_get_ram_base(grub_addr_t *base_addr)
   return GRUB_ERR_NONE;
 }
 #endif
+
+static grub_uint64_t
+grub_mem_attrs_to_uefi_mem_attrs (grub_mem_attr_t attrs)
+{
+  grub_efi_uint64_t ret = GRUB_EFI_MEMORY_RP | GRUB_EFI_MEMORY_RO | GRUB_EFI_MEMORY_XP;
+
+  if (attrs & GRUB_MEM_ATTR_R)
+    ret &= ~GRUB_EFI_MEMORY_RP;
+
+  if (attrs & GRUB_MEM_ATTR_W)
+    ret &= ~GRUB_EFI_MEMORY_RO;
+
+  if (attrs & GRUB_MEM_ATTR_X)
+    ret &= ~GRUB_EFI_MEMORY_XP;
+
+  return ret;
+}
+
+static grub_mem_attr_t
+uefi_mem_attrs_to_grub_mem_attrs (grub_efi_uint64_t attrs)
+{
+  grub_mem_attr_t ret = GRUB_MEM_ATTR_R | GRUB_MEM_ATTR_W | GRUB_MEM_ATTR_X;
+
+  if (attrs & GRUB_EFI_MEMORY_RP)
+    ret &= ~GRUB_MEM_ATTR_R;
+
+  if (attrs & GRUB_EFI_MEMORY_RO)
+    ret &= ~GRUB_MEM_ATTR_W;
+
+  if (attrs & GRUB_EFI_MEMORY_XP)
+    ret &= ~GRUB_MEM_ATTR_X;
+
+  return ret;
+}
+
+grub_err_t
+grub_get_mem_attrs (grub_addr_t addr, grub_size_t size, grub_mem_attr_t *attrs)
+{
+  grub_efi_memory_attribute_protocol_t *proto;
+  grub_efi_physical_address_t physaddr = addr;
+  static grub_guid_t protocol_guid = GRUB_EFI_MEMORY_ATTRIBUTE_PROTOCOL_GUID;
+  grub_efi_status_t efi_status;
+  grub_efi_uint64_t efi_attrs;
+
+  if (physaddr & (GRUB_EFI_PAGE_SIZE - 1) || size & (GRUB_EFI_PAGE_SIZE - 1) || size == 0 || attrs == NULL)
+    return grub_error (GRUB_ERR_BAD_ARGUMENT, "%s() called with invalid arguments", __FUNCTION__);
+
+  proto = grub_efi_locate_protocol (&protocol_guid, 0);
+  if (proto == NULL)
+    {
+      /* No protocol -> do nothing, all memory is RWX in boot services */
+      *attrs = GRUB_MEM_ATTR_R | GRUB_MEM_ATTR_W | GRUB_MEM_ATTR_X;
+      return GRUB_ERR_NONE;
+    }
+
+  efi_status = proto->get_memory_attributes (proto, physaddr, size, &efi_attrs);
+  if (efi_status != GRUB_EFI_SUCCESS)
+    return grub_error (GRUB_ERR_BAD_ARGUMENT, "%s() called with invalid arguments", __FUNCTION__);
+
+  *attrs = uefi_mem_attrs_to_grub_mem_attrs (efi_attrs);
+
+  grub_dprintf ("nx", "get 0x%" PRIxGRUB_ADDR "-0x%" PRIxGRUB_ADDR ":%c%c%c\n",
+		addr, addr + size - 1,
+		(*attrs & GRUB_MEM_ATTR_R) ? 'r' : '-',
+		(*attrs & GRUB_MEM_ATTR_W) ? 'w' : '-',
+		(*attrs & GRUB_MEM_ATTR_X) ? 'x' : '-');
+
+  return GRUB_ERR_NONE;
+}
+
+grub_err_t
+grub_update_mem_attrs (grub_addr_t addr, grub_size_t size,
+		       grub_mem_attr_t set_attrs, grub_mem_attr_t clear_attrs)
+{
+  grub_efi_memory_attribute_protocol_t *proto;
+  grub_efi_physical_address_t physaddr = addr;
+  static grub_guid_t protocol_guid = GRUB_EFI_MEMORY_ATTRIBUTE_PROTOCOL_GUID;
+  grub_efi_status_t efi_status = GRUB_EFI_SUCCESS;
+  grub_efi_uint64_t uefi_set_attrs, uefi_clear_attrs;
+
+  if (physaddr & (GRUB_EFI_PAGE_SIZE - 1) || size & (GRUB_EFI_PAGE_SIZE - 1) || size == 0)
+    return grub_error (GRUB_ERR_BAD_ARGUMENT, "%s() called with invalid arguments", __FUNCTION__);
+
+  proto = grub_efi_locate_protocol (&protocol_guid, 0);
+  if (proto == NULL)
+    /* No protocol -> do nothing, all memory is RWX in boot services */
+    return GRUB_ERR_NONE;
+
+  uefi_set_attrs = grub_mem_attrs_to_uefi_mem_attrs (set_attrs);
+  uefi_clear_attrs = grub_mem_attrs_to_uefi_mem_attrs (clear_attrs);
+  if (uefi_set_attrs)
+    efi_status = proto->set_memory_attributes (proto, physaddr, size, uefi_set_attrs);
+  if (efi_status == GRUB_EFI_SUCCESS && uefi_clear_attrs)
+    efi_status = proto->clear_memory_attributes (proto, physaddr, size, uefi_clear_attrs);
+
+  if (efi_status != GRUB_EFI_SUCCESS)
+    return grub_error (GRUB_ERR_BAD_ARGUMENT, "%s() called with invalid arguments", __FUNCTION__);
+
+  grub_dprintf ("nx", "set +%s%s%s -%s%s%s on 0x%" PRIxGRUB_ADDR "-0x%" PRIxGRUB_ADDR "\n",
+		(set_attrs & GRUB_MEM_ATTR_R) ? "r" : "",
+		(set_attrs & GRUB_MEM_ATTR_W) ? "w" : "",
+		(set_attrs & GRUB_MEM_ATTR_X) ? "x" : "",
+		(clear_attrs & GRUB_MEM_ATTR_R) ? "r" : "",
+		(clear_attrs & GRUB_MEM_ATTR_W) ? "w" : "",
+		(clear_attrs & GRUB_MEM_ATTR_X) ? "x" : "",
+		addr, addr + size - 1);
+
+  return GRUB_ERR_NONE;
+}

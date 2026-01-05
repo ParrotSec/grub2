@@ -33,6 +33,12 @@ efi_name="$6"
 sbat_csv="$7"
 efi_vendor="${8:-$(dpkg-vendor --query vendor | tr '[:upper:]' '[:lower:]')}"
 
+# make sure downstreams didn't mess up sbat.csv
+if ! grep -q ^grub.peimage $sbat_csv; then
+   echo Missing sbat entry for "grub.peimage" >&2
+   exit 1
+fi
+
 # mkfs.msdos may not be on the default PATH.
 export PATH="$PATH:/sbin:/usr/sbin"
 
@@ -93,6 +99,7 @@ mksquashfs "$workdir/memdisk" "$workdir/memdisk.squashfs" -comp xz
 
 CD_MODULES="
 	all_video
+	bli
 	boot
 	btrfs
 	cat
@@ -114,7 +121,6 @@ CD_MODULES="
 	help
 	hfsplus
 	iso9660
-	jfs
 	jpeg
 	keystatus
 	loadenv
@@ -128,7 +134,6 @@ CD_MODULES="
 	memdisk
 	minicmd
 	normal
-	ntfs
 	part_apple
 	part_msdos
 	part_gpt
@@ -144,7 +149,7 @@ CD_MODULES="
 	search_label
 	serial
 	sleep
-        smbios
+	smbios
 	squash4
 	test
 	tpm

@@ -32,10 +32,10 @@ Patch-Name: quick-boot.patch
  7 files changed, 140 insertions(+), 13 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index dcf9f72..6084381 100644
+index b34cbde..c3597eb 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -2079,6 +2079,17 @@ else
+@@ -2139,6 +2139,17 @@ else
  fi
  AC_SUBST([QUIET_BOOT])
  
@@ -54,10 +54,10 @@ index dcf9f72..6084381 100644
  
  AC_SUBST([FONT_SOURCE])
 diff --git a/docs/grub.texi b/docs/grub.texi
-index a225f9a..e9cf6f9 100644
+index 34b3484..1a67293 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
-@@ -1596,6 +1596,20 @@ This option may be set to a list of GRUB module names separated by spaces.
+@@ -1604,6 +1604,20 @@ This option may be set to a list of GRUB module names separated by spaces.
  Each module will be loaded as early as possible, at the start of
  @file{grub.cfg}.
  
@@ -79,10 +79,10 @@ index a225f9a..e9cf6f9 100644
  
  The following options are still accepted for compatibility with existing
 diff --git a/grub-core/normal/menu.c b/grub-core/normal/menu.c
-index 350ed25..7958bc8 100644
+index 1b8b91b..3154249 100644
 --- a/grub-core/normal/menu.c
 +++ b/grub-core/normal/menu.c
-@@ -605,6 +605,30 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot, int *notify_boot)
+@@ -606,6 +606,30 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot, int *notify_boot)
        static struct grub_term_coordinate *pos;
        int entry = -1;
  
@@ -128,7 +128,7 @@ index 3e75e33..0ecf2a7 100644
  if test "x${grub_cfg}" != "x"; then
    rm -f "${grub_cfg}.new"
 diff --git a/util/grub.d/00_header.in b/util/grub.d/00_header.in
-index 6a316a5..f3e04cc 100644
+index f86b69b..17fa111 100644
 --- a/util/grub.d/00_header.in
 +++ b/util/grub.d/00_header.in
 @@ -21,6 +21,8 @@ prefix="@prefix@"
@@ -257,7 +257,7 @@ index 6a316a5..f3e04cc 100644
  EOF
  }
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index f908bd5..9fb7c53 100644
+index 7ef8672..2cb08de 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -22,6 +22,7 @@ exec_prefix="@exec_prefix@"
@@ -268,7 +268,7 @@ index f908bd5..9fb7c53 100644
  
  . "$pkgdatadir/grub-mkconfig_lib"
  
-@@ -131,6 +132,9 @@ linux_entry ()
+@@ -125,6 +126,9 @@ linux_entry ()
    else
        echo "menuentry '$(echo "$os" | grub_quote)' ${CLASS} \$menuentry_id_option 'gnulinux-simple-$boot_device_id' {" | sed "s/^/$submenu_indentation/"
    fi      
@@ -279,7 +279,7 @@ index f908bd5..9fb7c53 100644
        save_default_entry | grub_add_tab
    fi
 diff --git a/util/grub.d/30_os-prober.in b/util/grub.d/30_os-prober.in
-index c54b526..c690783 100644
+index 84addef..b4885f8 100644
 --- a/util/grub.d/30_os-prober.in
 +++ b/util/grub.d/30_os-prober.in
 @@ -20,12 +20,26 @@ set -e
@@ -317,7 +317,7 @@ index c54b526..c690783 100644
      if [ x$2 = x32 ]; then
          # TRANSLATORS: it refers to kernel architecture (32-bit)
  	bitstr="$(gettext "(32-bit)")"
-@@ -183,6 +198,7 @@ EOF
+@@ -193,6 +208,7 @@ EOF
      ;;
      efi)
  
@@ -325,15 +325,15 @@ index c54b526..c690783 100644
  	EFIPATH=${DEVICE#*@}
  	DEVICE=${DEVICE%@*}
  	onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
-@@ -231,6 +247,7 @@ EOF
- 	  [ "${prepare_boot_cache}" ] || continue
+@@ -239,6 +255,7 @@ EOF
+ 	  LINITRD="${LINITRD#/boot}"
  	fi
  
 +	found_other_os=1
  	onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
  	recovery_params="$(echo "${LPARAMS}" | grep 'single\|recovery')" || true
  	counter=1
-@@ -307,6 +324,7 @@ EOF
+@@ -319,6 +336,7 @@ EOF
        fi
      ;;
      hurd)
@@ -341,7 +341,7 @@ index c54b526..c690783 100644
        onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
        cat << EOF
  menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class hurd --class gnu --class os \$menuentry_id_option 'osprober-gnuhurd-/boot/gnumach.gz-false-$(grub_get_device_id "${DEVICE}")' {
-@@ -349,3 +367,5 @@ EOF
+@@ -361,3 +379,5 @@ EOF
      ;;
    esac
  done

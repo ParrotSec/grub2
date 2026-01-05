@@ -18,10 +18,10 @@ Patch-Name: install-signed.patch
  1 file changed, 155 insertions(+), 65 deletions(-)
 
 diff --git a/util/grub-install.c b/util/grub-install.c
-index c36a286..db378d7 100644
+index 2f5031c..a2b46d6 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
-@@ -80,6 +80,7 @@ static char *label_color;
+@@ -79,6 +79,7 @@ static char *label_color;
  static char *label_bgcolor;
  static char *product_version;
  static int add_rs_codes = 1;
@@ -29,7 +29,7 @@ index c36a286..db378d7 100644
  
  enum
    {
-@@ -110,7 +111,9 @@ enum
+@@ -109,7 +110,9 @@ enum
      OPTION_LABEL_FONT,
      OPTION_LABEL_COLOR,
      OPTION_LABEL_BGCOLOR,
@@ -40,7 +40,7 @@ index c36a286..db378d7 100644
    };
  
  static int fs_probe = 1;
-@@ -234,6 +237,14 @@ argp_parser (int key, char *arg, struct argp_state *state)
+@@ -233,6 +236,14 @@ argp_parser (int key, char *arg, struct argp_state *state)
        bootloader_id = xstrdup (arg);
        return 0;
  
@@ -55,7 +55,7 @@ index c36a286..db378d7 100644
      case ARGP_KEY_ARG:
        if (install_device)
  	grub_util_error ("%s", _("More than one install device?"));
-@@ -303,6 +314,14 @@ static struct argp_option options[] = {
+@@ -302,6 +313,14 @@ static struct argp_option options[] = {
    {"label-color", OPTION_LABEL_COLOR, N_("COLOR"), 0, N_("use COLOR for label"), 2},
    {"label-bgcolor", OPTION_LABEL_BGCOLOR, N_("COLOR"), 0, N_("use COLOR for label background"), 2},
    {"product-version", OPTION_PRODUCT_VERSION, N_("STRING"), 0, N_("use STRING as product version"), 2},
@@ -70,7 +70,7 @@ index c36a286..db378d7 100644
    {0, 0, 0, 0, 0, 0}
  };
  
-@@ -849,7 +868,8 @@ main (int argc, char *argv[])
+@@ -848,7 +867,8 @@ main (int argc, char *argv[])
  {
    int is_efi = 0;
    const char *efi_distributor = NULL;
@@ -80,10 +80,10 @@ index c36a286..db378d7 100644
    char **grub_devices;
    grub_fs_t grub_fs;
    grub_device_t grub_dev = NULL;
-@@ -1145,6 +1165,43 @@ main (int argc, char *argv[])
- 	efi_distributor = "ubuntu";
-       else if (strcmp (efi_distributor, "devuan") == 0)
- 	efi_distributor = "debian";
+@@ -1140,6 +1160,43 @@ main (int argc, char *argv[])
+       */
+       char *t;
+       efi_distributor = bootloader_id;
 +      switch (platform)
 +	{
 +	case GRUB_INSTALL_PLATFORM_I386_EFI:
@@ -124,7 +124,7 @@ index c36a286..db378d7 100644
        if (removable)
  	{
  	  /* The specification makes stricter requirements of removable
-@@ -1153,72 +1210,16 @@ main (int argc, char *argv[])
+@@ -1148,72 +1205,16 @@ main (int argc, char *argv[])
  	     must have a specific file name depending on the architecture.
  	  */
  	  efi_distributor = "BOOT";
@@ -201,7 +201,7 @@ index c36a286..db378d7 100644
  	}
        t = grub_util_path_concat (3, efidir, "EFI", efi_distributor);
        free (efidir);
-@@ -1437,14 +1438,38 @@ main (int argc, char *argv[])
+@@ -1432,14 +1433,38 @@ main (int argc, char *argv[])
                debug_image);
      }
  
@@ -242,7 +242,7 @@ index c36a286..db378d7 100644
  	{
  	  char *uuid = NULL;
  
-@@ -2024,7 +2049,72 @@ main (int argc, char *argv[])
+@@ -2006,7 +2031,72 @@ main (int argc, char *argv[])
      case GRUB_INSTALL_PLATFORM_IA64_EFI:
        {
  	char *dst = grub_util_path_concat (2, efidir, efi_file);

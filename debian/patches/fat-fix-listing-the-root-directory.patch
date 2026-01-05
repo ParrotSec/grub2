@@ -22,7 +22,7 @@ Origin: https://lists.gnu.org/archive/html/grub-devel/2022-01/msg00116.html
  1 file changed, 12 insertions(+)
 
 diff --git a/grub-core/fs/fat.c b/grub-core/fs/fat.c
-index c5efed7..f786a9e 100644
+index 6e62b91..91f44e3 100644
 --- a/grub-core/fs/fat.c
 +++ b/grub-core/fs/fat.c
 @@ -901,6 +901,18 @@ grub_fat_timestamp (grub_uint16_t time, grub_uint16_t date, grub_int64_t *nix) {

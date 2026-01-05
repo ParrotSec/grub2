@@ -28,7 +28,7 @@ Signed-off-by: Robbie Harwood <rharwood@redhat.com>
  1 file changed, 51 insertions(+), 7 deletions(-)
 
 diff --git a/grub-core/normal/main.c b/grub-core/normal/main.c
-index 28decc6..74ed468 100644
+index 355c2ab..7c6c048 100644
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
 @@ -311,18 +311,13 @@ grub_enter_normal_mode (const char *config)
@@ -59,7 +59,7 @@ index 28decc6..74ed468 100644
 +         return err;
  
         grub_snprintf (config, config_len, "%s/grub.cfg", prefix);
-        err = grub_net_search_config_file (config);
+        err = grub_net_search_config_file (config, config_len);
 @@ -365,6 +360,53 @@ grub_try_normal (const char *variable)
      return err;
  }

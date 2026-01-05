@@ -81,6 +81,7 @@ struct grub_acpi_fadt
 
 #define GRUB_ACPI_MADT_SIGNATURE "APIC"
 
+/* Note: here GRUB_PACKED is not needed because we have grub_uint8_t only. */
 struct grub_acpi_madt_entry_header
 {
   grub_uint8_t type;
@@ -112,7 +113,7 @@ struct grub_acpi_madt_entry_lapic
   grub_uint8_t acpiid;
   grub_uint8_t apicid;
   grub_uint32_t flags;
-};
+} GRUB_PACKED;
 
 struct grub_acpi_madt_entry_ioapic
 {
@@ -121,7 +122,7 @@ struct grub_acpi_madt_entry_ioapic
   grub_uint8_t pad;
   grub_uint32_t address;
   grub_uint32_t global_sys_interrupt;
-};
+} GRUB_PACKED;
 
 struct grub_acpi_madt_entry_interrupt_override
 {
@@ -148,7 +149,7 @@ struct grub_acpi_madt_entry_sapic
   grub_uint8_t pad;
   grub_uint32_t global_sys_interrupt_base;
   grub_uint64_t addr;
-};
+} GRUB_PACKED;
 
 struct grub_acpi_madt_entry_lsapic
 {
@@ -160,7 +161,7 @@ struct grub_acpi_madt_entry_lsapic
   grub_uint32_t flags;
   grub_uint32_t cpu_uid;
   grub_uint8_t cpu_uid_str[0];
-};
+} GRUB_PACKED;
 
 struct grub_acpi_madt_entry_platform_int_source
 {
@@ -172,7 +173,7 @@ struct grub_acpi_madt_entry_platform_int_source
   grub_uint8_t sapic_vector;
   grub_uint32_t global_sys_int;
   grub_uint32_t src_flags;
-};
+} GRUB_PACKED;
 
 enum
   {
@@ -199,8 +200,9 @@ struct grub_acpi_genaddr {
 struct grub_acpi_spcr {
   struct grub_acpi_table_header hdr;
   grub_uint8_t intf_type;
-#define GRUB_ACPI_SPCR_INTF_TYPE_16550  0x00
-#define GRUB_ACPI_SPCR_INTF_TYPE_16550X 0x01
+#define GRUB_ACPI_SPCR_INTF_TYPE_16550      0x00
+#define GRUB_ACPI_SPCR_INTF_TYPE_16550_DBGP 0x01
+#define GRUB_ACPI_SPCR_INTF_TYPE_16550_DBG2 0x12
   grub_uint8_t reserved_0[3];
   struct grub_acpi_genaddr base_addr;
   grub_uint8_t interrupt_type;

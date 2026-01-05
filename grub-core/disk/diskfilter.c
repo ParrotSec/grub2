@@ -20,10 +20,12 @@
 #include <grub/dl.h>
 #include <grub/disk.h>
 #include <grub/mm.h>
+#include <grub/command.h>
 #include <grub/err.h>
 #include <grub/misc.h>
 #include <grub/diskfilter.h>
 #include <grub/partition.h>
+#include <grub/safemath.h>
 #ifdef GRUB_UTIL
 #include <grub/i18n.h>
 #include <grub/util/misc.h>
@@ -226,15 +228,28 @@ scan_devices (const char *arname)
   int need_rescan;
 
   for (pull = 0; pull < GRUB_DISK_PULL_MAX; pull++)
-    for (p = grub_disk_dev_list; p; p = p->next)
-      if (p->id != GRUB_DISK_DEVICE_DISKFILTER_ID
-	  && p->disk_iterate)
-	{
-	  if ((p->disk_iterate) (scan_disk_hook, NULL, pull))
-	    return;
-	  if (arname && is_lv_readable (find_lv (arname), 1))
-	    return;
-	}
+    {
+      /* look up the crytodisk devices first */
+      for (p = grub_disk_dev_list; p; p = p->next)
+	if (p->id == GRUB_DISK_DEVICE_CRYPTODISK_ID && p->disk_iterate)
+	  {
+	    if ((p->disk_iterate) (scan_disk_hook, NULL, pull))
+	      return;
+	    if (arname && is_lv_readable (find_lv (arname), 1))
+	      return;
+	    break;
+	  }
+
+      /* check the devices other than crytodisk */
+      for (p = grub_disk_dev_list; p; p = p->next)
+	if (p->id != GRUB_DISK_DEVICE_DISKFILTER_ID && p->disk_iterate)
+	  {
+	    if ((p->disk_iterate) (scan_disk_hook, NULL, pull))
+	      return;
+	    if (arname && is_lv_readable (find_lv (arname), 1))
+	      return;
+	  }
+    }
 
   scan_depth = 0;
   need_rescan = 1;
@@ -966,8 +981,6 @@ grub_diskfilter_vg_register (struct grub_diskfilter_vg *vg)
 
   for (lv = vg->lvs; lv; lv = lv->next)
     {
-      grub_err_t err;
-
       /* RAID 1 and single-disk RAID 0 don't use a chunksize but code
          assumes one so set one. */
       for (i = 0; i < lv->segment_count; i++)
@@ -979,6 +992,10 @@ grub_diskfilter_vg_register (struct grub_diskfilter_vg *vg)
 	      && lv->segments[i].stripe_size == 0)
 	    lv->segments[i].stripe_size = 64;
 	}
+    }
+  for (lv = vg->lvs; lv; lv = lv->next)
+    {
+      grub_err_t err;
 
       err = validate_lv(lv);
       if (err)
@@ -1039,7 +1056,7 @@ grub_diskfilter_make_raid (grub_size_t uuidlen, char *uuid, int nmemb,
 {
   struct grub_diskfilter_vg *array;
   int i;
-  grub_size_t j;
+  grub_size_t j, sz;
   grub_uint64_t totsize;
   struct grub_diskfilter_pv *pv;
   grub_err_t err;
@@ -1140,7 +1157,11 @@ grub_diskfilter_make_raid (grub_size_t uuidlen, char *uuid, int nmemb,
     }
   array->lvs->vg = array;
 
-  array->lvs->idname = grub_malloc (sizeof ("mduuid/") + 2 * uuidlen);
+  if (grub_mul (uuidlen, 2, &sz) ||
+      grub_add (sz, sizeof ("mduuid/"), &sz))
+    goto fail;
+
+  array->lvs->idname = grub_malloc (sz);
   if (!array->lvs->idname)
     goto fail;
 
@@ -1357,6 +1378,86 @@ grub_diskfilter_get_pv_from_disk (grub_disk_t disk,
 }
 #endif
 
+static int
+grub_diskfilter_check_pvs_encrypted (grub_disk_t disk, int *pvs_cnt)
+{
+  struct grub_diskfilter_lv *lv = disk->data;
+  struct grub_diskfilter_pv *pv;
+
+  *pvs_cnt = 0;
+
+  if (lv->vg->pvs)
+    for (pv = lv->vg->pvs; pv; pv = pv->next)
+      {
+        (*pvs_cnt)++;
+
+        if (pv->disk == NULL)
+          {
+            /* Can be a partially activated VG, bail out. */
+            return GRUB_ERR_TEST_FAILURE;
+          }
+
+        if (pv->disk->dev->id != GRUB_DISK_DEVICE_CRYPTODISK_ID)
+          {
+            /* All backing devices must be cryptodisks, stop. */
+            return GRUB_ERR_TEST_FAILURE;
+          }
+      }
+  return GRUB_ERR_NONE;
+}
+
+static grub_err_t
+grub_cmd_cryptocheck (grub_command_t cmd __attribute__ ((unused)),
+               int argc, char **args)
+{
+  grub_disk_t disk;
+  int check_pvs_res;
+  int namelen;
+  int pvs_cnt;
+  int opt_quiet = 0;
+
+  if (argc == 2)
+    {
+      if (grub_strcmp (args[0], "--quiet") == 0)
+	{
+	  opt_quiet = 1;
+	  argc--;
+	  args++;
+	}
+      else
+	return grub_error (GRUB_ERR_BAD_ARGUMENT, N_("unrecognized option: %s"), args[0]);
+    }
+
+  if (argc != 1)
+    return grub_error (GRUB_ERR_BAD_ARGUMENT, N_("disk name expected"));
+
+  namelen = grub_strlen (args[0]);
+  if (namelen > 2 && (args[0][0] == '(') && (args[0][namelen - 1] == ')'))
+    args[0][namelen - 1] = 0;
+  else
+    return grub_error (GRUB_ERR_UNKNOWN_DEVICE, N_("invalid disk: %s"),
+                       args[0]);
+
+  if (!is_valid_diskfilter_name (&args[0][1]))
+    return grub_error (GRUB_ERR_UNKNOWN_DEVICE, N_("unrecognized disk: %s"),
+                       &args[0][1]);
+
+  disk = grub_disk_open (&args[0][1]);
+  if (disk == NULL)
+    return grub_error (GRUB_ERR_UNKNOWN_DEVICE, N_("no such disk: %s"),
+                       &args[0][1]);
+
+  check_pvs_res = grub_diskfilter_check_pvs_encrypted (disk, &pvs_cnt);
+  grub_disk_close (disk);
+  if (!opt_quiet)
+    grub_printf ("%s is %sencrypted (%d pv%s examined)\n", &args[0][1],
+		 (check_pvs_res == GRUB_ERR_NONE) ? "" : "un",
+		 pvs_cnt,
+		 (pvs_cnt > 1) ? "s" : "");
+
+  return check_pvs_res;
+}
+
 static struct grub_disk_dev grub_diskfilter_dev =
   {
     .name = "diskfilter",
@@ -1373,14 +1474,21 @@ static struct grub_disk_dev grub_diskfilter_dev =
     .next = 0
   };
 
+static grub_command_t cmd;
+
 
 GRUB_MOD_INIT(diskfilter)
 {
   grub_disk_dev_register (&grub_diskfilter_dev);
+  cmd = grub_register_command ("cryptocheck", grub_cmd_cryptocheck,
+                                N_("[--quiet] DEVICE"),
+                                N_("Check if a logical volume resides on encrypted disks."));
 }
 
 GRUB_MOD_FINI(diskfilter)
 {
   grub_disk_dev_unregister (&grub_diskfilter_dev);
+  if (cmd != NULL)
+    grub_unregister_command (cmd);
   free_array ();
 }

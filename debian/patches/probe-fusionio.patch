@@ -13,10 +13,10 @@ Patch-Name: probe-fusionio.patch
  2 files changed, 32 insertions(+)
 
 diff --git a/grub-core/osdep/linux/getroot.c b/grub-core/osdep/linux/getroot.c
-index 7dd775d..b4e279f 100644
+index 7872a8d..325e679 100644
 --- a/grub-core/osdep/linux/getroot.c
 +++ b/grub-core/osdep/linux/getroot.c
-@@ -960,6 +960,19 @@ grub_util_part_to_disk (const char *os_dev, struct stat *st,
+@@ -970,6 +970,19 @@ grub_util_part_to_disk (const char *os_dev, struct stat *st,
  	  *pp = '\0';
  	  return path;
  	}

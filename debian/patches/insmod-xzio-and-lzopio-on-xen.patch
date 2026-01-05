@@ -19,10 +19,10 @@ Patch-Name: insmod-xzio-and-lzopio-on-xen.patch
  1 file changed, 1 insertion(+)
 
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 9339926..0772f6d 100644
+index 3249dd2..de26bd9 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -164,6 +164,7 @@ linux_entry ()
+@@ -158,6 +158,7 @@ linux_entry ()
    fi
  
    echo "	insmod gzio" | sed "s/^/$submenu_indentation/"

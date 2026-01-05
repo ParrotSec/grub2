@@ -18,8 +18,8 @@ GRUB_MOD_LICENSE ("GPLv3+");
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ * License along with this program; if not, see <https://www.gnu.org/licenses/>.
+ * SPDX-License-Identifier: LGPL-2.1-or-later
  *
  * --
  * This implementation was provided for libgcrypt in public domain
@@ -30,15 +30,13 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #include "types.h"  /* for byte and u32 typedefs */
 #include "g10lib.h"
 #include "cipher.h"
+#include "bufhelp.h"
+#include "cipher-internal.h"
 
 #define NUMKC	16
 
-#define GETU32(pt) (((u32)(pt)[0] << 24) ^ ((u32)(pt)[1] << 16) ^ \
-		    ((u32)(pt)[2] <<  8) ^ ((u32)(pt)[3]))
-#define PUTU32(ct, st) { (ct)[0] = (byte)((st) >> 24); \
-			 (ct)[1] = (byte)((st) >> 16); \
-			 (ct)[2] = (byte)((st) >>  8); \
-			 (ct)[3] = (byte)(st); }
+#define GETU32(pt) buf_get_be32(pt)
+#define PUTU32(ct, st) buf_put_be32(ct, st)
 
 union wordbuf
 {
@@ -312,11 +310,12 @@ do_setkey (SEED_context *ctx, const byte *key, const unsigned keylen)
 }
 
 static gcry_err_code_t
-seed_setkey (void *context, const byte *key, const unsigned keylen)
+seed_setkey (void *context, const byte *key, const unsigned keylen,
+             cipher_bulk_ops_t *bulk_ops)
 {
   SEED_context *ctx = context;
-
   int rc = do_setkey (ctx, key, keylen);
+  (void)bulk_ops;
   _gcry_burn_stack (4*6 + sizeof(void*)*2 + sizeof(int)*2);
   return rc;
 }
@@ -371,13 +370,13 @@ do_encrypt (const SEED_context *ctx, byte *outbuf, const byte *inbuf)
   PUTU32 (outbuf+12, x2);
 }
 
-static void
+static unsigned int
 seed_encrypt (void *context, byte *outbuf, const byte *inbuf)
 {
   SEED_context *ctx = context;
 
   do_encrypt (ctx, outbuf, inbuf);
-  _gcry_burn_stack (4*6);
+  return /*burn_stack*/ (4*6);
 }
 
 
@@ -417,13 +416,13 @@ do_decrypt (SEED_context *ctx, byte *outbuf, const byte *inbuf)
   PUTU32 (outbuf+12, x2);
 }
 
-static void
+static unsigned int
 seed_decrypt (void *context, byte *outbuf, const byte *inbuf)
 {
   SEED_context *ctx = context;
 
   do_decrypt (ctx, outbuf, inbuf);
-  _gcry_burn_stack (4*6);
+  return /*burn_stack*/ (4*6);
 }
 
 
@@ -431,7 +430,7 @@ seed_decrypt (void *context, byte *outbuf, const byte *inbuf)
 
 
 
-static gcry_cipher_oid_spec_t seed_oids[] =
+static const gcry_cipher_oid_spec_t seed_oids[] =
   {
     { "1.2.410.200004.1.3", GCRY_CIPHER_MODE_ECB },
     { "1.2.410.200004.1.4", GCRY_CIPHER_MODE_CBC },
@@ -442,11 +441,10 @@ static gcry_cipher_oid_spec_t seed_oids[] =
 
 gcry_cipher_spec_t _gcry_cipher_spec_seed =
   {
+    GCRY_CIPHER_SEED, {0, 0},
     "SEED", NULL, seed_oids, 16, 128, sizeof (SEED_context),
     seed_setkey, seed_encrypt, seed_decrypt,
-#ifdef GRUB_UTIL
-    .modname = "gcry_seed",
-#endif
+    GRUB_UTIL_MODNAME("gcry_seed")
   };
 
 

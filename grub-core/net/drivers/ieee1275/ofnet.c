@@ -22,6 +22,7 @@
 #include <grub/net.h>
 #include <grub/time.h>
 #include <grub/i18n.h>
+#include <grub/safemath.h>
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
@@ -82,15 +83,11 @@ get_card_packet (struct grub_net_card *dev)
   grub_ssize_t actual;
   int rc;
   struct grub_ofnetcard_data *data = dev->data;
-  grub_uint64_t start_time;
   struct grub_net_buff *nb;
 
-  start_time = grub_get_time_ms ();
-  do
-    rc = grub_ieee1275_read (data->handle, dev->rcvbuf, dev->rcvbufsize, &actual);
-  while ((actual <= 0 || rc < 0) && (grub_get_time_ms () - start_time < 200));
+  rc = grub_ieee1275_read (data->handle, dev->rcvbuf, dev->rcvbufsize, &actual);
 
-  if (actual <= 0)
+  if (actual <= 0 || rc < 0)
     return NULL;
 
   nb = grub_netbuff_alloc (actual + 2);
@@ -391,6 +388,7 @@ search_net_devices (struct grub_ieee1275_devalias *alias)
   grub_uint8_t *pprop;
   char *shortname;
   char need_suffix = 1;
+  grub_size_t sz;
 
   if (grub_strcmp (alias->type, "network") != 0)
     return 0;
@@ -448,9 +446,26 @@ search_net_devices (struct grub_ieee1275_devalias *alias)
   }
 
   if (need_suffix)
-    ofdata->path = grub_malloc (grub_strlen (alias->path) + sizeof (SUFFIX));
+    {
+      if (grub_add (grub_strlen (alias->path), sizeof (SUFFIX), &sz))
+	{
+	  grub_error (GRUB_ERR_OUT_OF_RANGE, N_("overflow detected while obatining size of ofdata path"));
+	  grub_print_error ();
+	  return 0;
+	}
+    }
   else
-    ofdata->path = grub_malloc (grub_strlen (alias->path) + 1);
+    {
+      if (grub_add (grub_strlen (alias->path), 1, &sz))
+	{
+	  grub_error (GRUB_ERR_OUT_OF_RANGE, N_("overflow detected while obatining size of ofdata path"));
+	  grub_print_error ();
+	  return 0;
+	}
+    }
+
+  ofdata->path = grub_malloc (sz);
+
   if (!ofdata->path)
     {
       grub_print_error ();

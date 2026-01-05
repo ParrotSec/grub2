@@ -27,10 +27,10 @@ Patch-Name: restore-mkdevicemap.patch
  create mode 100644 util/grub-mkdevicemap.c
 
 diff --git a/Makefile.util.def b/Makefile.util.def
-index 9432365..970a003 100644
+index 038253b..9ff9294 100644
 --- a/Makefile.util.def
 +++ b/Makefile.util.def
-@@ -339,6 +339,23 @@ program = {
+@@ -367,6 +367,23 @@ program = {
    condition = COND_GRUB_MKFONT;
  };
  

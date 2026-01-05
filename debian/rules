@@ -34,7 +34,7 @@ export TARGET_LDFLAGS := -no-pie
 # as expected failure.
 ifneq ($(shell id -u), 0)
 export DISABLE_HARD_ERRORS := 1
-export XFAIL_TESTS := ext234_test iso9660_test hfsplus_test ntfs_test reiserfs_test fat_test minixfs_test xfs_test f2fs_test nilfs2_test romfs_test exfat_test udf_test hfs_test jfs_test btrfs_test zfs_test luks1_test luks2_test grub_cmd_cryptomount
+export XFAIL_TESTS := erofs_test ext234_test iso9660_test hfsplus_test ntfs_test reiserfs_test fat_test minixfs_test xfs_test f2fs_test nilfs2_test romfs_test exfat_test udf_test hfs_test jfs_test btrfs_test zfs_test luks1_test luks2_test grub_cmd_cryptomount
 endif
 
 # Ensure that debhelper doesn't try to set these; we need to be careful
@@ -65,23 +65,21 @@ BUILD_PACKAGES := $(strip $(shell dh_listpackages))
 # REAL_PACKAGES build an actual grub variant (and therefore have both configure
 # and build stages). EXTRA_PACKAGES do not build grub but may depend on a
 # REAL_PACKAGE (and therefore only have a build stage)
-REAL_PACKAGES = grub-common grub-emu grub-pc grub-coreboot grub-efi-ia32 grub-efi-amd64 grub-efi-ia64 grub-efi-arm grub-efi-arm64 grub-efi-riscv64 grub-ieee1275 grub-firmware-qemu grub-uboot grub-xen grub-yeeloong
+REAL_PACKAGES = grub2-common grub-emu grub-pc grub-coreboot grub-efi-ia32 grub-efi-amd64 grub-efi-arm grub-efi-arm64 grub-efi-riscv64 grub-efi-loong64 grub-ieee1275 grub-firmware-qemu grub-uboot grub-xen
 EXTRA_PACKAGES = grub-rescue-pc grub-xen-host
 
 ifneq (,$(filter i386 amd64,$(DEB_HOST_ARCH_CPU)))
 COMMON_PLATFORM := pc
 else ifneq (,$(filter powerpc ppc64 ppc64el sparc sparc64,$(DEB_HOST_ARCH_CPU)))
 COMMON_PLATFORM := ieee1275
-else ifeq (mipsel,$(DEB_HOST_ARCH_CPU))
-COMMON_PLATFORM := yeeloong
-else ifeq (ia64,$(DEB_HOST_ARCH_CPU))
-COMMON_PLATFORM := efi-ia64
 else ifeq (arm,$(DEB_HOST_ARCH_CPU))
 COMMON_PLATFORM := uboot
 else ifeq (arm64,$(DEB_HOST_ARCH_CPU))
 COMMON_PLATFORM := efi-arm64
 else ifeq (riscv64,$(DEB_HOST_ARCH_CPU))
 COMMON_PLATFORM := efi-riscv64
+else ifeq (loong64,$(DEB_HOST_ARCH_CPU))
+COMMON_PLATFORM := efi-loong64
 else
 COMMON_PLATFORM := none
 BUILD_PACKAGES += grub-none
@@ -98,10 +96,6 @@ else
 FLICKER_FREE_BOOT := yes
 endif
 confflags += --enable-ubuntu-recovery
-else ifeq (yes,$(shell dpkg-vendor --derives-from Tanglu && echo yes))
-DEFAULT_CMDLINE := quiet splash
-DEFAULT_TIMEOUT := 10
-FLICKER_FREE_BOOT := yes
 else
 DEFAULT_CMDLINE := quiet
 DEFAULT_TIMEOUT := 5
@@ -117,7 +111,6 @@ confflags += \
 	--enable-gfxpayload-dynamic \
 	--enable-vt-handoff
 substvars += \
-	-Vlsb-base-depends="lsb-base (>= 3.0-6)" \
 	-Vgfxpayload-depends="grub-gfxpayload-lists [any-i386 any-amd64]"
 else
 DEFAULT_HIDDEN_TIMEOUT :=
@@ -129,8 +122,14 @@ debian/stamps/build-grub-efi-ia32 install/grub-efi-ia32: export SB_PLATFORM := i
 debian/stamps/build-grub-efi-ia32 install/grub-efi-ia32: export SB_EFI_NAME := ia32
 debian/stamps/build-grub-efi-amd64 install/grub-efi-amd64: export SB_PLATFORM := x86_64-efi
 debian/stamps/build-grub-efi-amd64 install/grub-efi-amd64: export SB_EFI_NAME := x64
+debian/stamps/build-grub-efi-arm install/grub-efi-arm: export SB_PLATFORM := arm-efi
+debian/stamps/build-grub-efi-arm install/grub-efi-arm: export SB_EFI_NAME := arm
 debian/stamps/build-grub-efi-arm64 install/grub-efi-arm64: export SB_PLATFORM := arm64-efi
 debian/stamps/build-grub-efi-arm64 install/grub-efi-arm64: export SB_EFI_NAME := aa64
+debian/stamps/build-grub-efi-loong64 install/grub-efi-loong64: export SB_PLATFORM := loongarch64-efi
+debian/stamps/build-grub-efi-loong64 install/grub-efi-loong64: export SB_EFI_NAME := loongarch64
+debian/stamps/build-grub-efi-riscv64 install/grub-efi-riscv64: export SB_PLATFORM := riscv64-efi
+debian/stamps/build-grub-efi-riscv64 install/grub-efi-riscv64: export SB_EFI_NAME := riscv64
 SB_PACKAGE :=
 ifeq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
 ifeq ($(DEB_HOST_ARCH),amd64)
@@ -145,6 +144,7 @@ endif
 # rebuild grub, need a programmatic way to get the vendor, as it's used by build-efi-images
 # to create the monolithic Grub image and thus is needed to create the partitions on the EFI
 # media. Add it to the control file user metadata: XB-Efi-Vendor: $vendor
+DPKG_VENDOR ?= $(shell dpkg-vendor --query vendor)
 SB_EFI_VENDOR ?= $(shell dpkg-vendor --query vendor | tr '[:upper:]' '[:lower:]')
 
 %:
@@ -170,10 +170,11 @@ debian/stamps/build-%: export DH_OPTIONS = -p$(package) -Bobj/$(package)
 
 install/%: package = $(subst install/,,$@)
 install/%: package_bin = $(package)-bin
+install/%: package_unsigned = $(package)-unsigned
 install/%: package_dbg = $(package)-dbg
 install/grub-emu: package_bin = grub-emu
 install/grub-emu: package_dbg = grub-emu-dbg
-install/%: export DH_OPTIONS = -p$(package) -Bobj/$(patsubst grub-common,grub-$(COMMON_PLATFORM),$(package))
+install/%: export DH_OPTIONS = -p$(package) -Bobj/$(patsubst grub2-common,grub-$(COMMON_PLATFORM),$(package))
 
 override_dh_autoreconf:
 	mkdir -p debian/stamps
@@ -187,13 +188,13 @@ override_dh_autoreconf:
 		dh_autoreconf -- ./autogen.sh
 	cp /usr/share/lzo/minilzo/*.c /usr/share/lzo/minilzo/*.h grub-core/lib/minilzo/
 
-debian/stamps/configure-grub-common: debian/stamps/configure-grub-$(COMMON_PLATFORM)
+debian/stamps/configure-grub2-common: debian/stamps/configure-grub-$(COMMON_PLATFORM)
 	touch $@
 
-debian/stamps/build-grub-common: debian/stamps/build-grub-$(COMMON_PLATFORM)
+debian/stamps/build-grub2-common: debian/stamps/build-grub-$(COMMON_PLATFORM)
 	touch $@
 
-debian/stamps/configure-grub-none debian/stamps/configure-grub-pc debian/stamps/configure-grub-ieee1275 debian/stamps/configure-grub-coreboot debian/stamps/configure-grub-emu debian/stamps/configure-grub-uboot debian/stamps/configure-grub-yeeloong:
+debian/stamps/configure-grub-none debian/stamps/configure-grub-pc debian/stamps/configure-grub-ieee1275 debian/stamps/configure-grub-coreboot debian/stamps/configure-grub-emu debian/stamps/configure-grub-uboot:
 	mkdir -p debian/stamps obj/$(package)
 	dh_auto_configure -- $(confflags) --with-platform=$(subst grub-,,$(package))
 	touch $@
@@ -207,7 +208,7 @@ debian/stamps/configure-grub-efi-amd64:
 	mkdir -p debian/stamps $(subst debian/stamps/configure-,obj/,$@)
 	dh_auto_configure -- $(confflags) --with-platform=efi --target=amd64-pe --program-prefix=""
 	touch $@
-debian/stamps/configure-grub-efi-ia64 debian/stamps/configure-grub-efi-arm debian/stamps/configure-grub-efi-arm64 debian/stamps/configure-grub-efi-riscv64:
+debian/stamps/configure-grub-efi-arm debian/stamps/configure-grub-efi-arm64 debian/stamps/configure-grub-efi-riscv64 debian/stamps/configure-grub-efi-loong64:
 	mkdir -p debian/stamps $(subst debian/stamps/configure-,obj/,$@)
 	dh_auto_configure -- $(confflags) --with-platform=efi
 	touch $@
@@ -228,11 +229,11 @@ debian/stamps/configure-grub-firmware-qemu:
 	dh_auto_configure -- $(confflags) --with-platform=qemu
 	touch $@
 
-debian/stamps/build-grub-none debian/stamps/build-grub-efi-ia64 debian/stamps/build-grub-efi-arm debian/stamps/build-grub-efi-riscv64 debian/stamps/build-grub-coreboot debian/stamps/build-grub-emu debian/stamps/build-grub-uboot debian/stamps/build-grub-xen-i386 debian/stamps/build-grub-xen-amd64 debian/stamps/build-grub-xen-pvh-i386 debian/stamps/build-grub-yeeloong: debian/stamps/build-%: debian/stamps/configure-%
+debian/stamps/build-grub-none debian/stamps/build-grub-coreboot debian/stamps/build-grub-emu debian/stamps/build-grub-uboot debian/stamps/build-grub-xen-i386 debian/stamps/build-grub-xen-amd64 debian/stamps/build-grub-xen-pvh-i386: debian/stamps/build-%: debian/stamps/configure-%
 	dh_auto_build
 	touch $@
 
-debian/stamps/build-grub-efi-ia32 debian/stamps/build-grub-efi-amd64 debian/stamps/build-grub-efi-arm64: debian/stamps/build-%: debian/stamps/configure-% debian/stamps/build-grub-$(COMMON_PLATFORM)
+debian/stamps/build-grub-efi-ia32 debian/stamps/build-grub-efi-arm debian/stamps/build-grub-efi-loong64 debian/stamps/build-grub-efi-amd64 debian/stamps/build-grub-efi-arm64 debian/stamps/build-grub-efi-riscv64: debian/stamps/build-%: debian/stamps/configure-% debian/stamps/build-grub-$(COMMON_PLATFORM)
 	dh_auto_build
 	grub_dir=`mktemp -d` ; \
 	sed -e "s/@DEB_VERSION@/$(deb_version)/g" \
@@ -355,6 +356,7 @@ platform_subst = \
 	if [ -e debian/$(1) ]; then \
 		debian/platform-subst \
 			PACKAGE="$(2)" \
+			DPKG_VENDOR="$(DPKG_VENDOR)" \
 			DEFAULT_CMDLINE="$(DEFAULT_CMDLINE)" \
 			DEFAULT_TIMEOUT="$(DEFAULT_TIMEOUT)" \
 			DEFAULT_HIDDEN_TIMEOUT_BOOL="$(DEFAULT_HIDDEN_TIMEOUT_BOOL)" \
@@ -368,7 +370,7 @@ install/grub-none:
 	# files.
 	mkdir -p debian/tmp-$(package)/usr/share/locale
 
-install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-efi-ia64 install/grub-efi-arm install/grub-efi-arm64 install/grub-efi-riscv64 install/grub-ieee1275 install/grub-coreboot install/grub-emu install/grub-uboot install/grub-xen install/grub-yeeloong:
+install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-efi-arm install/grub-efi-arm64 install/grub-efi-riscv64 install/grub-efi-loong64 install/grub-ieee1275 install/grub-coreboot install/grub-emu install/grub-uboot install/grub-xen:
 	set -e ; \
 	if [ "$@" = "install/grub-xen" ] ; then \
 		dh_auto_install -Bobj/grub-xen-i386 --destdir=debian/tmp-$(package); \
@@ -380,8 +382,8 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-efi-ia
 
 	set -e ; \
 	if [ -d "obj/monolithic/$(package)" ] ; then \
-		install -m 0755 -d debian/$(package_bin)/usr/lib/grub/$(SB_PLATFORM)/monolithic ; \
-		install -m 0644 -t debian/$(package_bin)/usr/lib/grub/$(SB_PLATFORM)/monolithic obj/monolithic/$(package)/*.efi ; \
+		install -m 0755 -d debian/$(package_unsigned)/usr/lib/grub/$(SB_PLATFORM)/monolithic ; \
+		install -m 0644 -t debian/$(package_unsigned)/usr/lib/grub/$(SB_PLATFORM)/monolithic obj/monolithic/$(package)/*.efi ; \
 		debian/signing-template.generate "$(package)" ; \
 	fi
 
@@ -451,9 +453,10 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-efi-ia
 	fi
 	case $@ in \
 		install/grub-efi*) \
+			mkdir -p debian/$(package_unsigned)/usr/share/lintian/overrides; \
 			(echo "# These aren't Windows executables, and these features wouldn't be very useful." \
-			 echo "$(package_bin): portable-executable-missing-security-features [*.efi ASLR DEP/NX") \
-				>> debian/$(package_bin)/usr/share/lintian/overrides/$(package_bin) ;; \
+			 echo "$(package_unsigned): portable-executable-missing-security-features [*.efi ASLR DEP/NX") \
+				>> debian/$(package_unsigned)/usr/share/lintian/overrides/$(package_unsigned) ;; \
 	esac
 	if [ "$@" = "install/grub-emu" ]; then \
 		(echo "# This seems to be due to a readelf bug: https://bugs.debian.org/929585"; \
@@ -489,34 +492,27 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-efi-ia
 	mkdir -p debian/tmp-$(package)/usr/share/locale
 
 common_subst = \
-	if [ -e debian/grub-common.$(1) ]; then \
+	if [ -e debian/grub2-common.$(1) ]; then \
 		sed 's/@COMMON_PLATFORM@/$(COMMON_PLATFORM)/g' \
-			debian/grub-common.$(1) >> debian/grub-common.$(2).new; \
+			debian/grub2-common.$(1) >> debian/grub2-common.$(2).new; \
 	fi
 
-install/grub-common:
+install/grub2-common:
 	set -e ; for i in $(AUTOGEN_DEB_FILES) ; do \
-		> debian/grub-common.$$i.new; \
+		> debian/grub2-common.$$i.new; \
 		$(call common_subst,$$i.in,$$i); \
 		$(call common_subst,$$i.$(DEB_HOST_ARCH_CPU).in,$$i); \
 		$(call common_subst,$$i.$(DEB_HOST_ARCH_OS).in,$$i); \
-		if [ -s debian/grub-common.$$i.new ] ; then \
-			mv debian/grub-common.$$i.new debian/grub-common.$$i; \
+		if [ -s debian/grub2-common.$$i.new ] ; then \
+			mv debian/grub2-common.$$i.new debian/grub2-common.$$i; \
 		else \
-			rm -f debian/grub-common.$$i.new; \
+			rm -f debian/grub2-common.$$i.new; \
 		fi; \
 	done
-ifeq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
-	install -D -m 0755 debian/grub-common.pm-sleep \
-		$(CURDIR)/debian/$(package)/etc/pm/sleep.d/10_grub-common
-endif
 
 NON_PLATFORM_PACKAGES = $(filter grub2 grub-linuxbios grub-efi grub-rescue-pc grub-firmware-qemu grub-xen-host,$(BUILD_PACKAGES))
-COMMON_PLATFORM_PACKAGES = $(filter grub-common grub2-common grub-theme-starfield grub-mount-udeb,$(BUILD_PACKAGES))
-PLATFORM_PACKAGES = $(filter grub-pc grub-efi-ia32 grub-efi-amd64 grub-efi-ia64 grub-efi-arm grub-efi-arm64 grub-efi-riscv64 grub-ieee1275 grub-coreboot grub-uboot grub-xen grub-yeeloong,$(BUILD_PACKAGES))
-
-override_dh_auto_test:
-    
+COMMON_PLATFORM_PACKAGES = $(filter grub2-common grub-theme-starfield grub-mount-udeb,$(BUILD_PACKAGES))
+PLATFORM_PACKAGES = $(filter grub-pc grub-efi-ia32 grub-efi-amd64 grub-efi-arm grub-efi-arm64 grub-efi-riscv64 grub-efi-loong64 grub-ieee1275 grub-coreboot grub-uboot grub-xen,$(BUILD_PACKAGES))
 
 override_dh_install:
 ifneq (,$(NON_PLATFORM_PACKAGES))
@@ -538,6 +534,7 @@ ifneq (,$(filter grub-emu,$(BUILD_PACKAGES)))
 endif
 ifneq (,$(filter grub2-common,$(BUILD_PACKAGES)))
 	sed -i \
+		-e "s/@DPKG_VENDOR@/$(DPKG_VENDOR)/g" \
 		-e "s/@DEFAULT_CMDLINE@/$(DEFAULT_CMDLINE)/g" \
 		-e "s/@DEFAULT_TIMEOUT@/$(DEFAULT_TIMEOUT)/g" \
 		debian/grub2-common/usr/share/grub/default/grub
@@ -546,45 +543,25 @@ ifneq (,$(DEFAULT_HIDDEN_TIMEOUT))
 		debian/grub2-common/usr/share/grub/default/grub
 endif
 endif
-ifeq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
-ifneq (,$(filter grub-pc,$(BUILD_PACKAGES)))
-	patch debian/grub-pc/usr/lib/grub-legacy/update-grub \
-		< debian/legacy/update-grub.ubuntu.patch
-endif
-endif
 
 override_dh_installdocs:
-	dh_installdocs $(patsubst %,-p%,$(filter grub-common grub-rescue-pc grub-firmware-qemu grub-xen-host,$(BUILD_PACKAGES))) -A AUTHORS NEWS README THANKS TODO
+	dh_installdocs $(patsubst %,-p%,$(filter grub2-common grub-rescue-pc grub-firmware-qemu grub-xen-host,$(BUILD_PACKAGES))) -A AUTHORS NEWS README THANKS TODO
 	dh_installdocs $(patsubst %,-p%,$(filter grub-efi-%-signed-template,$(BUILD_PACKAGES)))
 	dh_installdocs -pgrub-efi-amd64 -pgrub-efi-amd64-bin -pgrub-efi-amd64-dbg --link-doc=grub-efi-amd64-bin
 	dh_installdocs -pgrub-efi-arm64 -pgrub-efi-arm64-bin -pgrub-efi-arm64-dbg --link-doc=grub-efi-arm64-bin
-	dh_installdocs --remaining-packages --link-doc=grub-common
-
-ifeq ($(FLICKER_FREE_BOOT),yes)
-override_dh_installinit:
-	dh_installinit -- start 99 2 3 4 5 .
-else
-override_dh_installinit:
-	:
-endif
+	dh_installdocs --remaining-packages --link-doc=grub2-common
 
 override_dh_bugfiles:
 	dh_bugfiles $(patsubst %,-N%,$(filter grub-efi-%-signed-template,$(BUILD_PACKAGES))) -A
 
 override_dh_strip:
-	dh_strip -X/usr/lib/grub-xen/grub-x86_64-xen.bin -X/usr/lib/grub-xen/grub-i386-xen_pvh.bin -X/usr/lib/grub-xen/grub-i386-xen.bin
+	dh_strip -X/usr/lib/grub-xen/grub-x86_64-xen.bin -X/usr/lib/grub-xen/grub-i386-xen_pvh.bin -X/usr/lib/grub-xen/grub-i386-xen.bin -X.exec -X.image
 
 override_dh_shlibdeps:
 	dh_shlibdeps -X.module
 
-ifeq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
-LEGACY_DOC_BR := grub-doc (<< 0.97-29ubuntu60), grub-legacy-doc (<< 0.97-29ubuntu60)
-else
-LEGACY_DOC_BR := grub-doc (<< 0.97-32), grub-legacy-doc (<< 0.97-59)
-endif
-
 override_dh_gencontrol:
-	dh_gencontrol -- -Vlegacy-doc-br="$(LEGACY_DOC_BR)" -V"efi:Vendor=$(SB_EFI_VENDOR)" -VBuilt-Using="$(BUILT_USING)" $(substvars)
+	dh_gencontrol -- -V"efi:Vendor=$(SB_EFI_VENDOR)" -VBuilt-Using="$(BUILT_USING)" $(substvars)
 
 TARNAME := grub2_$(deb_version)_$(DEB_HOST_ARCH).tar.gz
 
@@ -603,12 +580,12 @@ override_dh_auto_clean:
 override_dh_clean:
 	dh_clean
 
-	chmod +x debian/{bug-script,grub.d/*,legacy/*,kernel/*}
+	chmod +x debian/{bug-script,grub.d/*,kernel/*}
 
 	for i in $(AUTOGEN_DEB_FILES) ; do \
-		rm -f debian/grub-{pc,efi-*,ieee1275,coreboot,uboot,xen,yeeloong,emu}{,-bin,-dbg}.$$i ; \
+		rm -f debian/grub-{pc,efi-*,ieee1275,coreboot,uboot,xen,emu}{,-bin,-dbg}.$$i ; \
 	done
-	rm -f debian/grub-common.bash-completion debian/grub-common.maintscript
+	rm -f debian/grub2-common.bash-completion debian/grub2-common.maintscript
 	rm -rf debian/tmp-*/
 
 	# make sure PO files are always up-to-date

@@ -21,10 +21,10 @@ Patch-Name: grub-install-removable-shim.patch
  1 file changed, 67 insertions(+), 17 deletions(-)
 
 diff --git a/util/grub-install.c b/util/grub-install.c
-index fbb3a1c..84a50e0 100644
+index 2b85cd1..9468381 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
-@@ -907,17 +907,13 @@ check_component_exists(const char *dir,
+@@ -906,17 +906,13 @@ check_component_exists(const char *dir,
  static void
  also_install_removable(const char *src,
  		       const char *base_efidir,
@@ -44,7 +44,7 @@ index fbb3a1c..84a50e0 100644
    /* We need to install in $base_efidir/EFI/BOOT/$efi_file, but we
     * need to cope with case-insensitive stuff here. Build the path one
     * component at a time, checking for existing matches each time. */
-@@ -951,10 +947,9 @@ also_install_removable(const char *src,
+@@ -950,10 +946,9 @@ also_install_removable(const char *src,
    cur = xstrdup (dst);
    free (dst);
    free (found);
@@ -56,7 +56,7 @@ index fbb3a1c..84a50e0 100644
  }
  
  int
-@@ -2149,11 +2144,14 @@ main (int argc, char *argv[])
+@@ -2131,11 +2126,14 @@ main (int argc, char *argv[])
      case GRUB_INSTALL_PLATFORM_IA64_EFI:
        {
  	char *dst = grub_util_path_concat (2, efidir, efi_file);
@@ -71,7 +71,7 @@ index fbb3a1c..84a50e0 100644
  	    char *config_dst;
  	    FILE *config_dst_f;
  
-@@ -2162,11 +2160,15 @@ main (int argc, char *argv[])
+@@ -2144,11 +2142,15 @@ main (int argc, char *argv[])
  	    mok_file = xasprintf ("mm%s.efi", efi_suffix);
  	    fb_signed = xasprintf ("fb%s.efi.signed", efi_suffix);
  	    fb_file = xasprintf ("fb%s.efi", efi_suffix);
@@ -88,7 +88,7 @@ index fbb3a1c..84a50e0 100644
  		if (!removable)
  		  {
  		    free (efi_file);
-@@ -2178,8 +2180,6 @@ main (int argc, char *argv[])
+@@ -2160,8 +2162,6 @@ main (int argc, char *argv[])
  		chained_base = xasprintf ("grub%s.efi", efi_suffix);
  		chained_dst = grub_util_path_concat (2, efidir, chained_base);
  		grub_install_copy_file (efi_signed, chained_dst, 1);
@@ -97,7 +97,7 @@ index fbb3a1c..84a50e0 100644
  
  		/* Not critical, so not an error if they are not present (as it
  		   won't be for older releases); but if we have them, make
-@@ -2190,8 +2190,6 @@ main (int argc, char *argv[])
+@@ -2172,8 +2172,6 @@ main (int argc, char *argv[])
  						    mok_file);
  		grub_install_copy_file (mok_src,
  					mok_dst, 0);
@@ -106,7 +106,7 @@ index fbb3a1c..84a50e0 100644
  
  		fb_src = grub_util_path_concat (2, "/usr/lib/shim/",
  						    fb_signed);
-@@ -2200,30 +2198,82 @@ main (int argc, char *argv[])
+@@ -2182,30 +2180,82 @@ main (int argc, char *argv[])
  		if (!removable)
  		  grub_install_copy_file (fb_src,
  					  fb_dst, 0);

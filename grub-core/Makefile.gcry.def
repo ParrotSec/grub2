@@ -8,6 +8,20 @@ module = {
 };
 
 module = {
+  name = gcry_aria;
+  common = lib/libgcrypt-grub/cipher/aria.c;
+  cflags = '$(CFLAGS_GCRY)';
+  cppflags = '$(CPPFLAGS_GCRY)';
+};
+
+module = {
+  name = gcry_blake2;
+  common = lib/libgcrypt-grub/cipher/blake2.c;
+  cflags = '$(CFLAGS_GCRY)';
+  cppflags = '$(CPPFLAGS_GCRY)';
+};
+
+module = {
   name = gcry_blowfish;
   common = lib/libgcrypt-grub/cipher/blowfish.c;
   cflags = '$(CFLAGS_GCRY)';
@@ -51,8 +65,29 @@ module = {
 };
 
 module = {
+  name = gcry_gost28147;
+  common = lib/libgcrypt-grub/cipher/gost28147.c;
+  cflags = '$(CFLAGS_GCRY)';
+  cppflags = '$(CPPFLAGS_GCRY)';
+};
+
+module = {
+  name = gcry_gostr3411_94;
+  common = lib/libgcrypt-grub/cipher/gostr3411-94.c;
+  cflags = '$(CFLAGS_GCRY)';
+  cppflags = '$(CPPFLAGS_GCRY)';
+};
+
+module = {
   name = gcry_idea;
   common = lib/libgcrypt-grub/cipher/idea.c;
+  cflags = '$(CFLAGS_GCRY)';
+  cppflags = '$(CPPFLAGS_GCRY)';
+};
+
+module = {
+  name = gcry_keccak;
+  common = lib/libgcrypt-grub/cipher/keccak.c;
   cflags = '$(CFLAGS_GCRY)';
   cppflags = '$(CPPFLAGS_GCRY)';
 };
@@ -100,6 +135,13 @@ module = {
 };
 
 module = {
+  name = gcry_salsa20;
+  common = lib/libgcrypt-grub/cipher/salsa20.c;
+  cflags = '$(CFLAGS_GCRY)';
+  cppflags = '$(CPPFLAGS_GCRY)';
+};
+
+module = {
   name = gcry_seed;
   common = lib/libgcrypt-grub/cipher/seed.c;
   cflags = '$(CFLAGS_GCRY)';
@@ -130,7 +172,29 @@ module = {
 module = {
   name = gcry_sha512;
   common = lib/libgcrypt-grub/cipher/sha512.c;
+  common = lib/libgcrypt-grub/cipher/hash-common.c;
   cflags = '$(CFLAGS_GCRY) -Wno-cast-align';
+  cppflags = '$(CPPFLAGS_GCRY)';
+};
+
+module = {
+  name = gcry_sm3;
+  common = lib/libgcrypt-grub/cipher/sm3.c;
+  cflags = '$(CFLAGS_GCRY)';
+  cppflags = '$(CPPFLAGS_GCRY)';
+};
+
+module = {
+  name = gcry_sm4;
+  common = lib/libgcrypt-grub/cipher/sm4.c;
+  cflags = '$(CFLAGS_GCRY)';
+  cppflags = '$(CPPFLAGS_GCRY)';
+};
+
+module = {
+  name = gcry_stribog;
+  common = lib/libgcrypt-grub/cipher/stribog.c;
+  cflags = '$(CFLAGS_GCRY)';
   cppflags = '$(CPPFLAGS_GCRY)';
 };
 

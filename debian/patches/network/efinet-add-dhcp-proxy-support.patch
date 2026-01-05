@@ -14,10 +14,10 @@ Signed-off-by: Robbie Harwood <rharwood@redhat.com>
  1 file changed, 25 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
-index 69004d5..4a8c38c 100644
+index dcac36f..489c800 100644
 --- a/grub-core/net/drivers/efi/efinet.c
 +++ b/grub-core/net/drivers/efi/efinet.c
-@@ -863,10 +863,33 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
+@@ -873,10 +873,33 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,
      else
        {
  	grub_dprintf ("efinet", "using ipv4 and dhcp\n");

@@ -11,7 +11,7 @@ Signed-off-by: Robbie Harwood <rharwood@redhat.com>
  3 files changed, 81 insertions(+), 76 deletions(-)
 
 diff --git a/grub-core/kern/ieee1275/init.c b/grub-core/kern/ieee1275/init.c
-index ed62c4b..97bf33f 100644
+index a5586f8..c977182 100644
 --- a/grub-core/kern/ieee1275/init.c
 +++ b/grub-core/kern/ieee1275/init.c
 @@ -180,23 +180,25 @@ grub_machine_get_bootlocation (char **device, char **path)
@@ -52,12 +52,12 @@ index ed62c4b..97bf33f 100644
 +  grub_free (type);
    grub_free (bootpath);
  }
- #endif
+ 
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index 7571afa..556c21d 100644
+index bfeda28..d6c9441 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
-@@ -2080,7 +2080,7 @@ grub_net_search_config_file (char *config)
+@@ -2146,7 +2146,7 @@ grub_net_search_config_file (char *config, grub_size_t config_buf_len)
    /* Remove the remaining minus sign at the end. */
    config[config_len] = '\0';
  
@@ -67,7 +67,7 @@ index 7571afa..556c21d 100644
  
  static struct grub_preboot *fini_hnd;
 diff --git a/grub-core/normal/main.c b/grub-core/normal/main.c
-index c0255a9..28decc6 100644
+index ecf977e..355c2ab 100644
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
 @@ -310,76 +310,79 @@ grub_enter_normal_mode (const char *config)
@@ -103,7 +103,7 @@ index c0255a9..28decc6 100644
 +         return GRUB_ERR_FILE_NOT_FOUND;
 +
 +       grub_snprintf (config, config_len, "%s/grub.cfg", prefix);
-+       err = grub_net_search_config_file (config);
++       err = grub_net_search_config_file (config, config_len);
 +      }
 +
 +    if (err != GRUB_ERR_NONE)
@@ -190,7 +190,7 @@ index c0255a9..28decc6 100644
 -
 -          if (grub_strncmp (prefix + 1, "tftp", sizeof ("tftp") - 1) == 0 &&
 -              !disable_net_search)
--            grub_net_search_config_file (config);
+-            grub_net_search_config_file (config, config_len);
 -
 -	  grub_enter_normal_mode (config);
 -	  grub_free (config);

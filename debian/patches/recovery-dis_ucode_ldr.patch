@@ -16,10 +16,10 @@ LP: #1831789
  1 file changed, 4 insertions(+)
 
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 0772f6d..d0c76d8 100644
+index de26bd9..f48a74b 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -229,6 +229,10 @@ case "$machine" in
+@@ -223,6 +223,10 @@ case "$machine" in
      *) GENKERNEL_ARCH="$machine" ;;
  esac
  

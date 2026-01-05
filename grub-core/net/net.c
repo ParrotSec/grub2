@@ -32,6 +32,7 @@
 #include <grub/loader.h>
 #include <grub/bufio.h>
 #include <grub/kernel.h>
+#include <grub/safemath.h>
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
@@ -87,8 +88,8 @@ grub_net_link_layer_add_address (struct grub_net_card *card,
   /* Add sender to cache table.  */
   if (card->link_layer_table == NULL)
     {
-      card->link_layer_table = grub_zalloc (LINK_LAYER_CACHE_SIZE
-					    * sizeof (card->link_layer_table[0]));
+      card->link_layer_table = grub_calloc (LINK_LAYER_CACHE_SIZE,
+					    sizeof (card->link_layer_table[0]));
       if (card->link_layer_table == NULL)
 	return;
     }
@@ -206,6 +207,7 @@ grub_net_ipv6_get_slaac (struct grub_net_card *card,
 {
   struct grub_net_slaac_mac_list *slaac;
   char *ptr;
+  grub_size_t sz;
 
   for (slaac = card->slaac_list; slaac; slaac = slaac->next)
     if (grub_net_hwaddr_cmp (&slaac->address, hwaddr) == 0)
@@ -215,9 +217,21 @@ grub_net_ipv6_get_slaac (struct grub_net_card *card,
   if (!slaac)
     return NULL;
 
-  slaac->name = grub_malloc (grub_strlen (card->name)
-			     + GRUB_NET_MAX_STR_HWADDR_LEN
-			     + sizeof (":slaac"));
+  if (grub_add (grub_strlen (card->name),
+      (GRUB_NET_MAX_STR_HWADDR_LEN + sizeof (":slaac")), &sz))
+    {
+      grub_free (slaac);
+      grub_error (GRUB_ERR_OUT_OF_RANGE,
+		  "overflow detected while obtaining size of slaac name");
+      return NULL;
+    }
+
+  slaac->name = grub_malloc (sz);
+  if (slaac->name == NULL)
+    {
+      grub_free (slaac);
+      return NULL;
+    }
   ptr = grub_stpcpy (slaac->name, card->name);
   if (grub_net_hwaddr_cmp (&card->default_address, hwaddr) != 0)
     {
@@ -288,6 +302,7 @@ grub_net_ipv6_get_link_local (struct grub_net_card *card,
   char *name;
   char *ptr;
   grub_net_network_level_address_t addr;
+  grub_size_t sz;
 
   addr.type = GRUB_NET_NETWORK_LEVEL_PROTOCOL_IPV6;
   addr.ipv6[0] = grub_cpu_to_be64_compile_time (0xfe80ULL << 48);
@@ -302,9 +317,14 @@ grub_net_ipv6_get_link_local (struct grub_net_card *card,
       return inf;
   }
 
-  name = grub_malloc (grub_strlen (card->name)
-		      + GRUB_NET_MAX_STR_HWADDR_LEN
-		      + sizeof (":link"));
+  if (grub_add (grub_strlen (card->name),
+      (GRUB_NET_MAX_STR_HWADDR_LEN + sizeof (":link")), &sz))
+    {
+      grub_error (GRUB_ERR_OUT_OF_RANGE,
+		  "overflow detected while obtaining size of link name");
+      return NULL;
+    }
+  name = grub_malloc (sz);
   if (!name)
     return NULL;
 
@@ -984,6 +1004,38 @@ grub_net_network_level_interface_register (struct grub_net_network_level_interfa
   grub_net_network_level_interfaces = inter;
 }
 
+void
+grub_net_network_level_interface_unregister (struct grub_net_network_level_interface *inter)
+{
+  char *name;
+
+  {
+    char buf[GRUB_NET_MAX_STR_HWADDR_LEN];
+
+    grub_net_hwaddr_to_str (&inter->hwaddress, buf);
+    name = grub_xasprintf ("net_%s_mac", inter->name);
+    if (name != NULL)
+      grub_register_variable_hook (name, NULL, NULL);
+    grub_free (name);
+  }
+
+  {
+    char buf[GRUB_NET_MAX_STR_ADDR_LEN];
+
+    grub_net_addr_to_str (&inter->address, buf);
+    name = grub_xasprintf ("net_%s_ip", inter->name);
+    if (name != NULL)
+      grub_register_variable_hook (name, NULL, NULL);
+    grub_free (name);
+  }
+
+  inter->card->num_ifaces--;
+  *inter->prev = inter->next;
+  if (inter->next)
+    inter->next->prev = inter->prev;
+  inter->next = 0;
+  inter->prev = 0;
+}
 
 grub_err_t
 grub_net_add_ipv4_local (struct grub_net_network_level_interface *inter,
@@ -1402,9 +1454,15 @@ grub_net_open_real (const char *name)
 	  if (grub_strchr (port_start + 1, ':'))
 	    {
 	      int iplen = grub_strlen (server);
+	      grub_size_t sz;
 
 	      /* Bracket bare IPv6 addr. */
-	      host = grub_malloc (iplen + 3);
+	      if (grub_add (iplen, 3, &sz))
+		{
+		  grub_error (GRUB_ERR_OUT_OF_RANGE, N_("overflow detected while obtaining length of host"));
+		  return NULL;
+		}
+	      host = grub_malloc (sz);
 	      if (!host)
                 return NULL;
 
@@ -1659,6 +1717,7 @@ grub_env_set_net_property (const char *intername, const char *suffix,
 {
   char *varname, *varvalue;
   char *ptr;
+  grub_size_t sz;
 
   varname = grub_xasprintf ("net_%s_%s", intername, suffix);
   if (!varname)
@@ -1666,7 +1725,12 @@ grub_env_set_net_property (const char *intername, const char *suffix,
   for (ptr = varname; *ptr; ptr++)
     if (*ptr == ':')
       *ptr = '_';
-  varvalue = grub_malloc (len + 1);
+  if (grub_add (len, 1, &sz))
+    {
+      grub_free (varname);
+      return grub_error (GRUB_ERR_OUT_OF_RANGE, "overflow detected while obtaining the size of an env variable");
+    }
+  varvalue = grub_malloc (sz);
   if (!varvalue)
     {
       grub_free (varname);
@@ -1909,14 +1973,15 @@ grub_config_search_through (char *config, char *suffix,
 }
 
 grub_err_t
-grub_net_search_config_file (char *config)
+grub_net_search_config_file (char *config, grub_size_t config_buf_len)
 {
-  grub_size_t config_len;
+  grub_size_t config_len, suffix_len;
   char *suffix;
 
   config_len = grub_strlen (config);
   config[config_len] = '-';
   suffix = config + config_len + 1;
+  suffix_len = config_buf_len - (config_len + 1);
 
   struct grub_net_network_level_interface *inf;
   FOR_NET_NETWORK_LEVEL_INTERFACES (inf)
@@ -1942,7 +2007,7 @@ grub_net_search_config_file (char *config)
 
       if (client_uuid)
         {
-          grub_strcpy (suffix, client_uuid);
+          grub_strlcpy (suffix, client_uuid, suffix_len);
           if (grub_config_search_through (config, suffix, 1, 0) == 0)
             return GRUB_ERR_NONE;
         }
@@ -2072,6 +2137,8 @@ GRUB_MOD_FINI(net)
 {
   grub_register_variable_hook ("net_default_server", 0, 0);
   grub_register_variable_hook ("pxe_default_server", 0, 0);
+  grub_register_variable_hook ("net_default_ip", 0, 0);
+  grub_register_variable_hook ("net_default_mac", 0, 0);
 
   grub_bootp_fini ();
   grub_dns_fini ();

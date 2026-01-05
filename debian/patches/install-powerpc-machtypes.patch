@@ -181,10 +181,10 @@ index af04c1a..e9156af 100644
  get_efi_variable (const wchar_t *varname, ssize_t *len)
  {
 diff --git a/include/grub/util/install.h b/include/grub/util/install.h
-index 35cf17a..ca102b4 100644
+index 5c0a52c..fea65da 100644
 --- a/include/grub/util/install.h
 +++ b/include/grub/util/install.h
-@@ -224,6 +224,9 @@ grub_install_get_default_arm_platform (void);
+@@ -228,6 +228,9 @@ grub_install_get_default_arm_platform (void);
  const char *
  grub_install_get_default_x86_platform (void);
  
@@ -195,10 +195,10 @@ index 35cf17a..ca102b4 100644
  grub_install_register_efi (grub_device_t efidir_grub_dev,
  			   const char *efifile_path,
 diff --git a/util/grub-install.c b/util/grub-install.c
-index 1f69187..4c155ec 100644
+index 0602465..1b5282e 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
-@@ -1228,7 +1228,18 @@ main (int argc, char *argv[])
+@@ -1223,7 +1223,18 @@ main (int argc, char *argv[])
  
    if (platform == GRUB_INSTALL_PLATFORM_POWERPC_IEEE1275)
      {

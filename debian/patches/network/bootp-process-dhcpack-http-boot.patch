@@ -23,7 +23,7 @@ Signed-off-by: Robbie Harwood <rharwood@redhat.com>
  2 files changed, 56 insertions(+)
 
 diff --git a/grub-core/net/bootp.c b/grub-core/net/bootp.c
-index 12996a7..563d333 100644
+index 53656ee..3370c76 100644
 --- a/grub-core/net/bootp.c
 +++ b/grub-core/net/bootp.c
 @@ -20,6 +20,7 @@
@@ -34,7 +34,7 @@ index 12996a7..563d333 100644
  #include <grub/net/ip.h>
  #include <grub/net/netbuff.h>
  #include <grub/net/udp.h>
-@@ -506,6 +507,60 @@ grub_net_configure_by_dhcp_ack (const char *name,
+@@ -507,6 +508,60 @@ grub_net_configure_by_dhcp_ack (const char *name,
    if (opt && opt_len)
      grub_env_set_net_property (name, "rootpath", (const char *) opt, opt_len);
  
@@ -96,7 +96,7 @@ index 12996a7..563d333 100644
    if (opt && opt_len)
      grub_env_set_net_property (name, "extensionspath", (const char *) opt, opt_len);
 diff --git a/include/grub/net.h b/include/grub/net.h
-index 3e2704e..e7d75b9 100644
+index 16f0e76..33f0ce6 100644
 --- a/include/grub/net.h
 +++ b/include/grub/net.h
 @@ -530,6 +530,7 @@ enum

@@ -64,6 +64,45 @@ grub_stpcpy (char *dest, const char *src)
   return d - 1;
 }
 
+static inline grub_size_t
+grub_strlcpy (char *dest, const char *src, grub_size_t size)
+{
+  char *d = dest;
+  grub_size_t res = 0;
+  /*
+   * We do not subtract one from size here to avoid dealing with underflowing
+   * the value, which is why to_copy is always checked to be greater than one
+   * throughout this function.
+   */
+  grub_size_t to_copy = size;
+
+  /* Copy size - 1 bytes to dest. */
+  if (to_copy > 1)
+    while ((*d++ = *src++) != '\0' && ++res && --to_copy > 1)
+      ;
+
+  /*
+   * NUL terminate if size != 0. The previous step may have copied a NUL byte
+   * if it reached the end of the string, but we know dest[size - 1] must always
+   * be a NUL byte.
+   */
+  if (size != 0)
+    dest[size - 1] = '\0';
+
+  /* If there is still space in dest, but are here, we reached the end of src. */
+  if (to_copy > 1)
+    return res;
+
+  /*
+   * If we haven't reached the end of the string, iterate through to determine
+   * the strings total length.
+   */
+  while (*src++ != '\0' && ++res)
+   ;
+
+  return res;
+}
+
 /* XXX: If grub_memmove is too slow, we must implement grub_memcpy.  */
 static inline void *
 grub_memcpy (void *dest, const void *src, grub_size_t n)
@@ -390,6 +429,10 @@ void EXPORT_FUNC(grub_abort) (void) __attribute__ ((noreturn));
 grub_uint64_t EXPORT_FUNC(grub_divmod64) (grub_uint64_t n,
 					  grub_uint64_t d,
 					  grub_uint64_t *r);
+
+extern bool EXPORT_FUNC(grub_is_cli_disabled) (void);
+extern bool EXPORT_FUNC(grub_is_cli_need_auth) (void);
+extern void EXPORT_FUNC(grub_cli_set_auth_needed) (void);
 
 /* Must match softdiv group in gentpl.py.  */
 #if !defined(GRUB_MACHINE_EMU) && (defined(__arm__) || defined(__ia64__) || \
